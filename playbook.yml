@@ -3,4 +3,5 @@
   roles:
     - packages
     - dotfiles
+    - users
     # - services

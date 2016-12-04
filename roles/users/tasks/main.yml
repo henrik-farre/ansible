@@ -1,0 +1,19 @@
+---
+- name: load vaulted vars
+  include_vars:
+    file: users.vault.yml
+  tags:
+    - users
+
+- name: create users
+  become: yes
+  user:
+    name: "{{ item.name }}"
+    shell: /bin/zsh
+    groups: "{{ item.groups }}"
+    password: "{{ item.password }}"
+  with_items:
+    - "{{ vaulted_user_config }}"
+  no_log: yes
+  tags:
+    - users
