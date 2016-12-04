@@ -1,0 +1,7 @@
+---
+- name: clone dot files
+  git:
+    repo: https://github.com/henrik-farre/dotfiles
+    dest: ~/.dotfiles
+  tags:
+    - dotfiles
