@@ -1,0 +1,30 @@
+---
+- block:
+  - name: Download mononoki font
+    git:
+      repo: https://github.com/madmalik/mononoki.git
+      dest: /tmp/mononoki
+    tags:
+      - fonts
+
+  # http://stackoverflow.com/a/35650167
+  - name: Install mononoki font
+    copy:
+      src: /tmp/mononoki/export/webfont/{{ item }}
+      dest: ~/.fonts/{{ item }}
+      remote_src: yes
+    with_items:
+      - "mononoki-BoldItalic.ttf"
+      - "mononoki-Italic.ttf"
+      - "mononoki-Bold.ttf"
+      - "mononoki-Regular.ttf"
+    tags:
+      - fonts
+
+  always:
+  - name: Cleanup
+    file:
+      path: /tmp/mononoki
+      state: absent
+    tags:
+      - fonts

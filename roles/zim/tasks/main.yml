@@ -1,0 +1,7 @@
+---
+- name: Setup Zim Notebook
+  git:
+    repo: git@bitbucket.org:enrique/notes.git
+    dest: "{{ ansible_user_dir }}/Documents/Zim/Notes"
+  tags:
+    - zim
