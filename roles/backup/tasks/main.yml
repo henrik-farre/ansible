@@ -1,0 +1,40 @@
+---
+- block:
+  - name: Clone duplicity backup scripts
+    git:
+      repo: https://github.com/henrik-farre/duplicity_backup_scripts.git
+      dest: /tmp/dupebackup
+    tags:
+      - backup
+
+  - name: Install backup scripts
+    become: true
+    copy:
+      src: "{{ item }}"
+      dest: /usr/local/sbin/
+      owner: root
+      group: root
+      mode: 0700
+      remote_src: True
+    with_fileglob:
+      - /tmp/dupebackup/*.sh
+    tags:
+      - backup
+
+  - name: Enable backup cronjob
+    become: true
+    template:
+      src: etc/cron.d/1backup.j2
+      dest: /etc/cron.d/1backup
+      owner: root
+      mode: 0644
+    tags:
+      - backup
+
+  always:
+  - name: Cleanup
+    file:
+      path: /tmp/dupebackup
+      state: absent
+    tags:
+      - backup

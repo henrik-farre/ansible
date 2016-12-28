@@ -1,0 +1,9 @@
+# Managed by ansible
+SHELL=/bin/bash
+PATH=/sbin:/bin:/usr/sbin:/usr/bin
+MAILTO=henrik.farre@gmail.com
+
+{{ backup_cron_dump }} root /usr/local/sbin/dump-information.sh > /dev/null
+{{ backup_cron_clean }} root /usr/local/sbin/backup-clean.sh >/dev/null
+{{ backup_cron_remove }} root /usr/local/sbin/backup-remove-old.sh >/dev/null
+{{ backup_cron }} root /usr/local/sbin/backup.sh >/dev/null
