@@ -237,4 +237,4 @@
     - shellcheck
     - yamllint
   tags:
-    - aur
+    - yaourt
