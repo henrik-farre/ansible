@@ -2,6 +2,26 @@
 - name: clone dot files
   git:
     repo: https://github.com/henrik-farre/dotfiles
-    dest: ~/.dotfiles
+    dest: "{{ ansible_user_dir }}/.dotfiles"
   tags:
     - dotfiles
+
+- name: ensure directories exist
+  file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  with_items:
+    - ".config/conky"
+  tags:
+    - dotfiles
+
+- name: symlink files
+  file:
+    src: "{{ ansible_user_dir }}/.dotfiles/home/{{ item }}"
+    dest: "{{ ansible_user_dir }}/{{ item }}"
+    owner: "{{ ansible_user_id }}"
+    state: link
+  with_items:
+    - ".config/conky/conkyrc"
