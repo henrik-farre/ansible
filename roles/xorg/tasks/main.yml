@@ -1,0 +1,11 @@
+---
+- name: Setup keyboard
+  become: yes
+  copy:
+    src: etc/X11/xorg.conf.d/20-keyboard.conf
+    dest: /etc/X11/xorg.conf.d/20-keyboard.conf
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - xorg
