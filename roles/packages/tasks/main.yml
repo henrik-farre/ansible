@@ -56,7 +56,6 @@
     - gnu-netcat
     - gnupg
     - gnuplot
-    - google-chrome
     - gst-plugins-base
     - gst-plugins-base-libs
     - gst-plugins-good
@@ -243,6 +242,8 @@
     - kupfer
     - shellcheck
     - yamllint
+    - google-chrome
+    - hugo-bin
   tags:
     - yaourt
     - packages
