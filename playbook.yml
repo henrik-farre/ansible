@@ -1,12 +1,15 @@
 ---
 - hosts: all
   roles:
-    - packages
     - users
     - backup
     - dotfiles
     - vim
-    - fonts
     - zim
     - xorg
     # - services
+
+- hosts: desktop
+  roles:
+  - desktop
+  - fonts
