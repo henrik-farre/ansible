@@ -43,12 +43,15 @@
     - ".tmuxinator"
     - ".screenrc"
     - ".inputrc"
-    - ".composer"
     - ".ackrc"
     - ".ctags"
     - ".jshintrc"
     - ".gemrc"
     - ".npmrc"
     - ".pearrc"
+    - ".yaourtrc"
+    - ".Xmodmap"
+    - ".Xresources"
+    - ".config/fontconfig/fonts.conf"
   tags:
     - dotfiles
