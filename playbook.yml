@@ -1,10 +1,10 @@
 ---
 - hosts: all
   roles:
-    - backup
     - packages
-    - dotfiles
     - users
+    - backup
+    - dotfiles
     - fonts
     - zim
     # - services
