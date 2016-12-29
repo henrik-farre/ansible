@@ -1,3 +1,4 @@
 ---
 dependencies:
-  - { role: packages, packages: ['sudo'] }
+  - { role: packages, packages: ['zsh'] }
+  - role: sudo
