@@ -1,10 +1,18 @@
 ---
 - name: clone dot files
   git:
-    repo: https://github.com/henrik-farre/dotfiles
+    repo: git@github.com:henrik-farre/dotfiles.git
     dest: "{{ ansible_user_dir }}/.dotfiles"
   tags:
     - dotfiles
+
+- name: clone neovim/vim files
+  git:
+    repo: git@github.com:henrik-farre/vimrc.git
+    dest: "{{ ansible_user_dir }}/.config/nvim"
+  tags:
+    - dotfiles
+    - vim
 
 - name: ensure directories exist
   file:
@@ -13,15 +21,34 @@
     state: directory
     mode: 0700
   with_items:
-    - ".config/conky"
+    - "{{ ansible_user_dir }}/.config"
   tags:
     - dotfiles
 
 - name: symlink files
   file:
-    src: "{{ ansible_user_dir }}/.dotfiles/home/{{ item }}"
+    src: "{{ ansible_user_dir }}/.dotfiles/{{ item }}"
     dest: "{{ ansible_user_dir }}/{{ item }}"
     owner: "{{ ansible_user_id }}"
     state: link
   with_items:
-    - ".config/conky/conkyrc"
+    - ".config/conky"
+    - ".config/termite"
+    - ".config/htop"
+    - ".zshrc"
+    - ".bash_profile"
+    - ".bashrc"
+    - ".config/shells"
+    - ".tmux.conf"
+    - ".tmuxinator"
+    - ".screenrc"
+    - ".inputrc"
+    - ".composer"
+    - ".ackrc"
+    - ".ctags"
+    - ".jshintrc"
+    - ".gemrc"
+    - ".npmrc"
+    - ".pearrc"
+  tags:
+    - dotfiles
