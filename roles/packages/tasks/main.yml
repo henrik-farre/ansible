@@ -95,7 +95,6 @@
     - npm
     - ntp
     - openssh
-    - package-query
     - pam
     - pambase
     - parted
