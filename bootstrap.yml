@@ -2,3 +2,4 @@
 - hosts: all
   roles:
     - users
+    - { role: packages, packages: ['git', 'openssh'] }
