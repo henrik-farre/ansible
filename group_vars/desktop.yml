@@ -81,7 +81,6 @@ desktop_packages:
   - linux-api-headers
   - linux-firmware
   - logrotate
-  - neovim
   - network-manager-applet
   - networkmanager
   - nm-connection-editor
@@ -157,6 +156,4 @@ desktop_packages:
   - xterm
   - xz
   - zenity
-  - zim
   - zip
-  - zsh
