@@ -3,6 +3,7 @@
   git:
     repo: https://aur.archlinux.org/package-query.git
     dest: ~/tmp/package-queue
+    accept_hostkey: yes
   delegate_to: localhost
   tags:
     - yaourt
@@ -31,6 +32,7 @@
   git:
     repo: https://aur.archlinux.org/yaourt.git
     dest: ~/tmp/yaourt
+    accept_hostkey: yes
   delegate_to: localhost
   tags:
     - yaourt
