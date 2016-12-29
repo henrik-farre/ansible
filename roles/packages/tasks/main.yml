@@ -170,6 +170,8 @@
     - zim
     - zip
     - zsh
+  tags:
+    - packages
 
 - name: Build yaourt, clone package-query
   git:
@@ -178,6 +180,7 @@
   delegate_to: localhost
   tags:
     - yaourt
+    - packages
 
 - name: Build yaourt, makepkg
   command: makepkg -si
@@ -187,6 +190,7 @@
   register: aur_makepkg_result
   tags:
     - yaourt
+    - packages
 
 - name: Build yaourt, install package-query
   become: yes
@@ -198,6 +202,7 @@
     - aur_makepkg_result|succeeded
   tags:
     - yaourt
+    - packages
 
 - name: Build yaourt, clone yaourt
   git:
@@ -206,6 +211,7 @@
   delegate_to: localhost
   tags:
     - yaourt
+    - packages
 
 - name: Build yaourt
   command: makepkg -si
@@ -215,6 +221,7 @@
   register: aur_makepkg_result
   tags:
     - yaourt
+    - packages
 
 - name: Build yaourt, install yaourt
   become: yes
@@ -226,6 +233,7 @@
     - aur_makepkg_result|succeeded
   tags:
     - yaourt
+    - packages
 
 - name: Install packages from community
   become: yes
@@ -238,3 +246,27 @@
     - yamllint
   tags:
     - yaourt
+    - packages
+
+- name: Install ruby gems
+  gem:
+    name: "{{ item }}"
+    state: latest
+  with_items:
+    - "tmuxinator"
+  tags:
+    - ruby
+    - packages
+
+- name: Install node packages
+  npm:
+    name: "{{ item }}"
+    global: yes
+    state: latest
+  with_items:
+    - "tern"
+    - "jshint"
+    - "csslint"
+  tags:
+    - node
+    - packages
