@@ -6,14 +6,6 @@
   tags:
     - dotfiles
 
-- name: clone neovim/vim files
-  git:
-    repo: git@github.com:henrik-farre/vimrc.git
-    dest: "{{ ansible_user_dir }}/.config/nvim"
-  tags:
-    - dotfiles
-    - vim
-
 - name: ensure directories exist
   file:
     path: "{{ ansible_user_dir }}/{{ item }}"

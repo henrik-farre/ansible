@@ -5,6 +5,7 @@
     - users
     - backup
     - dotfiles
+    - vim
     - fonts
     - zim
     # - services

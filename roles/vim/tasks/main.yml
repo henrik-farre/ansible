@@ -1,0 +1,32 @@
+---
+- name: Clone neovim/vim files
+  git:
+    repo: git@github.com:henrik-farre/vimrc.git
+    dest: "{{ ansible_user_dir }}/.config/nvim"
+  tags:
+    - vim
+
+- name: Check if vim is installed
+  stat:
+    path: /usr/bin/vim
+  register: vim_installation
+  tags:
+    - vim
+
+- name: Create .vimrc symlink for vim
+  file:
+    src: "{{ ansible_user_dir }}/.config/nvim/init.vim"
+    dest: "{{ ansible_user_dir }}/.vimrc"
+    state: link
+  tags:
+    - vim
+  when: vim_installation.stat.exists == True
+
+- name: Create .vim symlink for vim
+  file:
+    src: "{{ ansible_user_dir }}/.config/nvim"
+    dest: "{{ ansible_user_dir }}/.vim"
+    state: link
+  tags:
+    - vim
+  when: vim_installation.stat.exists == True
