@@ -53,5 +53,9 @@
     - ".Xmodmap"
     - ".Xresources"
     - ".config/fontconfig/fonts.conf"
+    - ".gitconfig"
+    - ".gitignore"
+    - ".git_template"
+    - "bin"
   tags:
     - dotfiles
