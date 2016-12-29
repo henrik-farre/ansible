@@ -1,0 +1,12 @@
+---
+- name: Install node packages
+  npm:
+    name: "{{ item }}"
+    global: yes
+    state: latest
+  with_items:
+    - "tern"
+    - "jshint"
+    - "csslint"
+  tags:
+    - node

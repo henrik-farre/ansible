@@ -1,0 +1,71 @@
+---
+- name: Build yaourt, clone package-query
+  git:
+    repo: https://aur.archlinux.org/package-query.git
+    dest: ~/tmp/package-queue
+  delegate_to: localhost
+  tags:
+    - yaourt
+
+- name: Build yaourt, makepkg
+  command: makepkg -si
+  args:
+    chdir: ~/tmp/package-queue
+  delegate_to: localhost
+  register: aur_makepkg_result
+  tags:
+    - yaourt
+
+- name: Build yaourt, install package-query
+  become: yes
+  command: pacman -U "{{ item }}" --noconfirm --noprogressbar
+  with_fileglob:
+    - ~/tmp/package-queue/package-query-*-x86_64.pkg.tar.xz
+  delegate_to: localhost
+  when:
+    - aur_makepkg_result|succeeded
+  tags:
+    - yaourt
+
+- name: Build yaourt, clone yaourt
+  git:
+    repo: https://aur.archlinux.org/yaourt.git
+    dest: ~/tmp/yaourt
+  delegate_to: localhost
+  tags:
+    - yaourt
+
+- name: Build yaourt
+  command: makepkg -si
+  args:
+    chdir: ~/tmp/yaourt
+  delegate_to: localhost
+  register: aur_makepkg_result
+  tags:
+    - yaourt
+
+- name: Build yaourt, install yaourt
+  become: yes
+  command: pacman -U "{{ item }}" --noconfirm --noprogressbar
+  with_fileglob:
+    - ~/tmp/yaourt/yaourt-*-x86_64.pkg.tar.xz
+  delegate_to: localhost
+  when:
+    - aur_makepkg_result|succeeded
+  tags:
+    - yaourt
+
+- name: Install packages from community
+  become: yes
+  command: yaourt -S --noconfirm "{{ item }}"
+  with_items:
+    - xcape
+    - ctags-php
+    - kupfer
+    - shellcheck
+    - yamllint
+    - google-chrome
+    - hugo-bin
+    - virtualbox-ext-oracle
+  tags:
+    - yaourt
