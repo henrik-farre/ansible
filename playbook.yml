@@ -1,7 +1,6 @@
 ---
 - hosts: all
   roles:
-    - users
     - backup
     - dotfiles
     - vim
