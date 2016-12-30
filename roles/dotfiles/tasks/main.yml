@@ -1,5 +1,5 @@
 ---
-- name: clone dot files
+- name: Clone dot files
   git:
     repo: git@github.com:henrik-farre/dotfiles.git
     dest: "{{ ansible_user_dir }}/.dotfiles"
@@ -7,18 +7,30 @@
   tags:
     - dotfiles
 
-- name: ensure directories exist
+- name: Ensure directories exist
   file:
     path: "{{ ansible_user_dir }}/{{ item }}"
     owner: "{{ ansible_user_id }}"
     state: directory
     mode: 0700
   with_items:
-    - "{{ ansible_user_dir }}/.config"
+    - ".config"
+    - ".config/fontconfig"
   tags:
     - dotfiles
 
-- name: symlink files
+- name: Remove existing skel files
+  file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - ".bashrc"
+    - ".bash_profile"
+  tags:
+    - dotfiles
+
+
+- name: Symlink files
   file:
     src: "{{ ansible_user_dir }}/.dotfiles/{{ item }}"
     dest: "{{ ansible_user_dir }}/{{ item }}"

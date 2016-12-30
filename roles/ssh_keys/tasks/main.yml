@@ -25,3 +25,28 @@
     mode: 0600
   tags:
     - ssh_keys
+
+- name: Symlink keys to default
+  file:
+    src: "{{ ansible_user_dir }}/.ssh/id_rsa.work.pub"
+    dest: "{{ ansible_user_dir }}/.ssh/id_rsa.pub"
+    state: link
+  tags:
+    - ssh_keys
+
+- name: Symlink keys to default
+  file:
+    src: "{{ ansible_user_dir }}/.ssh/id_rsa.work"
+    dest: "{{ ansible_user_dir }}/.ssh/id_rsa"
+    state: link
+  tags:
+    - ssh_keys
+
+# From http://hakunin.com/six-ansible-practices#teach-ansible-to-talk-to-github-on-your-behalf
+- name: Ensure github.com is a known host
+  lineinfile:
+    dest: "{{ ansible_user_dir }}/.ssh/known_hosts"
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
+    regexp: "^github\\.com"
