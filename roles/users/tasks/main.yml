@@ -1,11 +1,11 @@
 ---
-- name: load vaulted vars
+- name: Load vaulted vars
   include_vars:
     file: users.vault.yml
   tags:
     - users
 
-- name: create users
+- name: Create users
   become: yes
   user:
     name: "{{ item.name }}"
