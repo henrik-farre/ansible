@@ -1,6 +1,7 @@
 ---
 - hosts: all
   roles:
+    - ssh_keys
     - backup
     - dotfiles
     - vim
