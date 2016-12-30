@@ -10,7 +10,7 @@
 
 - name: Copy private ssh key
   copy:
-    src: ssk_key_private.yml
+    src: ssh_key_private.yml
     dest: "{{ ansible_user_dir }}/.ssh/id_rsa.work"
     owner: "{{ ansible_user_id }}"
     mode: 0600
@@ -19,7 +19,7 @@
 
 - name: Copy public ssh key
   copy:
-    src: ssk_key_public.yml
+    src: ssh_key_public.yml
     dest: "{{ ansible_user_dir }}/.ssh/id_rsa.work.pub"
     owner: "{{ ansible_user_id }}"
     mode: 0600
