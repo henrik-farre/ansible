@@ -1,5 +1,14 @@
 ---
 - block:
+  - name: Create .fonts dir
+    file:
+      path: "{{ ansible_user_dir }}/.fonts/"
+      owner: "{{ ansible_user_id }}"
+      state: directory
+      mode: 0700
+    tags:
+      - fonts
+
   - name: Download mononoki font
     git:
       repo: https://github.com/madmalik/mononoki.git
@@ -11,8 +20,8 @@
   # http://stackoverflow.com/a/35650167
   - name: Install mononoki font
     copy:
-      src: /tmp/mononoki/export/webfont/{{ item }}
-      dest: ~/.fonts/{{ item }}
+      src: "/tmp/mononoki/export/webfont/{{ item }}"
+      dest: "{{ ansible_user_dir }}/.fonts/{{ item }}"
       remote_src: yes
     with_items:
       - "mononoki-BoldItalic.ttf"
