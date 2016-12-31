@@ -19,6 +19,13 @@
   tags:
     - dotfiles
 
+- name: Check if skel files exists
+  stat:
+    path: "{{ ansible_user_dir }}/.bashrc"
+  register: bash_skelfile
+  tags:
+    - dotfiles
+
 - name: Remove existing skel files
   file:
     path: "{{ ansible_user_dir }}/{{ item }}"
@@ -26,6 +33,7 @@
   with_items:
     - ".bashrc"
     - ".bash_profile"
+  when: bash_skelfile.stat.islnk is defined and bash_skelfile.stat.islnk == False
   tags:
     - dotfiles
 
