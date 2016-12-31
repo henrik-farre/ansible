@@ -50,3 +50,11 @@
     state: present
     line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
     regexp: "^github\\.com"
+
+- name: Ensure bitbucket.com is a known host
+  lineinfile:
+    dest: "{{ ansible_user_dir }}/.ssh/known_hosts"
+    create: yes
+    state: present
+    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa bitbucket.com') }}"
+    regexp: "^bitbucket\\.com"
