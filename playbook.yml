@@ -6,10 +6,10 @@
     - dotfiles
     - vim
     - zim
-    - xorg
     # - services
 
 - hosts: desktop
   roles:
   - desktop
   - fonts
+  - xorg
