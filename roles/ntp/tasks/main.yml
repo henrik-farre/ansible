@@ -1,0 +1,4 @@
+- name: Enable ntp service
+  command: /usr/bin/timedatectl set-ntp true
+  tags:
+    - ntp

@@ -5,8 +5,6 @@ desktop_packages:
   - alsa-lib
   - alsa-tools
   - alsa-utils
-  - android-tools
-  - android-udev
   - ansible
   - aspell
   - autoconf
@@ -16,16 +14,11 @@ desktop_packages:
   - binutils
   - bridge-utils
   - bzip2
-  - cantarell-fonts
   - cifs-utils
   - cmake
-  - composer
-  - cronie
   - curl
   - dkms
   - dnsmasq
-  - docker
-  - docker-compose
   - dosfstools
   - e2fsprogs
   - efibootmgr
@@ -40,7 +33,6 @@ desktop_packages:
   - fzf
   - gcc
   - gimp
-  - git
   - gnome-calculator
   - gnome-desktop
   - gnome-icon-theme
@@ -84,10 +76,6 @@ desktop_packages:
   - network-manager-applet
   - networkmanager
   - nm-connection-editor
-  - nodejs
-  - npm
-  - ntp
-  - openssh
   - pam
   - pambase
   - parted
@@ -97,7 +85,6 @@ desktop_packages:
   - pinentry
   - pkg-config
   - powerline-common
-  - powerline-fonts
   - pv
   - pwgen
   - rrdtool
@@ -110,8 +97,6 @@ desktop_packages:
   - sshpass
   - ssmtp
   - startup-notification
-  - subversion
-  - sudo
   - sysfsutils
   - termite
   - termite-terminfo
@@ -121,7 +106,6 @@ desktop_packages:
   - tmux
   - traceroute
   - tree
-  - ttf-dejavu
   - unzip
   - usb_modeswitch
   - vagrant
@@ -170,7 +154,6 @@ xorg_packages:
   - xorg-luit
   - xorg-mkfontdir
   - xorg-mkfontscale
-  - xorg-res-utils
   - xorg-server
   - xorg-server-common
   - xorg-server-utils

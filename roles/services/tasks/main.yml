@@ -1,0 +1,10 @@
+---
+- name: Enable services
+  become: yes
+  systemd:
+    name: "{{ item }}"
+    enabled: yes
+  with_items:
+    - "{{ services }}"
+  tags:
+    - services

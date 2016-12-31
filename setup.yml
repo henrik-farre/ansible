@@ -1,11 +1,13 @@
 ---
 - hosts: all
   roles:
+    - ntp
+    - cron
     - ssh_keys
     - backup
     - dotfiles
     - vim
-    # - services
+    - docker
 
 - hosts: desktop
   roles:
@@ -13,3 +15,4 @@
   - desktop
   - fonts
   - zim
+  - { role: services, packages: ['smartd', 'alsa-restore'] }
