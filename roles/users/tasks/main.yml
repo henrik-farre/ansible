@@ -6,7 +6,6 @@
     - users
 
 - name: Create users
-  become: yes
   user:
     name: "{{ item.name }}"
     shell: /bin/zsh
