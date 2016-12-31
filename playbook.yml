@@ -5,11 +5,11 @@
     - backup
     - dotfiles
     - vim
-    - zim
     # - services
 
 - hosts: desktop
   roles:
+  - xorg
   - desktop
   - fonts
-  - xorg
+  - zim

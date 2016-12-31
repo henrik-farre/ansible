@@ -151,9 +151,63 @@ desktop_packages:
   - xfdesktop
   - xfwm4
   - xfwm4-themes
-  - xkeyboard-config
   - xsel
-  - xterm
   - xz
   - zenity
   - zip
+
+xorg_packages:
+  - xineramaproto
+  - xkeyboard-config
+  - xorg-apps
+  - xorg-bdftopcf
+  - xorg-font-util
+  - xorg-font-utils
+  - xorg-fonts-alias
+  - xorg-fonts-encodings
+  - xorg-fonts-misc
+  - xorg-iceauth
+  - xorg-luit
+  - xorg-mkfontdir
+  - xorg-mkfontscale
+  - xorg-res-utils
+  - xorg-server
+  - xorg-server-common
+  - xorg-server-utils
+  - xorg-sessreg
+  - xorg-setxkbmap
+  - xorg-utils
+  - xorg-x11perf
+  - xorg-xauth
+  - xorg-xbacklight
+  - xorg-xcmsdb
+  - xorg-xcursorgen
+  - xorg-xdpyinfo
+  - xorg-xdriinfo
+  - xorg-xev
+  - xorg-xgamma
+  - xorg-xhost
+  - xorg-xinit
+  - xorg-xinput
+  - xorg-xkb-utils
+  - xorg-xkbcomp
+  - xorg-xkbevd
+  - xorg-xkbutils
+  - xorg-xkill
+  - xorg-xlsatoms
+  - xorg-xlsclients
+  - xorg-xmessage
+  - xorg-xmodmap
+  - xorg-xpr
+  - xorg-xprop
+  - xorg-xrandr
+  - xorg-xrdb
+  - xorg-xrefresh
+  - xorg-xset
+  - xorg-xsetroot
+  - xorg-xvinfo
+  - xorg-xwd
+  - xorg-xwininfo
+  - xorg-xwud
+  - xproto
+  - xterm

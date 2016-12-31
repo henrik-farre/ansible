@@ -6,6 +6,15 @@
   tags:
     - vim
 
+- name: Create backup dir
+  file:
+    path: "{{ ansible_user_dir }}/.config/nvim/backups"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - vim
+
 - name: Check if vim is installed
   stat:
     path: /usr/bin/vim

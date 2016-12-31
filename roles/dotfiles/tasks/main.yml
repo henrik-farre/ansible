@@ -29,7 +29,6 @@
   tags:
     - dotfiles
 
-
 - name: Symlink files
   file:
     src: "{{ ansible_user_dir }}/.dotfiles/{{ item }}"
