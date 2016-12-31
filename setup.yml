@@ -15,4 +15,5 @@
   - desktop
   - fonts
   - zim
+  - { role: package, packages: ['smartmontools'] }
   - { role: services, services: ['smartd', 'alsa-restore'] }
