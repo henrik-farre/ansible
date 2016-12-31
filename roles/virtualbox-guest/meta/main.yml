@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: packages, packages: ['linux-headers', 'virtualbox-guest-dkms', 'virtualbox-guest-utils'] }
+  - { role: services, packages: ['vboxservice'] }

@@ -1,0 +1,10 @@
+---
+- name: Copy modules load file
+  copy:
+    src: etc/modules-load.d/virtualbox.conf
+    dest: /etc/modules-load.d/virtualbox.conf
+    owner: root
+    group: root
+    mode: 0640
+  tags:
+    - virtualbox-guest

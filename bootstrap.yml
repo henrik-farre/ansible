@@ -2,4 +2,5 @@
 - hosts: all
   roles:
     - users
+    - { role: virtualbox-guest, when: ansible_virtualization_type == "virtualbox" }
     - { role: packages, packages: ['git', 'openssh'] }
