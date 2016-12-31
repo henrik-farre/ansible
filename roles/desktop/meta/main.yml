@@ -1,4 +1,4 @@
 ---
 dependencies:
   - { role: packages, packages: "{{ desktop_packages }}" }
-  - { role: services, packages: ['lightdm'] }
+  - { role: services, services: ['lightdm'] }

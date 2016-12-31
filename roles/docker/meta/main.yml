@@ -1,4 +1,4 @@
 ---
 dependencies:
   - { role: packages, packages: ['docker', 'docker-compose'] }
-  - { role: services, packages: ['docker'] }
+  - { role: services, services: ['docker'] }

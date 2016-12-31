@@ -15,4 +15,4 @@
   - desktop
   - fonts
   - zim
-  - { role: services, packages: ['smartd', 'alsa-restore'] }
+  - { role: services, services: ['smartd', 'alsa-restore'] }
