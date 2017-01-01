@@ -5,5 +5,5 @@
     - grub
     - users
     - { role: packages, packages: ['git', 'openssh', 'networkmanager', 'nm-connection-editor'] }
-    - { role: services, services: ['NetworkManager'] }
+    - { role: services, services: ['NetworkManager', 'sshd'] }
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }

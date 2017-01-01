@@ -1,3 +1,3 @@
 #!/bin/bash
 
-ansible-playbook -i hosts.ini setup.yml --limit localhost
+ansible-playbook -i hosts.ini setup.yml --limit workstation
