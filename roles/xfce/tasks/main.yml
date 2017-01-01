@@ -16,3 +16,19 @@
     - dot.config/xfce4/xfconf/xfce-perchannel-xml/*
   tags:
     - xfce
+
+- name: Ensure ~/.theme exists
+  file:
+    path: "{{ ansible_user_dir }}/.themes"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - xfce
+
+- name: Install theme
+  git:
+    repo: https://github.com/dar5hak/Numix-Holo.git
+    dest: "{{ ansible_user_dir }}/.themes"
+  tags:
+    - xfce
