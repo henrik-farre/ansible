@@ -11,6 +11,7 @@
 - name: Ensure default settings for ssh exists in ~/.ssh/config
   blockinfile:
     dest: "{{ ansible_user_dir }}/.ssh/config"
+    create: yes
     block: |
       Host *
         ForwardAgent yes
