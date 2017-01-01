@@ -1,7 +1,6 @@
 ---
 - hosts: all
   roles:
-    - timezone
     - locale
     - grub
     - users
