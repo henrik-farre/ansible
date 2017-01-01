@@ -5,9 +5,7 @@
     <property name="screen0" type="empty">
       <property name="monitor0" type="empty">
         <property name="image-path" type="string" value="/home/enrique/.config/xfce4/desktop/backdrop.list"/>
-        <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
         <property name="last-single-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
-        <property name="last-image-list" type="string" value="/home/enrique/.config/xfce4/desktop/backdrop.list"/>
         <property name="image-style" type="int" value="1"/>
         <property name="color-style" type="int" value="0"/>
         <property name="color1" type="array">
@@ -28,7 +26,6 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="6"/>
-          <property name="last-image" type="string" value="/home/enrique/.btsync/Backgrounds/Dual/ngesCY7.jpg"/>
           <property name="backdrop-cycle-enable" type="bool" value="true"/>
           <property name="backdrop-cycle-timer" type="uint" value="15"/>
           <property name="backdrop-cycle-random-order" type="bool" value="true"/>
@@ -42,7 +39,6 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="1"/>
-          <property name="last-image" type="string" value="/home/enrique/.config/xfce4/desktop/backdrop.list"/>
         </property>
         <property name="workspace2" type="empty">
           <property name="color-style" type="int" value="0"/>
@@ -53,7 +49,6 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="1"/>
-          <property name="last-image" type="string" value="/home/enrique/.config/xfce4/desktop/backdrop.list"/>
         </property>
         <property name="workspace3" type="empty">
           <property name="color-style" type="int" value="0"/>
@@ -64,33 +59,27 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="1"/>
-          <property name="last-image" type="string" value="/home/enrique/.config/xfce4/desktop/backdrop.list"/>
         </property>
       </property>
       <property name="monitor1" type="empty">
         <property name="image-path" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
-        <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
         <property name="last-single-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
         <property name="image-style" type="int" value="2"/>
         <property name="workspace0" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="2"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
         </property>
         <property name="workspace1" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="2"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
         </property>
         <property name="workspace2" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="2"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
         </property>
         <property name="workspace3" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="2"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
         </property>
       </property>
       <property name="xinerama-stretch" type="bool" value="true"/>
@@ -104,7 +93,6 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="6"/>
-          <property name="last-image" type="string" value="/home/enrique/.btsync/Backgrounds/Dual/planet3.jpg"/>
           <property name="backdrop-cycle-enable" type="bool" value="true"/>
           <property name="backdrop-cycle-random-order" type="bool" value="true"/>
         </property>
@@ -117,7 +105,6 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="6"/>
-          <property name="last-image" type="string" value="/home/enrique/.btsync/Backgrounds/Dual/ngesCY7.jpg"/>
           <property name="backdrop-cycle-enable" type="bool" value="true"/>
           <property name="backdrop-cycle-random-order" type="bool" value="true"/>
           <property name="backdrop-cycle-timer" type="uint" value="15"/>
@@ -131,7 +118,6 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="1"/>
-          <property name="last-image" type="string" value="/home/enrique/.config/xfce4/desktop/backdrop.list"/>
         </property>
         <property name="workspace3" type="empty">
           <property name="color-style" type="int" value="0"/>
@@ -142,14 +128,12 @@
             <value type="uint" value="65535"/>
           </property>
           <property name="image-style" type="int" value="1"/>
-          <property name="last-image" type="string" value="/home/enrique/.config/xfce4/desktop/backdrop.list"/>
         </property>
       </property>
       <property name="monitorHDMI-0" type="empty">
         <property name="workspace0" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="0"/>
-          <property name="last-image" type="string" value="/home/enrique/.btsync/Backgrounds/Dual/aero_green_blue_dual_monitor-wallpaper-3200x1200.jpg"/>
           <property name="color1" type="array">
             <value type="uint" value="0"/>
             <value type="uint" value="0"/>
@@ -160,7 +144,6 @@
         <property name="workspace1" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="2"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
           <property name="color1" type="array">
             <value type="uint" value="0"/>
             <value type="uint" value="0"/>
@@ -171,7 +154,6 @@
         <property name="workspace2" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="2"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
           <property name="color1" type="array">
             <value type="uint" value="0"/>
             <value type="uint" value="0"/>
@@ -182,7 +164,6 @@
         <property name="workspace3" type="empty">
           <property name="color-style" type="int" value="0"/>
           <property name="image-style" type="int" value="2"/>
-          <property name="last-image" type="string" value="/usr/share/backgrounds/xfce/xfce-blue.jpg"/>
           <property name="color1" type="array">
             <value type="uint" value="0"/>
             <value type="uint" value="0"/>
