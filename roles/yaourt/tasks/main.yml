@@ -2,7 +2,7 @@
 - name: Build yaourt, clone package-query
   git:
     repo: https://aur.archlinux.org/package-query.git
-    dest: ~/tmp/package-queue
+    dest: "{{ ansible_user_dir }}/package-queue"
     accept_hostkey: yes
   delegate_to: localhost
   tags:
@@ -11,7 +11,7 @@
 - name: Build yaourt, makepkg
   command: makepkg -si
   args:
-    chdir: ~/tmp/package-queue
+    chdir: "{{ ansible_user_dir }}/package-queue"
   delegate_to: localhost
   register: aur_makepkg_result
   tags:
@@ -21,7 +21,7 @@
   become: yes
   command: pacman -U "{{ item }}" --noconfirm --noprogressbar
   with_fileglob:
-    - ~/tmp/package-queue/package-query-*-x86_64.pkg.tar.xz
+    - "{{ ansible_user_dir }}/package-queue/package-query-*-x86_64.pkg.tar.xz"
   delegate_to: localhost
   when:
     - aur_makepkg_result|succeeded
@@ -31,7 +31,7 @@
 - name: Build yaourt, clone yaourt
   git:
     repo: https://aur.archlinux.org/yaourt.git
-    dest: ~/tmp/yaourt
+    dest: "{{ ansible_user_dir }}/yaourt"
     accept_hostkey: yes
   delegate_to: localhost
   tags:
@@ -40,7 +40,7 @@
 - name: Build yaourt
   command: makepkg -si
   args:
-    chdir: ~/tmp/yaourt
+    chdir: "{{ ansible_user_dir }}/yaourt"
   delegate_to: localhost
   register: aur_makepkg_result
   tags:
@@ -50,7 +50,7 @@
   become: yes
   command: pacman -U "{{ item }}" --noconfirm --noprogressbar
   with_fileglob:
-    - ~/tmp/yaourt/yaourt-*-x86_64.pkg.tar.xz
+    - "{{ ansible_user_dir }}/yaourt/yaourt-*-any.pkg.tar.xz"
   delegate_to: localhost
   when:
     - aur_makepkg_result|succeeded
@@ -58,7 +58,6 @@
     - yaourt
 
 - name: Install packages from community
-  become: yes
   command: yaourt -S --noconfirm "{{ item }}"
   with_items:
     - xcape

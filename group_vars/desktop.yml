@@ -53,6 +53,9 @@ desktop_packages:
   - gtk3-print-backends
   - gtkspell
   - gtkspell3
+  - gtk-engine-murrine
+  - gtk-engines
+  - gtk-xfce-engine
   - gzip
   - hicolor-icon-theme
   - htop
@@ -137,6 +140,7 @@ desktop_packages:
   - xz
   - zenity
   - zip
+  - yajl
 
 xorg_packages:
   - xineramaproto

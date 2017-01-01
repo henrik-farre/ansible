@@ -19,6 +19,7 @@
   - fonts
   - xfce
   - zim
+  - yaourt
   - { role: packages, packages: ['smartmontools'] }
   - { role: services, services: ['smartd', 'alsa-restore'] }
 

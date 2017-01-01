@@ -22,6 +22,6 @@
         ControlMaster auto
         ControlPath ~/.ssh/master-%r@%h:%p
         ControlPersist 300
-        IdentityFile ~/.ssh/id_rsa.default
+        IdentityFile ~/.ssh/id_rsa
   tags:
     - ssh-client
