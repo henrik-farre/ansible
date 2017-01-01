@@ -15,6 +15,11 @@
   tags:
     - vim
 
+- name: Install plugins
+  command: nvim +PlugInstall +qall
+  tags:
+    - vim
+
 - name: Check if vim is installed
   stat:
     path: /usr/bin/vim
