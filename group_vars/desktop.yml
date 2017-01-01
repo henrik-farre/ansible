@@ -74,8 +74,6 @@ desktop_packages:
   - linux-firmware
   - logrotate
   - network-manager-applet
-  - networkmanager
-  - nm-connection-editor
   - pam
   - pambase
   - parted
