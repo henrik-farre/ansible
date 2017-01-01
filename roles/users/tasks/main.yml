@@ -16,3 +16,11 @@
   no_log: yes
   tags:
     - users
+
+- name: Set root password
+  user:
+    name: root
+    password: "{{ vaulted_root_password }}"
+  no_log: yes
+  tags:
+    - users
