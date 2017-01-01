@@ -13,7 +13,6 @@
     git:
       repo: https://github.com/madmalik/mononoki.git
       dest: /tmp/mononoki
-      accept_hostkey: yes
     tags:
       - fonts
 
