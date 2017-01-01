@@ -1,2 +1,3 @@
 ---
-hostname: localhost
+short_hostname: ""
+full_hostname: ""

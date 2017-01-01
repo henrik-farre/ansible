@@ -1,2 +1,3 @@
 ---
-hostname: workstation
+short_hostname: workstation
+full_hostname: workstation.localdomain
