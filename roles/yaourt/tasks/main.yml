@@ -69,5 +69,7 @@
     - google-chrome
     - hugo-bin
     - virtualbox-ext-oracle
+    - tango-icon-theme
+    - tango-icon-theme-extras
   tags:
     - yaourt
