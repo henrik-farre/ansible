@@ -1,0 +1,18 @@
+---
+- name: Ensure that xfce config directory exists
+  file:
+    path: "{{ ansible_user_dir }}/.config/xfce4/xfconf/xfce-perchannel-xml/"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - xfce
+
+- name: Copy xfce config files
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_user_dir }}/.config/xfce4/xfconf/xfce-perchannel-xml/"
+  with_fileglob:
+    - dot.config/xfce4/xfconf/xfce-perchannel-xml/*
+  tags:
+    - xfce

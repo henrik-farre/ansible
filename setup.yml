@@ -17,6 +17,12 @@
   - xorg
   - desktop
   - fonts
+  - xfce
   - zim
   - { role: packages, packages: ['smartmontools'] }
   - { role: services, services: ['smartd', 'alsa-restore'] }
+
+- hosts: laptop
+  roles:
+  - { role: packages, packages: ['tlp', 'tlp-rdw'] }
+  - { role: services, services: ['tlp', 'tlp-sleep'] }
