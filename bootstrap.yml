@@ -4,5 +4,6 @@
     - locale
     - grub
     - users
-    - { role: packages, packages: ['git', 'openssh'] }
-    - { role: virtualbox-guest, when: ansible_virtualization_type == "virtualbox" }
+    - { role: packages, packages: ['git', 'openssh', 'networkmanager', 'nm-connection-editor'] }
+    - { role: services, services: ['NetworkManager'] }
+    - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
