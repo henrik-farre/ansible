@@ -1,6 +1,8 @@
 ---
 - hosts: all
   roles:
+    - hostname
+    - timezone
     - ntp
     - cron
     - ssh_keys
@@ -15,5 +17,5 @@
   - desktop
   - fonts
   - zim
-  - { role: package, packages: ['smartmontools'] }
+  - { role: packages, packages: ['smartmontools'] }
   - { role: services, services: ['smartd', 'alsa-restore'] }
