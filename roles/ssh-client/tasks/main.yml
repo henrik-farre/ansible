@@ -1,0 +1,26 @@
+---
+- name: Ensure ~/.ssh exists
+  file:
+    path: "{{ ansible_user_dir }}/.ssh"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - ssh-client
+
+- name: Ensure default settings for ssh exists in ~/.ssh/config
+  blockinfile:
+    dest: "{{ ansible_user_dir }}/.ssh/config"
+    block: |
+      Host *
+        ForwardAgent yes
+        Compression yes
+        TCPKeepAlive yes
+        ServerAliveCountMax 3
+        ServerAliveInterval 20
+        ControlMaster auto
+        ControlPath ~/.ssh/master-%r@%h:%p
+        ControlPersist 300
+        IdentityFile ~/.ssh/id_rsa.default
+  tags:
+    - ssh-client

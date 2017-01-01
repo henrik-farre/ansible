@@ -5,7 +5,8 @@
     - timezone
     - ntp
     - cron
-    - ssh_keys
+    - ssh-keys
+    - ssh-client
     - backup
     - dotfiles
     - vim

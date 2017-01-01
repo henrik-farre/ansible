@@ -6,7 +6,7 @@
     state: directory
     mode: 0700
   tags:
-    - ssh_keys
+    - ssh-keys
 
 - name: Copy private ssh key
   copy:
@@ -15,7 +15,7 @@
     owner: "{{ ansible_user_id }}"
     mode: 0600
   tags:
-    - ssh_keys
+    - ssh-keys
 
 - name: Copy public ssh key
   copy:
@@ -24,7 +24,7 @@
     owner: "{{ ansible_user_id }}"
     mode: 0600
   tags:
-    - ssh_keys
+    - ssh-keys
 
 - name: Symlink keys to default
   file:
@@ -32,7 +32,7 @@
     dest: "{{ ansible_user_dir }}/.ssh/id_rsa.pub"
     state: link
   tags:
-    - ssh_keys
+    - ssh-keys
 
 - name: Symlink keys to default
   file:
@@ -40,7 +40,7 @@
     dest: "{{ ansible_user_dir }}/.ssh/id_rsa"
     state: link
   tags:
-    - ssh_keys
+    - ssh-keys
 
 # From http://hakunin.com/six-ansible-practices#teach-ansible-to-talk-to-github-on-your-behalf
 - name: Ensure github.com is a known host
