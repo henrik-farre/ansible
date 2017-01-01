@@ -1,6 +1,9 @@
 ---
 - hosts: all
   roles:
+    - timezone
+    - locale
+    - grub
     - users
-    - { role: virtualbox-guest, when: ansible_virtualization_type == "virtualbox" }
     - { role: packages, packages: ['git', 'openssh'] }
+    - { role: virtualbox-guest, when: ansible_virtualization_type == "virtualbox" }
