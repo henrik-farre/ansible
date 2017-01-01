@@ -1,0 +1,6 @@
+---
+- name: Set timezone
+  timezone:
+    name: Europe/Copenhagen
+  tags:
+    - timezone

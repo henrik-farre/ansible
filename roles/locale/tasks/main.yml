@@ -1,0 +1,20 @@
+---
+- name: Generate locales
+  locale_gen:
+    name: da_DK.UTF-8
+    state: present
+  tags:
+    - locale
+
+- name: Copy locale setting files
+  copy:
+    src: "etc/{{ item }}"
+    dest: "/etc/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  with_items:
+    - "locale.conf"
+    - "vconsole.conf"
+  tags:
+    - locale
