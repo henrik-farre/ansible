@@ -1,0 +1,12 @@
+---
+- name: Copy default config
+  become: yes
+  copy:
+    remote_src: True
+    src: /etc/samba/smb.conf.default
+    dest: /etc/samba/smb.conf
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - samba-client
