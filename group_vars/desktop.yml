@@ -1,5 +1,6 @@
 ---
 desktop_packages:
+  - acpid
   - ack
   - adwaita-icon-theme
   - alsa-lib
@@ -55,7 +56,6 @@ desktop_packages:
   - gtkspell3
   - gtk-engine-murrine
   - gtk-engines
-  - gtk-xfce-engine
   - gzip
   - hicolor-icon-theme
   - htop
@@ -102,8 +102,6 @@ desktop_packages:
   - termite
   - termite-terminfo
   - the_silver_searcher
-  - thunar
-  - thunar-volman
   - tmux
   - traceroute
   - tree
@@ -114,6 +112,7 @@ desktop_packages:
   - virtualbox
   - virtualbox-guest-iso
   - virtualbox-host-dkms
+  - vinagre
   - wget
   - wireless_tools
   - wireshark-cli
@@ -121,21 +120,9 @@ desktop_packages:
   - wireshark-gtk
   - wmctrl
   - wpa_supplicant
+  - whois
   - xdg-utils
   - xdotool
-  - xfce4-appfinder
-  - xfce4-datetime-plugin
-  - xfce4-mixer
-  - xfce4-notifyd
-  - xfce4-panel
-  - xfce4-power-manager
-  - xfce4-screenshooter
-  - xfce4-session
-  - xfce4-settings
-  - xfconf
-  - xfdesktop
-  - xfwm4
-  - xfwm4-themes
   - xsel
   - xz
   - zenity
@@ -196,3 +183,15 @@ xorg_packages:
   - xorg-xwud
   - xproto
   - xterm
+
+aur_packages:
+  - xcape
+  - ctags-php
+  - kupfer
+  - shellcheck
+  - yamllint
+  - google-chrome
+  - hugo-bin
+  - virtualbox-ext-oracle
+  - tango-icon-theme
+  - tango-icon-theme-extras
