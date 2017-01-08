@@ -17,7 +17,7 @@
   tags:
     - xfce
 
-- name: Ensure ~/.theme exists
+- name: Ensure ~/.themes exists
   file:
     path: "{{ ansible_user_dir }}/.themes"
     owner: "{{ ansible_user_id }}"
