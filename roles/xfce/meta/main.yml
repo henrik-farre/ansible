@@ -1,0 +1,5 @@
+---
+dependencies:
+  - yaourt
+  - { role: packages, packages: ['gtk-xfce-engine', 'xfce4-appfinder', 'xfce4-datetime-plugin', 'xfce4-mixer', 'xfce4-notifyd', 'xfce4-panel', 'xfce4-power-manager', 'xfce4-screenshooter', 'xfce4-session', 'xfce4-settings', 'xfconf', 'xfdesktop', 'xfwm4', 'xfwm4-themes', 'thunar', 'thunar-volman'] }
+  - { role: yaourt-packages, packages: ['xfce4-volumed'] }
