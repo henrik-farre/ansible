@@ -11,6 +11,8 @@
     - dotfiles
     - vim
     - docker
+    - { role: packages, packages: "{{ host_packages }}" }
+    - { role: services, services: "{{ host_services }}" }
 
 - hosts: desktop
   roles:
@@ -19,9 +21,10 @@
   - fonts
   - xfce
   - zim
-  - yaourt
+  - samba-client
+  - { role: yaourt-packages, packages: "{{ aur_packages }}" }
   - { role: packages, packages: ['smartmontools'] }
-  - { role: services, services: ['smartd', 'alsa-restore'] }
+  - { role: services, services: ['acpid', 'smartd', 'alsa-restore'] }
 
 - hosts: laptop
   roles:
