@@ -1,0 +1,6 @@
+- name: Install packages from community
+  command: yaourt -S --noconfirm "{{ item }}"
+  with_items:
+    - "{{ packages }}"
+  tags:
+    - yaourt
