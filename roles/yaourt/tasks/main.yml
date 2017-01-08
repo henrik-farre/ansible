@@ -12,6 +12,7 @@
   command: makepkg -si
   args:
     chdir: "{{ ansible_user_dir }}/package-queue"
+    creates: /usr/bin/package-query
   delegate_to: localhost
   register: aur_makepkg_result
   tags:
@@ -20,6 +21,8 @@
 - name: Build yaourt, install package-query
   become: yes
   command: pacman -U "{{ item }}" --noconfirm --noprogressbar
+  args:
+    creates: /usr/bin/package-query
   with_fileglob:
     - "{{ ansible_user_dir }}/package-queue/package-query-*-x86_64.pkg.tar.xz"
   delegate_to: localhost
@@ -41,6 +44,7 @@
   command: makepkg -si
   args:
     chdir: "{{ ansible_user_dir }}/yaourt"
+    creates: /usr/bin/yaourt
   delegate_to: localhost
   register: aur_makepkg_result
   tags:
@@ -49,26 +53,12 @@
 - name: Build yaourt, install yaourt
   become: yes
   command: pacman -U "{{ item }}" --noconfirm --noprogressbar
+  args:
+    creates: /usr/bin/yaourt
   with_fileglob:
     - "{{ ansible_user_dir }}/yaourt/yaourt-*-any.pkg.tar.xz"
   delegate_to: localhost
   when:
     - aur_makepkg_result|succeeded
-  tags:
-    - yaourt
-
-- name: Install packages from community
-  command: yaourt -S --noconfirm "{{ item }}"
-  with_items:
-    - xcape
-    - ctags-php
-    - kupfer
-    - shellcheck
-    - yamllint
-    - google-chrome
-    - hugo-bin
-    - virtualbox-ext-oracle
-    - tango-icon-theme
-    - tango-icon-theme-extras
   tags:
     - yaourt
