@@ -5,6 +5,7 @@
     - timezone
     - ntp
     - cron
+    - ssmtp
     - ssh-keys
     - ssh-client
     - backup

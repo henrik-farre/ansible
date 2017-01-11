@@ -96,7 +96,6 @@ desktop_packages:
   - seahorse
   - sshfs
   - sshpass
-  - ssmtp
   - startup-notification
   - sysfsutils
   - termite
