@@ -21,6 +21,7 @@
   - desktop
   - fonts
   - xfce
+  - conky
   - zim
   - samba-client
   - { role: yaourt-packages, packages: "{{ aur_packages }}" }
