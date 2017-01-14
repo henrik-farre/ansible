@@ -1,0 +1,13 @@
+#!/bin/bash
+
+# Fix common errors:
+# Referencing undefined variables (which default to "")
+# Ignoring failing commands
+set -o nounset
+set -o errexit
+set -o pipefail
+IFS=$'\n\t'
+
+echo "{"
+echo "\"vga_vendor\"" : "\"$(lspci -m | grep VGA | cut -f4 -d\")\""
+echo "}"

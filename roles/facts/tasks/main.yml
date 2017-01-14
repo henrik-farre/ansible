@@ -1,0 +1,21 @@
+---
+- name: Ensure /etc/ansible/facts.d/ exists
+  file:
+    path: /etc/ansible/facts.d/
+    owner: root
+    state: directory
+    mode: 0755
+  tags:
+    - facts
+
+- name: Install custom .fact files
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/ansible/facts.d/"
+    owner: root
+    group: root
+    mode: 0755
+  with_fileglob:
+    - etc/ansible/facts.d/*.fact
+  tags:
+    - facts
