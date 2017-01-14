@@ -1,0 +1,17 @@
+---
+- name: Load vaulted vars
+  include_vars:
+    file: ssmtp.vault.yml
+  tags:
+    - ssmtp
+
+- name: Write /etc/ssmtp/ssmtp.conf
+  become: yes
+  template:
+    src: etc/ssmtp/ssmtp.conf.j2
+    dest: /etc/ssmtp/ssmtp.conf
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - ssmtp
