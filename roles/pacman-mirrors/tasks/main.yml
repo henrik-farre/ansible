@@ -6,22 +6,19 @@
   tags:
     - pacman-mirrors
 
-- name: Overwrite mirrors with mirrorlist.pacnew (if it exists)
+- name: Copy pacman-sort-mirrors.sh
   copy:
-    src: /etc/pacman.d/mirrorlist.pacnew
-    dest: /etc/pacman.d/mirrorlist
+    src: files/usr/local/sbin/pacman-sort-mirrors.sh
+    dest: /usr/local/sbin/pacman-sort-mirrors.sh
     owner: root
     group: root
-    mode: 0644
+    mode: 0700
     backup: yes
-  when: mirror_file.stat.exists is defined and mirror_file.stat.exists
   tags:
     - pacman-mirrors
 
-- name: Remove old danish mirrors if mirrorlist.pacnew exists
-  file:
-    path: /etc/pacman.d/mirrorlist.denmark
-    state: absent
+- name: Enable only mirrors from Denmark
+  command: /usr/local/sbin/pacman-sort-mirrors.sh
   when: mirror_file.stat.exists is defined and mirror_file.stat.exists
   tags:
     - pacman-mirrors
@@ -31,23 +28,5 @@
     path: /etc/pacman.d/mirrorlist.pacnew
     state: absent
   when: mirror_file.stat.exists is defined and mirror_file.stat.exists
-  tags:
-    - pacman-mirrors
-
-- name: Enable only mirrors from Denmark
-  command: grep -A1 --no-group-separator Denmark /etc/pacman.d/mirrorlist > /etc/pacman.d/mirrorlist.denmark
-  args:
-    creates: /etc/pacman.d/mirrorlist.denmark
-  tags:
-    - pacman-mirrors
-
-- name: Overwrite default mirror list
-  copy:
-    src: /etc/pacman.d/mirrorlist.denmark
-    dest: /etc/pacman.d/mirrorlist
-    owner: root
-    group: root
-    mode: 0644
-    backup: yes
   tags:
     - pacman-mirrors

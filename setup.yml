@@ -1,7 +1,6 @@
 ---
 - hosts: all
   roles:
-    - pacman-mirrors
     - hostname
     - timezone
     - ntp
