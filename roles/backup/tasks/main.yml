@@ -25,7 +25,7 @@
     become: true
     file:
       path: /root/.duplicity
-      state: diretory
+      state: directory
       owner: root
       group: root
       mode: 0700
