@@ -21,14 +21,17 @@
     tags:
       - backup
 
-  - name: Ensure ~root/.duplicity exists
+  - name: Ensure needed directories exists
     become: true
     file:
-      path: /root/.duplicity
+      path: "{{ item }}"
       state: directory
       owner: root
       group: root
       mode: 0700
+    with_items:
+      - "/root/.duplicity"
+      - "/root/.ssh"
     tags:
       - backup
 
@@ -46,6 +49,21 @@
       owner: root
       group: root
       mode: 0600
+    tags:
+      - backup
+
+  - name: Install ssh config and keys
+    become: true
+    copy:
+      src: "root/dot.ssh/{{ item }}"
+      dest: "/root/.ssh/{{ item }}"
+      owner: root
+      group: root
+      mode: 0400
+    with_items:
+      - config
+      - id_rsa.backup
+      - id_rsa.backup.pub
     tags:
       - backup
 
