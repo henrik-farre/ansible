@@ -1,0 +1,19 @@
+#!/bin/bash
+export PASSPHRASE="{{ duplicity.passphrase }}"
+export ENCRYPT_KEY="{{ duplicity.encrypt_key }}"
+export COMMON_OPTS="--encrypt-key $ENCRYPT_KEY --log-file /var/log/duplicity.log --archive-dir /var/cache/duplicity"
+export BACKUP_OPTS="--full-if-older-than 1M --volsize 1024 --asynchronous-upload"
+EXCLUDE_OPTS="--exclude-device-files --exclude-other-filesystems"
+if [[ -f /usr/local/etc/duplicity/exclude-common ]]; then
+  EXCLUDE_OPTS="$EXCLUDE_OPTS --exclude-filelist=/usr/local/etc/duplicity/exclude-common"
+fi
+export EXCLUDE_OPTS
+export REMOTE_DIR="{{ duplicity.remote_dir }}"
+export REMOVE_OPTS="remove-all-but-n-full 6 --force"
+export BACKDIRS="home usr/local etc var"
+export LOCK_FILE="/tmp/noshutdown-backup-$$.lock"
+export EMAIL="{{ duplicity.email }}"
+export NOTIFY_COMPLETE_POPUP=1
+export NOTIFY_COMPLETE_EMAIL=0
+export NOTIFY_FAILURE_POPUP=1
+export NOTIFY_FAILURE_EMAIL=1

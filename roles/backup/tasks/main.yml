@@ -21,6 +21,34 @@
     tags:
       - backup
 
+  - name: Ensure ~root/.duplicity exists
+    become: true
+    file:
+      path: /root/.duplicity
+      state: diretory
+      owner: root
+      group: root
+      mode: 0700
+    tags:
+      - backup
+
+- name: Load vaulted vars
+  include_vars:
+    file: duplicity.vault.yml
+  tags:
+    - backup
+
+  - name: Install duplicity config scripts
+    become: true
+    template:
+      src: root/dot.duplicity/conf.j2
+      dest: /root/.duplicity/conf
+      owner: root
+      group: root
+      mode: 0600
+    tags:
+      - backup
+
   - name: Enable backup cronjob
     become: true
     template:
