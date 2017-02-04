@@ -32,4 +32,4 @@
 - hosts: laptop
   roles:
   - { role: packages, packages: ['tlp', 'tlp-rdw'] }
-  - { role: services, services: ['tlp', 'tlp-sleep'] }
+  - { role: services, services: ['tlp', 'tlp-sleep', 'fstrim.timer'] }

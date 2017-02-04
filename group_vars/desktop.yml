@@ -18,6 +18,7 @@ desktop_packages:
   - cifs-utils
   - cmake
   - curl
+  - composer
   - dkms
   - dnsmasq
   - dosfstools
@@ -57,6 +58,7 @@ desktop_packages:
   - gtk-engine-murrine
   - gtk-engines
   - gzip
+  - gnupg
   - hicolor-icon-theme
   - htop
   - hunspell
@@ -68,6 +70,8 @@ desktop_packages:
   - iproute2
   - iptables
   - iputils
+  - libreoffice-fresh
+  - libreoffice-fresh-da
   - lftp
   - light-locker
   - lightdm
@@ -77,6 +81,8 @@ desktop_packages:
   - linux-firmware
   - logrotate
   - network-manager-applet
+  - net-tools
+  - nmap
   - pam
   - pambase
   - parted

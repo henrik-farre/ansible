@@ -6,6 +6,7 @@
     - locale
     - bootloader
     - users
-    - { role: packages, packages: ['git', 'openssh', 'networkmanager', 'nm-connection-editor'] }
+    # Dialog is required by wifi-menu if doing setup over wifi
+    - { role: packages, packages: ['git', 'openssh', 'networkmanager', 'nm-connection-editor', 'dialog'] }
     - { role: services, services: ['NetworkManager', 'sshd'] }
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
