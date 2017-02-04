@@ -70,6 +70,7 @@ desktop_packages:
   - iproute2
   - iptables
   - iputils
+  - jq
   - libreoffice-fresh
   - libreoffice-fresh-da
   - lftp
@@ -83,6 +84,7 @@ desktop_packages:
   - network-manager-applet
   - net-tools
   - nmap
+  - npm
   - pam
   - pambase
   - parted
