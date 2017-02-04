@@ -1,0 +1,12 @@
+---
+- name: Make sure packages does not exit on system
+  become: yes
+  pacman:
+    name: "{{ item }}"
+    update_cache: yes
+    state: absent
+    recurse: yes
+  with_items:
+    - "{{ packages }}"
+  tags:
+    - packages-uninstalled

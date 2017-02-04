@@ -15,6 +15,7 @@
     - docker
     - { role: packages, packages: "{{ host_packages }}" }
     - { role: services, services: "{{ host_services }}" }
+    - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
 
 - hosts: desktop
   roles:
