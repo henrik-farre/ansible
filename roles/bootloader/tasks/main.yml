@@ -1,0 +1,4 @@
+---
+- name: Install selected bootloader
+  include_role:
+    name: "{{ bootloader }}"

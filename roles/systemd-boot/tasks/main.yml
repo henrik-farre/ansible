@@ -1,0 +1,6 @@
+---
+- name: Install systemd-boot
+  command: bootctl --path=/boot install
+  tags:
+    - bootloader
+    - systemd-boot

@@ -1,4 +1,4 @@
 ---
 short_hostname: workstation
 full_hostname: workstation.localdomain
-bootloader: "systemd"
+bootloader: "systemd-boot"
