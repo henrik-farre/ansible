@@ -48,9 +48,6 @@ desktop_packages:
   - gst-plugins-base-libs
   - gst-plugins-good
   - gstreamer
-  - gstreamer0.10
-  - gstreamer0.10-base
-  - gstreamer0.10-base-plugins
   - gthumb
   - gtk3-print-backends
   - gtkspell
