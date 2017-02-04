@@ -32,6 +32,7 @@
     with_items:
       - "/root/.duplicity"
       - "/root/.ssh"
+      - "/root/.gnupg"
     tags:
       - backup
 
