@@ -9,3 +9,30 @@
     mode: 0644
   tags:
     - xorg
+    
+- name: Install Intel video driver
+  become: yes
+  pacman:
+    name: "xf86-video-intel"
+    update_cache: yes
+    state: latest
+  when:
+    - ansible_local.hardware.vga_vendor == "Intel Corporation"
+  tags:
+    - xorg
+
+- name: Install nvidia video driver
+  become: yes
+  pacman:
+    name: "{{ item }}"
+    update_cache: yes
+    state: latest
+  with_items:
+    - "nvidia"
+    - "libvdpau"
+    - "nvidia-settings"
+    - "nvidia-utils"
+  when:
+    - ansible_local.hardware.vga_vendor == "Intel Corporation"
+  tags:
+    - xorg
