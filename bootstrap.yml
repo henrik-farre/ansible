@@ -4,7 +4,7 @@
     - pacman-mirrors
     - facts
     - locale
-    - grub
+    - bootloader
     - users
     - { role: packages, packages: ['git', 'openssh', 'networkmanager', 'nm-connection-editor'] }
     - { role: services, services: ['NetworkManager', 'sshd'] }
