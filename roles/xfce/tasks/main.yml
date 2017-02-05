@@ -32,3 +32,8 @@
     dest: "{{ ansible_user_dir }}/.themes/Numix-Holo"
   tags:
     - xfce
+
+- name: Set light locker as screen locker
+  command: xfconf-query -c xfce4-session -p /general/LockCommand -s "light-locker-command -l" --create -t string
+  tags:
+    - xfce
