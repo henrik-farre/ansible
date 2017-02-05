@@ -1,0 +1,11 @@
+---
+- name: Ensure efivars is mounted RO
+  become: yes
+  mount:
+    name: /sys/firmware/efi/efivars
+    src: efivars
+    fstype: efivars
+    opts: ro,nosuid,nodev,noexec,noatime
+    state: present
+  tags:
+    - mounts

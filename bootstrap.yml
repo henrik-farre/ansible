@@ -5,6 +5,7 @@
     - facts
     - locale
     - bootloader
+    - mounts
     - users
     # Dialog is required by wifi-menu if doing setup over wifi
     - { role: packages, packages: ['git', 'openssh', 'networkmanager', 'nm-connection-editor', 'dialog'] }
