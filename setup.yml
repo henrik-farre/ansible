@@ -26,6 +26,7 @@
   - conky
   - zim
   - samba-client
+  - node
   - { role: yaourt-packages, packages: "{{ aur_packages }}" }
   - { role: packages, packages: ['smartmontools'] }
   - { role: services, services: ['acpid', 'smartd', 'alsa-restore'] }

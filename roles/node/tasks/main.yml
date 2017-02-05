@@ -8,5 +8,6 @@
     - "tern"
     - "jshint"
     - "csslint"
+    - "json"
   tags:
     - node
