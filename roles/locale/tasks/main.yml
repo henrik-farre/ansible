@@ -15,6 +15,14 @@
     mode: 0644
   with_items:
     - "locale.conf"
-    - "vconsole.conf"
+  tags:
+    - locale
+
+- name: Configure console font
+  template:
+    src: etc/vconsole.conf.j2
+    dest: /etc/vconsole.conf
+    owner: root
+    mode: 0644
   tags:
     - locale

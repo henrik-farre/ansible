@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: packages, packages: ['terminus-font'] }
