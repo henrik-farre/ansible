@@ -93,6 +93,8 @@ desktop_packages:
   - pkg-config
   - powerline-common
   - pv
+  # Needet by kupfer for window list
+  - python2-wnck
   - pwgen
   - rrdtool
   - rsync
