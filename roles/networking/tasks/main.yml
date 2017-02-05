@@ -1,0 +1,13 @@
+---
+- name: Install network connections
+  become: yes
+  copy:
+    src: "files/etc/NetworkManager/system-connections/{{ item }}"
+    dest: "/etc/NetworkManager/system-connections/{{ item }}"
+    owner: root
+    group: root
+    mode: 0600
+  with_items:
+    - "{{ networks }}"
+  tags:
+    - networking

@@ -14,3 +14,4 @@ host_uninstalled_packages:
   - xfce4-mixer
 # Used by bootloader role, but currently does not work because of missing vars in module
 bootloader: "grub"
+networks: []

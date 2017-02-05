@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: packages, packages: ['networkmanager', 'nm-connection-editor'] }
+  - { role: services, services: ['NetworkManager'] }
