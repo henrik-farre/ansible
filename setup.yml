@@ -16,22 +16,27 @@
     - { role: packages, packages: "{{ host_packages }}" }
     - { role: services, services: "{{ host_services }}" }
     - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
+    - { role: packages, packages: ['smartmontools', 'lm_sensors'] }
+    - { role: services, services: ['acpid', 'smartd', 'alsa-restore', 'fstrim.timer'] }
 
 - hosts: desktop
   roles:
-  - xorg
-  - desktop
-  - fonts
-  - xfce
-  - conky
-  - zim
-  - samba-client
-  - node
-  - { role: yaourt-packages, packages: "{{ aur_packages }}" }
-  - { role: packages, packages: ['smartmontools'] }
-  - { role: services, services: ['acpid', 'smartd', 'alsa-restore'] }
+    - xorg
+    - desktop
+    - fonts
+    - xfce
+    - conky
+    - zim
+    - samba-client
+    - node
+    - { role: yaourt-packages, packages: "{{ aur_packages }}" }
 
 - hosts: laptop
   roles:
-  - { role: packages, packages: ['tlp', 'tlp-rdw'] }
-  - { role: services, services: ['tlp', 'tlp-sleep', 'fstrim.timer'] }
+    - { role: packages, packages: ['tlp', 'tlp-rdw'] }
+    - { role: services, services: ['tlp', 'tlp-sleep'] }
+
+- hosts: macbook-linux
+  roles:
+    - { role: yaourt-packages, packages: ['mbpfan-git'] }
+    - { role: services, services: ['mbpfan'] }
