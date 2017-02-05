@@ -75,6 +75,8 @@ desktop_packages:
   - lightdm
   - lightdm-gtk-greeter
   - linux
+  # Needed for DKMS
+  - linux-headers
   - linux-api-headers
   - linux-firmware
   - logrotate
