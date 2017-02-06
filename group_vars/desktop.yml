@@ -90,6 +90,7 @@ desktop_packages:
   - phantomjs
   - php
   - pinentry
+  - pidgin
   - pkg-config
   - powerline-common
   - pv
