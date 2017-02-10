@@ -1,0 +1,5 @@
+---
+- hosts: macbook-macos
+  roles:
+    - dotfiles
+    - vim
