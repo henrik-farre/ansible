@@ -12,16 +12,14 @@
   blockinfile:
     dest: "{{ ansible_user_dir }}/.ssh/config"
     create: yes
-    block: |
-      Host *
-        ForwardAgent yes
-        Compression yes
-        TCPKeepAlive yes
-        ServerAliveCountMax 3
-        ServerAliveInterval 20
-        ControlMaster auto
-        ControlPath ~/.ssh/master-%r@%h:%p
-        ControlPersist 300
-        IdentityFile ~/.ssh/id_rsa
+    block: "{{ lookup('template', 'templates/dot.ssh/config.j2') }}"
+  tags:
+    - ssh-client
+
+- name: Ensure ~/.ssh/config has correct permissions
+  file:
+    path: "{{ ansible_user_dir }}/.ssh/config"
+    owner: "{{ ansible_user_id }}"
+    mode: 0600
   tags:
     - ssh-client
