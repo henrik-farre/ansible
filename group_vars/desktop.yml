@@ -27,6 +27,8 @@ desktop_packages:
   - efivar
   - evince
   - fakeroot
+  # Needed by Remmina
+  - freerdp
   - firefox
   - flashplugin
   - fontconfig
@@ -97,6 +99,8 @@ desktop_packages:
   # Needet by kupfer for window list
   - python2-wnck
   - pwgen
+  # Better RDP client
+  - remmina
   - rrdtool
   - rsync
   - ruby
@@ -120,7 +124,6 @@ desktop_packages:
   - virtualbox
   - virtualbox-guest-iso
   - virtualbox-host-dkms
-  - vinagre
   - wget
   - wireless_tools
   - wireshark-cli
