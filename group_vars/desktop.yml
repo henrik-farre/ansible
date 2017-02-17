@@ -85,6 +85,7 @@ desktop_packages:
   - network-manager-applet
   - net-tools
   - nmap
+  - numix-themes
   - pam
   - pambase
   - parted
