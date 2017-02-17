@@ -7,5 +7,6 @@
     state: latest
   with_items:
     - "{{ packages }}"
+  when: ansible_distribution == "Archlinux"
   tags:
     - packages

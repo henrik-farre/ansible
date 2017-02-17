@@ -1,3 +1,3 @@
 ---
 dependencies:
-  - { role: packages, packages: ['neovim', 'python-neovim', 'python2-neovim'], when: ansible_distribution == "Archlinux" }
+  - { role: packages, packages: ['neovim', 'python-neovim', 'python2-neovim'] }
