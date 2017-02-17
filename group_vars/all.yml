@@ -13,6 +13,21 @@ host_uninstalled_packages:
   - gstreamer0.10-ugly
   - xfce4-mixer
   - vingre
+  - gtk-xfce-engine
+  - xfce4-appfinder
+  - xfce4-datetime-plugin
+  - xfce4-notifyd
+  - xfce4-panel
+  - xfce4-power-manager
+  - xfce4-screenshooter
+  - xfce4-session
+  - xfce4-settings
+  - xfconf
+  - xfdesktop
+  - xfwm4
+  - xfwm4-themes
+  - thunar
+  - thunar-volman
 # Used by bootloader role, but currently does not work because of missing vars in module
 bootloader: "grub"
 networks: []
