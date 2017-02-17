@@ -60,6 +60,8 @@ desktop_packages:
   - gnupg
   - hicolor-icon-theme
   - htop
+  # Github cli
+  - hub
   - hunspell
   - icedtea-web
   - imagemagick
