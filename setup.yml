@@ -8,6 +8,7 @@
     - ssmtp
     - fstrim
     - sysctl
+    - makepkg
     - ssh-keys
     - ssh-client
     - backup

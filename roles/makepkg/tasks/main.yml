@@ -1,0 +1,9 @@
+---
+- name: Configure /etc/makepkg.conf MAKEFLAGS
+  become: yes
+  lineinfile:
+    name: /etc/makepkg.conf
+    regexp: '^#MAKEFLAGS="-j2"'
+    line: 'MAKEFLAGS="-j{{ ansible_processor_vcpus + 1 }}"'
+  tags:
+    - makepkg
