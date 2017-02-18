@@ -5,3 +5,4 @@ bootloader: "systemd-boot"
 networks:
   - "workstation_home_wifi"
   - "workstation_work_wifi"
+  - "workstation_k9_wifi"
