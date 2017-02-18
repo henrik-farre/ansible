@@ -8,7 +8,7 @@
   tags:
     - yaourt
 
-- name: Build yaourt, makepkg
+- name: Build yaourt, makepkg package-query
   command: makepkg -si
   args:
     chdir: "{{ ansible_user_dir }}/package-queue"
