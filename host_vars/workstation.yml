@@ -2,6 +2,8 @@
 short_hostname: workstation
 full_hostname: workstation.localdomain
 bootloader: "systemd-boot"
+host_packages:
+  - openldap
 networks:
   - "workstation_home_wifi"
   - "workstation_work_wifi"
