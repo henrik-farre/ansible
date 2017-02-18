@@ -1,0 +1,7 @@
+---
+- name: Configure default apps
+  command: gsettings set "{{ item.path }}" "{{ item.key }}" "{{ item.value }}"
+  with_items:
+    - { path: 'org.cinnamon.desktop.default-applications.terminal', key: 'exec', value: 'termite' }
+  tags:
+    - cinnamon
