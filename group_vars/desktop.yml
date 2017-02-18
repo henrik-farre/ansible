@@ -136,6 +136,7 @@ desktop_packages:
   - wmctrl
   - wpa_supplicant
   - whois
+  - wol
   - xdg-utils
   - xdotool
   - xsel
