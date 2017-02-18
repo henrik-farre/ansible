@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: yaourt-packages, packages: ['systemd-boot-pacman-hook'] }
