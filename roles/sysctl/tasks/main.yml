@@ -1,0 +1,14 @@
+---
+- name: Configure swappiness
+  become: yes
+  sysctl:
+    name: "{{ item.name }}"
+    value: "{{ item.value }}"
+    state: present
+    sysctl_file: /etc/sysctl.d/99-sysctl.conf
+  with_items:
+    # https://rudd-o.com/linux-and-free-software/tales-from-responsivenessland-why-linux-feels-slow-and-how-to-fix-that
+    - { name: "vm.swappiness", value: 10 }
+    - { name: "vm.vfs_cache_pressure", value: 50 }
+  tags:
+    - sysctl
