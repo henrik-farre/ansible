@@ -1,0 +1,10 @@
+- name: Install .desktop file
+  copy:
+    src: "{{ item }}"
+    dest: "{{ ansible_user_dir }}/.local/share/applications/{{ item }}"
+    owner: "{{ ansible_user_id }}"
+  with_items:
+    - "firefox-private.desktop"
+    - "firefox-work.desktop"
+  tags:
+    - firefox

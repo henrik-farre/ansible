@@ -15,6 +15,22 @@
   tags:
     - vim
 
+- name: Install .desktop file
+  copy:
+    src: neovim.desktop
+    dest: "{{ ansible_user_dir }}/.local/share/applications/neovim.desktop"
+    owner: "{{ ansible_user_id }}"
+  tags:
+    - vim
+
+- name: Install icon
+  copy:
+    src: neovim-logo.svg
+    dest: "{{ ansible_user_dir }}/.icons/neovim-logo.svg"
+    owner: "{{ ansible_user_id }}"
+  tags:
+    - vim
+
 # Hangs
 # - name: Install plugins
 #   command: nvim +PlugInstall +qall

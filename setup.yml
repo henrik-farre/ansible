@@ -31,6 +31,7 @@
     - zim
     - samba-client
     - node
+    - firefox
     - { role: yaourt-packages, packages: "{{ aur_packages }}" }
 
 - hosts: laptop
