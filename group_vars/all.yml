@@ -13,6 +13,10 @@ host_uninstalled_packages:
   - gstreamer0.10-ugly
   - xfce4-mixer
   - vingre
+  - xfce4-screenshooter
+  - xfce4-sensors-plugin
+  - xfce4-time-out-plugin
+  - xfce4-xkb-plugin
   - gtk-xfce-engine
   - xfce4-appfinder
   - xfce4-datetime-plugin
@@ -22,12 +26,16 @@ host_uninstalled_packages:
   - xfce4-screenshooter
   - xfce4-session
   - xfce4-settings
-  - xfconf
   - xfdesktop
-  - xfwm4
-  - xfwm4-themes
-  - thunar
+  - xfburn
+  - exo
   - thunar-volman
+  - thunar
+  - garcon
+  - xfwm4-themes
+  - xfwm4
+  - libxfce4ui
+  - xfconf
 # Used by bootloader role, but currently does not work because of missing vars in module
 bootloader: "grub"
 networks: []
