@@ -9,7 +9,7 @@
     mode: 0644
   tags:
     - xorg
-    
+
 - name: Install Intel video driver
   become: yes
   pacman:
@@ -28,7 +28,7 @@
     update_cache: yes
     state: latest
   with_items:
-    - "nvidia"
+    - "nvidia-dkms"
     - "libvdpau"
     - "nvidia-settings"
     - "nvidia-utils"
