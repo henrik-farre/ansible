@@ -1,6 +1,19 @@
 ---
-- name: Set timezone
+- name: Set timezone to Europe/Copenhagen
   timezone:
     name: Europe/Copenhagen
+  tags:
+    - timezone
+
+- name: Set TZ env
+  become: yes
+  copy:
+    content: |
+              # Managed by Ansible
+              export TZ="/usr/share/zoneinfo/Europe/Copenhagen"
+    dest: /etc/profile.d/tz.sh
+    owner: root
+    group: root
+    mode: 0755
   tags:
     - timezone
