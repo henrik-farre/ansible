@@ -1,0 +1,20 @@
+[custom-keybindings/custom0]
+binding=['<Super>t']
+command='/home/enrique/bin/move_term_to_current_desktop.sh'
+name='Term to workspace'
+
+[/]
+custom-list=['custom0']
+
+[media-keys]
+terminal=['<Shift><Super>t']
+screensaver=['<Super>Scroll_Lock', 'XF86ScreenSaver']
+
+[wm]
+move-to-workspace-right=['<Shift><Super>Right']
+push-tile-left=@as []
+switch-to-workspace-right=['<Super>k']
+switch-to-workspace-left=['<Super>j']
+toggle-maximized=['<Super>m']
+move-to-workspace-left=['<Shift><Super>Left']
+maximize-vertically=['<Super>v']

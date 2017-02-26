@@ -5,3 +5,10 @@
     - { path: 'org.cinnamon.desktop.default-applications.terminal', key: 'exec', value: 'termite' }
   tags:
     - cinnamon
+
+- name: Import keybindings
+  shell: dconf load /org/cinnamon/desktop/keybindings/ < keybindings.dconf
+  args:
+    chdir: "{{ role_path }}/files/"
+  tags:
+    - cinnamon
