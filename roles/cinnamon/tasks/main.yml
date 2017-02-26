@@ -3,12 +3,33 @@
   command: gsettings set "{{ item.path }}" "{{ item.key }}" "{{ item.value }}"
   with_items:
     - { path: 'org.cinnamon.desktop.default-applications.terminal', key: 'exec', value: 'termite' }
+    - { path: 'org.cinnamon', key: 'panels-autohide', value: "['1:intel']" }
+    - { path: 'org.nemo.desktop', key: 'show-desktop-icons', value: 'false' }
   tags:
     - cinnamon
 
+# Created with: dconf dump /org/cinnamon/desktop/keybindings/ > keybindings.dconf
 - name: Import keybindings
   shell: dconf load /org/cinnamon/desktop/keybindings/ < keybindings.dconf
   args:
     chdir: "{{ role_path }}/files/"
+  tags:
+    - cinnamon
+
+- name: Ensure configuration directory exists
+  file:
+    path: "{{ ansible_user_dir }}/.cinnamon/configs/"
+    state: directory
+  tags:
+    - cinnamon
+
+- name: Install panel widgets config
+  copy:
+    src: "dot.cinnamon/configs/{{ item }}"
+    dest: "{{ ansible_user_dir }}/.cinnamon/configs/"
+    owner: "{{ ansible_user_id }}"
+  with_items:
+    - "menu@cinnamon.org"
+    - "calendar@cinnamon.org"
   tags:
     - cinnamon
