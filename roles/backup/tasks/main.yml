@@ -40,7 +40,7 @@
     include_vars:
       file: duplicity.vault.yml
     tags:
-    - backup
+      - backup
 
   - name: Install duplicity config scripts
     become: true
@@ -68,6 +68,65 @@
     tags:
       - backup
 
+  - name: Import ssh host key
+    become: true
+    known_hosts:
+      path: /root/.ssh/authorized_keys
+      name: "{{ duplicity.remote_host }}"
+      key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ duplicity.remote_host }}') }}"
+    tags:
+      - backup
+
+  - name: GPG config
+    become: true
+    copy:
+      content: |
+        pinentry-mode loopback
+      dest: "/root/.gnupg/gpg.conf"
+      owner: root
+      group: root
+      mode: 0400
+    tags:
+      - backup
+
+  - name: Import gpg keys, devault
+    become: true
+    copy:
+      src: "root/gpg/private.asc.vault"
+      dest: "/root/.gnupg/private.asc"
+      owner: root
+      group: root
+      mode: 0400
+    tags:
+      - backup
+
+  - name: Import ownertrust, devault
+    become: true
+    copy:
+      src: "root/gpg/ownertrust.vault"
+      dest: "/root/.gnupg/ownertrust"
+      owner: root
+      group: root
+      mode: 0400
+    tags:
+      - backup
+
+  - name: Import gpg keys
+    become: true
+    shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc
+    args:
+      chdir: "/root/.gnupg"
+    tags:
+      - backup
+
+  - name: Import ownertrust
+    become: true
+    shell: gpg --import-ownertrust ownertrust
+    args:
+      chdir: "/root/.gnupg"
+    tags:
+      - backup
+
   - name: Enable backup cronjob
     become: true
     template:
@@ -79,9 +138,23 @@
       - backup
 
   always:
-  - name: Cleanup
+  - name: Cleanup git clone
     file:
       path: /tmp/dupebackup
+      state: absent
+    tags:
+      - backup
+  - name: Cleanup gpg keys
+    become: yes
+    file:
+      path: "/root/.gnupg/private.asc"
+      state: absent
+    tags:
+      - backup
+  - name: Cleanup ownertrust
+    become: yes
+    file:
+      path: "/root/.gnupg/ownertrust"
       state: absent
     tags:
       - backup
