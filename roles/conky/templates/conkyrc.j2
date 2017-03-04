@@ -17,8 +17,7 @@ conky.config = {
   if_up_strictness = 'address',
   top_cpu_separate = true,
   top_name_width = 25,
--- Does not work
---top_name_verbose = true,
+  top_name_verbose = true,
 
   own_window = true,
   own_window_type = 'normal',
@@ -59,9 +58,10 @@ conky.config = {
 conky.text = [[
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} System $color${hr 1}
 
-${time %A d. %d/%m/%Y (%V) %H:%M}
+Date: ${alignr}${time %A d. %d/%m/%Y (%V) %H:%M}
 Uptime: ${alignr}$uptime
 Kernel: ${alignr}$kernel
+Update(s) available: ${alignr}${execpi 3600 checkupdates | wc -l}
 
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Temperatures $color${hr 1}
 
@@ -121,14 +121,15 @@ Root: $alignr${fs_used /} /${fs_size /} (${fs_free /} / ${fs_free_perc /}% free)
 ${fs_bar 4 /}
 
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} NETWORK $color${hr 1}
-{% for interface in ['eth0', 'enp0s25', 'wlp3s0'] %}
-${if_up {{ interface }}}{{ interface }}:
-Internal IP:$alignr${addr {{ interface }}}
-External IP:$alignr${execi 7200 curl -s http://icanhazip.com/}
 
-Down ${downspeed {{ interface }}} ${alignr}Up ${upspeed {{ interface }}}
-${downspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${upspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
-Total ${totaldown {{ interface }}} ${alignr}Total ${totalup {{ interface }}}${endif}{% endfor %}
+{% for interface in ['eth0', 'enp0s25', 'wlp3s0'] %}
+${if_up {{ interface }}}{{ interface }}:$alignr${addr {{ interface }}} / ${execi 7200 curl -s http://icanhazip.com/}
+{% if interface == 'wlp3s0' %}
+{wireless_essid}
+{% endif %}
+
+${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} ${downspeed {{ interface }}} (${totaldown {{ interface }}}) ${alignr}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} ${upspeed {{ interface }}} (${totalup {{ interface }}})
+${downspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${upspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t}${endif}{% endfor %}
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 
 
