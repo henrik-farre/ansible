@@ -17,6 +17,18 @@
   tags:
     - conky
 
+- name: Ensure conky is autostated
+  copy:
+    content: |
+      [Desktop Entry]
+      Name=Conky
+      Exec=/usr/bin/conky -c "{{ ansible_user_dir }}/.config/conky/conkyrc"
+      Type=Application
+    dest: "{{ ansible_user_dir }}/.config/autostart/conky.desktop"
+    owner: "{{ ansible_user_id }}"
+  tags:
+    - conky
+
 - block:
   - name: Download and extract FontAwesome 4.7
     unarchive:
