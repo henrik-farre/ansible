@@ -71,7 +71,7 @@
   - name: Import ssh host key
     become: true
     known_hosts:
-      path: /root/.ssh/authorized_keys
+      path: /root/.ssh/known_hosts
       name: "{{ duplicity.remote_host }}"
       key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ duplicity.remote_host }}') }}"
     tags:
