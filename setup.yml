@@ -40,7 +40,7 @@
     - { role: packages, packages: ['tlp', 'tlp-rdw'] }
     - { role: services, services: ['tlp', 'tlp-sleep'] }
 
-- hosts: macbook-linux
+- hosts: macbook
   roles:
     - { role: yaourt-packages, packages: ['mbpfan-git'] }
     - { role: services, services: ['mbpfan'] }
