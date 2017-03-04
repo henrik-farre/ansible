@@ -1,4 +1,5 @@
 ---
 dependencies:
+  - fonts
   - { role: packages, packages: ['conky'], when: ansible_local.hardware.vga_vendor != 'NVIDIA Corporation' }
   - { role: yaourt-packages, packages: ['conky-nvidia'], when: ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' }

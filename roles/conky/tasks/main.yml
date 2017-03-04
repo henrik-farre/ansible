@@ -16,3 +16,30 @@
     mode: 0644
   tags:
     - conky
+
+- block:
+  - name: Download and extract FontAwesome 4.7
+    unarchive:
+      src: http://fontawesome.io/assets/font-awesome-4.7.0.zip
+      dest: "/tmp/"
+      remote_src: True
+    tags:
+      - conky
+
+  - name: Install FontAwesome
+    copy:
+      src: "/tmp/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf"
+      dest: "{{ ansible_user_dir }}/.fonts/fontawesome-webfont.ttf"
+      remote_src: yes
+    notify:
+      - Update font cache
+    tags:
+      - conky
+
+  always:
+  - name: Cleanup
+    file:
+      path: /tmp/font-awesome-4.7.0
+      state: absent
+    tags:
+      - conky
