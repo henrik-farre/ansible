@@ -1,59 +1,62 @@
-# Managed by Ansible
-# set to yes if you want Conky to be forked in the background
-# 09-08-2014: Changed based on: https://wiki.archlinux.org/index.php/Conky#Autostart_with_Xfce4
-background no
-total_run_times 0
+conky.config = {
+-- Managed by Ansible
+-- set to yes if you want Conky to be forked in the background
+-- 09-08-2014: Changed based on: https://wiki.archlinux.org/index.php/Conky#Autostart_with_Xfce4
+  background = false,
+  total_run_times = 0,
 
-xinerama_head {{ conky_xinerama_head }}
+  xinerama_head = {{ conky_xinerama_head }},
 
-use_xft yes
-xftfont mononoki:size={{ conky_fontsize }}
+  use_xft = true,
+  font = 'mononoki:size={{ conky_fontsize }}',
 
-update_interval 3.0
-update_interval_on_battery 6.0
-cpu_avg_samples 2
+  update_interval = 3.0,
+  update_interval_on_battery = 6.0,
+  cpu_avg_samples = 2,
 
-if_up_strictness address
-top_cpu_separate true
-top_name_width 25
-# Does not work
-#top_name_verbose yes
+  if_up_strictness = 'address',
+  top_cpu_separate = true,
+  top_name_width = 25,
+-- Does not work
+--top_name_verbose = true,
 
-own_window yes
-own_window_type normal
-own_window_hints undecorated,below,sticky,skip_taskbar,skip_pager
-own_window_argb_visual yes
-own_window_argb_value 100
-# own_window_transparent no
-# Compton fix:
-own_window_class conky
+  own_window = true,
+  own_window_type = 'normal',
+  own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
+  own_window_argb_visual = true,
+  own_window_argb_value = 100,
+-- own_window_transparent = false,
+-- Compton fix:
+  own_window_class = 'conky',
 
-minimum_size {{ conky_min_size }} 0
-maximum_width {{ conky_max_width }}
-#draw_shades yes
-draw_outline no
-draw_graph_borders no
-#draw_borders no
-# Font color
-default_color gray
-default_shade_color black
-# not working:
-#default_outline_color 2a2a2a
+  minimum_width = {{ conky_min_size }},
+  minimum_height = 0,
+  maximum_width = {{ conky_max_width }},
+--draw_shades = true,
+  draw_outline = false,
+  draw_graph_borders = false,
+--draw_borders = false,
+-- Font color
+  default_color = 'gray',
+  default_shade_color = 'black',
+-- not working:
+--default_outline_color = '2a2a2a',
 
-alignment top_left
-gap_x {{ conky_gap_x }}
-gap_y {{ conky_gap_y }}
+  alignment = 'top_left',
+  gap_x = {{ conky_gap_x }},
+  gap_y = {{ conky_gap_y }},
 
-override_utf8_locale yes
-uppercase yes
-format_human_readable yes
-short_units yes
-use_spacer left
-no_buffers yes
+  override_utf8_locale = true,
+  uppercase = true,
+  format_human_readable = true,
+  short_units = true,
+  use_spacer = 'left',
+  no_buffers = true,
 
-double_buffer yes
+  double_buffer = true,
+};
 
-TEXT
+conky.text = [[
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} System $color${hr 1}
 
 ${time %A d. %d/%m/%Y (%V) %H:%M}
@@ -135,3 +138,4 @@ GPU Freq:${alignr}${nvidia gpufreq} MHz
 Mem Freq:${alignr}${nvidia memfreq} MHz
 
 {% endif %}
+]];
