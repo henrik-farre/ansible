@@ -3,9 +3,9 @@ Version=1.0
 Type=Application
 Name=Neovim
 Icon=neovim-logo.svg
-Exec=nvim %F
+Exec=termite --icon=~/.icon/neovim-mark.svg --name="neovim" -e "bash -c nvim %F"
 NoDisplay=false
 Categories=X-GNOME-Other;
 StartupNotify=false
-Terminal=true
+Terminal=false
 MimeType=text/english;text/plain;text/x-makefile;text/x-c++hdr;text/x-c++src;text/x-chdr;text/x-csrc;text/x-java;text/x-moc;text/x-pascal;text/x-tcl;text/x-tex;application/x-shellscript;text/x-c;text/x-c++;
