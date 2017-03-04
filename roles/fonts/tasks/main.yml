@@ -27,6 +27,8 @@
       - "mononoki-Italic.ttf"
       - "mononoki-Bold.ttf"
       - "mononoki-Regular.ttf"
+    notify:
+      - Update font cache
     tags:
       - fonts
 
