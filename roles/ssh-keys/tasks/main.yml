@@ -8,53 +8,50 @@
   tags:
     - ssh-keys
 
-- name: Copy private ssh key
+- name: Install SSH keys
   copy:
-    src: ssh_key_private.yml
-    dest: "{{ ansible_user_dir }}/.ssh/id_rsa.work"
+    src: "{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/.ssh/{{ item.dest }}"
     owner: "{{ ansible_user_id }}"
     mode: 0600
+  with_items:
+    - { src: "id_rsa.{{ansible_hostname}}.vault", dest: "id_rsa.{{ansible_hostname}}" }
+    - { src: "id_rsa.{{ansible_hostname}}.pub", dest: "id_rsa.{{ansible_hostname}}.pub" }
+    - { src: "id_rsa.storagebox.vault", dest: "id_rsa.storagebox" }
+    - { src: "id_rsa.storagebox.pub", dest: "id_rsa.storagebox.pub" }
+    - { src: "id_rsa.bitbucket.vault", dest: "id_rsa.bitbucket" }
+    - { src: "id_rsa.bitbucket.pub", dest: "id_rsa.bitbucket.pub" }
   tags:
     - ssh-keys
 
-- name: Copy public ssh key
-  copy:
-    src: ssh_key_public.yml
-    dest: "{{ ansible_user_dir }}/.ssh/id_rsa.work.pub"
-    owner: "{{ ansible_user_id }}"
-    mode: 0600
-  tags:
-    - ssh-keys
-
-- name: Symlink keys to default
+- name: Symlink SSH keys to default
   file:
-    src: "{{ ansible_user_dir }}/.ssh/id_rsa.work.pub"
-    dest: "{{ ansible_user_dir }}/.ssh/id_rsa.pub"
+    src: "{{ ansible_user_dir }}/.ssh/{{ item.src }}"
+    dest: "{{ ansible_user_dir }}/.ssh/{{ item.dest }}"
     state: link
+  with_items:
+    - { src: "id_rsa.{{ansible_hostname}}", dest: "id_rsa" }
+    - { src: "id_rsa.{{ansible_hostname}}.pub", dest: "id_rsa.pub" }
   tags:
     - ssh-keys
 
-- name: Symlink keys to default
-  file:
-    src: "{{ ansible_user_dir }}/.ssh/id_rsa.work"
-    dest: "{{ ansible_user_dir }}/.ssh/id_rsa"
-    state: link
+- name: Set up authorized keys
+  authorized_key:
+    user: "{{ ansible_user_id }}"
+    state: present
+    key: "{{ lookup('file', '{{ item }}') }}"
+  with_fileglob:
+    - "*.pub"
   tags:
     - ssh-keys
 
-# From http://hakunin.com/six-ansible-practices#teach-ansible-to-talk-to-github-on-your-behalf
-- name: Ensure github.com is a known host
-  lineinfile:
-    dest: "{{ ansible_user_dir }}/.ssh/known_hosts"
-    create: yes
-    state: present
-    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa github.com') }}"
-    regexp: "^github\\.com"
-
-- name: Ensure bitbucket.com is a known host
-  lineinfile:
-    dest: "{{ ansible_user_dir }}/.ssh/known_hosts"
-    create: yes
-    state: present
-    line: "{{ lookup('pipe', 'ssh-keyscan -t rsa bitbucket.com') }}"
-    regexp: "^bitbucket\\.com"
+- name: Add hosts as known hosts
+  known_hosts:
+    path: "{{ ansible_user_dir }}/.ssh/known_hosts"
+    name: "{{ item }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ item }}') }}"
+  with_items:
+    - "github.com"
+    - "bitbucket.com"
+  tags:
+    - ssh-keys
