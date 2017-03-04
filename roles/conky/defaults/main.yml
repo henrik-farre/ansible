@@ -1,0 +1,11 @@
+---
+conky_xinerama_head: 1
+conky_fontsize: 7
+conky_fontsize_awesome: 12
+conky_min_size: 230
+conky_max_width: 230
+conky_gap_x: 12
+conky_gap_y: 2
+conky_bar_size: "4,60"
+conky_graph_half_size: "20,107"
+conky_graph_full_size: "20,218"
