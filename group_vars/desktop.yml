@@ -19,7 +19,6 @@ desktop_packages:
   - cifs-utils
   - cmake
   - curl
-  - composer
   - dkms
   - dnsmasq
   - dosfstools
@@ -94,7 +93,6 @@ desktop_packages:
   - parted
   - pciutils
   - phantomjs
-  - php
   - pinentry
   - pidgin
   - pkg-config
