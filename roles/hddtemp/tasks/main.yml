@@ -1,0 +1,10 @@
+---
+- name: Ensure SSD values exist in hddtemp.db
+  become: yes
+  lineinfile:
+    name: /usr/share/hddtemp/hddtemp.db
+    regexp: '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250G B"'
+    line: '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250G B"'
+    state: present
+  tags:
+    - hddtemp

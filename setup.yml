@@ -7,6 +7,7 @@
     - cron
     - ssmtp
     - fstrim
+    - hddtemp
     - sysctl
     - makepkg
     - ssh-keys
