@@ -1,0 +1,50 @@
+---
+# composer module does not like "global require"
+# todo: use creates, and check if exists then use update
+- name: Install composer PHP packages
+  command: /usr/bin/composer global require "{{ item }}"
+  with_items:
+    - "phpmd/phpmd"
+    - "squizlabs/php_codesniffer=*"
+  tags:
+    - composer
+    - php
+
+# timezone, ldap
+- name: Configure xdebug
+  become: true
+  copy:
+    content: |
+      zend_extension=xdebug.so
+      xdebug.remote_enable=on
+      xdebug.remote_host=127.0.0.1
+      xdebug.remote_port=9000
+      xdebug.remote_handler=dbgp
+    dest: "/etc/php/conf.d/xdebug.ini"
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - php
+
+- name: Configure /etc/php/php.ini timezone
+  become: yes
+  lineinfile:
+    name: /etc/php/php.ini
+    regexp: 'date.timezone ='
+    line: 'date.timezone = Europe/Copenhagen'
+    state: present
+  tags:
+    - php
+
+- name: Enable php extension
+  become: yes
+  lineinfile:
+    name: /etc/php/php.ini
+    regexp: 'extension={{ item }}'
+    line: 'extension={{ item }}'
+    state: present
+  with_items:
+    - "ldap.so"
+  tags:
+    - php
