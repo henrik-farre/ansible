@@ -2,7 +2,7 @@
 - name: Setup Zim Notebook
   git:
     repo: git@bitbucket.org:enrique/notes.git
-    dest: "{{ ansible_user_dir }}/Documents/Zim/Notes"
+    dest: "{{ ansible_user_dir }}/Documents/Zim"
     accept_hostkey: yes
   tags:
     - zim
@@ -10,7 +10,7 @@
 - name: Add post commit hook
   copy:
     src: dot.git/hooks/post-commit
-    dest: "{{ ansible_user_dir }}/Documents/Zim/Notes/.git/hooks/post-commit"
+    dest: "{{ ansible_user_dir }}/Documents/Zim/.git/hooks/post-commit"
     owner: "{{ ansible_user_id }}"
     mode: 0750
   tags:

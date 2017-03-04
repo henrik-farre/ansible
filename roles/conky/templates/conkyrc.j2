@@ -1,12 +1,13 @@
+# Managed by Ansible
 # set to yes if you want Conky to be forked in the background
 # 09-08-2014: Changed based on: https://wiki.archlinux.org/index.php/Conky#Autostart_with_Xfce4
 background no
 total_run_times 0
 
-xinerama_head 1
+xinerama_head {{ conky_xinerama_head }}
 
 use_xft yes
-xftfont mononoki:size=7
+xftfont mononoki:size={{ conky_fontsize }}
 
 update_interval 3.0
 update_interval_on_battery 6.0
@@ -27,8 +28,8 @@ own_window_argb_value 100
 # Compton fix:
 own_window_class conky
 
-minimum_size 230 0
-maximum_width 230
+minimum_size {{ conky_min_size }} 0
+maximum_width {{ conky_max_width }}
 #draw_shades yes
 draw_outline no
 draw_graph_borders no
@@ -40,8 +41,8 @@ default_shade_color black
 #default_outline_color 2a2a2a
 
 alignment top_left
-gap_x 12
-gap_y 2
+gap_x {{ conky_gap_x }}
+gap_y {{ conky_gap_y }}
 
 override_utf8_locale yes
 uppercase yes
@@ -53,23 +54,22 @@ no_buffers yes
 double_buffer yes
 
 TEXT
-${color white}${font FontAwesome:pixelsize=12}${font} System $color${hr 1}
+${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} System $color${hr 1}
 
 ${time %A d. %d/%m/%Y (%V) %H:%M}
 Uptime: ${alignr}$uptime
 Kernel: ${alignr}$kernel
 
-${color white}${font FontAwesome:pixelsize=12}${font} Temperatures $color${hr 1}
+${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Temperatures $color${hr 1}
 
 CPU: {% if ansible_hostname != 'workstation' %}${alignr}${hwmon 0 temp 2}°C /${hwmon 0 temp 3}°C /${hwmon 0 temp 4}°C /${hwmon 0 temp 5}°C{% else %}${alignr}${hwmon 2 temp 2}°C{% endif %}
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}GPU:${alignr}${nvidia temp}°C{% endif %}
 
-${color white}${font FontAwesome:pixelsize=12}${font} CPU $color${hr 1}
+${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} CPU $color${hr 1}
 
-Core1 ${freq cpu1} MHz ${alignr}${cpu cpu1}%  ${cpubar cpu1 4,60}
-Core2 ${freq cpu2} MHz ${alignr}${cpu cpu2}%  ${cpubar cpu2 4,60}
-Core3 ${freq cpu3} MHz ${alignr}${cpu cpu3}%  ${cpubar cpu3 4,60}
-Core4 ${freq cpu4} MHz ${alignr}${cpu cpu4}%  ${cpubar cpu4 4,60}
+{% for cpu in range(0, ansible_processor_vcpus) %}
+Core{{ loop.index }} ${freq cpu{{ loop.index }}} MHz ${alignr}${cpu cpu{{ loop.index }}}%  ${cpubar cpu{{ loop.index }} {{ conky_bar_size }}}
+{% endfor %}
 
 Highest CPU $alignr CPU% / MEM%
 ${top name 1}$alignr${top cpu 1} ${top mem 1}
@@ -81,9 +81,9 @@ ${top name 6}$alignr${top cpu 6} ${top mem 6}
 ${top name 7}$alignr${top cpu 7} ${top mem 7}
 ${top name 8}$alignr${top cpu 8} ${top mem 8}
 
-${cpugraph cpu1 20,107 0C3CBB 0088ff -t} ${cpugraph cpu2 20,107 0C3CBB 0088ff -t}
-${cpugraph cpu3 20,107 0C3CBB 0088ff -t} ${cpugraph cpu4 20,107 0C3CBB 0088ff -t}
-${color white}${font FontAwesome:pixelsize=12}${font} Memory $color${hr 1}
+${cpugraph cpu1 {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${cpugraph cpu2 {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
+${cpugraph cpu3 {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${cpugraph cpu4 {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
+${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Memory $color${hr 1}
 
 Highest MEM $alignr CPU% / MEM%
 ${top_mem name 1}$alignr${top_mem cpu 1} ${top_mem mem 1}
@@ -96,8 +96,8 @@ ${top_mem name 7}$alignr${top_mem cpu 7} ${top_mem mem 7}
 ${top_mem name 8}$alignr${top_mem cpu 8} ${top_mem mem 8}
 
 Ram ${alignr}$mem / $memmax ($memperc% used)
-${memgraph 20,218 0C3CBB 0088ff -t}
-${color white}${font FontAwesome:pixelsize=12}${font} FILESYSTEM & I/O $color${hr 1}
+${memgraph {{ conky_graph_full_size }} 0C3CBB 0088ff -t}
+${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} FILESYSTEM & I/O $color${hr 1}
 
 Highest I/O $alignr READ / WRITE
 ${top_io name 1}$alignr${top_io io_read 1}   ${top_io io_write 1}
@@ -110,17 +110,17 @@ ${top_io name 7}$alignr${top_io io_read 7}   ${top_io io_write 7}
 ${top_io name 8}$alignr${top_io io_read 8}   ${top_io io_write 8}
 
 Read ${diskio_read}$alignr Write ${diskio_write}
-${diskiograph_read 20,107 0C3CBB 0088ff -t} ${alignr}${diskiograph_write 20,107 0C3CBB 0088ff -t}
+${diskiograph_read {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
 Root: $alignr${fs_used /} /${fs_size /} (${fs_free /} / ${fs_free_perc /}% free)
 ${fs_bar 4 /}
-${color white}${font FontAwesome:pixelsize=12}${font} NETWORK $color${hr 1}
+${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} NETWORK $color${hr 1}
 
 {% for interface in ['eth0', 'enp0s25', 'wlp3s0']%}
 ${if_up {{ interface }}}Internal IP:$alignr${addr {{ interface }}}
 External IP:$alignr${execi 7200 curl -s http://icanhazip.com/}
 
 Down ${downspeed {{ interface }}} ${alignr}Up ${upspeed {{ interface }}}
-${downspeedgraph {{ interface }} 20,107 0C3CBB 0088ff -t} ${alignr}${upspeedgraph {{ interface }} 20,107 0C3CBB 0088ff -t}
+${downspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${upspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
 Total ${totaldown {{ interface }}} ${alignr}Total ${totalup {{ interface }}}
 ${endif}
 {% endfor %}

@@ -3,7 +3,8 @@
   become: yes
   lineinfile:
     name: /etc/makepkg.conf
-    regexp: '^#MAKEFLAGS="-j2"'
+    regexp: 'MAKEFLAGS="-j'
     line: 'MAKEFLAGS="-j{{ ansible_processor_vcpus + 1 }}"'
+    state: present
   tags:
     - makepkg

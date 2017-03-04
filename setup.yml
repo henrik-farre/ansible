@@ -15,6 +15,7 @@
     - dotfiles
     - vim
     - docker
+    - php
     - { role: packages, packages: "{{ host_packages }}" }
     - { role: services, services: "{{ host_services }}" }
     - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
@@ -27,7 +28,6 @@
     - desktop
     - fonts
     - cinnamon
-    - composer
     - conky
     - zim
     - samba-client
