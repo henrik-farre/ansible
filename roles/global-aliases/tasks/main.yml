@@ -1,0 +1,9 @@
+---
+- name: Ensure global bash alises exists
+  become: yes
+  blockinfile:
+    dest: /etc/bash.bashrc
+    block: |
+      alias l="ls -l"
+  tags:
+    - global-aliases
