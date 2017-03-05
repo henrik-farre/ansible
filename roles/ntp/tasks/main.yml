@@ -1,5 +1,10 @@
+# Equivalent /usr/bin/timedatectl set-ntp true
+# https://wiki.archlinux.org/index.php/systemd-timesyncd
 - name: Enable ntp service
   become: yes
-  command: /usr/bin/timedatectl set-ntp true
+  service:
+    name: systemd-timesyncd.service
+    enabled: yes
+    state: started
   tags:
     - ntp
