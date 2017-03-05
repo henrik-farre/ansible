@@ -39,3 +39,9 @@ host_uninstalled_packages:
 # Used by bootloader role, but currently does not work because of missing vars in module
 bootloader: "grub"
 networks: []
+
+ssmtp_mailhub: vault_ssmtp_mailhub
+ssmtp_root: vault_ssmtp_root
+ssmtp_rewrite_domain: vault_ssmtp_rewrite_domain
+ssmtp_auth_user: vault_ssmtp_auth_user
+ssmtp_auth_pass: vault_ssmtp_auth_pass
