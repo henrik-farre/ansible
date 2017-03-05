@@ -1,0 +1,25 @@
+---
+- name: Ensure pacman cache is cleaned
+  become: yes
+  cron:
+    name: "Clean pacman cache"
+    special_time: weekly
+    job: "paccache -r"
+    user: root
+    cron_file: paccache
+  tags:
+    - system-maintenance
+
+# TODO: better when check instead of hostname
+- name: Ensure RAID is checked montly
+  become: yes
+  file:
+    src: cron.montly/raid_maintenance
+    dest: /etc/cron.montly/raid_maintenance
+    owner: root
+    group: root
+    mode: 0750
+  tags:
+    - system-maintenance
+  when:
+    - ansible_hostname == "spookcentral"

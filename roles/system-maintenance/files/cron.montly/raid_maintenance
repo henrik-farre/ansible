@@ -1,0 +1,35 @@
+#!/bin/bash
+
+LOCK_FILE=/tmp/noshutdown-raid_maintenance-$$.lock
+
+(set -C; : > $LOCK_FILE) 2> /dev/null
+if [ $? != "0" ]; then
+   echo "Lock File exists - exiting"
+   exit 1
+fi
+
+raid_base="/sys/block"
+raid_names="md*"
+
+cd "${raid_base}" || exit 1
+
+for raid in ${raid_names}; do
+  test -f "${raid_base}/${raid}/md/sync_action" && \
+  echo "check" >> "${raid_base}/${raid}/md/sync_action"
+done
+
+sleep 10
+
+echo << EOF
+RAID Check started on: $(hostname --fqdn)
+
+Time started: $(date)
+
+/proc/mdstat output:
+======================================================
+$(cat /proc/mdstat)
+
+$(date)
+EOF
+
+trap 'rm $LOCK_FILE' EXIT

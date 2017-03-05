@@ -6,13 +6,13 @@
     - ntp
     - cron
     - ssmtp
-    - fstrim
     - hddtemp
     - sysctl
     - makepkg
     - ssh-keys
     - ssh-client
     - backup
+    - system-maintenance
     - global-aliases
     - dotfiles
     - vim
@@ -21,8 +21,6 @@
     - { role: packages, packages: "{{ host_packages }}" }
     - { role: services, services: "{{ host_services }}" }
     - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
-    - { role: packages, packages: ['smartmontools', 'lm_sensors'] }
-    - { role: services, services: ['acpid', 'smartd', 'alsa-restore', 'fstrim.timer'] }
 
 - hosts: desktop
   roles:
