@@ -8,11 +8,16 @@
   tags:
     - cinnamon
 
+- name: Copy keybindings
+  copy:
+    src: keybindings.dconf
+    dest: /tmp/keybindings.dconf
+  tags:
+    - cinnamon
+
 # Created with: dconf dump /org/cinnamon/desktop/keybindings/ > keybindings.dconf
 - name: Import keybindings
-  shell: dconf load /org/cinnamon/desktop/keybindings/ < keybindings.dconf
-  args:
-    chdir: "{{ role_path }}/files/"
+  shell: dconf load /org/cinnamon/desktop/keybindings/ < /tmp/keybindings.dconf
   tags:
     - cinnamon
 
