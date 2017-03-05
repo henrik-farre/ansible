@@ -13,7 +13,7 @@
 # TODO: better when check instead of hostname
 - name: Ensure RAID is checked monthly
   become: yes
-  file:
+  copy:
     src: cron.monthly/raid_maintenance
     dest: /etc/cron.monthly/raid_maintenance
     owner: root
