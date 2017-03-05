@@ -23,7 +23,7 @@ conky.config = {
   own_window_type = 'normal',
   own_window_hints = 'undecorated,below,sticky,skip_taskbar,skip_pager',
   own_window_argb_visual = true,
-  own_window_argb_value = 100,
+  own_window_argb_value = 170,
 -- own_window_transparent = false,
 -- Compton fix:
   own_window_class = 'conky',
@@ -79,8 +79,8 @@ GPU:${alignr}${nvidia temp}°C
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} CPU $color${hr 1}
 
 {% for cpu in range(0, ansible_processor_vcpus, 2) %}
-${cpugraph {{ loop.index }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${cpugraph {{ loop.index+1 }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
-${freq_g cpu{{ loop.index }}} GHz ${cpu cpu{{ loop.index }}}% ${alignr}${freq_g cpu{{ loop.index+1 }}} GHz ${cpu cpu{{ loop.index+1 }}}%
+${cpugraph cpu{{ cpu+1 }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${cpugraph cpu{{ cpu+2 }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
+${freq_g cpu{{ cpu+1 }}} GHz ${cpu cpu{{ cpu+1 }}}% ${alignr}${freq_g cpu{{ cpu+2 }}} GHz ${cpu cpu{{ cpu+2 }}}%
 {% endfor %}
 
 Highest CPU $alignr CPU% / MEM%
