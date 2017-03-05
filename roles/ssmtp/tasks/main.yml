@@ -1,10 +1,4 @@
 ---
-- name: Load vaulted vars
-  include_vars:
-    file: ssmtp.vault.yml
-  tags:
-    - ssmtp
-
 - name: Write /etc/ssmtp/ssmtp.conf
   become: yes
   template:
