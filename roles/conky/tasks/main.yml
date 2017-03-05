@@ -29,12 +29,21 @@
   tags:
     - conky
 
+- name: Check if FontAwesome is installed
+  stat:
+    path: "{{ ansible_user_dir }}/.fonts/fontawesome-webfont.ttf"
+  register: font_stat
+  tags:
+    - conky
+
 - block:
   - name: Download and extract FontAwesome 4.7
     unarchive:
       src: http://fontawesome.io/assets/font-awesome-4.7.0.zip
       dest: "/tmp/"
       remote_src: True
+    when:
+      - font_stat.stat.exists is defined and font_stat.stat.exists == false
     tags:
       - conky
 
@@ -43,6 +52,8 @@
       src: "/tmp/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf"
       dest: "{{ ansible_user_dir }}/.fonts/fontawesome-webfont.ttf"
       remote_src: yes
+    when:
+      - font_stat.stat.exists is defined and font_stat.stat.exists == false
     notify:
       - Update font cache
     tags:
@@ -53,5 +64,7 @@
     file:
       path: /tmp/font-awesome-4.7.0
       state: absent
+    when:
+      - font_stat.stat.exists is defined and font_stat.stat.exists == false
     tags:
       - conky
