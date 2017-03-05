@@ -11,11 +11,11 @@
     - system-maintenance
 
 # TODO: better when check instead of hostname
-- name: Ensure RAID is checked montly
+- name: Ensure RAID is checked monthly
   become: yes
   file:
-    src: cron.montly/raid_maintenance
-    dest: /etc/cron.montly/raid_maintenance
+    src: cron.monthly/raid_maintenance
+    dest: /etc/cron.monthly/raid_maintenance
     owner: root
     group: root
     mode: 0750
