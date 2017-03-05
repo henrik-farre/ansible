@@ -1,3 +1,0 @@
----
-dependencies:
-  - { role: services, services: ['fstrim.timer'] }
