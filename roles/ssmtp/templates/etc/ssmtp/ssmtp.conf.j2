@@ -3,11 +3,11 @@
 #
 # The person who gets all mail for userids < 1000
 # Make this empty to disable rewriting.
-root={{ ssmtp_vaulted_root }}
+root={{ ssmtp_root }}
 # The place where the mail goes. The actual machine name is required
 # no MX records are consulted. Commonly mailhosts are named mail.domain.com
 # The example will fit if you are in domain.com and your mailhub is so named.
-mailhub={{ ssmtp_vaulted_mailhub }}
+mailhub={{ ssmtp_mailhub }}
 
 # Example for SMTP port number 2525
 # mailhub=mail.your.domain:2525
@@ -17,7 +17,7 @@ mailhub={{ ssmtp_vaulted_mailhub }}
 # mailhub=mail.your.domain:465
 
 # Where will the mail seem to come from?
-rewriteDomain={{ ssmtp_vaulted_rewrite_domain }}
+rewriteDomain={{ ssmtp_rewrite_domain }}
 # The full hostname
 hostname={{ ansible_hostname }}
 
@@ -26,8 +26,8 @@ hostname={{ ansible_hostname }}
 FromLineOverride=YES
 
 UseSTARTTLS=YES
-AuthUser={{ ssmtp_vaulted_auth_user }}
-AuthPass={{ ssmtp_vaulted_auth_pass }}
+AuthUser={{ ssmtp_auth_user }}
+AuthPass={{ ssmtp_auth_pass }}
 # Use SSL/TLS to send secure messages to server.
 #UseTLS=YES
 

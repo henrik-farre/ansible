@@ -1,6 +1,4 @@
 ---
-short_hostname: ectoplasma
-full_hostname: ectoplasma.localdomain
 backup_cron_dump: "40 17 * * *"
 backup_cron_clean: "50 17 * * 0"
 backup_cron_remove: "10 18 * * *"

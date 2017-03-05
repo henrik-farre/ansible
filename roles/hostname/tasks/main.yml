@@ -2,13 +2,13 @@
 - name:
   become: yes
   hostname:
-    name: "{{ short_hostname }}"
+    name: "{{ ansible_hostname }}"
 
 - name: add hostname to /etc/hosts
   become: yes
   lineinfile:
     dest=/etc/hosts
-    line='127.0.1.1 {{ full_hostname }} {{ short_hostname }}'
+    line='127.0.1.1 {{ ansible_hostname }}.localdomain {{ ansible_hostname }}'
     regexp='^127\.0\.1\.1'
     insertafter='^127\.0\.0\.1'
     state=present
