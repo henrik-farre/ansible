@@ -75,7 +75,6 @@ desktop_packages:
   - libreoffice-fresh
   - libreoffice-fresh-da
   - lftp
-  - light-locker
   - lightdm
   - lightdm-gtk-greeter
   - linux
