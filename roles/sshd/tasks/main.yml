@@ -1,0 +1,10 @@
+---
+- name: Ensure users can only login using keys
+  become: yes
+  lineinfile:
+    dest=/etc/ssh/sshd_config
+    line='PasswordAuthentication no'
+    regexp='PasswordAuthentication '
+    state=present
+  tags:
+    - sshd

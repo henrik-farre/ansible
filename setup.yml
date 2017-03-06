@@ -9,6 +9,7 @@
     - hddtemp
     - sysctl
     - makepkg
+    - sshd
     - ssh-keys
     - ssh-client
     - backup
