@@ -61,7 +61,7 @@ ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${fon
 Date: ${alignr}${time %A d. %d/%m/%Y (%V) %H:%M}
 Uptime: ${alignr}$uptime
 Kernel: ${alignr}$kernel
-Update(s) available: ${alignr}${execpi 3600 checkupdates | wc -l}
+Update(s) available:${alignr} ${execi 3600 checkupdates | wc -l}
 
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Temperatures $color${hr 1}
 
@@ -79,7 +79,7 @@ GPU:${alignr}${nvidia temp}°C
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} CPU $color${hr 1}
 
 {% for cpu in range(0, ansible_processor_vcpus, 2) %}
-${cpugraph cpu{{ cpu+1 }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${cpugraph cpu{{ cpu+2 }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
+${cpugraph cpu{{ cpu+1 }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${cpugraph cpu{{ cpu+2 }} {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
 ${freq_g cpu{{ cpu+1 }}} GHz ${cpu cpu{{ cpu+1 }}}% ${alignr}${freq_g cpu{{ cpu+2 }}} GHz ${cpu cpu{{ cpu+2 }}}%
 {% endfor %}
 
@@ -105,8 +105,9 @@ ${top_mem name 6}$alignr${top_mem cpu 6} ${top_mem mem 6}
 ${top_mem name 7}$alignr${top_mem cpu 7} ${top_mem mem 7}
 ${top_mem name 8}$alignr${top_mem cpu 8} ${top_mem mem 8}
 
+${memgraph {{ conky_graph_full_size }} {{ conky_graph_color_1 }} -t}
 Ram ${alignr}$mem / $memmax ($memperc% used)
-${memgraph {{ conky_graph_full_size }} 0C3CBB 0088ff -t}
+
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} FILESYSTEM & I/O $color${hr 1}
 
 Highest I/O $alignr READ / WRITE
@@ -119,8 +120,9 @@ ${top_io name 6}$alignr${top_io io_read 6}   ${top_io io_write 6}
 ${top_io name 7}$alignr${top_io io_read 7}   ${top_io io_write 7}
 ${top_io name 8}$alignr${top_io io_read 8}   ${top_io io_write 8}
 
+${diskiograph_read {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
 Read ${diskio_read}$alignr Write ${diskio_write}
-${diskiograph_read {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} 0C3CBB 0088ff -t}
+
 Root: $alignr${fs_used /} /${fs_size /} (${fs_free /} / ${fs_free_perc /}% free)
 ${fs_bar {{conky_bar_full_size}} /}
 
@@ -134,15 +136,15 @@ Speed / Frequency: ${alignr}${wireless_bitrate {{ interface }}} / ${wireless_fre
 ${wireless_link_bar {{conky_bar_full_size}} {{ interface }}}
 {% endif %}
 
-${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} ${downspeed {{ interface }}} (${totaldown {{ interface }}}) ${alignr}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} ${upspeed {{ interface }}} (${totalup {{ interface }}})
-${downspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t} ${alignr}${upspeedgraph {{ interface }} {{ conky_graph_half_size }} 0C3CBB 0088ff -t}${endif}{% endfor %}
+${downspeedgraph {{ interface }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${upspeedgraph {{ interface }} {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
+Down: ${downspeed {{ interface }}} (${totaldown {{ interface }}}) ${alignr}Up: ${upspeed {{ interface }}} (${totalup {{ interface }}})${endif}{% endfor %}
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 
 
 ${color white}Nvidia GPU $color${hr 1}
 
-GPU Freq:${alignr}${nvidia gpufreq} MHz
-Mem Freq:${alignr}${nvidia memfreq} MHz
+${nvidiagraph gpufreq {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${nvidiagraph memfreq {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
+GPU: ${nvidia gpufreq}/${nvidia gpufreqmax} MHz ${alignr} Mem: ${nvidia memfreq}/${nvidia memfreqmax} MHz
 
 {% endif %}
 ]];
