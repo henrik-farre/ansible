@@ -1,11 +1,39 @@
 ---
+- name: Ensure ssmtp group exists
+  become: yes
+  group:
+    name: ssmtp
+    state: present
+  tags:
+    - ssmtp
+
+- name: Secure ssmtp binary
+  become: yes
+  file:
+    path: /usr/bin/ssmtp
+    group: ssmtp
+    mode: 02755
+  tags:
+    - ssmtp
+
 - name: Write /etc/ssmtp/ssmtp.conf
   become: yes
   template:
     src: etc/ssmtp/ssmtp.conf.j2
     dest: /etc/ssmtp/ssmtp.conf
     owner: root
-    group: root
-    mode: 0644
+    group: ssmtp
+    mode: 0640
+  tags:
+    - ssmtp
+
+- name: Write /etc/ssmtp/revaliases
+  become: yes
+  template:
+    src: etc/ssmtp/revaliases.j2
+    dest: /etc/ssmtp/revaliases
+    owner: root
+    group: ssmtp
+    mode: 0640
   tags:
     - ssmtp
