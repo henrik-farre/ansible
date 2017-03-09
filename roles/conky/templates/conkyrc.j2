@@ -76,6 +76,11 @@ GPU:${alignr}${nvidia temp}°C
 {% endif %}
 {% endfor %}
 
+{% if ansible_form_factor == 'Laptop' %}
+${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Battery $color${hr 1}
+${battery_bar {{conky_bar_full_size}}}
+{% endif %}
+
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} CPU $color${hr 1}
 
 {% for cpu in range(0, ansible_processor_vcpus, 2) %}
