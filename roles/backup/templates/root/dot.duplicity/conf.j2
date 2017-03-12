@@ -10,7 +10,7 @@ fi
 export EXCLUDE_OPTS
 export REMOTE_DIR="{{ duplicity.remote_dir }}"
 export REMOVE_OPTS="remove-all-but-n-full 6 --force"
-export BACKDIRS="home usr/local etc var"
+export BACKDIRS="{{ backup_dirs }}"
 export LOCK_FILE="/tmp/noshutdown-backup-$$.lock"
 export EMAIL="{{ duplicity.email }}"
 export NOTIFY_COMPLETE_POPUP=1
