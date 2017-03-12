@@ -1,0 +1,6 @@
+---
+backup_cron_dump: "55 17 * * *"
+backup_cron_clean: "0 18 * * 0"
+backup_cron_remove: "00 19 * * *"
+backup_cron: "0 20 * * *"
+backup_dirs: "{{ vault_backup_dirs }}"
