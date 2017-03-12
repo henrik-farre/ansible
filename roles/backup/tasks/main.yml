@@ -36,12 +36,6 @@
     tags:
       - backup
 
-  - name: Load vaulted vars
-    include_vars:
-      file: duplicity.vault.yml
-    tags:
-      - backup
-
   - name: Install duplicity config scripts
     become: true
     template:
