@@ -1,3 +1,34 @@
+- name: Create user Firefox profiles directories
+  file:
+    path: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  with_items:
+    - "Work"
+    - "Private"
+  tags:
+    - firefox
+
+- name: Install profiles.ini
+  copy:
+    src: "profiles.ini"
+    dest: "{{ ansible_user_dir }}/.mozilla/firefox/"
+    owner: "{{ ansible_user_id }}"
+  tags:
+    - firefox
+
+- name: Install user prefs pr profile
+  template:
+    src: "profile/user.js.j2"
+    dest: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}/user.js"
+    owner: "{{ ansible_user_id }}"
+  with_items:
+    - "Work"
+    - "Private"
+  tags:
+    - firefox
+
 - name: Install .desktop file
   copy:
     src: "{{ item }}"
@@ -6,5 +37,18 @@
   with_items:
     - "firefox-private.desktop"
     - "firefox-work.desktop"
+  tags:
+    - firefox
+
+- name: Lock down some Firefox settings
+  become: yes
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
+    mode: 0644
+  with_items:
+    - {src: "usr/lib/firefox/defaults/pref/autoconfig.js", dest: "/usr/lib/firefox/defaults/pref/autoconfig.js"}
+    - {src: "usr/lib/firefox/mozilla.cfg", dest: "/usr/lib/firefox/mozilla.cfg"}
   tags:
     - firefox
