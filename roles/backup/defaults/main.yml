@@ -1,4 +1,5 @@
 ---
+backup_cron_clean_lockfile: "54 17 * * *"
 backup_cron_dump: "# 55 17 * * *"
 backup_cron_clean: "# 0 18 * * 0"
 backup_cron_remove: "# 30 18 * * *"
