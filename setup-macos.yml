@@ -3,3 +3,10 @@
   roles:
     - dotfiles
     - vim
+
+# https://github.com/daemonza/setupmac
+# https://github.com/herrbischoff/awesome-osx-command-line
+# - Disable Creation of Metadata Files on Network Volumes
+#   - defaults write com.apple.desktopservices DSDontWriteNetworkStores -bool true
+# - Disable Creation of Metadata Files on USB Volumes
+#   - defaults write com.apple.desktopservices DSDontWriteUSBStores -bool true
