@@ -33,6 +33,7 @@
       - "/root/.duplicity"
       - "/root/.ssh"
       - "/root/.gnupg"
+      - "/usr/local/etc/duplicity"
     tags:
       - backup
 
@@ -44,6 +45,30 @@
       owner: root
       group: root
       mode: 0600
+    tags:
+      - backup
+
+  - name: Install common exclude
+    become: true
+    copy:
+      src: "usr/local/etc/duplicity/exclude-common"
+      dest: "/usr/local/etc/duplicity/exclude-common"
+      owner: root
+      group: root
+      mode: 0400
+    tags:
+      - backup
+
+  - name: Install host exclude
+    become: true
+    copy:
+      src: "{{ item }}"
+      dest: "/usr/local/etc/duplicity/{{ item }}"
+      owner: root
+      group: root
+      mode: 0400
+    with_fileglob:
+      - "usr/local/etc/duplicity/exclude-*-{{ inventory_name }}"
     tags:
       - backup
 
