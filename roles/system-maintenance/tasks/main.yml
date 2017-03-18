@@ -42,5 +42,6 @@
     regexp: '^DEVICESCAN'
     line: 'DEVICESCAN -a -o on -S on -n standby,q -m henrik.farre@gmail.com -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W 5,45,50'
     state: present
+  notify: Reload smartd
   tags:
     - system-maintenance
