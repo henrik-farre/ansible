@@ -68,7 +68,7 @@
       group: root
       mode: 0400
     with_fileglob:
-      - "usr/local/etc/duplicity/exclude-*-{{ inventory_name }}"
+      - "usr/local/etc/duplicity/exclude-*-{{ inventory_hostname }}"
     tags:
       - backup
 
