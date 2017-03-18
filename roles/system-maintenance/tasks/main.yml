@@ -23,3 +23,24 @@
     - system-maintenance
   when:
     - ansible_hostname == "spookcentral"
+
+- name: Ensure the pacman database is optimized monthly
+  become: yes
+  cron:
+    name: "Optimize pacman database"
+    special_time: monthly
+    job: "pacman-optimize"
+    user: root
+    cron_file: pacman-optimize
+  tags:
+    - system-maintenance
+
+- name: Ensure smartd is configured
+  become: yes
+  lineinfile:
+    name: /etc/smartd.conf
+    regexp: '^DEVICESCAN'
+    line: 'DEVICESCAN -a -o on -S on -n standby,q -m henrik.farre@gmail.com -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W 5,45,50'
+    state: present
+  tags:
+    - system-maintenance
