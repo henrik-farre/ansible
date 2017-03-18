@@ -1,10 +1,9 @@
 ---
 - name: Enable sudo access for wheel group
-  lineinfile:
-    dest: /etc/sudoers
-    state: present
-    regexp: '^%wheel'
-    line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+  become: yes
+  copy:
+    content: '%wheel ALL=(ALL) ALL'
+    dest: /etc/sudoers.d/10-grant-wheel-group
     validate: 'visudo -cf %s'
   tags:
     - sudo
