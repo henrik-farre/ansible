@@ -11,6 +11,10 @@ networks:
   - "workstation_work_wifi"
   - "workstation_k9_wifi"
 
+smartd:
+  schedule_short: 'S/../.././09'
+  schedule_long: 'L/../../5/12'
+
 conky_xinerama_head: 0
 conky_fontsize: 12
 conky_fontsize_awesome: 24
