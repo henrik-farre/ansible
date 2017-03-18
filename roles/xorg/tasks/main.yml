@@ -13,9 +13,14 @@
 - name: Install Intel video driver
   become: yes
   pacman:
-    name: "xf86-video-intel"
+    name: "{{ item }}"
     update_cache: yes
     state: latest
+  with_items:
+    - "xf86-video-intel"
+    - "libva-intel-driver"
+    - "libva-vdpau-driver"
+    - "libvdpau-va-gl"
   when:
     - ansible_local.hardware.vga_vendor == "Intel Corporation"
   tags:
