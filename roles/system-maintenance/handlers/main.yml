@@ -1,0 +1,6 @@
+---
+- name: Reload smartd
+  become: yes
+  systemd:
+    name: "smartd"
+    state: restarted
