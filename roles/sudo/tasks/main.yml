@@ -1,9 +1,21 @@
 ---
+# Using multiline for content is important, sudo needs newline
 - name: Enable sudo access for wheel group
   become: yes
   copy:
-    content: '%wheel ALL=(ALL) ALL'
+    content: |
+      %wheel ALL=(ALL) ALL
     dest: /etc/sudoers.d/10-grant-wheel-group
+    validate: 'visudo -cf %s'
+  tags:
+    - sudo
+
+- name: Use neovim as editor
+  become: yes
+  copy:
+    content: |
+      Defaults editor="/bin/nvim"
+    dest: /etc/sudoers.d/20-neovim-as-editor
     validate: 'visudo -cf %s'
   tags:
     - sudo
