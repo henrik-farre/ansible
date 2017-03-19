@@ -63,7 +63,7 @@
     become: true
     copy:
       src: "{{ item }}"
-      dest: "/usr/local/etc/duplicity/{{ item }}"
+      dest: "/usr/local/etc/duplicity/{{ item | basename }}"
       owner: root
       group: root
       mode: 0400
