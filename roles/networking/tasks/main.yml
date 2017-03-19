@@ -7,7 +7,21 @@
     owner: root
     group: root
     mode: 0600
+  no_log: true
   with_items:
     - "{{ networks }}"
   tags:
     - networking
+
+- name: Configure regulatory domain for wireless
+  become: yes
+  lineinfile:
+    name: /etc/conf.d/wireless-regdom
+    regexp: 'WIRELESS_REGDOM="DK"'
+    line: 'WIRELESS_REGDOM="DK"'
+    state: present
+  when:
+    - wireless is defined and wireless == True
+  tags:
+    - networking
+    - networking-wireless
