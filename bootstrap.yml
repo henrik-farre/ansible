@@ -8,7 +8,12 @@
     - mounts
     - networking
     - users
-    # Dialog is required by wifi-menu if doing setup over wifi
-    - { role: packages, packages: ['git', 'openssh', 'dialog'] }
+    - { role: packages, packages: ['git', 'openssh'] }
     - { role: services, services: ['sshd'] }
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
+
+- hosts: laptop
+  roles:
+    # Dialog is required by wifi-menu if doing setup over wifi
+    - { role: packages, packages: ['dialog', 'crda'] }
+    - { role: networking, wireless: true }
