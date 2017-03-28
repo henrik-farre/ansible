@@ -19,3 +19,26 @@
     validate: 'visudo -cf %s'
   tags:
     - sudo
+
+# https://wiki.archlinux.org/index.php/Sudo#Disable_per-terminal_sudo
+- name: Disable pr. tty sudo
+  become: yes
+  copy:
+    content: |
+      Defaults !tty_tickets
+    dest: /etc/sudoers.d/30-tty-tickets
+    validate: 'visudo -cf %s'
+  tags:
+    - sudo
+
+- name: Cmnd Aliases with no password for wheel
+  become: yes
+  copy:
+    content: |
+      Cmnd_Alias  POWER       =   /usr/bin/shutdown -h now, /usr/bin/shutdown -r now, /usr/bin/halt, /usr/bin/poweroff, /usr/bin/reboot
+      Cmnd_Alias  PACMAN      =   /usr/bin/pacman
+      %wheel      ALL         =   (root)  NOPASSWD: POWER, PACMAN
+    dest: /etc/sudoers.d/40-cmnd-aliases-for-wheel
+    validate: 'visudo -cf %s'
+  tags:
+    - sudo
