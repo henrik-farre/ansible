@@ -24,3 +24,14 @@
   no_log: yes
   tags:
     - users
+
+- name: Clean up users
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: yes
+  with_items:
+    - "cinnamon"
+    - "cinnemon"
+  tags:
+    - users
