@@ -1,0 +1,13 @@
+---
+- name: Ensure a11y is disabled (to avoid "Couldn't connect to accessibility bus" errors)
+  become: yes
+  copy:
+    content: |
+              # Managed by Ansible
+              export NO_AT_BRIDGE=1
+    dest: /etc/profile.d/no-at-bridge.sh
+    owner: root
+    group: root
+    mode: 0755
+  tags:
+    - misc-setup

@@ -15,6 +15,7 @@
     - backup
     - system-maintenance
     - global-aliases
+    - misc-setup
     - dotfiles
     - vim
     - docker
