@@ -48,8 +48,7 @@
 
 - hosts: laptop
   roles:
-    - { role: packages, packages: ['tlp', 'tlp-rdw'] }
-    - { role: services, services: ['tlp', 'tlp-sleep'] }
+    - powersave
 
 - hosts: macbook
   roles:

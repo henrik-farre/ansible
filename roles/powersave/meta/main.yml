@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: packages, packages: ['tlp', 'tlp-rdw', 'ethtool'] }
+  - { role: services, services: ['tlp', 'tlp-sleep', 'NetworkManager-dispatcher'] }
