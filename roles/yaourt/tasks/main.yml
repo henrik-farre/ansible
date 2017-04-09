@@ -1,24 +1,42 @@
 ---
-- name: Build yaourt, clone package-query
+- name: Check if package-query is installed
+  stat:
+    path: /usr/bin/package-query
+  register: stat_pq
+  tags:
+    - yaourt
+
+- name: Check if yaourt is installed
+  stat:
+    path: /usr/bin/yaourt
+  register: stat_yaourt
+  tags:
+    - yaourt
+
+- name: Git clone package-query
   git:
     repo: https://aur.archlinux.org/package-query.git
     dest: "{{ ansible_user_dir }}/package-queue"
     accept_hostkey: yes
   delegate_to: localhost
+  when:
+    - stat_pq.stat.exists == False
   tags:
     - yaourt
 
-- name: Build yaourt, makepkg package-query
+- name: Build package-query using makepkg
   command: makepkg -si
   args:
     chdir: "{{ ansible_user_dir }}/package-queue"
     creates: /usr/bin/package-query
   delegate_to: localhost
+  when:
+    - stat_pq.stat.exists == False
   register: aur_makepkg_result
   tags:
     - yaourt
 
-- name: Build yaourt, install package-query
+- name: Install package-query using pacman
   become: yes
   command: pacman -U "{{ item }}" --noconfirm --noprogressbar
   args:
@@ -31,26 +49,30 @@
   tags:
     - yaourt
 
-- name: Build yaourt, clone yaourt
+- name: Git clone yaourt
   git:
     repo: https://aur.archlinux.org/yaourt.git
     dest: "{{ ansible_user_dir }}/yaourt"
     accept_hostkey: yes
+  when:
+    - stat_pq.stat.exists == False
   delegate_to: localhost
   tags:
     - yaourt
 
-- name: Build yaourt
+- name: Build yaourt using makepkg
   command: makepkg -si
   args:
     chdir: "{{ ansible_user_dir }}/yaourt"
     creates: /usr/bin/yaourt
   delegate_to: localhost
   register: aur_makepkg_result
+  when:
+    - stat_yaourt.stat.exists == False
   tags:
     - yaourt
 
-- name: Build yaourt, install yaourt
+- name: Install yaourt using pacman
   become: yes
   command: pacman -U "{{ item }}" --noconfirm --noprogressbar
   args:
