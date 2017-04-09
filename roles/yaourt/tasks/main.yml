@@ -16,7 +16,7 @@
 - name: Git clone package-query
   git:
     repo: https://aur.archlinux.org/package-query.git
-    dest: "{{ ansible_user_dir }}/package-queue"
+    dest: "{{ ansible_user_dir }}/package-query"
     accept_hostkey: yes
   delegate_to: localhost
   when:
@@ -27,7 +27,7 @@
 - name: Build package-query using makepkg
   command: makepkg -si
   args:
-    chdir: "{{ ansible_user_dir }}/package-queue"
+    chdir: "{{ ansible_user_dir }}/package-query"
     creates: /usr/bin/package-query
   delegate_to: localhost
   when:
@@ -42,7 +42,7 @@
   args:
     creates: /usr/bin/package-query
   with_fileglob:
-    - "{{ ansible_user_dir }}/package-queue/package-query-*-x86_64.pkg.tar.xz"
+    - "{{ ansible_user_dir }}/package-query/package-query-*-x86_64.pkg.tar.xz"
   delegate_to: localhost
   when:
     - aur_makepkg_result|succeeded
@@ -82,5 +82,15 @@
   delegate_to: localhost
   when:
     - aur_makepkg_result|succeeded
+  tags:
+    - yaourt
+
+- name: Ensure no files are left after building
+  file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: absent
+  with_items:
+    - yaourt
+    - package-query
   tags:
     - yaourt
