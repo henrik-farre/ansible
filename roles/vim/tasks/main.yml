@@ -15,6 +15,15 @@
   tags:
     - vim
 
+- name: Ensure .local/share/applications exists
+  file:
+    path: "{{ ansible_user_dir }}/.local/share/applications"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - vim
+
 - name: Install .desktop file
   copy:
     src: neovim.desktop
