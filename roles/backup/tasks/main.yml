@@ -4,6 +4,7 @@
     git:
       repo: https://github.com/henrik-farre/duplicity_backup_scripts.git
       dest: /tmp/dupebackup
+    delegate_to: localhost
     tags:
       - backup
 
@@ -15,7 +16,6 @@
       owner: root
       group: root
       mode: 0700
-      remote_src: True
     with_fileglob:
       - /tmp/dupebackup/*.sh
     tags:
@@ -161,6 +161,7 @@
     file:
       path: /tmp/dupebackup
       state: absent
+    delegate_to: localhost
     tags:
       - backup
   - name: Cleanup gpg keys
