@@ -15,7 +15,8 @@ smartd:
   schedule_short: 'S/../.././09'
   schedule_long: 'L/../../5/12'
 
-conky_xinerama_head: 0
+# Monitors are numbered: 2, 0, 1
+conky_xinerama_head: 2
 conky_fontsize: 12
 conky_fontsize_awesome: 24
 conky_min_size: 460
