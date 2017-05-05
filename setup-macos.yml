@@ -1,8 +1,9 @@
 ---
-- hosts: macbook-macos
+- hosts: macbook
   roles:
     - dotfiles
     - vim
+    - ssh-keys
 
 # https://github.com/daemonza/setupmac
 # https://github.com/herrbischoff/awesome-osx-command-line
