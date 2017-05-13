@@ -35,6 +35,7 @@
     - samba-client
     - node
     - firefox
+    - systemd-user-units
     - { role: yaourt-packages, packages: "{{ aur_packages }}" }
   tasks:
     - name: Ensure files does not exist

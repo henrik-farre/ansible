@@ -1,0 +1,36 @@
+---
+- name: Ensure systemd user directory exits
+  file:
+    path: "{{ansible_user_dir}}/.config/systemd/user/"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: 0700
+  tags:
+    - systemd-user-units
+
+- name: Ensure needed service files exist
+  copy:
+    content: |
+      # Managed by Ansible
+      [Unit]
+      Description=Update git repositories if online
+
+      [Service]
+      Type=oneshot
+      ExecStart=/home/enrique/bin/update-if-online
+
+      [Install]
+      WantedBy=default.target
+    dest: "{{ ansible_user_dir }}/.config/systemd/user/update-if-online.service"
+  tags:
+    - systemd-user-units
+
+- name: Ensure services are enabled
+  systemd:
+    name: update-if-online.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    user: yes
+  tags:
+    - systemd-user-units
