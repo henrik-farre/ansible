@@ -10,6 +10,7 @@
 - name: Ensure notebook config exists
   copy:
     content: |
+        # Managed by Ansible
         [NotebookList]
         Default=
         1=~/Documents/Zim/notes
