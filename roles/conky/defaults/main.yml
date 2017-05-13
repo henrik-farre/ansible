@@ -12,3 +12,8 @@ conky_graph_half_size: "20,107"
 conky_graph_full_size: "20,230"
 conky_graph_color_1: "23a51c 125346"
 conky_graph_color_2: "ff661c 8d362d"
+conky_cpu_hwmon:
+  - {sensor: 0, temp: 2}
+  - {sensor: 0, temp: 3}
+  - {sensor: 0, temp: 4}
+  - {sensor: 0, temp: 5}

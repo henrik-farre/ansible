@@ -66,7 +66,8 @@ Update(s) available:${alignr} ${execi 3600 checkupdates | wc -l}
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Temperatures $color${hr 1}
 
 {# hwmon1/temp1 is physical #}
-CPU: ${alignr}${hwmon 0 temp 2}°C /${hwmon 0 temp 3}°C /${hwmon 0 temp 4}°C /${hwmon 0 temp 5}°C
+CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon {{ item.sensor }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor%}
+
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 GPU:${alignr}${nvidia temp}°C
 {% endif %}

@@ -5,3 +5,8 @@ backup_cron_remove: "30 18 * * *"
 backup_cron: "0 19 * * *"
 networks:
   - "firehouse_eth0"
+conky_cpu_hwmon:
+  - {sensor: 2, temp: 1}
+  - {sensor: 2, temp: 2}
+  - {sensor: 2, temp: 3}
+  - {sensor: 2, temp: 4}
