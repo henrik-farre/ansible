@@ -5,11 +5,10 @@
     path: "{{ item }}"
     state: directory
     owner: root
-    mode: 0750
+    mode: 0700
   with_items:
-    - "/boot/EFI/systemd"
-    - "/boot/EFI/loader"
-    - "/boot/EFI/loader/entries"
+    - "/boot/loader"
+    - "/boot/loader/entries"
   tags:
     - bootloader
     - systemd-boot
@@ -19,8 +18,10 @@
 - name: Ensure loader and entries for systemd-boot exist
   become: yes
   copy:
-    src: "boot/EFI/loader/{{ item }}"
-    dest: "/boot/EFI/loader/{{ item }}"
+    src: "boot/loader/{{ item }}"
+    dest: "/boot/loader/{{ item }}"
+    owner: root
+    mode: 0600
   with_items:
     - "entries/arch.conf"
     - "entries/arch-macbook.conf"
