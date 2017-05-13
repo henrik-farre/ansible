@@ -32,17 +32,6 @@
   tags:
     - vim
 
-- name: Install icons
-  copy:
-    src: "{{ item }}"
-    dest: "{{ ansible_user_dir }}/.icons/"
-    owner: "{{ ansible_user_id }}"
-  with_items:
-    - "neovim-logo.svg"
-    - "neovim-mark.svg"
-  tags:
-    - vim
-
 # Hangs
 # - name: Install plugins
 #   command: nvim +PlugInstall +qall
