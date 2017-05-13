@@ -5,10 +5,3 @@ backup_cron_remove: "10 18 * * *"
 backup_cron: "50 18 * * *"
 networks:
   - "ectoplasma_home_wifi"
-modules_load_d:
-  - battery.conf
-  - sensors.conf
-modules_modprobe_d:
-  - 10-hid-apple.conf
-  - 20-i915.conf
-  - 50-sound.conf
