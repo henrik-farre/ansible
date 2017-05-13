@@ -54,5 +54,5 @@
 
 - hosts: macbook
   roles:
-    - { role: yaourt-packages, packages: ['mbpfan-git'] }
+    - { role: yaourt-packages, packages: ['mbpfan-git', 'linux-macbook'] }
     - { role: services, services: ['mbpfan'] }
