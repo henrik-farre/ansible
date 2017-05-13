@@ -1,6 +1,40 @@
 ---
+- name: Ensure directories for bootloader exist
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    mode: 0750
+  with_items:
+    - "/boot/EFI/systemd"
+    - "/boot/EFI/loader"
+    - "/boot/EFI/loader/entries"
+  tags:
+    - bootloader
+    - systemd-boot
+
+# Currently only used on workstation, should be expanded to handle
+# multiple systems
+- name: Ensure loader and entries for systemd-boot exist
+  become: yes
+  copy:
+    src: "boot/EFI/loader/{{ item }}"
+    dest: "/boot/EFI/loader/{{ item }}"
+  with_items:
+    - "entries/arch.conf"
+    - "entries/arch-macbook.conf"
+    - "entries/arch-macbook-fallback.conf"
+    - "loader.conf"
+  tags:
+    - bootloader
+    - systemd-boot
+
 - name: Install systemd-boot
+  become: yes
   command: bootctl --path=/boot install
+  args:
+    creates: /boot/EFI/systemd/systemd-bootx64.efi
   tags:
     - bootloader
     - systemd-boot
