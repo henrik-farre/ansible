@@ -7,11 +7,29 @@
   tags:
     - zim
 
+- name: Ensure notebook config exists
+  copy:
+    content: |
+        [NotebookList]
+        Default=
+        1=~/Documents/Zim/notes
+
+        [Notebook 1]
+        uri=~/Documents/Zim/notes
+        name=Notes
+        interwiki=None
+        icon=None
+    dest: "{{ ansible_user_dir }}/.config/zim/notebooks.list"
+    owner: "{{ ansible_user_id }}"
+    mode: 0700
+  tags:
+    - zim
+
 - name: Add post commit hook
   copy:
     src: dot.git/hooks/post-commit
     dest: "{{ ansible_user_dir }}/Documents/Zim/.git/hooks/post-commit"
     owner: "{{ ansible_user_id }}"
-    mode: 0750
+    mode: 0700
   tags:
     - zim
