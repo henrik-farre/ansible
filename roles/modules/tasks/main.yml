@@ -1,0 +1,30 @@
+---
+- name: Ensure modules are configured
+  become: yes
+  copy:
+    src: "etc/modprobe.d/{{ item }}"
+    dest: "/etc/modprobe.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0640
+  with_items:
+    - "{{ modules_modprobe_d }}"
+  when:
+    - modules_modprobe_d is defined
+  tags:
+    - modules
+
+- name: Ensure modules are loaded
+  become: yes
+  copy:
+    src: "etc/modules-load.d/{{ item }}"
+    dest: "/etc/modules-load.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0640
+  with_items:
+    - "{{ modules_load_d }}"
+  when:
+    - modules_load_d is defined
+  tags:
+    - modules

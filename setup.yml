@@ -4,6 +4,7 @@
     - hostname
     - timezone
     - ntp
+    - modules
     - cron
     - ssmtp
     - hddtemp
