@@ -1,4 +1,10 @@
 ---
-- name: Install selected bootloader
+- name: Install systemd boot
   include_role:
-    name: "{{ bootloader }}"
+    name: systemd-boot
+  when: bootloader == "systemd-boot"
+
+- name: Install grub
+  include_role:
+    name: grub
+  when: bootloader == "grub"
