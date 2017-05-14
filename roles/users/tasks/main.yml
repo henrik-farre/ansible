@@ -1,26 +1,23 @@
 ---
-- name: Load vaulted vars
-  include_vars:
-    file: users.vault.yml
-  tags:
-    - users
-
-- name: Create users
+- name: Ensure users exists
   user:
     name: "{{ item.name }}"
     shell: /bin/zsh
+    home: "/{{ users_home_base }}/{{ item.name }}"
     groups: "{{ item.groups }}"
     password: "{{ item.password }}"
   with_items:
-    - "{{ vaulted_user_config }}"
-  no_log: yes
+    - "{{ users }}"
+  when:
+    - users is defined
+  # no_log: yes
   tags:
     - users
 
 - name: Set root password
   user:
     name: root
-    password: "{{ vaulted_root_password }}"
+    password: "{{ root_password }}"
   no_log: yes
   tags:
     - users

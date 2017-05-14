@@ -1,4 +1,8 @@
 ---
+users: "{{ vault_users }}"
+users_home_base: "home"
+root_password: "{{ vault_root_password }}"
+
 email_address: "{{ vault_email_address }}"
 
 duplicity: "{{ vault_duplicity }}"
