@@ -11,7 +11,7 @@
     path: /boot/EFI
     src: UUID=D910-53BB
     fstype: vfat
-    state: present
+    state: mounted
     opts: noauto,defaults
   tags:
     - bootloader
