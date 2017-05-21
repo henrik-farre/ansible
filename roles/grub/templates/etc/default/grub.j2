@@ -6,7 +6,7 @@ GRUB_DISTRIBUTOR="Arch"
 # - nvidia-drm.modeset=1 might be buggy
 # - elevator=noop disabled in favor of scsi_mod
 # - TODO: replace with vars
-GRUB_CMDLINE_LINUX_DEFAULT="quiet nvidia-drm.modeset=1 video=vesa:off vga=normal scsi_mod.use_blk_mq=y dm_mod.use_blk_mq=y"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet nvidia-drm.modeset=1 video=vesa:off vga=normal scsi_mod.use_blk_mq=y dm_mod.use_blk_mq=y nowatchdog"
 #GRUB_CMDLINE_LINUX="video=vesa:off vga=normal"
 GRUB_CMDLINE_LINUX=""
 
