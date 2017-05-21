@@ -10,6 +10,7 @@ duplicity: "{{ vault_duplicity }}"
 host_services: []
 host_packages: []
 host_uninstalled_packages:
+  - acpid
   - light-locker
   - gstreamer0.10-bad
   - gstreamer0.10-bad-plugins
