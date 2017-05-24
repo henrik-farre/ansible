@@ -33,7 +33,6 @@ desktop_packages:
   - flashplugin
   - fontconfig
   - fping
-  - fuse
   - fzf
   - gcc
   - gimp
@@ -87,6 +86,7 @@ desktop_packages:
   - net-tools
   - nmap
   - numix-gtk-theme
+  - ntfs-3g
   - pam
   - pambase
   - parted
@@ -108,7 +108,6 @@ desktop_packages:
   - run-parts
   - s-nail
   - seahorse
-  - sshfs
   - sshpass
   - startup-notification
   - sysfsutils
