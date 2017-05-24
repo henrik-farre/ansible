@@ -2,4 +2,4 @@
 dependencies:
   - cron
   - { role: packages, packages: ['smartmontools', 'lm_sensors'] }
-  - { role: services, services: ['acpid', 'smartd', 'alsa-restore', 'fstrim.timer'] }
+  - { role: services, services: ['smartd', 'alsa-restore', 'fstrim.timer'] }

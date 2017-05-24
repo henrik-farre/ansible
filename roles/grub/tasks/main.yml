@@ -1,6 +1,25 @@
 ---
+- name: Ensure default configuration for grub exist
+  template:
+    src: etc/default/grub.j2
+    dest: /etc/default/grub
+    mode: 0644
+    owner: root
+
+- name: Ensure EFI partition is mounted
+  mount:
+    path: /boot/EFI
+    src: UUID=D910-53BB
+    fstype: vfat
+    state: mounted
+    opts: noauto,defaults
+  tags:
+    - bootloader
+    - grub
+
+# TODO: efi-directory should be configurable
 - name: Install grub
-  command: grub-install --target=x86_64-efi --efi-directory=/boot --bootloader-id=grub
+  command: grub-install --target=x86_64-efi --efi-directory=/boot/EFI --bootloader-id=grub
   tags:
     - bootloader
     - grub

@@ -1,6 +1,5 @@
 ---
 desktop_packages:
-  - acpid
   - ack
   - adwaita-icon-theme
   - alsa-lib

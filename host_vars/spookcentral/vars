@@ -7,3 +7,6 @@ backup_cron: "0 21 * * *"
 backup_dirs: "{{ vault_backup_dirs }}"
 
 users_home_base: "shared"
+
+modules_modprobe_d:
+  - blacklist.conf
