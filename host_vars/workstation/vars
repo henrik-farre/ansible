@@ -3,6 +3,7 @@ bootloader: "systemd-boot"
 backup_cron_dump: "30 11 * * *"
 backup_cron_clean: "50 17 * * 0"
 backup_cron_remove: "10 18 * * *"
+backup_cron_clean_lockfile: "39 11 * * *"
 backup_cron: "40 11 * * *"
 host_packages:
   - openldap
