@@ -9,6 +9,7 @@
     - ssmtp
     - hddtemp
     - sysctl
+    - firewall
     - makepkg
     - sshd
     - ssh-keys

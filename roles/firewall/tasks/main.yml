@@ -1,0 +1,16 @@
+---
+- name: Enable ufw
+  become: yes
+  ufw:
+    state: enabled
+    policy: allow
+  tags:
+    - firewall
+
+- name: Allow OpenSSH
+  become: yes
+  ufw:
+    rule: allow
+    name: SSH
+  tags:
+    - firewall
