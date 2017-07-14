@@ -61,6 +61,7 @@ desktop_packages:
   # Github cli
   - hub
   - hunspell
+  - hugo
   - icedtea-web
   - imagemagick
   - inetutils
@@ -97,6 +98,7 @@ desktop_packages:
   - powerline-common
   - pv
   # Needet by kupfer for window list
+  - kupfer
   - python2-wnck
   - python-pip
   - pwgen
@@ -108,6 +110,7 @@ desktop_packages:
   - run-parts
   - s-nail
   - seahorse
+  - shellcheck
   - sshpass
   - startup-notification
   - sysfsutils
@@ -195,15 +198,12 @@ xorg_packages:
   - xorg-xwud
   - xproto
   - xterm
+  - xcape
 
 aur_packages:
-  - xcape
-  - ctags-php
-  - kupfer
-  - shellcheck
+  - universal-ctags-git
   - yamllint
   - google-chrome
-  - hugo-bin
   - virtualbox-ext-oracle
   - tango-icon-theme
   - tango-icon-theme-extras
