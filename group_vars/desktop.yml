@@ -98,6 +98,7 @@ desktop_packages:
   - pv
   # Needet by kupfer for window list
   - python2-wnck
+  - python-pip
   - pwgen
   # Better RDP client
   - remmina
