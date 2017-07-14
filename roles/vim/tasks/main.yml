@@ -32,6 +32,14 @@
   tags:
     - vim
 
+# https://github.com/mhinz/neovim-remote
+- name: Install neovim-remote
+  pip:
+    name: neovim-remote
+    extra_args: --user
+  tags:
+    - vim
+
 # Hangs
 # - name: Install plugins
 #   command: nvim +PlugInstall +qall
