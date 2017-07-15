@@ -7,3 +7,12 @@ networks:
   - "ectoplasma_home_wifi"
 modules_modprobe_d:
   - blacklist.conf
+
+conky_fontsize: 6
+conky_fontsize_awesome: 10
+conky_min_size: 345
+conky_max_width: 345
+conky_bar_cpu_size: "4,170"
+conky_bar_full_size: "4,345"
+conky_graph_half_size: "20,170"
+conky_graph_full_size: "20,345"
