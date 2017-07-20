@@ -81,3 +81,15 @@
     - ansible_local.hardware.vga_vendor == "Intel Corporation"
   tags:
     - modules
+
+- name: Ensure nvidia is loaded early
+  become: yes
+  lineinfile:
+    dest: /etc/mkinitcpio.conf
+    line: 'MODULES="nvidia nvidia_modeset nvidia_uvm nvidia_drm"'
+    regexp: 'MODULES='
+    state: present
+  when:
+    - ansible_local.hardware.vga_vendor == "NVIDIA Corporation"
+  tags:
+    - modules

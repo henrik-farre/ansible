@@ -1,10 +1,59 @@
 ---
-- name: Ensure SSD values exist in hddtemp.db
+- name: Ensure SSD values for Samsung SSD 850 EVO exist in hddtemp.db
   become: yes
   lineinfile:
     name: /usr/share/hddtemp/hddtemp.db
     regexp: '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250G B"'
     line: '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250G B"'
     state: present
+  tags:
+    - hddtemp
+
+- name: Ensure SSD values for REALSSD C300 2.5 exist in hddtemp.db
+  become: yes
+  lineinfile:
+    name: /usr/share/hddtemp/hddtemp.db
+    regexp: '"REALSSD C300 2.5" 189 C "REALSSD C300 2.5"'
+    line: '"REALSSD C300 2.5" 189 C "REALSSD C300 2.5"'
+    state: present
+  tags:
+    - hddtemp
+
+- name: Build list of non-removable devices
+  set_fact:
+    non_removable_devices: "{{non_removable_devices|default([]) + ['/dev/' ~ item.key] }}"
+  with_dict: "{{ ansible_devices }}"
+  when:
+    - item.value.removable == "0"
+  tags:
+    - hddtemp
+  no_log: True
+
+- name: Ensure directory for custom unit exist
+  become: yes
+  file:
+    dest: /etc/systemd/system/hddtemp.service.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+  when:
+    - non_removable_devices|length > 1
+  tags:
+    - hddtemp
+
+- name: Ensure custom unit exist
+  become: yes
+  copy:
+    dest: /etc/systemd/system/hddtemp.service.d/customexec.conf
+    content: |
+      [Service]
+      ExecStart=
+      ExecStart=/usr/bin/hddtemp -dF {{ non_removable_devices|join(' ') }}
+    owner: root
+    group: root
+    mode: 0750
+  when:
+    - non_removable_devices|length > 1
   tags:
     - hddtemp
