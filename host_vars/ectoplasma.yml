@@ -6,7 +6,7 @@ backup_cron: "50 18 * * *"
 networks:
   - "ectoplasma_home_wifi"
 modules_modprobe_d:
-  - blacklist.conf
+  - 00-blacklist.conf
 
 has_nfs_mount: True
 

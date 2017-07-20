@@ -10,5 +10,8 @@ networks:
 
 users_home_base: "shared"
 
+modules_load_d:
+  - bluetooth-protocol.conf
+
 modules_modprobe_d:
-  - blacklist.conf
+  - 00-blacklist.conf
