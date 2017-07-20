@@ -8,6 +8,8 @@ networks:
 modules_modprobe_d:
   - blacklist.conf
 
+has_nfs_mount: True
+
 conky_fontsize: 6
 conky_fontsize_awesome: 10
 conky_min_size: 345
