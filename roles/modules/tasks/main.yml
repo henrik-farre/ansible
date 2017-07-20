@@ -2,6 +2,7 @@
 - name: Clean modprobe.d, Capture files in path and register
   command: ls -1 /etc/modprobe.d
   register: modprobe_d_files
+  changed_when: False
   tags:
     - modules
     - modprobe
@@ -39,6 +40,7 @@
 - name: Clean modules-load.d, Capture files in path and register
   command: ls -1 /etc/modules-load.d
   register: modules_load_d_files
+  changed_when: False
   tags:
     - modules
 
