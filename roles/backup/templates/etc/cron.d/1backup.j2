@@ -2,6 +2,7 @@
 SHELL=/bin/bash
 PATH=/sbin:/bin:/usr/sbin:/usr/bin
 MAILTO={{ duplicity.email }}
+MAILFROM={{ ssmtp_root }}
 
 {{ backup_cron_clean_lockfile }} root rm -f /var/cache/duplicity/*/lockfile.lock > /dev/null
 {{ backup_cron_dump }} root /usr/local/sbin/dump-information.sh &> /dev/null
