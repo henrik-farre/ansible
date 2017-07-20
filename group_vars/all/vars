@@ -50,7 +50,7 @@ host_uninstalled_packages:
 bootloader: "grub"
 networks: []
 network:
-  local_domain: "home.local"
+  local_domain: "home.lan"
 
 ssmtp_mailhub: "{{ vault_ssmtp_mailhub }}"
 ssmtp_root: "{{ vault_ssmtp_root }}"
