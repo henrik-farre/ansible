@@ -15,3 +15,4 @@ modules_load_d:
 
 modules_modprobe_d:
   - 00-blacklist.conf
+  - 51-sound-hdmi-analog.conf
