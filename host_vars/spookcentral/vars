@@ -5,8 +5,14 @@ backup_cron_clean: "05 19 * * 0"
 backup_cron_remove: "30 19 * * *"
 backup_cron: "0 21 * * *"
 backup_dirs: "{{ vault_backup_dirs }}"
+networks:
+  - "spookcentral_eth0"
 
 users_home_base: "shared"
 
+modules_load_d:
+  - bluetooth-protocol.conf
+
 modules_modprobe_d:
-  - blacklist.conf
+  - 00-blacklist.conf
+  - 51-sound-hdmi-analog.conf

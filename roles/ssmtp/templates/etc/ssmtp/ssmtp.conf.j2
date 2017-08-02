@@ -19,7 +19,7 @@ mailhub={{ ssmtp_mailhub }}
 # Where will the mail seem to come from?
 rewriteDomain={{ ssmtp_rewrite_domain }}
 # The full hostname
-hostname={{ ansible_hostname }}
+hostname={{ ansible_hostname }}.{{ network.local_domain }}
 
 # Set this to never rewrite the "From:" line (unless not given) and to
 # use that address in the "from line" of the envelope.

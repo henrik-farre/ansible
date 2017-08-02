@@ -5,10 +5,14 @@ backup_cron_remove: "30 18 * * *"
 backup_cron: "0 19 * * *"
 networks:
   - "firehouse_eth0"
+
+has_nfs_mount: True
+
 conky_cpu_hwmon:
   - {sensor: 2, temp: 1}
   - {sensor: 2, temp: 2}
   - {sensor: 2, temp: 3}
   - {sensor: 2, temp: 4}
+
 modules_modprobe_d:
-  - blacklist.conf
+  - 00-blacklist.conf

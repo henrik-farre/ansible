@@ -20,10 +20,10 @@ modules_load_d:
   - battery.conf
   - sensors.conf
 modules_modprobe_d:
+  - 00-blacklist.conf
   - 10-hid-apple.conf
   - 20-i915.conf
   - 50-sound.conf
-  - blacklist.conf
 
 # Monitors are numbered: 2, 0, 1
 conky_xinerama_head: 2

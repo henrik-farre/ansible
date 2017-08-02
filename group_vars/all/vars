@@ -49,6 +49,8 @@ host_uninstalled_packages:
 # Used by bootloader role, but currently does not work because of missing vars in module
 bootloader: "grub"
 networks: []
+network:
+  local_domain: "home.lan"
 
 ssmtp_mailhub: "{{ vault_ssmtp_mailhub }}"
 ssmtp_root: "{{ vault_ssmtp_root }}"

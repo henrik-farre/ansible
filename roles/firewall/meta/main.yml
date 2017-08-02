@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: packages, packages: ['ufw', 'gufw'] }
+  - { role: services, services: ['ufw'] }

@@ -1,4 +1,26 @@
 ---
+- name: Clean modprobe.d, Capture files in path and register
+  command: ls -1 /etc/modprobe.d
+  register: modprobe_d_files
+  changed_when: False
+  tags:
+    - modules
+    - modprobe
+
+- name: Clean modprobe.d, Remove files except specified
+  become: yes
+  file:
+    path: "/etc/modprobe.d/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ modprobe_d_files.stdout_lines }}"
+  when:
+    - modules_modprobe_d is defined
+    - item not in modules_modprobe_d
+  tags:
+    - modules
+    - modprobe
+
 - name: Ensure modules are configured
   become: yes
   copy:
@@ -11,6 +33,27 @@
     - "{{ modules_modprobe_d }}"
   when:
     - modules_modprobe_d is defined
+  tags:
+    - modules
+    - modprobe
+
+- name: Clean modules-load.d, Capture files in path and register
+  command: ls -1 /etc/modules-load.d
+  register: modules_load_d_files
+  changed_when: False
+  tags:
+    - modules
+
+- name: Clean modules-load.d, Remove files except specified
+  become: yes
+  file:
+    path: "/etc/modules-load.d/{{ item }}"
+    state: absent
+  with_items:
+    - "{{ modules_load_d_files.stdout_lines }}"
+  when:
+    - modules_load_d is defined
+    - item not in modules_load_d
   tags:
     - modules
 
@@ -26,5 +69,29 @@
     - "{{ modules_load_d }}"
   when:
     - modules_load_d is defined
+  tags:
+    - modules
+
+- name: Ensure i915 is loaded early
+  become: yes
+  lineinfile:
+    dest: /etc/mkinitcpio.conf
+    line: 'MODULES="i915"'
+    regexp: 'MODULES='
+    state: present
+  when:
+    - ansible_local.hardware.vga_vendor == "Intel Corporation"
+  tags:
+    - modules
+
+- name: Ensure nvidia is loaded early
+  become: yes
+  lineinfile:
+    dest: /etc/mkinitcpio.conf
+    line: 'MODULES="nvidia nvidia_modeset nvidia_uvm nvidia_drm"'
+    regexp: 'MODULES='
+    state: present
+  when:
+    - ansible_local.hardware.vga_vendor == "NVIDIA Corporation"
   tags:
     - modules
