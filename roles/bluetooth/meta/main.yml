@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: packages, packages: ['bluez', 'bluez-utils', 'bluez-tools', 'pulseaudio-bluetooth', 'blueman'] }
+  - { role: services, services: ['bluetooth'] }

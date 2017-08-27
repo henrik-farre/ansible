@@ -1,0 +1,10 @@
+---
+- name: Ensure bluetooth is enabled
+  become: yes
+  lineinfile:
+    name: /etc/bluetooth/main.conf
+    regexp: 'AutoEnable='
+    line: 'AutoEnable=true'
+    state: present
+  tags:
+    - bluetooth
