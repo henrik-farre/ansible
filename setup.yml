@@ -30,6 +30,7 @@
 - hosts: desktop
   roles:
     - xorg
+    - lightdm
     - desktop
     - fonts
     - cinnamon
