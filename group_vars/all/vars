@@ -5,8 +5,6 @@ root_password: "{{ vault_root_password }}"
 
 email_address: "{{ vault_email_address }}"
 
-duplicity: "{{ vault_duplicity }}"
-
 host_services: []
 host_packages: []
 host_uninstalled_packages:
