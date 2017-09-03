@@ -1,0 +1,9 @@
+[Unit]
+Description=Duplicity: {{ item }}
+
+[Timer]
+OnCalendar={{ duplicity[item] }}
+Persistent=True
+
+[Install]
+WantedBy=timers.target

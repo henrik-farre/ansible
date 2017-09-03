@@ -1,0 +1,26 @@
+- **/.VirtualBox
+- **/.adobe
+- **/.btsync
+- **/.cache
+- **/.dbus
+- **/.dolphin-emu
+- **/.fonts
+- **/.gnupg/random_seed
+- **/.gvfs
+- **/.kvm
+- **/.local/share/Steam
+- **/.macromedia
+- **/.nv
+- **/.pdepend
+- **/.steam
+- **/.thumbnails
+- **/.ufoai
+- **/.wine
+- **/Downloads
+- **/Emulation
+- **/Media/
+- **/StarCraft II
+- **/VirtualBox
+- **/VirtualBox VMs
+- **/remote_mounts
+- **/tmp/
