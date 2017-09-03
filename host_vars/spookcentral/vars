@@ -1,8 +1,8 @@
 ---
 duplicity:
-  dump: "19:04"
-  clean: "19:05"
-  remove-old: "19:30"
+  dump: "daily"
+  clean: "weekly"
+  remove-old: "weekly"
   backup: "21:00"
   volumes:
     - shared/pictures
