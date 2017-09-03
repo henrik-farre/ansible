@@ -1,8 +1,22 @@
 ---
-backup_cron_dump: "55 17 * * *"
-backup_cron_clean: "0 18 * * 0"
-backup_cron_remove: "30 18 * * *"
-backup_cron: "0 19 * * *"
+duplicity:
+  dump: "17:00"
+  clean: "18:00"
+  remove-old: "18:30"
+  backup: "19:00"
+  volumes:
+    - home
+    - usr/local
+    - etc
+    - var
+  excludes:
+    - { src: "home", dest: "/home" }
+    - { src: "var", dest: "/var" }
+  passphrase: "{{ vault_duplicity.passphrase }}"
+  encrypt_key: "{{ vault_duplicity.encrypt_key }}"
+  remote_dir_base: "{{ vault_duplicity.remote_dir_base }}"
+  remote_host: "{{ vault_duplicity.remote_host }}"
+
 networks:
   - "firehouse_eth0"
 
