@@ -85,6 +85,7 @@ desktop_packages:
   - nmap
   - numix-gtk-theme
   - ntfs-3g
+  - inotify-tools
   - pam
   - pambase
   - parted
