@@ -77,6 +77,7 @@ GPU:${alignr}${nvidia temp}°C
 {{ data.model }}: ${alignr}${hddtemp /dev/{{ device }}}°C{% endif %}{% endfor %}
 
 {% if ansible_form_factor == 'Laptop' %}
+
 ${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Battery $color${hr 1}
 ${battery_bar {{conky_bar_full_size}}}
 {% endif %}
