@@ -1,0 +1,39 @@
+---
+- block:
+  - name: Download scritps
+    git:
+      repo: https://github.com/henrik-farre/kodi-shutdown-check.git
+      dest: /tmp/kodi-shutdown-check
+    tags:
+      - kodi-shutdown-check
+
+  - name: Install scripts
+    become: yes
+    copy:
+      src: "/tmp/kodi-shutdown-check/{{ item }}"
+      dest: "/usr/local/bin/{{ item }}"
+      remote_src: yes
+      owner: root
+      mode: 0750
+    with_items:
+      - "kodi-shutdown-check.sh"
+      - "kodi-shutdown-inhibit.sh"
+    tags:
+      - kodi-shutdown-check
+
+  - name: Ensure cronjob exist
+    become: yes
+    cron:
+      name: Kodi shutdown inhibit
+      minute: "*/4"
+      user: root
+      job: "/usr/local/bin/kodi-shutdown-inhibit.sh"
+      cron_file: kodi-shutdown
+
+  always:
+  - name: Cleanup
+    file:
+      path: /tmp/kodi-shutdown-check
+      state: absent
+    tags:
+      - kodi-shutdown-check
