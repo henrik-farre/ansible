@@ -33,5 +33,8 @@ conky_bar_cpu_size: "4,170"
 conky_bar_full_size: "4,345"
 conky_graph_half_size: "20,170"
 conky_graph_full_size: "20,345"
+conky_cpu_hwmon:
+  - {sensor: 0, temp: 2}
+  - {sensor: 0, temp: 3}
 
 terminal_font_size: 8
