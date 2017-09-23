@@ -43,7 +43,6 @@
     owner: "{{ ansible_user_id }}"
     state: link
   with_items:
-    - ".config/termite"
     - ".config/htop"
     - ".zshrc"
     - ".bash_profile"

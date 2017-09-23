@@ -33,3 +33,5 @@ conky_bar_cpu_size: "4,170"
 conky_bar_full_size: "4,345"
 conky_graph_half_size: "20,170"
 conky_graph_full_size: "20,345"
+
+terminal_font_size: 8

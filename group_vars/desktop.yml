@@ -113,8 +113,6 @@ desktop_packages:
   - sshpass
   - startup-notification
   - sysfsutils
-  - termite
-  - termite-terminfo
   - the_silver_searcher
   - tmux
   - traceroute

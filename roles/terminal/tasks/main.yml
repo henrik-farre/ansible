@@ -1,0 +1,35 @@
+---
+- name: Check if configuration directory exist as a symlink
+  stat:
+    path: "{{ ansible_user_dir }}/.config/termite"
+  register: termite_confdir_out
+  tags:
+    - terminal
+
+- name: Remove existing symlink
+  file:
+    path: "{{ ansible_user_dir }}/.config/termite"
+    state: absent
+  when:
+    - termite_confdir_out.stat.islnk is defined
+    - termite_confdir_out.stat.islnk
+  tags:
+    - terminal
+
+- name: Ensure configuration directory exist
+  file:
+    path: "{{ ansible_user_dir }}/.config/termite"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - terminal
+
+- name: Write ~/.config/termite/config
+  template:
+    src: config.j2
+    dest: "{{ ansible_user_dir }}/.config/termite/config"
+    owner: "{{ ansible_user_id }}"
+    mode: 0644
+  tags:
+    - terminal
