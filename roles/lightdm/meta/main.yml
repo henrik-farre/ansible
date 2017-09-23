@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: packages, packages: ['lightdm', 'lightdm-gtk-greeter', 'archlinux-wallpaper', 'arc-gtk-theme'] }
+  - { role: services, services: ['lightdm'] }

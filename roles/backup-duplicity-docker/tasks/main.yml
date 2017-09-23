@@ -1,0 +1,228 @@
+---
+- block:
+  - name: Remove local installed duplicity and dependencies
+    become: true
+    pacman:
+      name: "{{ item }}"
+      state: absent
+    with_items:
+      - duplicity
+      - python2-fasteners
+      - python2-monotonic
+    tags:
+      - backup
+
+  - name: Remove old backup scripts, cronjob and directories
+    become: true
+    file:
+      path: "{{ item }}"
+      state: absent
+    with_items:
+      - /usr/local/sbin/backup-clean.sh
+      - /usr/local/sbin/backup-collection-status.sh
+      - /usr/local/sbin/backup-list.sh
+      - /usr/local/sbin/backup-remove-old.sh
+      - /usr/local/sbin/backup-restore.sh
+      - /usr/local/sbin/backup.sh
+      - /usr/local/sbin/backup-verify.sh
+      - /usr/local/sbin/dump-information.sh
+      - "/usr/local/sbin/{{ inventory_hostname }}-backup.sh"
+      - /usr/local/sbin/includes.sh
+      - /usr/local/sbin/user-notification.sh
+      - /root/.duplicity
+      - /usr/local/etc/duplicity
+      - /etc/cron.d/1backup
+      - /usr/local/etc/rdiff-backup
+      - /usr/local/etc/duplicity-docker/{{ inventory_hostname }}.yml
+      - /var/log/backup
+      - /var/log/duplicity.log
+      - /var/log/duplicity.log.1.gz
+      - /var/log/duplicity.log.2.gz
+      - /var/log/duplicity.log.3.gz
+      - /var/log/duplicity.log.4.gz
+    tags:
+      - backup
+
+  - name: Ensure directory exist
+    become: true
+    file:
+      path: /usr/local/etc/duplicity-docker
+      mode: 0750
+      owner: root
+      state: directory
+    tags:
+      - backup
+
+  - name: Ensure docker compose file exists for current host
+    become: true
+    template:
+      src: "usr/local/etc/duplicity-docker/duplicity.yml.j2"
+      dest: "/usr/local/etc/duplicity-docker/duplicity.yml"
+      mode: 0640
+      owner: root
+    tags:
+      - backup
+
+  - name: Install directory excludes
+    become: true
+    copy:
+      src: "excludes/{{ item.src }}"
+      dest: "{{ item.dest }}/.duplicity_exclude"
+      owner: root
+      mode: 0400
+    with_items:
+      - "{{ duplicity.excludes }}"
+    when:
+      - duplicity.excludes is defined
+
+  - name: Install ssh config and keys
+    become: true
+    copy:
+      src: "root/dot.ssh/{{ item }}"
+      dest: "/root/.ssh/{{ item }}"
+      owner: root
+      group: root
+      mode: 0400
+    with_items:
+      - config
+      - id_rsa.backup
+      - id_rsa.backup.pub
+    tags:
+      - backup
+
+  - name: Import ssh host key
+    become: true
+    known_hosts:
+      path: /root/.ssh/known_hosts
+      name: "{{ duplicity.remote_host }}"
+      key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ duplicity.remote_host }}') }}"
+    tags:
+      - backup
+
+  - name: GPG config
+    become: true
+    copy:
+      content: |
+        pinentry-mode loopback
+      dest: "/root/.gnupg/gpg.conf"
+      owner: root
+      group: root
+      mode: 0400
+    tags:
+      - backup
+
+  - name: Import gpg keys, devault
+    become: true
+    copy:
+      src: "root/gpg/private.asc.vault"
+      dest: "/root/.gnupg/private.asc"
+      owner: root
+      group: root
+      mode: 0400
+    tags:
+      - backup
+
+  - name: Import ownertrust, devault
+    become: true
+    copy:
+      src: "root/gpg/ownertrust.vault"
+      dest: "/root/.gnupg/ownertrust"
+      owner: root
+      group: root
+      mode: 0400
+    tags:
+      - backup
+
+  - name: Import gpg keys
+    become: true
+    shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc
+    args:
+      chdir: "/root/.gnupg"
+    tags:
+      - backup
+
+  - name: Import ownertrust
+    become: true
+    shell: gpg --import-ownertrust ownertrust
+    args:
+      chdir: "/root/.gnupg"
+    tags:
+      - backup
+
+  - name: Install systemd services
+    become: yes
+    template:
+      src: "etc/systemd/system/duplicity-docker-tpl.service.j2"
+      dest: "/etc/systemd/system/duplicity-docker-{{ item }}.service"
+      owner: root
+      mode: 0640
+    with_items:
+      - backup
+      - clean
+      - remove-old
+    tags:
+      - backup
+
+  - name: Install systemd timers
+    become: yes
+    template:
+      src: "etc/systemd/system/duplicity-docker-tpl.timer.j2"
+      dest: "/etc/systemd/system/duplicity-docker-{{ item }}.timer"
+      owner: root
+      mode: 0640
+    with_items:
+      - backup
+      - clean
+      - remove-old
+    tags:
+      - backup
+
+  - name: Enable systemd services
+    become: yes
+    systemd:
+      name: "duplicity-docker-{{ item }}.service"
+      enabled: yes
+      daemon_reload: yes
+    with_items:
+      - backup
+      - clean
+      - remove-old
+    tags:
+      - backup
+
+  - name: Enable systemd timers
+    become: yes
+    systemd:
+      name: "duplicity-docker-{{ item }}.timer"
+      enabled: yes
+      state: started
+      daemon_reload: yes
+    with_items:
+      - backup
+      - clean
+      - remove-old
+    tags:
+      - backup
+
+  always:
+  - name: Cleanup git clone
+    file:
+      path: /tmp/dupebackup
+      state: absent
+    delegate_to: localhost
+    tags:
+      - backup
+  - name: Cleanup gpg keys
+    become: yes
+    file:
+      path: "/root/.gnupg/private.asc"
+      state: absent
+    tags:
+      - backup
+  - name: Cleanup ownertrust
+    become: yes
+    file:
+      path: "/root/.gnupg/ownertrust"
+      state: absent
+    tags:
+      - backup

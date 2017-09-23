@@ -1,0 +1,11 @@
+[Unit]
+Description=Duplicity Backup running in docker: performs {{ item }}
+Requires=docker.service
+After=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+
+ExecStartPre=/usr/bin/rm -f /var/cache/duplicity/*/lockfile.lock
+ExecStart=/usr/bin/docker-compose -f /usr/local/etc/duplicity-docker/duplicity.yml run --rm duplicity {{ item }}

@@ -6,12 +6,15 @@
   tags:
     - vim
 
-- name: Create backup dir
+- name: Create backups and swaps dirs
   file:
-    path: "{{ ansible_user_dir }}/.config/nvim/backups"
+    path: "{{ ansible_user_dir }}/.config/nvim/{{ item }}"
     owner: "{{ ansible_user_id }}"
     state: directory
     mode: 0700
+  with_items:
+    - backups
+    - swaps
   tags:
     - vim
 

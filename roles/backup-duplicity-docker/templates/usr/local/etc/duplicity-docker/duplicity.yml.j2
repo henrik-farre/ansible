@@ -1,0 +1,20 @@
+---
+version: '3'
+services:
+  duplicity:
+    image: rockhopperdk/duplicity-docker:latest
+    hostname: {{ ansible_fqdn }}
+    environment:
+      - PASSPHRASE={{ duplicity.passphrase }}
+      - COMMON_OPTS=--encrypt-key {{ duplicity.encrypt_key }} --archive-dir /var/cache/duplicity --allow-source-mismatch
+      - BACKUP_OPTS=--full-if-older-than 1M --volsize 1024 --asynchronous-upload
+      - EXCLUDE_OPTS=--exclude-device-files --exclude-other-filesystems --exclude-filelist=/etc/duplicity/exclude-common
+      - REMOTE_DIR={{ duplicity.remote_dir_base }}/{{ inventory_hostname }}
+      - REMOVE_OPTS=remove-all-inc-of-but-n-full 6 --force
+    volumes:
+{% for volume in duplicity.volumes %}
+      - /{{ volume }}:/backup/{{ volume|replace("/", "-") }}:ro
+{% endfor %}
+      - /root/.ssh/:/root/.ssh/:ro
+      - /root/.gnupg:/root/.gnupg
+      - /var/cache/duplicity:/var/cache/duplicity

@@ -1,0 +1,43 @@
+---
+- name: Ensure systemd user directory exits
+  file:
+    path: "{{ansible_user_dir}}/.config/systemd/user/"
+    state: directory
+    owner: "{{ ansible_user_id }}"
+    mode: 0700
+  tags:
+    - systemd-user-units
+    - xcape
+
+- name: Ensure needed service files exist
+  copy:
+    content: |
+      # Managed by Ansible
+      [Unit]
+      Description=Xcape Daemon
+      After=graphical.target
+
+      [Service]
+      Type=forking
+      Environment=DISPLAY=:0
+      ExecStart=/usr/bin/xcape -e "Control_L=Escape"
+      Restart=always
+      RestartSec=1
+
+      [Install]
+      WantedBy=default.target
+    dest: "{{ ansible_user_dir }}/.config/systemd/user/xcape.service"
+  tags:
+    - systemd-user-units
+    - xcape
+
+- name: Ensure services are enabled
+  systemd:
+    name: xcape.service
+    state: started
+    enabled: yes
+    daemon_reload: yes
+    user: yes
+  tags:
+    - systemd-user-units
+    - xcape

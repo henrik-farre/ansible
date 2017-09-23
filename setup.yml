@@ -30,6 +30,7 @@
 - hosts: desktop
   roles:
     - xorg
+    - lightdm
     - desktop
     - fonts
     - cinnamon
@@ -38,6 +39,7 @@
     - samba-client
     - node
     - firefox
+    - xcape
     - systemd-user-units
     - { role: yaourt-packages, packages: "{{ aur_packages }}" }
   tasks:
@@ -46,11 +48,15 @@
         path: "{{ item }}"
         state: absent
       with_items:
-        - "{{ansible_user_dir}}/.config/xfce
-        - "{{ansible_user_dir}}/.xfce4-session.verbose-log
+        - "{{ansible_user_dir}}/.config/xfce"
+        - "{{ansible_user_dir}}/.xfce4-session.verbose-log"
         - "{{ansible_user_dir}}/.config/autostart/xfce4-settings-helper-autostart.desktop"
         - "{{ansible_user_dir}}/.config/autostart/xfce4-tips-autostart.desktop"
         - "{{ansible_user_dir}}/.config/autostart/xfce4-power-manager.desktop"
+
+- hosts: htpc
+  roles:
+    - kodi-shutdown-check
 
 - hosts: laptop
   roles:

@@ -1,10 +1,25 @@
 ---
-backup_cron_dump: "40 17 * * *"
-backup_cron_clean: "50 17 * * 0"
-backup_cron_remove: "10 18 * * *"
-backup_cron: "50 18 * * *"
+duplicity:
+  dump: "daily"
+  clean: "weekly"
+  remove-old: "weekly"
+  backup: "18:50"
+  volumes:
+    - home
+    - usr/local
+    - etc
+    - var
+  excludes:
+    - { src: "home", dest: "/home" }
+    - { src: "var", dest: "/var" }
+  passphrase: "{{ vault_duplicity.passphrase }}"
+  encrypt_key: "{{ vault_duplicity.encrypt_key }}"
+  remote_dir_base: "{{ vault_duplicity.remote_dir_base }}"
+  remote_host: "{{ vault_duplicity.remote_host }}"
+
 networks:
   - "ectoplasma_home_wifi"
+
 modules_modprobe_d:
   - 00-blacklist.conf
 

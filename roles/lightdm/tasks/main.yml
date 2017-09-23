@@ -1,0 +1,8 @@
+---
+- name: Ensure lightdm-gtk-greeter is configured
+  become: yes
+  copy:
+    dest: /etc/lightdm/lightdm-gtk-greeter.conf
+    src: etc/lightdm/lightdm-gtk-greeter.conf
+  tags:
+    - lightdm

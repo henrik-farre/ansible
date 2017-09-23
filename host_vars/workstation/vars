@@ -1,12 +1,27 @@
 ---
+duplicity:
+  dump: "daily"
+  clean: "weekly"
+  remove-old: "weekly"
+  backup: "11:40"
+  volumes:
+    - home
+    - usr/local
+    - etc
+    - var
+  excludes:
+    - { src: "home", dest: "/home" }
+    - { src: "var", dest: "/var" }
+  passphrase: "{{ vault_duplicity.passphrase }}"
+  encrypt_key: "{{ vault_duplicity.encrypt_key }}"
+  remote_dir_base: "{{ vault_duplicity.remote_dir_base }}"
+  remote_host: "{{ vault_duplicity.remote_host }}"
+
 bootloader: "systemd-boot"
-backup_cron_dump: "30 11 * * *"
-backup_cron_clean: "50 17 * * 0"
-backup_cron_remove: "10 18 * * *"
-backup_cron_clean_lockfile: "39 11 * * *"
-backup_cron: "40 11 * * *"
+
 host_packages:
   - openldap
+
 networks:
   - "workstation_home_wifi"
   - "workstation_work_wifi"

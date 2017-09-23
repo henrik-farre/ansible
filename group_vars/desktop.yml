@@ -74,8 +74,6 @@ desktop_packages:
   - libreoffice-fresh
   - libreoffice-fresh-da
   - lftp
-  - lightdm
-  - lightdm-gtk-greeter
   - linux
   # Needed for DKMS
   - linux-headers
@@ -87,6 +85,7 @@ desktop_packages:
   - nmap
   - numix-gtk-theme
   - ntfs-3g
+  - inotify-tools
   - pam
   - pambase
   - parted
