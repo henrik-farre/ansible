@@ -8,3 +8,13 @@
     state: present
   tags:
     - bluetooth
+
+- name: Allow access to dbus org.mpris interface
+  become: yes
+  lineinfile:
+    name: /etc/dbus-1/system.d/bluetooth.conf
+    line: '    <allow send_destination="org.mpris"/>'
+    insertafter: '<policy group="lp">'
+    state: present
+  tags:
+    - bluetooth
