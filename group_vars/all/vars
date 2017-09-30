@@ -9,7 +9,6 @@ host_services: []
 host_packages: []
 host_uninstalled_packages:
   - acpid
-  - dmxproto
   - exo
   - garcon
   - gstreamer0.10
@@ -23,7 +22,6 @@ host_uninstalled_packages:
   - gstreamer0.10-ugly
   - gtk-xfce-engine
   - i7z-git
-  - libdmx
   - libxfce4ui
   - light-locker
   - thunar
@@ -47,7 +45,6 @@ host_uninstalled_packages:
   - xfdesktop
   - xfwm4
   - xfwm4-themes
-  - xorg-apps
   - xorg-iceauth
   - xorg-server-utils
   - xorg-sessreg
