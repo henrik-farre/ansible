@@ -5,6 +5,7 @@
     name: "{{ packages }}"
     update_cache: yes
     state: latest
-  when: ansible_distribution == "Archlinux"
+  when:
+      - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
   tags:
     - packages
