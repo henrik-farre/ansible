@@ -1,8 +1,7 @@
+- **/var/cache
 - **/var/lib/docker
+- **/var/lib/mythtv/mythweb
 - **/var/lib/pacman
-- **/var/cache/duplicity
-- **/var/cache/pacman
 - **/var/log
 - **/var/run
 - **/var/tmp
-- **/var/lib/mythtv/mythweb
