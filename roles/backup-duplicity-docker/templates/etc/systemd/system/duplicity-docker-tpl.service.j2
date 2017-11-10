@@ -8,4 +8,4 @@ Type=oneshot
 RemainAfterExit=yes
 
 ExecStartPre=/usr/bin/rm -f /var/cache/duplicity/*/lockfile.lock
-ExecStart=/usr/bin/docker-compose -f /usr/local/etc/duplicity-docker/duplicity.yml run --rm duplicity {{ item }}
+ExecStart=/usr/bin/docker-compose -f /usr/local/etc/duplicity-docker/duplicity.yml run --rm --name "duplicity-docker-{{item}}" duplicity {{ item }}
