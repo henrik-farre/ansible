@@ -2,6 +2,7 @@
 Description=Duplicity Backup running in docker: performs {{ item }}
 Requires=docker.service
 After=docker.service
+OnFailure=status-email-enrique@%n.service
 
 [Service]
 Type=oneshot

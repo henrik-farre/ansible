@@ -49,6 +49,7 @@
       path: /usr/local/etc/duplicity-docker
       mode: 0750
       owner: root
+      group: docker
       state: directory
     tags:
       - backup
@@ -75,6 +76,46 @@
       - "{{ duplicity.excludes }}"
     when:
       - duplicity.excludes is defined
+
+  - name: Ensure failed service email script exists
+    become:
+    copy:
+      content: |
+        #!/bin/bash
+
+        /usr/bin/sendmail -t <<ERRMAIL
+        To: $1
+        From: systemd <root@$HOSTNAME>
+        Subject: $2
+        Content-Transfer-Encoding: 8bit
+        Content-Type: text/plain; charset=UTF-8
+
+        $(systemctl status --full "$2")
+        ERRMAIL
+      dest: /usr/local/bin/systemd-email
+      mode: 0750
+      owner: root
+      group: ssmtp
+    tags:
+      - backup
+
+  - name: Ensure failed service unit exists
+    become:
+    copy:
+      content: |
+        [Unit]
+        Description=status email for %i to user
+
+        [Service]
+        Type=oneshot
+        ExecStart=/usr/local/bin/systemd-email henrik.farre@gmail.com %i
+        User=root
+        Group=systemd-journal
+      dest: /etc/systemd/system/status-email-enrique@.service
+      mode: 0640
+      owner: root
+    tags:
+      - backup
 
   - name: Install ssh config and keys
     become: true
