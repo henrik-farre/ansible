@@ -14,7 +14,7 @@
     - sshd
     - ssh-keys
     - ssh-client
-    - backup
+    - backup-duplicity-docker
     - system-maintenance
     - global-aliases
     - misc-setup
