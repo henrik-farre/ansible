@@ -1,3 +1,0 @@
----
-dependencies:
-  - { role: packages, packages: ['git', 'duplicity', 'cronie'] }
