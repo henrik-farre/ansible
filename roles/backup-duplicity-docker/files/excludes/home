@@ -1,5 +1,6 @@
 - **/.ApacheDirectoryStudio
 - **/.VirtualBox
+- **/.Xauthority
 - **/.adobe
 - **/.btsync
 - **/.cache
@@ -7,17 +8,40 @@
 - **/.config/google-chrome
 - **/.config/libreoffice
 - **/.config/nvim
+- **/.config/pulse/cookie
 - **/.dbus
 - **/.dolphin-emu
 - **/.dotfiles
 - **/.eclipse
 - **/.fonts
 - **/.gem
+- **/.gnupg/*.lock
+- **/.gnupg/.#*
+- **/.gnupg/gpg-agent-info-*
 - **/.gnupg/random_seed
+- **/.gnupg/rnd
 - **/.gvfs
 - **/.kvm
 - **/.local/share/Steam
+- **/.local/share/Trash
+- **/.local/share/gvfs-metadata
+- **/.local/share/recently-used.xbel*
 - **/.macromedia
+- **/.mozilla/firefox/*/.parentlock
+- **/.mozilla/firefox/*/Cache
+- **/.mozilla/firefox/*/XPC.mfasl
+- **/.mozilla/firefox/*/XUL.mfasl
+- **/.mozilla/firefox/*/blocklist.xml
+- **/.mozilla/firefox/*/compreg.dat
+- **/.mozilla/firefox/*/extensions.cache
+- **/.mozilla/firefox/*/extensions.ini
+- **/.mozilla/firefox/*/extensions.rdf
+- **/.mozilla/firefox/*/extensions.sqlite
+- **/.mozilla/firefox/*/extensions.sqlite-journal
+- **/.mozilla/firefox/*/minidumps
+- **/.mozilla/firefox/*/urlclassifier3.sqlite
+- **/.mozilla/firefox/*/xpti.dat
+- **/.mozilla/firefox/Crash Reports
 - **/.nv
 - **/.pdepend
 - **/.steam
@@ -25,12 +49,18 @@
 - **/.ufoai
 - **/.vagrant.d
 - **/.wine
+- **/.xsession-errors
+- **/.xsession-errors.old
+- **/.zsh/cache
 - **/Documents/Zim
 - **/Downloads
 - **/Emulation
+- **/FiraxisLive
+- **/Hentninger
 - **/Media/
 - **/StarCraft II
 - **/VirtualBox
 - **/VirtualBox VMs
 - **/remote_mounts
 - **/tmp/
+- **/.openra
