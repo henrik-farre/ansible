@@ -1,0 +1,8 @@
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Update system packages
+      pacman:
+        update_cache: yes
+        upgrade: yes
