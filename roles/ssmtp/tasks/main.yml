@@ -37,3 +37,16 @@
     mode: 0640
   tags:
     - ssmtp
+
+- name: Ensure users are members of ssmtp group
+  become: yes
+  user:
+    name: "{{ item }}"
+    groups: ssmtp
+    append: yes
+  with_items:
+    - "{{ groups_to_users.ssmtp }}"
+  tags:
+    - ssmtp
+  when:
+    - groups_to_users.ssmtp is defined

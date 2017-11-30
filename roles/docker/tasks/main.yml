@@ -1,13 +1,4 @@
 ---
-- name: Add user to docker group
-  become: yes
-  user:
-    name: "{{ ansible_user_id }}"
-    groups: docker
-    append: yes
-  tags:
-    - docker
-
 - name: Ensure unused images/volumes and containers are cleaned
   become: yes
   cron:
@@ -18,3 +9,16 @@
     cron_file: "docker_prune"
   tags:
     - docker
+
+- name: Ensure users are members of docker group
+  become: yes
+  user:
+    name: "{{ item }}"
+    groups: docker
+    append: yes
+  with_items:
+    - "{{ groups_to_users.docker }}"
+  tags:
+    - docker
+  when:
+    - groups_to_users.docker is defined
