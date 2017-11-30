@@ -14,13 +14,13 @@
     - sshd
     - ssh-keys
     - ssh-client
-    - backup-duplicity-docker
     - system-maintenance
     - global-aliases
     - misc-setup
     - dotfiles
     - vim
     - docker
+    - backup-duplicity-docker
     - php
     - fuse
     - { role: packages, packages: "{{ host_packages }}" }
