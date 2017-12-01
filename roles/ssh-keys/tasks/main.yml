@@ -21,6 +21,8 @@
     - { src: "id_rsa.storagebox.pub", dest: "id_rsa.storagebox.pub" }
     - { src: "id_rsa.bitbucket.vault", dest: "id_rsa.bitbucket" }
     - { src: "id_rsa.bitbucket.pub", dest: "id_rsa.bitbucket.pub" }
+    - { src: "id_ed25519.awx.vault", dest: "id_ed25519.awx" }
+    - { src: "id_ed25519.awx.pub",   dest: "id_ed25519.awx.pub" }
   tags:
     - ssh-keys
 
