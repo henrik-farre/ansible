@@ -8,6 +8,15 @@
   tags:
     - conky
 
+- name: Ensure that the ~/.config/autostart directory exists
+  file:
+    path: "{{ ansible_user_dir }}/.config/autostart"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - conky
+
 - name: Write ~/.config/conky/conkyrc
   template:
     src: conkyrc.j2
