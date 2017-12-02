@@ -3,4 +3,10 @@
   hosts: all
   become: no
   tasks:
-    command: /usr/bin/ssh-add -l
+    - name: test ssh
+      command: /usr/bin/ssh-add -l
+      register: output
+
+    - name: output
+      debug:
+        var: output
