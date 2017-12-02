@@ -1,4 +1,6 @@
 ---
-- hosts: all
+- name: Test ssh
+  hosts: all
+  become: no
   tasks:
-    command: ssh-add -l
+    command: /usr/bin/ssh-add -l
