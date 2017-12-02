@@ -1,12 +1,5 @@
 ---
-- name: test ssh
-  command: /usr/bin/ssh-add -l
-  register: ssh_output
-
-- name: output
-  debug:
-    var: ssh_output
-
+# As this git repository is cloned using ssh, we need to have ssh-agent forwarded as defined in ansible.cfg
 - name: Clone dot files
   git:
     repo: git@github.com:henrik-farre/dotfiles.git
