@@ -7,6 +7,15 @@
   tags:
     - zim
 
+- name: Ensure that the ~/.config/zim directory exists
+  file:
+    path: "{{ ansible_user_dir }}/.config/zim"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - conky
+
 - name: Ensure notebook config exists
   copy:
     content: |
