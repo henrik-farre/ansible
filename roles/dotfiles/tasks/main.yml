@@ -1,4 +1,12 @@
 ---
+- name: test ssh
+  command: /usr/bin/ssh-add -l
+  register: ssh_output
+
+- name: output
+  debug:
+    var: ssh_output
+
 - name: Clone dot files
   git:
     repo: git@github.com:henrik-farre/dotfiles.git
