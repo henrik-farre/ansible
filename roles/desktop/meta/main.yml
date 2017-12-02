@@ -1,3 +1,0 @@
----
-dependencies:
-  - { role: packages, packages: "{{ desktop_packages }}" }

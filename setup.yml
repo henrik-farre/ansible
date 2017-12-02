@@ -31,7 +31,7 @@
   roles:
     - xorg
     - lightdm
-    - desktop
+    - { role: packages, packages: "{{ desktop_packages }}" }
     - fonts
     - cinnamon
     - conky
