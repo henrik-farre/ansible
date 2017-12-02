@@ -20,7 +20,7 @@
     - dotfiles
     - vim
     - docker
-    - backup-duplicity-docker
+    - { role: backup-duplicity-docker, when: duplicity is defined }
     - php
     - fuse
     - { role: packages, packages: "{{ host_packages }}" }
