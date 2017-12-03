@@ -34,7 +34,6 @@
 - name: Ensure services are enabled
   systemd:
     name: xcape.service
-    state: started
     enabled: yes
     daemon_reload: yes
     user: yes
