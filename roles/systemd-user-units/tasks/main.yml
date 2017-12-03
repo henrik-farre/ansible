@@ -28,7 +28,6 @@
 - name: Ensure services are enabled
   systemd:
     name: update-if-online.service
-    state: started
     enabled: yes
     daemon_reload: yes
     user: yes
