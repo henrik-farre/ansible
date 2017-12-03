@@ -2,8 +2,7 @@
 - name: Copy default config
   become: yes
   copy:
-    remote_src: True
-    src: /etc/samba/smb.conf.default
+    src: etc/samba/smb.conf
     dest: /etc/samba/smb.conf
     owner: root
     group: root
