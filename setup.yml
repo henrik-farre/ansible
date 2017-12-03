@@ -41,6 +41,7 @@
     - firefox
     - xcape
     - systemd-user-units
+    - terminal
     - { role: yaourt-packages, packages: "{{ aur_packages }}" }
   tasks:
     - name: Ensure files does not exist
