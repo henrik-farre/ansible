@@ -1,0 +1,7 @@
+- name: Install packages from AUR
+  become: yes
+  command: pacaur -S --noconfirm "{{ item }}"
+  with_items:
+    - "{{ packages }}"
+  tags:
+    - aur-packages

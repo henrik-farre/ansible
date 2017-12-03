@@ -42,7 +42,8 @@
     - xcape
     - systemd-user-units
     - terminal
-    - { role: yaourt-packages, packages: "{{ aur_packages }}" }
+    - aur-helper
+    - { role: aur-packages, packages: "{{ aur_packages }}" }
   tasks:
     - name: Ensure files does not exist
       file:
@@ -65,5 +66,5 @@
 
 - hosts: macbook
   roles:
-    - { role: yaourt-packages, packages: ['mbpfan-git', 'linux-macbook'] }
+    - { role: aur-packages, packages: ['mbpfan-git', 'linux-macbook'] }
     - { role: services, services: ['mbpfan'] }
