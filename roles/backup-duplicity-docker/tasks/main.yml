@@ -85,7 +85,7 @@
 
         /usr/bin/sendmail -t <<ERRMAIL
         To: $1
-        From: systemd <root@$HOSTNAME>
+        From: systemd on $HOSTNAME <root@$HOSTNAME>
         Subject: $2
         Content-Transfer-Encoding: 8bit
         Content-Type: text/plain; charset=UTF-8
@@ -112,7 +112,7 @@
         User=root
         Group=systemd-journal
       dest: /etc/systemd/system/status-email-enrique@.service
-      mode: 0640
+      mode: 0644
       owner: root
     tags:
       - backup
@@ -197,7 +197,7 @@
       src: "etc/systemd/system/duplicity-docker-tpl.service.j2"
       dest: "/etc/systemd/system/duplicity-docker-{{ item }}.service"
       owner: root
-      mode: 0640
+      mode: 0644
     with_items:
       - backup
       - clean
