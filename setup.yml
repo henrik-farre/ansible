@@ -43,6 +43,7 @@
     - systemd-user-units
     - terminal
     - aur-helper
+    - cups
     - { role: aur-packages, packages: "{{ aur_packages }}" }
   tasks:
     - name: Ensure files does not exist
