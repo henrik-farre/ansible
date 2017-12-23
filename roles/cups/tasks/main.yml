@@ -29,7 +29,7 @@
     path: /tmp/brother-hl1210w
     state: directory
   tags:
-      - cups
+    - cups
 
 # Fix buggy PKGBUILD at: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=brother-hl1210w
 - name: Brother HL-1210w Driver | Ensure correct PKGBUILD exists
@@ -67,6 +67,13 @@
   args:
     chdir: /tmp/brother-hl1210w/
     creates: /opt/brother/Printers/HL1210W/cupswrapper/brcupsconfig4
+  tags:
+    - cups
+
+- name: Brother HL-1210w Driver | Cleanup
+  file:
+    path: /tmp/brother-hl1210w
+    state: absent
   tags:
     - cups
 
