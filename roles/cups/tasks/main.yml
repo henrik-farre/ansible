@@ -5,6 +5,8 @@
     dest: /etc/papersize
     content: |
       a4
+  tags:
+    - cups
 
 - name: Ensure admin authentication through PolicyKit
   become: yes
@@ -19,6 +21,8 @@
       });
     mode: 0600
     owner: root
+  tags:
+    - cups
 
 # Fix buggy PKGBUILD at: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=brother-hl1210w
 - name: Brother HL-1210w Driver | Ensure correct PKGBUILD exists
@@ -48,12 +52,16 @@
         cp "$srcdir/opt/brother/Printers/HL1210W/cupswrapper/brother_lpdwrapper_HL1210W"  "$pkgdir/usr/lib/cups/filter/brother_lpdwrapper_HL1210W"
         cp -r "$srcdir/opt/" "$pkgdir/opt/"
       }
+  tags:
+    - cups
 
 - name: Brother HL-1210w Driver | Build and install using makepkg
   command: makepkg -sci
   args:
     chdir: /tmp/brother-hl1210w/
     creates: /opt/brother/Printers/HL1210W/cupswrapper/brcupsconfig4
+  tags:
+    - cups
 
 - name: Ensure Cups daemon is enabled and started
   become: yes
@@ -61,6 +69,8 @@
     name: org.cups.cupsd.service
     state: started
     enabled: yes
+  tags:
+    - cups
 
 - name: Ensure users are members of sys group
   become: yes
