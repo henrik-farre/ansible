@@ -24,6 +24,13 @@
   tags:
     - cups
 
+- name: Brother HL-1210w Driver | Ensure build dir exists
+  file:
+    path: /tmp/brother-hl1210w
+    state: directory
+  tags:
+      - cups
+
 # Fix buggy PKGBUILD at: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=brother-hl1210w
 - name: Brother HL-1210w Driver | Ensure correct PKGBUILD exists
   copy:
