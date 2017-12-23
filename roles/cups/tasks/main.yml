@@ -63,7 +63,7 @@
     - cups
 
 - name: Brother HL-1210w Driver | Build and install using makepkg
-  command: makepkg -sci
+  command: makepkg -sci --noconfirm
   args:
     chdir: /tmp/brother-hl1210w/
     creates: /opt/brother/Printers/HL1210W/cupswrapper/brcupsconfig4
