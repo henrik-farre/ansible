@@ -1,0 +1,7 @@
+---
+- name: Ensure Cups daemon is enabled and started
+  become: yes
+  service:
+    name: org.cups.cupsd.service
+    state: started
+    enabled: yes
