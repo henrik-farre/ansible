@@ -22,3 +22,20 @@
     name: Synergy
   tags:
     - firewall
+
+- name: Allow Steam Streaming
+  become: yes
+  ufw:
+    rule: allow
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+  tags:
+    - firewall
+  with_items:
+    - {port: 27031, proto: udp}
+    - {port: 27036, proto: udp}
+    - {port: 27036, proto: tcp}
+    - {port: 27037, proto: tcp}
+  when:
+    - ansible_hostname == "firehouse"
+
