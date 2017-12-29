@@ -14,3 +14,11 @@
     name: SSH
   tags:
     - firewall
+
+- name: Allow Synergys
+  become: yes
+  ufw:
+    rule: allow
+    name: Synergy
+  tags:
+    - firewall
