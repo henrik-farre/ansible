@@ -6,3 +6,10 @@
       pacman:
         update_cache: yes
         upgrade: yes
+
+    - name: Install neovim-remote
+      pip:
+        name: neovim-remote
+        extra_args: --user
+        executable: pip3
+        state: latest
