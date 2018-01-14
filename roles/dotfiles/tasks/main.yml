@@ -47,6 +47,7 @@
     - ".Xmodmap"
     - ".Xresources"
     - ".ackrc"
+    - ".ansible-lint"
     - ".bash_profile"
     - ".bashrc"
     - ".config/fontconfig/fonts.conf"
