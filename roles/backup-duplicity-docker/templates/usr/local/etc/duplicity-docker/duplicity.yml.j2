@@ -4,6 +4,7 @@ services:
   duplicity:
     image: rockhopperdk/duplicity-docker:latest
     hostname: {{ ansible_fqdn }}
+    command: duplicity {{ item }}
     environment:
       - PASSPHRASE={{ duplicity.passphrase }}
       - COMMON_OPTS=--encrypt-key {{ duplicity.encrypt_key }} --archive-dir /var/cache/duplicity --allow-source-mismatch
