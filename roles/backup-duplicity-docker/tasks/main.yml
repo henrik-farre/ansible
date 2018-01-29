@@ -34,6 +34,7 @@
       - /etc/cron.d/1backup
       - /usr/local/etc/rdiff-backup
       - /usr/local/etc/duplicity-docker/{{ inventory_hostname }}.yml
+      - /usr/local/etc/duplicity-docker/duplicity.yml
       - /var/log/backup
       - /var/log/duplicity.log
       - /var/log/duplicity.log.1.gz
@@ -54,14 +55,18 @@
     tags:
       - backup
 
-  - name: Ensure docker compose file exists for current host
+  - name: Ensure docker compose files exists for current host
     become: true
     template:
       src: "usr/local/etc/duplicity-docker/duplicity.yml.j2"
-      dest: "/usr/local/etc/duplicity-docker/duplicity.yml"
+      dest: "/usr/local/etc/duplicity-docker/duplicity-{{ item }}.yml"
       mode: 0640
       owner: root
       group: docker
+    with_items:
+      - backup
+      - clean
+      - remove-old
     tags:
       - backup
 
@@ -76,6 +81,8 @@
       - "{{ duplicity.excludes }}"
     when:
       - duplicity.excludes is defined
+    tags:
+      - backup
 
   - name: Ensure failed service email script exists
     become:
@@ -247,24 +254,24 @@
       - backup
 
   always:
-  - name: Cleanup git clone
-    file:
-      path: /tmp/dupebackup
-      state: absent
-    delegate_to: localhost
-    tags:
-      - backup
-  - name: Cleanup gpg keys
-    become: yes
-    file:
-      path: "/root/.gnupg/private.asc"
-      state: absent
-    tags:
-      - backup
-  - name: Cleanup ownertrust
-    become: yes
-    file:
-      path: "/root/.gnupg/ownertrust"
-      state: absent
-    tags:
-      - backup
+    - name: Cleanup git clone
+      file:
+        path: /tmp/dupebackup
+        state: absent
+      delegate_to: localhost
+      tags:
+        - backup
+    - name: Cleanup gpg keys
+      become: yes
+      file:
+        path: "/root/.gnupg/private.asc"
+        state: absent
+      tags:
+        - backup
+    - name: Cleanup ownertrust
+      become: yes
+      file:
+        path: "/root/.gnupg/ownertrust"
+        state: absent
+      tags:
+        - backup
