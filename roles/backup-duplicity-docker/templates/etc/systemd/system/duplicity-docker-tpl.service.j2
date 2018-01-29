@@ -7,4 +7,4 @@ ConditionPathExistsGlob=!/var/cache/duplicity/*/lockfile.lock
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/docker-compose -f /usr/local/etc/duplicity-docker/duplicity.yml run --rm --name "duplicity-docker-{{item}}" duplicity {{ item }}
+ExecStart=/usr/bin/docker-compose -f /usr/local/etc/duplicity-docker/duplicity-{{item}}.yml up duplicity
