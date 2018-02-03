@@ -59,6 +59,7 @@
     - ".gemrc"
     - ".git_template"
     - ".gitconfig"
+    - ".gitconfig-work"
     - ".gitignore"
     - ".inputrc"
     - ".jshintrc"
