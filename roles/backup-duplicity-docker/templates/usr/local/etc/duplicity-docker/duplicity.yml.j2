@@ -7,7 +7,7 @@ services:
     command: {{ item }}
     environment:
       - PASSPHRASE={{ duplicity.passphrase }}
-      - COMMON_OPTS=--encrypt-key {{ duplicity.encrypt_key }} --archive-dir /var/cache/duplicity --allow-source-mismatch
+      - COMMON_OPTS=--encrypt-key {{ duplicity.encrypt_key }} --archive-dir /var/cache/duplicity
       - BACKUP_OPTS=--full-if-older-than 1M --volsize 1024 --asynchronous-upload
       - EXCLUDE_OPTS=--exclude-device-files --exclude-other-filesystems --exclude-filelist=/etc/duplicity/exclude-common
       - REMOTE_DIR={{ duplicity.remote_dir_base }}/{{ inventory_hostname }}
