@@ -55,6 +55,8 @@
     tags:
       - backup
 
+    # Note "cmd" is for running other actions like "list", e.g.:
+    # docker-compose -f duplicity-cmd.yml run --rm duplicity list home
   - name: Ensure docker compose files exists for current host
     become: true
     template:
@@ -67,6 +69,7 @@
       - backup
       - clean
       - remove-old
+      - cmd
     tags:
       - backup
 
