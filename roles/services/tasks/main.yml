@@ -1,7 +1,8 @@
 ---
 - name: Reload systemd
   become: yes
-  command: systemctl daemon-reload
+  systemd:
+    deamon_reload: yes
   tags:
     - services
 
