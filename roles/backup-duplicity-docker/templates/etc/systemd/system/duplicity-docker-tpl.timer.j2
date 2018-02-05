@@ -4,6 +4,7 @@ Description=Duplicity: {{ item }}
 [Timer]
 OnCalendar={{ duplicity[item] }}
 Persistent=True
+RandomizedDelaySec=600
 
 [Install]
 WantedBy=timers.target
