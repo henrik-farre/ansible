@@ -4,12 +4,12 @@ services:
   duplicity:
     image: rockhopperdk/duplicity-docker:latest
     hostname: {{ ansible_fqdn }}
-    {%- if item == 'cmd' %}
+{% if item == 'cmd' %}
     stdin_open: true
     tty: true
-    {%- else %}
+{% else %}
     command: {{ item }}
-    {%- endif %}
+{% endif %}
     environment:
       - PASSPHRASE={{ duplicity.passphrase }}
       - COMMON_OPTS=--encrypt-key {{ duplicity.encrypt_key }} --archive-dir /var/cache/duplicity
