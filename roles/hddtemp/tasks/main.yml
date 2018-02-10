@@ -25,6 +25,7 @@
   with_dict: "{{ ansible_devices }}"
   when:
     - item.value.removable == "0"
+    - item.value.partitions
   tags:
     - hddtemp
   no_log: True
@@ -52,8 +53,28 @@
       ExecStart=/usr/bin/hddtemp -dF {{ non_removable_devices|join(' ') }}
     owner: root
     group: root
-    mode: 0750
+    mode: 0640
   when:
     - non_removable_devices|length > 1
+  tags:
+    - hddtemp
+
+- name: Ensure custom unit is removed if there are no devices
+  become: yes
+  file:
+    path: /etc/systemd/system/hddtemp.service.d/customexec.conf
+    state: absent
+  when:
+    - non_removable_devices|length == 0
+  tags:
+    - hddtemp
+
+- name: Ensure directory for custom unit is removed if there are no devices
+  become: yes
+  file:
+    path: /etc/systemd/system/hddtemp.service.d
+    state: absent
+  when:
+    - non_removable_devices|length == 0
   tags:
     - hddtemp
