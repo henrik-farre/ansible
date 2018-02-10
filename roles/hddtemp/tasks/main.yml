@@ -21,7 +21,7 @@
 
 - name: Build list of non-removable devices
   set_fact:
-    non_removable_devices: "{{non_removable_devices|default([]) + ['/dev/' ~ item.key] }}"
+    non_removable_devices: "{{ non_removable_devices|default([]) + ['/dev/' ~ item.key] }}"
   with_dict: "{{ ansible_devices }}"
   when:
     - item.value.removable == "0"
@@ -65,7 +65,7 @@
     path: /etc/systemd/system/hddtemp.service.d/customexec.conf
     state: absent
   when:
-    - non_removable_devices|length == 0
+    - non_removable_devices|length == 1
   tags:
     - hddtemp
 
@@ -75,6 +75,6 @@
     path: /etc/systemd/system/hddtemp.service.d
     state: absent
   when:
-    - non_removable_devices|length == 0
+    - non_removable_devices|length == 1
   tags:
     - hddtemp
