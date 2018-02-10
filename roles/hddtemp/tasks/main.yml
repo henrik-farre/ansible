@@ -19,6 +19,12 @@
   tags:
     - hddtemp
 
+- name: Ensure list of non-removeable devices is reset
+  set_fact:
+    non_removable_devices: []
+  tags:
+    - hddtemp
+
 - name: Build list of non-removable devices
   set_fact:
     non_removable_devices: "{{ non_removable_devices|default([]) + ['/dev/' ~ item.key] }}"
