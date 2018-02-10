@@ -18,3 +18,14 @@
   when: ansible_system_vendor == 'LENOVO'
   tags:
     - powersave
+
+- name: Ensure tlp is configured
+  become: yes
+  copy:
+    dest: /etc/default/tlp
+    src: etc/default/tlp
+    mode: 0644
+    owner: root
+    group: root
+  tags:
+    - powersave
