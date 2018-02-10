@@ -260,6 +260,8 @@
     - name: Ensure latest docker image is pulled
       docker_image:
         name: rockhopperdk/duplicity-docker:latest
+      tags:
+        - backup
 
     - name: Cleanup git clone
       file:
@@ -268,6 +270,7 @@
       delegate_to: localhost
       tags:
         - backup
+
     - name: Cleanup gpg keys
       become: yes
       file:
@@ -275,6 +278,7 @@
         state: absent
       tags:
         - backup
+
     - name: Cleanup ownertrust
       become: yes
       file:
