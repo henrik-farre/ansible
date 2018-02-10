@@ -28,7 +28,11 @@
     - item.value.partitions
   tags:
     - hddtemp
-  no_log: True
+  # no_log: True
+
+- name: Debugging
+  debug:
+    var: non_removable_devices
 
 - name: Ensure directory for custom unit exist
   become: yes
