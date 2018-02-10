@@ -1,0 +1,20 @@
+---
+- name: Ensure systemd-rfkill.* is masked
+  become: yes
+  systemd:
+    name: "{{ item }}"
+    masked: true
+  with_items:
+    - systemd-rfkill.service
+    - systemd-rfkill.socket
+  tags:
+    - powersave
+
+- name: Ensure acpi_call is installed on thinkpad hardware
+  become: yes
+  package:
+    name: acpi_call
+    state: present
+  when: ansible_system_vendor == 'LENOVO'
+  tags:
+    - powersave
