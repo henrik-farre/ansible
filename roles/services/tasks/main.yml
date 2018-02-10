@@ -2,7 +2,7 @@
 - name: Reload systemd
   become: yes
   systemd:
-    deamon_reload: yes
+    daemon_reload: yes
   tags:
     - services
 
