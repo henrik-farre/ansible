@@ -4,6 +4,7 @@
 - **/.adobe
 - **/.btsync
 - **/.cache
+- **/.composer
 - **/.config/composer
 - **/.config/google-chrome
 - **/.config/libreoffice
@@ -23,6 +24,8 @@
 - **/.gvfs
 - **/.kvm
 - **/.local/lib
+- **/.local/bin
+- **/.local/nodejs
 - **/.local/share/Steam
 - **/.local/share/Trash
 - **/.local/share/gvfs-metadata
