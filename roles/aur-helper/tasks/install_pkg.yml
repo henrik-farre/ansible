@@ -15,6 +15,7 @@
     repo: https://aur.archlinux.org/{{ aur_pkg }}.git
     dest: "{{ build_dir }}"
     accept_hostkey: yes
+    version: master
   when:
     - stat_pkg.stat.exists == False
   tags:

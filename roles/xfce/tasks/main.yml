@@ -30,6 +30,7 @@
   git:
     repo: https://github.com/dar5hak/Numix-Holo.git
     dest: "{{ ansible_user_dir }}/.themes/Numix-Holo"
+    version: master
   tags:
     - xfce
 

@@ -4,6 +4,7 @@
     git:
       repo: https://github.com/henrik-farre/kodi-shutdown-check.git
       dest: /tmp/kodi-shutdown-check
+      version: master
     tags:
       - kodi-shutdown-check
 

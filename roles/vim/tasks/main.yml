@@ -3,6 +3,7 @@
   git:
     repo: git@github.com:henrik-farre/vimrc.git
     dest: "{{ ansible_user_dir }}/.config/nvim"
+    version: master
   tags:
     - vim
 

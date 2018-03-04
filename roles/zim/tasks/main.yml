@@ -4,6 +4,7 @@
     repo: git@bitbucket.org:enrique/notes.git
     dest: "{{ ansible_user_dir }}/Documents/Zim"
     accept_hostkey: yes
+    version: master
   tags:
     - zim
 
