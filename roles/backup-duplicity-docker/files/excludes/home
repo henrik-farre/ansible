@@ -22,6 +22,7 @@
 - **/.gnupg/rnd
 - **/.gvfs
 - **/.kvm
+- **/.local/lib
 - **/.local/share/Steam
 - **/.local/share/Trash
 - **/.local/share/gvfs-metadata
@@ -43,6 +44,7 @@
 - **/.mozilla/firefox/*/xpti.dat
 - **/.mozilla/firefox/Crash Reports
 - **/.nv
+- **/.openra
 - **/.pdepend
 - **/.steam
 - **/.thumbnails
@@ -63,4 +65,3 @@
 - **/VirtualBox VMs
 - **/remote_mounts
 - **/tmp/
-- **/.openra
