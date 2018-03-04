@@ -32,9 +32,9 @@
       cron_file: kodi-shutdown
 
   always:
-  - name: Cleanup
-    file:
-      path: /tmp/kodi-shutdown-check
-      state: absent
-    tags:
-      - kodi-shutdown-check
+    - name: Cleanup
+      file:
+        path: /tmp/kodi-shutdown-check
+        state: absent
+      tags:
+        - kodi-shutdown-check
