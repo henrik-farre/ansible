@@ -34,9 +34,9 @@
       - fonts
 
   always:
-  - name: Cleanup
-    file:
-      path: /tmp/mononoki
-      state: absent
-    tags:
-      - fonts
+    - name: Cleanup
+      file:
+        path: /tmp/mononoki
+        state: absent
+      tags:
+        - fonts
