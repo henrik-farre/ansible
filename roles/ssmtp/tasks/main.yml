@@ -1,18 +1,17 @@
 ---
-- name: Ensure ssmtp group exists
+- name: Ensure mail group exists
   become: yes
   group:
-    name: ssmtp
+    name: mail
     state: present
   tags:
     - ssmtp
 
-- name: Secure ssmtp binary
+- name: Ensure old ssmtp group is removed
   become: yes
-  file:
-    path: /usr/bin/ssmtp
-    group: ssmtp
-    mode: 02755
+  group:
+    name: ssmtp
+    state: present
   tags:
     - ssmtp
 
@@ -22,7 +21,7 @@
     src: etc/ssmtp/ssmtp.conf.j2
     dest: /etc/ssmtp/ssmtp.conf
     owner: root
-    group: ssmtp
+    group: mail
     mode: 0640
   tags:
     - ssmtp
@@ -33,16 +32,16 @@
     src: etc/ssmtp/revaliases.j2
     dest: /etc/ssmtp/revaliases
     owner: root
-    group: ssmtp
+    group: mail
     mode: 0640
   tags:
     - ssmtp
 
-- name: Ensure users are members of ssmtp group
+- name: Ensure users are members of mail group
   become: yes
   user:
     name: "{{ item }}"
-    groups: ssmtp
+    groups: mail
     append: yes
   with_items:
     - "{{ groups_to_users.ssmtp }}"

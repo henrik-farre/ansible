@@ -105,7 +105,7 @@
       dest: /usr/local/bin/systemd-email
       mode: 0750
       owner: root
-      group: ssmtp
+      group: mail
     tags:
       - backup
 
