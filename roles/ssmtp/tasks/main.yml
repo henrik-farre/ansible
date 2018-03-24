@@ -11,7 +11,7 @@
   become: yes
   group:
     name: ssmtp
-    state: present
+    state: absent
   tags:
     - ssmtp
 
