@@ -88,7 +88,7 @@
       - backup
 
   - name: Ensure failed service email script exists
-    become:
+    become: true
     copy:
       content: |
         #!/bin/bash
@@ -110,7 +110,7 @@
       - backup
 
   - name: Ensure failed service unit exists
-    become:
+    become: true
     copy:
       content: |
         [Unit]
@@ -202,7 +202,7 @@
       - backup
 
   - name: Install systemd services
-    become: yes
+    become: true
     template:
       src: "etc/systemd/system/duplicity-docker-tpl.service.j2"
       dest: "/etc/systemd/system/duplicity-docker-{{ item }}.service"
@@ -216,7 +216,7 @@
       - backup
 
   - name: Install systemd timers
-    become: yes
+    become: true
     template:
       src: "etc/systemd/system/duplicity-docker-tpl.timer.j2"
       dest: "/etc/systemd/system/duplicity-docker-{{ item }}.timer"
@@ -230,7 +230,7 @@
       - backup
 
   - name: Enable systemd services
-    become: yes
+    become: true
     systemd:
       name: "duplicity-docker-{{ item }}.service"
       enabled: yes
@@ -243,7 +243,7 @@
       - backup
 
   - name: Enable systemd timers
-    become: yes
+    become: true
     systemd:
       name: "duplicity-docker-{{ item }}.timer"
       enabled: yes
@@ -273,7 +273,7 @@
         - backup
 
     - name: Cleanup gpg keys
-      become: yes
+      become: true
       file:
         path: "/root/.gnupg/private.asc"
         state: absent
@@ -281,7 +281,7 @@
         - backup
 
     - name: Cleanup ownertrust
-      become: yes
+      become: true
       file:
         path: "/root/.gnupg/ownertrust"
         state: absent
