@@ -1,8 +1,20 @@
 ---
+- name: Ensure users shell are installed
+  package:
+    name: "{{ item.shell }}"
+    state: present
+  with_items:
+    - "{{ users }}"
+  when:
+    - users is defined
+  # no_log: yes
+  tags:
+    - users
+
 - name: Ensure users exists
   user:
     name: "{{ item.name }}"
-    shell: /bin/zsh
+    shell: "/bin/{{ item.shell|default('bash') }}"
     home: "/{{ users_home_base }}/{{ item.name }}"
     groups: "{{ item.groups }}"
     password: "{{ item.password }}"
