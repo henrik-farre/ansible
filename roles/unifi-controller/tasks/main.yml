@@ -1,0 +1,11 @@
+---
+- name: Ensure unneeded services are stopped and disabled
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items:
+    - triggerhappy
+    - triggerhappy.socket
+    - avahi-daemon
+    - mongodb
