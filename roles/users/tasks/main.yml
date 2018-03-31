@@ -1,5 +1,6 @@
 ---
 - name: Ensure users exists
+  become: true
   user:
     name: "{{ item.name }}"
     shell: /bin/zsh
@@ -15,6 +16,7 @@
     - users
 
 - name: Set root password
+  become: true
   user:
     name: root
     password: "{{ root_password }}"
@@ -23,6 +25,7 @@
     - users
 
 - name: Clean up users
+  become: true
   user:
     name: "{{ item }}"
     state: absent
@@ -30,5 +33,6 @@
   with_items:
     - "cinnamon"
     - "cinnemon"
+    - "pi"
   tags:
     - users
