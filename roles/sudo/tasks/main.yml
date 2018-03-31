@@ -7,6 +7,8 @@
       %wheel ALL=(ALL) ALL
     dest: /etc/sudoers.d/10-grant-wheel-group
     validate: 'visudo -cf %s'
+  when:
+    - ansible_distribution != 'Debian'
   tags:
     - sudo
 
@@ -17,6 +19,8 @@
       Defaults editor="/bin/nvim"
     dest: /etc/sudoers.d/20-neovim-as-editor
     validate: 'visudo -cf %s'
+  when:
+    - ansible_distribution != 'Debian'
   tags:
     - sudo
 
@@ -40,5 +44,7 @@
       %wheel      ALL         =   (root)  NOPASSWD: POWER, PACMAN
     dest: /etc/sudoers.d/40-cmnd-aliases-for-wheel
     validate: 'visudo -cf %s'
+  when:
+    - ansible_distribution != 'Debian'
   tags:
     - sudo
