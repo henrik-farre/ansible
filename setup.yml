@@ -1,5 +1,5 @@
 ---
-- hosts: all
+- hosts: archlinux
   roles:
     - hostname
     - timezone
@@ -70,3 +70,13 @@
   roles:
     - { role: aur-packages, packages: ['mbpfan-git', 'linux-macbook'] }
     - { role: services, services: ['mbpfan'] }
+
+- hosts: unifi-controller
+  roles:
+    - hostname
+    - timezone
+    - ntp
+    - users
+    - sshd
+    - ssh-client
+    - unifi-controller
