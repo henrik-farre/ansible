@@ -4,12 +4,16 @@
   package:
     name: dirmngr
     state: latest
+  tags:
+    - unifi-controller
 
 - name: Ensure unifi apt key is available
   become: yes
   apt_key:
     keyserver: keyserver.ubuntu.com
     id: 06E85760C0A52C50
+  tags:
+    - unifi-controller
 
 - name: Ensure unifi repository is available
   become: yes
@@ -17,11 +21,15 @@
     repo: deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti
     state: present
     filename: 100-ubnt.list
+  tags:
+    - unifi-controller
 
 - name: Update apt cache
   become: yes
   apt:
     update_cache: yes
+  tags:
+    - unifi-controller
 
 - name: Ensure unifi controller is installed
   become: yes
@@ -36,6 +44,8 @@
   file:
     path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
     state: absent
+  tags:
+    - unifi-controller
 
 - name: Ensure unneeded services are stopped and disabled
   become: yes
