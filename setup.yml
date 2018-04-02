@@ -2,6 +2,7 @@
 - hosts: archlinux
   roles:
     - hostname
+    - locale
     - timezone
     - ntp
     - modules
@@ -73,10 +74,12 @@
 
 - hosts: unifi-controller
   roles:
+    - locale
     - hostname
     - timezone
     - ntp
     - users
+    - dotfiles
     - sshd
     - ssh-client
     - unifi-controller
