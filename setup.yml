@@ -82,4 +82,5 @@
     - dotfiles
     - sshd
     - ssh-client
+    - ssh-keys
     - unifi-controller
