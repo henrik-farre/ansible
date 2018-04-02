@@ -1,7 +1,7 @@
 ---
 - name: Ensure users shell are installed
   package:
-    name: "{{ item.shell }}"
+    name: "{{ item.shell|default('bash') }}"
     state: present
   with_items:
     - "{{ users }}"
