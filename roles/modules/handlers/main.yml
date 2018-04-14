@@ -1,0 +1,4 @@
+---
+- name: Rebuild mkinitcpio
+  become: yes
+  command: mkinitcpio
