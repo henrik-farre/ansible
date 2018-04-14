@@ -1,5 +1,6 @@
 ---
 - name: Generate locales
+  become: yes
   locale_gen:
     name: da_DK.UTF-8
     state: present
@@ -7,6 +8,7 @@
     - locale
 
 - name: Copy locale setting files
+  become: yes
   copy:
     src: "etc/{{ item }}"
     dest: "/etc/{{ item }}"
@@ -21,6 +23,7 @@
     - locale
 
 - name: Configure console font
+  become: yes
   template:
     src: etc/vconsole.conf.j2
     dest: /etc/vconsole.conf
