@@ -1,10 +1,11 @@
 ---
-- name: Configure /etc/makepkg.conf MAKEFLAGS
+- name: Ensure makepkg.conf is correctly configured
   become: yes
-  lineinfile:
-    name: /etc/makepkg.conf
-    regexp: 'MAKEFLAGS="-j'
-    line: 'MAKEFLAGS="-j{{ ansible_processor_vcpus + 1 }}"'
-    state: present
+  template:
+    src: etc/makepkg.conf.j2
+    dest: /etc/makepkg.conf
+    owner: root
+    group: root
+    mode: 0644
   tags:
     - makepkg
