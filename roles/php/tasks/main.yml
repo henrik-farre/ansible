@@ -2,7 +2,10 @@
 # composer module does not like "global require"
 # todo: use creates, and check if exists then use update
 - name: Install composer PHP packages
-  command: /usr/bin/composer global require "{{ item }}"
+  composer:
+    command: require
+    global_command: yes
+    arguments: "{{ item }}"
   with_items:
     - "phpmd/phpmd"
     - "squizlabs/php_codesniffer=*"
