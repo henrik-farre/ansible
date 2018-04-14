@@ -1,9 +1,18 @@
 ---
+- name: Reset all rules
+  become: yes
+  ufw:
+    state: reset
+  tags:
+    - firewall
+
+# Reject instead of deny
 - name: Enable ufw
   become: yes
   ufw:
     state: enabled
-    policy: allow
+    policy: reject
+    logging: on
   tags:
     - firewall
 
@@ -15,27 +24,28 @@
   tags:
     - firewall
 
-- name: Allow Synergys
+- name: Ensure custom services are configured
   become: yes
   ufw:
-    rule: allow
-    name: Synergy
-  tags:
-    - firewall
-
-- name: Allow Steam Streaming
-  become: yes
-  ufw:
-    rule: allow
-    port: "{{ item.port }}"
-    proto: "{{ item.proto }}"
+    rule: "{{ item.rule|default('allow') }}"
+    name: "{{ item.name }}"
   tags:
     - firewall
   with_items:
-    - {port: 27031, proto: udp}
-    - {port: 27036, proto: udp}
-    - {port: 27036, proto: tcp}
-    - {port: 27037, proto: tcp}
+    - "{{ firewall_services }}"
   when:
-    - ansible_hostname == "firehouse"
+    - firewall_services is defined
 
+- name: Ensure custom ports are configured
+  become: yes
+  ufw:
+    rule: "{{ item.rule|default('allow') }}"
+    port: "{{ item.port }}"
+    proto: "{{ item.proto }}"
+    comment: "{{ item.comment|default(omit) }}"
+  tags:
+    - firewall
+  with_items:
+    - "{{ firewall_ports }}"
+  when:
+    - firewall_ports is defined
