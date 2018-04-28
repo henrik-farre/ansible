@@ -1,9 +1,5 @@
 ---
-- hosts: all
-  vars:
-    groups_to_users:
-      docker:
-        - enrique
+- hosts: "{{ target_hosts }}"
 
   roles:
     - "{{ role_name }}"
