@@ -13,6 +13,7 @@
     dest: "{{ ansible_user_dir }}/.ssh/config"
     create: yes
     block: "{{ lookup('template', 'templates/dot.ssh/config.j2') }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK default_settings"
   tags:
     - ssh-client
 
