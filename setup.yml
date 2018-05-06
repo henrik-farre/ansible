@@ -62,6 +62,7 @@
 - hosts: htpc
   roles:
     - kodi-shutdown-check
+    - unifi-controller-backup
 
 - hosts: laptop
   roles:
