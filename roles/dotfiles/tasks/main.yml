@@ -51,6 +51,7 @@
     - ".ansible-lint"
     - ".bash_profile"
     - ".bashrc"
+    - ".config/flake8"
     - ".config/fontconfig/fonts.conf"
     - ".config/htop"
     - ".config/shells"
