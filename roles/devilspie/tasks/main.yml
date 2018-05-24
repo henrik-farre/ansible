@@ -1,0 +1,25 @@
+- name: Ensure needed service files exist
+  copy:
+    content: |
+      # Managed by Ansible
+      [Unit]
+      Description=Devilspie 2
+
+      [Service]
+      Type=simple
+      ExecStart=/usr/bin/devilspie2
+
+      [Install]
+      WantedBy=default.target
+    dest: "{{ ansible_user_dir }}/.config/systemd/user/devilspie2.service"
+  tags:
+    - devilspie
+
+- name: Ensure services are enabled
+  systemd:
+    name: devilspie2.service
+    enabled: yes
+    daemon_reload: yes
+    user: yes
+  tags:
+    - devilspie2

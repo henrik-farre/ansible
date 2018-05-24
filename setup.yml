@@ -45,6 +45,7 @@
     - terminal
     - aur-helper
     - cups
+    - devilspie
     - { role: aur-packages, packages: "{{ aur_packages }}" }
   tasks:
     - name: Ensure files does not exist
