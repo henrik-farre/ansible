@@ -1,5 +1,8 @@
+# Environment is needed to work around a bug in pacaur 4.7.10
 - name: Install packages from AUR
-  command: pacaur -S --noconfirm "{{ item }}"
+  command: pacaur -S --noconfirm --noedit "{{ item }}"
+  environment:
+    EDITOR: /usr/bin/nvim
   with_items:
     - "{{ packages }}"
   tags:
