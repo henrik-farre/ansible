@@ -1,9 +1,26 @@
 #!/bin/bash
-# Distributed by Ansible
+# Managed by Ansible
 
-Cnt="Denmark";
-awk -v GG="$Cnt" '{if(match($0,GG) != "0")AA="1";if(AA == "1"){if( length($2) != "0"  )print substr($0,2) ;else AA="0"} }' /etc/pacman.d/mirrorlist.pacnew > /tmp/mirrors.tmp
+if [[ -f /etc/pacman.d/mirrorlist.pacnew ]]; then
+  TMP=/tmp/mirrorlist.tmp
+  echo "Updating pacman mirrorlist"
 
-rankmirrors /tmp/mirrors.tmp > /etc/pacman.d/mirrorlist
+  rm -f /etc/pacman.d/mirrorlist.bak
+  cp /etc/pacman.d/mirrorlist{,.bak}
+  touch "$TMP"
 
-rm /tmp/mirrors.tmp
+  {
+  awk '/^## Denmark$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.pacnew;
+  awk '/^## Sweden$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.pacnew;
+  awk '/^## Norway$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.pacnew;
+  awk '/^## Netherlands$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.pacnew;
+  awk '/^## Germany$/{f=1}f==0{next}/^$/{exit}{print substr($0, 2)}' /etc/pacman.d/mirrorlist.pacnew
+  } >> "$TMP"
+
+  rankmirrors "$TMP" > /etc/pacman.d/mirrorlist
+
+  rm "$TMP"
+  rm /etc/pacman.d/mirrorlist.pacnew
+else
+  exit 0
+fi

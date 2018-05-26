@@ -1,32 +1,17 @@
 ---
-- name: Check updated mirrorlist exists
-  stat:
-    path: /etc/pacman.d/mirrorlist.pacnew
-  register: mirror_file
-  tags:
-    - pacman-mirrors
-
 - name: Copy pacman-sort-mirrors.sh
   copy:
-    src: files/usr/local/sbin/pacman-sort-mirrors.sh
+    src: usr/local/sbin/pacman-sort-mirrors.sh
     dest: /usr/local/sbin/pacman-sort-mirrors.sh
     owner: root
     group: root
-    mode: 0700
-    backup: yes
+    mode: 0754
   tags:
     - pacman-mirrors
 
-- name: Enable only mirrors from Denmark
-  command: /usr/local/sbin/pacman-sort-mirrors.sh
-  when: mirror_file.stat.exists is defined and mirror_file.stat.exists
-  tags:
-    - pacman-mirrors
-
-- name: Remove mirrorlist.pacnew
-  file:
-    path: /etc/pacman.d/mirrorlist.pacnew
-    state: absent
-  when: mirror_file.stat.exists is defined and mirror_file.stat.exists
-  tags:
-    - pacman-mirrors
+- name: Ensure cronjob is configured
+  cron:
+    cron_file: pacman-mirrors-rank
+    job: /usr/local/sbin/pacman-sort-mirrors.sh
+    user: root
+    special_time: daily
