@@ -1,5 +1,6 @@
 ---
 - name: Copy pacman-sort-mirrors.sh
+  become: yes
   copy:
     src: usr/local/sbin/pacman-sort-mirrors.sh
     dest: /usr/local/sbin/pacman-sort-mirrors.sh
@@ -10,8 +11,10 @@
     - pacman-mirrors
 
 - name: Ensure cronjob is configured
+  become: yes
   cron:
     cron_file: pacman-mirrors-rank
     job: /usr/local/sbin/pacman-sort-mirrors.sh
     user: root
     special_time: daily
+    name: pacman-mirrors-rank
