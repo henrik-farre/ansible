@@ -6,5 +6,11 @@ OnFailure=status-email-enrique@%n.service
 ConditionPathExistsGlob=!/var/cache/duplicity/*/lockfile.lock
 
 [Service]
+WorkingDirectory=/usr/local/etc/duplicity-docker
+
+# Remove old containers, images and volumes
+ExecStartPre=/usr/bin/docker-compose -f duplicity-{{item}}.yml down -v
+ExecStartPre=/usr/bin/docker-compose -f duplicity-{{item}}.yml rm -fv
+
 Type=oneshot
-ExecStart=/usr/bin/docker-compose -f /usr/local/etc/duplicity-docker/duplicity-{{item}}.yml up duplicity
+ExecStart=/usr/bin/docker-compose -f duplicity-{{item}}.yml up duplicity
