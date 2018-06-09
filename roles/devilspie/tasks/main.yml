@@ -1,25 +1,24 @@
-- name: Ensure needed service files exist
-  copy:
-    content: |
-      # Managed by Ansible
-      [Unit]
-      Description=Devilspie 2
-
-      [Service]
-      Type=simple
-      ExecStart=/usr/bin/devilspie2
-
-      [Install]
-      WantedBy=default.target
-    dest: "{{ ansible_user_dir }}/.config/systemd/user/devilspie2.service"
-  tags:
-    - devilspie
-
-- name: Ensure services are enabled
+- name: Ensure systemd unit is disabled
   systemd:
     name: devilspie2.service
-    enabled: yes
-    daemon_reload: yes
+    enabled: no
+    daemon_reload: no
     user: yes
   tags:
     - devilspie2
+
+- name: Ensure systemd unit file is removed
+  file:
+    path: "{{ ansible_user_dir }}/.config/systemd/user/devilspie2.service"
+    state: absent
+  tags:
+    - devilspie
+
+- name: Ensure devilspie is auto started
+  copy:
+    dest: "{{ ansible_user_dir }}/.config/autostart/devilspie2.desktop"
+    content: |
+      [Desktop Entry]
+      Name=Devilspie2
+      Exec=/usr/bin/devilspie2
+      Type=Application
