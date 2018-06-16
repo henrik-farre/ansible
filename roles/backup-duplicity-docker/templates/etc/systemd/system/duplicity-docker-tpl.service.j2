@@ -13,4 +13,4 @@ ExecStartPre=/usr/bin/docker-compose -f duplicity-{{item}}.yml down -v
 ExecStartPre=/usr/bin/docker-compose -f duplicity-{{item}}.yml rm -fv
 
 Type=oneshot
-ExecStart=/usr/bin/docker-compose -f duplicity-{{item}}.yml up duplicity
+ExecStart=/usr/bin/docker-compose -f duplicity-{{item}}.yml up duplicity-{{ item }}
