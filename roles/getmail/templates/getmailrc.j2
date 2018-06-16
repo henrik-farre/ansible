@@ -1,0 +1,15 @@
+[retriever]
+type = SimpleIMAPSSLRetriever
+server = {{ item.server }}
+mailboxes = ("{{ item.mailboxes }}",)
+username = {{ item.username }}
+password = {{ item.password }}
+
+[destination]
+type = Maildir
+path = {{ item.dest_path }}/{{ item.username }}/
+
+[options]
+verbose = 0
+read_all = false
+message_log = ~/.getmail/{{ item.username }}.log

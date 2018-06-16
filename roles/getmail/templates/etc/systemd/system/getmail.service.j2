@@ -1,0 +1,10 @@
+[Unit]
+Description=Getmail for {{ item.username }}
+Requires=docker.service
+After=docker.service
+OnFailure=status-email-enrique@%n.service
+
+[Service]
+User=enrique
+Type=oneshot
+ExecStart=/usr/bin/getmail -q -r "{{ ansible_user_dir }}/.getmail/{{ item.username }}.getmailrc"

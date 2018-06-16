@@ -64,6 +64,7 @@
   roles:
     - kodi-shutdown-check
     - unifi-controller-backup
+    - getmail
 
 - hosts: laptop
   roles:

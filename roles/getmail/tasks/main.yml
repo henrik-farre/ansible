@@ -1,0 +1,83 @@
+---
+- name: Ensure configuration directory for getmail exist
+  file:
+    path: "{{ ansible_user_dir }}/.getmail/"
+    state: directory
+    mode: 0700
+    owner: "{{ ansible_user_id }}"
+  when:
+    - getmail is defined
+
+- name: Ensure backup destination for mails exist
+  become: yes
+  file:
+    path: "{{ item.0.dest_path }}/{{ item.0.username }}/{{ item.1 }}"
+    state: directory
+    mode: 0700
+    owner: "{{ ansible_user_id }}"
+  with_nested:
+    - "{{ getmail }}"
+    - ['new', 'cur', 'tmp']
+  when:
+    - getmail is defined
+
+- name: Ensure configurations for getmail exist
+  template:
+    src: getmailrc.j2
+    dest: "{{ ansible_user_dir }}/.getmail/{{ item.username }}.getmailrc"
+    mode: 0400
+    owner: "{{ ansible_user_id }}"
+  with_items: "{{ getmail }}"
+  when:
+    - getmail is defined
+
+- name: Ensure old cronjob for getmail is removed
+  become: yes
+  file:
+    path: /etc/cron.d/getmail
+    state: absent
+  when:
+    - getmail is defined
+
+- name: Ensure systemd timers exist for getmail
+  become: yes
+  template:
+    src: "etc/systemd/system/getmail.timer.j2"
+    dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.timer"
+    owner: root
+    mode: 0644
+  with_items: "{{ getmail }}"
+  when:
+    - getmail is defined
+
+- name: Ensure systemd services exist for getmail
+  become: yes
+  template:
+    src: "etc/systemd/system/getmail.service.j2"
+    dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.service"
+    owner: root
+    mode: 0644
+  with_items: "{{ getmail }}"
+  when:
+    - getmail is defined
+
+- name: Enable systemd services
+  become: true
+  systemd:
+    name: "getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.service"
+    enabled: yes
+    daemon_reload: yes
+  with_items: "{{ getmail }}"
+  when:
+    - getmail is defined
+
+- name: Enable systemd timers
+  become: true
+  systemd:
+    name: "getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.timer"
+    enabled: yes
+    state: started
+    daemon_reload: yes
+  with_items: "{{ getmail }}"
+  when:
+    - getmail is defined

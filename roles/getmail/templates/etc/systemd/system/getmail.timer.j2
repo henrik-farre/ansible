@@ -1,0 +1,12 @@
+[Unit]
+Description=Getmail timer for {{ item.username }}
+After=network-online.target
+Wants=network-online.target
+
+[Timer]
+OnCalendar=17:00
+Persistent=True
+RandomizedDelaySec=600
+
+[Install]
+WantedBy=timers.target
