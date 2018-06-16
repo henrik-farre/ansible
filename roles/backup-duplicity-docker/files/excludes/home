@@ -22,9 +22,10 @@
 - **/.gnupg/random_seed
 - **/.gnupg/rnd
 - **/.gvfs
+- **/.helm
 - **/.kvm
-- **/.local/lib
 - **/.local/bin
+- **/.local/lib
 - **/.local/nodejs
 - **/.local/share/Steam
 - **/.local/share/Trash
