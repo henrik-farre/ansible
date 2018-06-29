@@ -1,5 +1,29 @@
 ---
-- hosts: macbook
+- hosts: workstation
+  connection: local
+
+  pre_tasks:
+    - name: Ensure homebrew is updated
+      homebrew:
+        update_homebrew: yes
+
+    - name: Ensure required packages are installed
+      homebrew:
+        name: "{{ item }}"
+        state: present
+      with_items:
+        - tmux
+        - neovim
+        - fzf
+        - wget
+        - the_silver_search
+        - reattach-to-user-namespace
+        - shellcheck
+        - npm
+        # - homebrew/php/php71-xdebug
+        # - homebrew/php/composer
+        # - homebrew/php/phpmd
+
   roles:
     - dotfiles
     - vim
