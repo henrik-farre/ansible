@@ -10,3 +10,7 @@ Host *
   ControlPersist 300
 {% endif %}
   IdentityFile ~/.ssh/id_rsa
+{% if os_family == 'Darwin' %}
+  UseKeychain yes
+  AddKeysToAgent yes
+{% endif %}
