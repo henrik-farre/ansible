@@ -26,7 +26,6 @@
         # - homebrew/php/phpmd
 
   roles:
-    - hostname
     - dotfiles
     - vim
     - ssh-keys
