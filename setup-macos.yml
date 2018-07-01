@@ -25,6 +25,10 @@
         # - homebrew/php/composer
         # - homebrew/php/phpmd
 
+    - name: Set hostname
+      become: yes
+      command: scutil --set HostName "workstation"
+
   roles:
     - dotfiles
     - vim
