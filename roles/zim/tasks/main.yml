@@ -15,7 +15,7 @@
     state: directory
     mode: 0700
   tags:
-    - conky
+    - zim
 
 - name: Ensure notebook config exists
   copy:
