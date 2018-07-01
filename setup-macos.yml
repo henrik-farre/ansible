@@ -21,6 +21,8 @@
         - reattach-to-user-namespace
         - shellcheck
         - npm
+        - gnupg
+        - pinentry-mac
         # - homebrew/php/php71-xdebug
         # - homebrew/php/composer
         # - homebrew/php/phpmd
