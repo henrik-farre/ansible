@@ -35,9 +35,11 @@
   when:
     - ansible_hostname == "spookcentral"
 
+# Removed, does nothing
 - name: Ensure the pacman database is optimized monthly
   become: yes
   cron:
+    state: absent
     name: "Optimize pacman database"
     special_time: monthly
     job: "pacman-optimize"
