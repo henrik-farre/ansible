@@ -16,7 +16,7 @@
         - neovim
         - fzf
         - wget
-        - the_silver_search
+        - the_silver_searcher
         - reattach-to-user-namespace
         - shellcheck
         - npm
@@ -28,6 +28,7 @@
     - dotfiles
     - vim
     - ssh-keys
+    - ssh-client
 
 # https://github.com/daemonza/setupmac
 # https://github.com/herrbischoff/awesome-osx-command-line
