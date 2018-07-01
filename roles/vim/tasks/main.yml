@@ -64,7 +64,7 @@
     executable: pip3
     state: latest
   when:
-    - ansible_os_family is "Darwin"
+    - ansible_os_family == "Darwin"
   tags:
     - vim
 
