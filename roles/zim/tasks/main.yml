@@ -7,6 +7,7 @@
     version: master
   tags:
     - zim
+    - zim-notebook
 
 - name: Ensure that the ~/.config/zim directory exists
   file:
@@ -43,3 +44,4 @@
     mode: 0700
   tags:
     - zim
+    - zim-notebook
