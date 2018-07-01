@@ -46,6 +46,50 @@
   tags:
     - vim
 
+- name: Ensure python2 modules are installed on macos
+  pip:
+    name: neovim
+    extra_args: --user
+    executable: pip
+    state: latest
+  when:
+    - ansible_os_family is "Darwin"
+  tags:
+    - vim
+
+- name: Ensure python3 modules are installed on macos
+  pip:
+    name: neovim
+    extra_args: --user
+    executable: pip3
+    state: latest
+  when:
+    - ansible_os_family is "Darwin"
+  tags:
+    - vim
+
+- name: Ensure python2 modules are removed on Archlinux
+  pip:
+    name: neovim
+    extra_args: --user
+    executable: pip
+    state: absent
+  when:
+    - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
+  tags:
+    - vim
+
+- name: Ensure python3 modules are removed on Archlinux
+  pip:
+    name: neovim
+    extra_args: --user
+    executable: pip3
+    state: absent
+  when:
+    - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
+  tags:
+    - vim
+
 - name: Check if vim is installed
   stat:
     path: /usr/bin/vim
