@@ -75,3 +75,16 @@
     - "bin"
   tags:
     - dotfiles
+
+- name: Symlink files macos
+  file:
+    src: "{{ ansible_user_dir }}/.dotfiles/{{ item }}"
+    dest: "{{ ansible_user_dir }}/{{ item }}"
+    owner: "{{ ansible_user_id }}"
+    state: link
+  with_items:
+    - ".tmux-osx.conf"
+  when:
+    - ansible_os_family == 'Darwin'
+  tags:
+    - dotfiles
