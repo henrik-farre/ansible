@@ -94,7 +94,7 @@
   become: yes
   lineinfile:
     dest: /etc/mkinitcpio.conf
-    line: 'MODULES="nvidia nvidia_modeset nvidia_uvm nvidia_drm"'
+    line: 'MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)'
     regexp: 'MODULES='
     state: present
   when:
