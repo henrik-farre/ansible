@@ -1,4 +1,4 @@
 ---
 - name: Rebuild mkinitcpio
   become: yes
-  command: mkinitcpio
+  command: mkinitcpio -p linux
