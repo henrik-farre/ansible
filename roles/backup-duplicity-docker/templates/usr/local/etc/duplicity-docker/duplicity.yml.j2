@@ -26,3 +26,8 @@ services:
       - /root/.gnupg:/root/.gnupg
       - /var/cache/duplicity:/var/cache/duplicity
       - /tmp:/restore
+    networks:
+      - duplicity-{{ item }}-network
+
+networks:
+  duplicity-{{ item }}-network:
