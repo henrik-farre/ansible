@@ -1,12 +1,12 @@
 ---
-- name: Install cower
-  include_tasks: install_pkg.yml
-  vars:
-    aur_pkg: cower
-    aur_pkg_path: /usr/bin/cower
+# - name: Install cower
+  # include_tasks: install_pkg.yml
+  # vars:
+    # aur_pkg: cower
+    # aur_pkg_path: /usr/bin/cower
 
 - name: Install pacaur
   include_tasks: install_pkg.yml
   vars:
-    aur_pkg: pacaur
-    aur_pkg_path: /usr/bin/pacaur
+    aur_pkg: aurman
+    aur_pkg_path: /usr/bin/aurman

@@ -1,53 +1,49 @@
 ---
-- name: Set build dir
-  set_fact:
-    build_dir: "{{ ansible_user_dir }}/tmp/{{ aur_pkg }}"
+- name: Build package
+  block:
+    - name: Set build dir
+      set_fact:
+        build_dir: "{{ ansible_user_dir }}/tmp/{{ aur_pkg }}"
 
-- name: Check if package "{{ aur_pkg }}" is installed
-  stat:
-    path: "{{ aur_pkg_path }}"
-  register: stat_pkg
-  tags:
-    - aur-helper
+    - name: Ensure clean build dir
+      file:
+        path: "{{ build_dir }}"
+        state: absent
+      tags:
+        - aur-helper
 
-- name: Git clone "{{ aur_pkg }}"
-  git:
-    repo: https://aur.archlinux.org/{{ aur_pkg }}.git
-    dest: "{{ build_dir }}"
-    accept_hostkey: yes
-    version: master
-  when:
-    - stat_pkg.stat.exists == False
-  tags:
-    - aur-helper
+    - name: Check if package "{{ aur_pkg }}" is installed
+      stat:
+        path: "{{ aur_pkg_path }}"
+      register: stat_pkg
+      tags:
+        - aur-helper
 
-- name: Build "{{ aur_pkg }}" using makepkg
-  command: makepkg -si
-  args:
-    chdir: "{{ build_dir }}"
-    creates: "{{ aur_pkg_path }}"
-  when:
-    - stat_pkg.stat.exists == False
-  register: aur_makepkg_result
-  tags:
-    - aur-helper
+    - name: Git clone "{{ aur_pkg }}"
+      git:
+        repo: https://aur.archlinux.org/{{ aur_pkg }}.git
+        dest: "{{ build_dir }}"
+        accept_hostkey: yes
+        version: master
+      when:
+        - stat_pkg.stat.exists == False
+      tags:
+        - aur-helper
 
-- name: Install "{{ aur_pkg }}" using pacman
-  become: yes
-  command: pacman -U "{{ item }}" --noconfirm --noprogressbar
-  args:
-    creates: "{{ aur_pkg_path }}"
-  with_fileglob:
-    - "{{ build_dir }}/{{ aur_pkg }}-*.pkg.tar.xz"
-  when:
-    - stat_pkg.stat.exists == False
-    - aur_makepkg_result|succeeded
-  tags:
-    - aur-helper
+    - name: Build "{{ aur_pkg }}" using makepkg
+      command: makepkg -si --noconfirm --noprogressbar
+      args:
+        chdir: "{{ build_dir }}"
+        creates: "{{ aur_pkg_path }}"
+      when:
+        - stat_pkg.stat.exists == False
+      tags:
+        - aur-helper
 
-- name: Ensure no files are left after building
-  file:
-    path: "{{ build_dir }}"
-    state: absent
-  tags:
-    - aur-helper
+  always:
+    - name: Ensure no files are left after building
+      file:
+        path: "{{ build_dir }}"
+        state: absent
+      tags:
+        - aur-helper
