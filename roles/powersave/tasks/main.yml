@@ -30,3 +30,40 @@
     group: root
   tags:
     - powersave
+
+# Based on https://aur.archlinux.org/cgit/aur.git/tree/macbook-wakeup.service?h=linux-macbook
+- name: Ensure wakeup is configured on macbook pro
+  become: yes
+  copy:
+    dest: /etc/systemd/system/macbook-wakeup.service
+    content: |
+      [Unit]
+      Description=Configure LID-only device events for linux-macbook
+      ConditionPathExists=/proc/acpi/wakeup
+      After=suspend.target
+
+      [Service]
+      Type=oneshot
+      ExecStart=/bin/sh -c "awk '$1 !~ /^LID/ && $3 ~ /enabled/ {print $1}' /proc/acpi/wakeup | xargs -I{} echo '{}' > /proc/acpi/wakeup"
+      ExecStart=/bin/sh -c "awk '$1 ~ /^LID/ && $3 ~ /disabled/ {print $1}' /proc/acpi/wakeup | xargs -I{} echo '{}' > /proc/acpi/wakeup"
+      RemainAfterExit=yes
+      TimeoutSec=0
+
+      [Install]
+      WantedBy=multi-user.target sleep.target
+    mode: 0644
+    owner: root
+    group: root
+  when: ansible_system_vendor == 'Apple Inc.'
+  tags:
+    - powersave
+
+- name: Enable systemd services
+  become: true
+  systemd:
+    name: "macbook-wakeup.service"
+    enabled: yes
+    daemon_reload: yes
+  when: ansible_system_vendor == 'Apple Inc.'
+  tags:
+    - powersave
