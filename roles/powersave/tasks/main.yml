@@ -1,14 +1,15 @@
 ---
-- name: Ensure systemd-rfkill.* is masked
-  become: yes
-  systemd:
-    name: "{{ item }}"
-    masked: true
-  with_items:
-    - systemd-rfkill.service
-    - systemd-rfkill.socket
-  tags:
-    - powersave
+# Disabled until https://github.com/ansible/ansible/issues/42384 is fixed
+# - name: Ensure systemd-rfkill.* is masked
+  # become: yes
+  # systemd:
+    # name: "{{ item }}"
+    # masked: true
+  # with_items:
+    # - systemd-rfkill.service
+    # - systemd-rfkill.socket
+  # tags:
+    # - powersave
 
 - name: Ensure acpi_call is installed on thinkpad hardware
   become: yes
