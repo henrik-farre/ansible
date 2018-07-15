@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - { role: packages, packages: ['zsh'] }
+  - { role: packages, packages: ['zsh', 'zsh-completions'] }
   - role: sudo
