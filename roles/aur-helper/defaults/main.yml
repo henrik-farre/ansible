@@ -1,0 +1,4 @@
+---
+aur_pkg_helper: aurman
+aur_pkg_helper_path: /usr/bin/aurman
+aur_pkg_pgp_key: "0x465022E743D71E39"
