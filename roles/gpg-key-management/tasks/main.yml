@@ -1,0 +1,5 @@
+---
+- name: Ensure GPG key is present
+  gpg_import:
+    key_id: "{{ gpg_key }}"
+    state: latest
