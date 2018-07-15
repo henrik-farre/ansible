@@ -1,7 +1,6 @@
 [Unit]
 Description=Getmail for {{ item.username }}
-Requires=docker.service
-After=docker.service
+After=network-online.target
 OnFailure=status-email-enrique@%n.service
 
 [Service]
