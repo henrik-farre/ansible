@@ -1,6 +1,9 @@
 ---
-- name: Install pacaur
-  include_tasks: install_pkg.yml
+- name: Manage GPG keys
+  include_role:
+    name: gpg-key-management
   vars:
-    aur_pkg: aurman
-    aur_pkg_path: /usr/bin/aurman
+    gpg_key: "{{ aur_pkg_pgp_key }}"
+
+- name: Install "{{ aur_pkg_helper }}"
+  include_tasks: install_pkg.yml

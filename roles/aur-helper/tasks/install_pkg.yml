@@ -3,7 +3,7 @@
   block:
     - name: Set build dir
       set_fact:
-        build_dir: "{{ ansible_user_dir }}/tmp/{{ aur_pkg }}"
+        build_dir: "{{ ansible_user_dir }}/tmp/{{ aur_pkg_helper }}"
 
     - name: Ensure clean build dir
       file:
@@ -12,16 +12,16 @@
       tags:
         - aur-helper
 
-    - name: Check if package "{{ aur_pkg }}" is installed
+    - name: Check if package "{{ aur_pkg_helper }}" is installed
       stat:
-        path: "{{ aur_pkg_path }}"
+        path: "{{ aur_pkg_helper_path }}"
       register: stat_pkg
       tags:
         - aur-helper
 
-    - name: Git clone "{{ aur_pkg }}"
+    - name: Git clone "{{ aur_pkg_helper }}"
       git:
-        repo: https://aur.archlinux.org/{{ aur_pkg }}.git
+        repo: https://aur.archlinux.org/{{ aur_pkg_helper }}.git
         dest: "{{ build_dir }}"
         accept_hostkey: yes
         version: master
@@ -30,11 +30,11 @@
       tags:
         - aur-helper
 
-    - name: Build "{{ aur_pkg }}" using makepkg
+    - name: Build "{{ aur_pkg_helper }}" using makepkg
       command: makepkg -si --noconfirm --noprogressbar
       args:
         chdir: "{{ build_dir }}"
-        creates: "{{ aur_pkg_path }}"
+        creates: "{{ aur_pkg_helper_path }}"
       when:
         - stat_pkg.stat.exists == False
       tags:
