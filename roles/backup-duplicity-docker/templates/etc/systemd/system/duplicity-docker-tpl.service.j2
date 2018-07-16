@@ -10,8 +10,9 @@ ConditionPathExistsGlob=!/var/cache/duplicity/*/lockfile.lock
 WorkingDirectory=/usr/local/etc/duplicity-docker
 
 # Remove old containers, images and volumes
-ExecStartPre=/usr/bin/docker-compose -f duplicity-{{item}}.yml down -v
-ExecStartPre=/usr/bin/docker-compose -f duplicity-{{item}}.yml rm -fv
+ExecStartPre=-/usr/bin/docker-compose -f duplicity-{{item}}.yml down -v
+ExecStartPre=-/usr/bin/docker-compose -f duplicity-{{item}}.yml rm -fv
+ExecStartPost=-/usr/bin/docker-compose -f duplicity-{{item}}.yml down -v
 
 Type=oneshot
 ExecStart=/usr/bin/docker-compose -f duplicity-{{item}}.yml up duplicity-{{ item }}
