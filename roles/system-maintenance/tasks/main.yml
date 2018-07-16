@@ -58,3 +58,14 @@
   notify: Reload smartd
   tags:
     - system-maintenance
+
+- name: Ensure cronjob is configured
+  become: yes
+  cron:
+    cron_file: clean-user-cache
+    job: find {{ ansible_user_dir }}/.cache -mtime +7 -type f -delete
+    special_time: daily
+    user: root
+    name: "Clean user ~/.cache directory"
+  tags:
+    - system-maintenance
