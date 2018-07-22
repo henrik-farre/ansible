@@ -10,6 +10,7 @@
     - ssmtp
     - hddtemp
     - sysctl
+    - journald
     - firewall
     - makepkg
     - sshd
