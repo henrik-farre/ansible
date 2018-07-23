@@ -16,7 +16,7 @@
     name: /shared
     src: spookcentral.{{ network.local_domain }}:/shared
     fstype: nfs4
-    opts: rsize=8192,wsize=8192,timeo=14,noauto,noatime,soft,x-systemd.automount,x-systemd.device-timeout=10
+    opts: rsize=32768,wsize=32768,noauto,noatime,soft,retrans=5,timeo=900,x-systemd.automount,x-systemd.device-timeout=10,x-systemd.idle-timeout=1min
     state: present
   tags:
     - mounts
