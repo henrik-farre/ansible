@@ -1,12 +1,11 @@
 ---
-- name: Ensure efivars is mounted RO
+# efivars is chattr +i since linux 4.5
+- name: Ensure efivars are not mounted ro in fstab
   become: yes
-  mount:
-    name: /sys/firmware/efi/efivars
-    src: efivars
-    fstype: efivars
-    opts: ro,nosuid,nodev,noexec,noatime
-    state: present
+  lineinfile:
+    path: /etc/fstab
+    state: absent
+    regexp: '^efivars'
   tags:
     - mounts
 
