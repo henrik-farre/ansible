@@ -19,6 +19,16 @@
   tags:
     - pacman-mirrors
 
+- name: Ensure pacman hook directory exist
+  become: yes
+  file:
+    path: /etc/pacman.d/hooks
+    state: directory
+    owner: root
+    mode: 0750
+  tags:
+    - pacman-mirrors
+
 - name: Ensure pacman mirrorlist hook is present
   become: yes
   copy:
