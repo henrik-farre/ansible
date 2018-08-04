@@ -3,5 +3,9 @@
   hosts: "{{ target_hosts }}"
   gather_facts: true
 
-  roles:
-    - "{{ role_name }}"
+  tasks:
+    - name: Include roles
+      include_role:
+        name: "{{ item }}"
+      with_items:
+        - "{{ role_name.split(',')|list }}"
