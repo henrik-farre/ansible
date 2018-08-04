@@ -82,6 +82,8 @@
     - hostname
     - timezone
     - ntp
+    - ssmtp
+    - arpwatch
     - users
     - dotfiles
     - sshd

@@ -1,0 +1,26 @@
+---
+- name: install arpwatch
+  become: yes
+  package:
+    name: arpwatch
+    state: latest
+  tags:
+    - arpwatch
+
+- name: enable arpwatch
+  become: yes
+  service:
+    name: arpwatch
+    enabled: yes
+    state: started
+  tags:
+    - arpwatch
+
+- name: Ensure arpwatch user is member of the mail group
+  become: yes
+  user:
+    name: arpwatch
+    groups: mail
+    append: yes
+  tags:
+    - arpwatch
