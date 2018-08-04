@@ -6,13 +6,24 @@
     - debug_packages is defined
     - debug_packages == True
 
-- name: Install packages
+- name: Install packages on ArchLinux
   become: yes
   pacman:
     name: "{{ packages }}"
     update_cache: yes
     state: latest
   when:
-      - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
+    - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
+  tags:
+    - packages
+
+- name: Install packages on Debian
+  become: yes
+  apt:
+    name: "{{ packages }}"
+    update_cache: yes
+    state: latest
+  when:
+    - ansible_distribution == "Debian"
   tags:
     - packages
