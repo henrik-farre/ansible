@@ -1,0 +1,43 @@
+---
+- name: Ensure no demo entries exists
+  hosts: localhost
+  connection: local
+
+  tasks:
+    - name: Remove demo job template
+      tower_job_template:
+        name: Demo Job Template
+        job_type: run
+        playbook:
+        project:
+        state: absent
+        tower_config_file: "~/.tower_cli.cfg"
+
+    - name: Remove demo project
+      tower_project:
+        name: "Demo Project"
+        state: absent
+        tower_config_file: "~/.tower_cli.cfg"
+
+        # This fails with AWX 1.0.7.2
+        #    - name: Remove demo inventory
+        #      tower_inventory:
+        #        name: "Demo Inventory"
+        #        organization:
+        #        description:
+        #        state: absent
+        #        tower_config_file: "~/.tower_cli.cfg"
+
+    - name: Remove demo credential
+      tower_credential:
+        name: "Demo Credential"
+        kind: ssh
+        organization:
+        state: absent
+        tower_config_file: "~/.tower_cli.cfg"
+
+    - name: Remove default org
+      tower_organization:
+        name: Default
+        state: absent
+        tower_config_file: "~/.tower_cli.cfg"
