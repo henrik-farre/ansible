@@ -1,0 +1,50 @@
+---
+- name: GPG config
+  become: true
+  copy:
+    content: |
+      pinentry-mode loopback
+    dest: "/root/.gnupg/gpg.conf"
+    owner: root
+    group: root
+    mode: 0400
+  tags:
+    - backup
+
+- name: Import gpg keys, devault
+  become: true
+  copy:
+    src: "root/gpg/private.asc.vault"
+    dest: "/root/.gnupg/private.asc"
+    owner: root
+    group: root
+    mode: 0400
+  tags:
+    - backup
+
+- name: Import ownertrust, devault
+  become: true
+  copy:
+    src: "root/gpg/ownertrust.vault"
+    dest: "/root/.gnupg/ownertrust"
+    owner: root
+    group: root
+    mode: 0400
+  tags:
+    - backup
+
+- name: Import gpg keys
+  become: true
+  shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc
+  args:
+    chdir: "/root/.gnupg"
+  tags:
+    - backup
+
+- name: Import ownertrust
+  become: true
+  shell: gpg --import-ownertrust ownertrust
+  args:
+    chdir: "/root/.gnupg"
+  tags:
+    - backup

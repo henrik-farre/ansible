@@ -1,0 +1,45 @@
+---
+- name: Install ssh keys
+  become: true
+  copy:
+    src: "root/dot.ssh/{{ item }}"
+    dest: "/root/.ssh/{{ item }}"
+    owner: root
+    group: root
+    mode: 0400
+  with_items:
+    - id_rsa.backup
+    - id_rsa.backup.pub
+  tags:
+    - backup
+
+- name: Ensure ssh config exists for backup host
+  become: true
+  blockinfile:
+    dest: "/root/.ssh/config"
+    create: yes
+    block: "{{ ssh_config }}"
+    marker: "# {mark} ANSIBLE MANAGED BLOCK backup_host"
+  vars:
+    ssh_config: !vault |
+        $ANSIBLE_VAULT;1.1;AES256
+        38613532373632636464336138323731646137316632653536616662663166363663616261626136
+        3837333565623934363536613032646633303166633238640a363963356666363761386262313930
+        39393564353531323439653630373835323338336665306466663331613438656438363535316632
+        6534376532303739370a393464373532356630396430626233653064636333386133316131376236
+        63363733303039363633623339383063366666356636363665303137343638613764303961313933
+        39623034366362623635656436663864623866366262333166393335613964653532366434393635
+        37326361323861616632656662653533383963356231646331653835336337323038393232623666
+        34383663653934636431363064373236666435643963383636616437383838626231373036633333
+        6135
+  tags:
+    - backup
+
+- name: Import ssh host key
+  become: true
+  known_hosts:
+    path: /root/.ssh/known_hosts
+    name: "{{ duplicity.remote_host }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ duplicity.remote_host }}') }}"
+  tags:
+    - backup

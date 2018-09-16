@@ -1,0 +1,65 @@
+---
+- name: Remove local installed duplicity and dependencies
+  become: true
+  pacman:
+    name: "{{ item }}"
+    state: absent
+  with_items:
+    - duplicity
+    - python2-fasteners
+    - python2-monotonic
+  tags:
+    - backup
+
+- name: Disable systemd services
+  become: true
+  systemd:
+    name: "duplicity-docker-remove-old.service"
+    enabled: no
+    state: stopped
+  tags:
+    - backup
+
+- name: Disable systemd timers
+  become: true
+  systemd:
+    name: "duplicity-docker-remove-old.timer"
+    enabled: no
+    state: stopped
+  tags:
+    - backup
+
+- name: Remove old backup scripts, cronjob and directories
+  become: true
+  file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+    - /etc/cron.d/1backup
+    - /etc/systemd/system/duplicity-docker-remove-old.timer
+    - /etc/systemd/system/duplicity-docker-remove-old.timer
+    - /root/.duplicity
+    - /usr/local/etc/duplicity
+    - /usr/local/etc/duplicity-docker/duplicity-remove-old.yml
+    - /usr/local/etc/duplicity-docker/duplicity.yml
+    - /usr/local/etc/duplicity-docker/{{ inventory_hostname }}.yml
+    - /usr/local/etc/rdiff-backup
+    - /usr/local/sbin/backup-clean.sh
+    - /usr/local/sbin/backup-collection-status.sh
+    - /usr/local/sbin/backup-list.sh
+    - /usr/local/sbin/backup-remove-old.sh
+    - /usr/local/sbin/backup-restore.sh
+    - /usr/local/sbin/backup-verify.sh
+    - /usr/local/sbin/backup.sh
+    - /usr/local/sbin/dump-information.sh
+    - /usr/local/sbin/includes.sh
+    - /usr/local/sbin/user-notification.sh
+    - /usr/local/sbin/{{ inventory_hostname }}-backup.sh
+    - /var/log/backup
+    - /var/log/duplicity.log
+    - /var/log/duplicity.log.1.gz
+    - /var/log/duplicity.log.2.gz
+    - /var/log/duplicity.log.3.gz
+    - /var/log/duplicity.log.4.gz
+  tags:
+    - backup

@@ -1,48 +1,7 @@
 ---
 - block:
-  - name: Remove local installed duplicity and dependencies
-    become: true
-    pacman:
-      name: "{{ item }}"
-      state: absent
-    with_items:
-      - duplicity
-      - python2-fasteners
-      - python2-monotonic
-    tags:
-      - backup
-
-  - name: Remove old backup scripts, cronjob and directories
-    become: true
-    file:
-      path: "{{ item }}"
-      state: absent
-    with_items:
-      - /usr/local/sbin/backup-clean.sh
-      - /usr/local/sbin/backup-collection-status.sh
-      - /usr/local/sbin/backup-list.sh
-      - /usr/local/sbin/backup-remove-old.sh
-      - /usr/local/sbin/backup-restore.sh
-      - /usr/local/sbin/backup.sh
-      - /usr/local/sbin/backup-verify.sh
-      - /usr/local/sbin/dump-information.sh
-      - "/usr/local/sbin/{{ inventory_hostname }}-backup.sh"
-      - /usr/local/sbin/includes.sh
-      - /usr/local/sbin/user-notification.sh
-      - /root/.duplicity
-      - /usr/local/etc/duplicity
-      - /etc/cron.d/1backup
-      - /usr/local/etc/rdiff-backup
-      - /usr/local/etc/duplicity-docker/{{ inventory_hostname }}.yml
-      - /usr/local/etc/duplicity-docker/duplicity.yml
-      - /var/log/backup
-      - /var/log/duplicity.log
-      - /var/log/duplicity.log.1.gz
-      - /var/log/duplicity.log.2.gz
-      - /var/log/duplicity.log.3.gz
-      - /var/log/duplicity.log.4.gz
-    tags:
-      - backup
+  - name: Include cleanup tasks
+    include_tasks: cleanup.yml
 
   - name: Ensure directory exist
     become: true
@@ -68,7 +27,8 @@
     with_items:
       - backup
       - clean
-      - remove-old
+      - remove-old-inc
+      - remove-old-set
       - cmd
     tags:
       - backup
@@ -127,100 +87,11 @@
     tags:
       - backup
 
-  - name: Install ssh keys
-    become: true
-    copy:
-      src: "root/dot.ssh/{{ item }}"
-      dest: "/root/.ssh/{{ item }}"
-      owner: root
-      group: root
-      mode: 0400
-    with_items:
-      - id_rsa.backup
-      - id_rsa.backup.pub
-    tags:
-      - backup
+  - name: Include ssh setup tasks
+    include_tasks: ssh_setup.yml
 
-  - name: Ensure ssh config exists for backup host
-    become: true
-    blockinfile:
-      dest: "/root/.ssh/config"
-      create: yes
-      block: "{{ ssh_config }}"
-      marker: "# {mark} ANSIBLE MANAGED BLOCK backup_host"
-    vars:
-      ssh_config: !vault |
-          $ANSIBLE_VAULT;1.1;AES256
-          38613532373632636464336138323731646137316632653536616662663166363663616261626136
-          3837333565623934363536613032646633303166633238640a363963356666363761386262313930
-          39393564353531323439653630373835323338336665306466663331613438656438363535316632
-          6534376532303739370a393464373532356630396430626233653064636333386133316131376236
-          63363733303039363633623339383063366666356636363665303137343638613764303961313933
-          39623034366362623635656436663864623866366262333166393335613964653532366434393635
-          37326361323861616632656662653533383963356231646331653835336337323038393232623666
-          34383663653934636431363064373236666435643963383636616437383838626231373036633333
-          6135
-    tags:
-      - backup
-
-  - name: Import ssh host key
-    become: true
-    known_hosts:
-      path: /root/.ssh/known_hosts
-      name: "{{ duplicity.remote_host }}"
-      key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ duplicity.remote_host }}') }}"
-    tags:
-      - backup
-
-  - name: GPG config
-    become: true
-    copy:
-      content: |
-        pinentry-mode loopback
-      dest: "/root/.gnupg/gpg.conf"
-      owner: root
-      group: root
-      mode: 0400
-    tags:
-      - backup
-
-  - name: Import gpg keys, devault
-    become: true
-    copy:
-      src: "root/gpg/private.asc.vault"
-      dest: "/root/.gnupg/private.asc"
-      owner: root
-      group: root
-      mode: 0400
-    tags:
-      - backup
-
-  - name: Import ownertrust, devault
-    become: true
-    copy:
-      src: "root/gpg/ownertrust.vault"
-      dest: "/root/.gnupg/ownertrust"
-      owner: root
-      group: root
-      mode: 0400
-    tags:
-      - backup
-
-  - name: Import gpg keys
-    become: true
-    shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc
-    args:
-      chdir: "/root/.gnupg"
-    tags:
-      - backup
-
-  - name: Import ownertrust
-    become: true
-    shell: gpg --import-ownertrust ownertrust
-    args:
-      chdir: "/root/.gnupg"
-    tags:
-      - backup
+  - name: Include gpg setup tasks
+    include_tasks: gpg_setup.yml
 
   - name: Install systemd services
     become: true
@@ -232,7 +103,8 @@
     with_items:
       - backup
       - clean
-      - remove-old
+      - remove-old-inc
+      - remove-old-set
     tags:
       - backup
 
@@ -246,7 +118,8 @@
     with_items:
       - backup
       - clean
-      - remove-old
+      - remove-old-inc
+      - remove-old-set
     tags:
       - backup
 
@@ -259,7 +132,8 @@
     with_items:
       - backup
       - clean
-      - remove-old
+      - remove-old-inc
+      - remove-old-set
     tags:
       - backup
 
@@ -273,7 +147,8 @@
     with_items:
       - backup
       - clean
-      - remove-old
+      - remove-old-inc
+      - remove-old-set
     tags:
       - backup
 
