@@ -4,7 +4,7 @@ After=network-online.target
 Wants=network-online.target
 
 [Timer]
-OnCalendar={{ duplicity[item] }}
+OnCalendar={{ duplicity[item]|default('weekly') }}
 Persistent=True
 RandomizedDelaySec=600
 
