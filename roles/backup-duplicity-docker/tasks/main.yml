@@ -2,6 +2,8 @@
 - block:
   - name: Include cleanup tasks
     include_tasks: cleanup.yml
+    tags:
+      - backup
 
   - name: Ensure directory exist
     become: true
