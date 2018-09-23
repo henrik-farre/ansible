@@ -37,7 +37,7 @@
   with_items:
     - /etc/cron.d/1backup
     - /etc/systemd/system/duplicity-docker-remove-old.timer
-    - /etc/systemd/system/duplicity-docker-remove-old.timer
+    - /etc/systemd/system/duplicity-docker-remove-old.service
     - /root/.duplicity
     - /usr/local/etc/duplicity
     - /usr/local/etc/duplicity-docker/duplicity-remove-old.yml
