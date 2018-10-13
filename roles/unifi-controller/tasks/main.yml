@@ -39,7 +39,7 @@
   tags:
     - unifi-controller
 
-- name: Ensure unsupported lib
+- name: Ensure unsupported lib is removed
   become: yes
   file:
     path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
@@ -62,5 +62,28 @@
     - syslog.socket
     - alsa-restore.service
     - dphys-swapfile.service
+  tags:
+    - unifi-controller
+
+# https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
+- name: Ensure custom config.gateway.json is deployed
+  become: yes
+  copy:
+    content: "{{ unifi.config_gateway|to_nice_json }}"
+    dest: /usr/lib/unifi/data/sites/default/config.gateway.json
+    owner: unifi
+    group: unifi
+    mode: 0600
+  when:
+    - unifi.config_gateway is defined
+  tags:
+    - unifi-controller
+
+- name: Ensure unifi service is started and enabled
+  become: yes
+  service:
+    name: unifi
+    state: started
+    enabled: yes
   tags:
     - unifi-controller
