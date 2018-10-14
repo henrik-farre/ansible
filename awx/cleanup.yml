@@ -19,14 +19,13 @@
         state: absent
         tower_config_file: "~/.tower_cli.cfg"
 
-        # This fails with AWX 1.0.7.2
-        #    - name: Remove demo inventory
-        #      tower_inventory:
-        #        name: "Demo Inventory"
-        #        organization:
-        #        description:
-        #        state: absent
-        #        tower_config_file: "~/.tower_cli.cfg"
+    - name: Remove demo inventory
+      tower_inventory:
+        name: "Demo Inventory"
+        organization: "Default"
+        description:
+        state: absent
+        tower_config_file: "~/.tower_cli.cfg"
 
     - name: Remove demo credential
       tower_credential:
