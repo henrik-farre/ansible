@@ -1,0 +1,79 @@
+---
+- name: Provision AWX | Ensure organization exist
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Create tower organization
+      tower_organization:
+        name: "Home"
+        description: "Home organization"
+        state: present
+        tower_verify_ssl: no
+
+- name: Provision AWX | Ensure users exist
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Load vaulted vars
+      include_vars:
+        file: vars/users.yml.vault
+
+    - name: Ensure users exists
+      tower_user:
+        username: "{{ item.username }}"
+        password: "{{ item.password }}"
+        email: "{{ item.email }}"
+        first_name: "{{ item.first_name }}"
+        last_name: "{{ item.last_name }}"
+        superuser: "{{ item.superuser|default('no') }}"
+        state: present
+        tower_verify_ssl: no
+      with_items:
+        - "{{ tower_users }}"
+      no_log: true
+
+- name: Provision AWX | Ensure credentials exist
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Load vaulted vars
+      include_vars:
+        file: vars/credentials.yml.vault
+
+    - name: Ensure credentials exist
+      tower_credential:
+        name: "{{ item.name }}"
+        description: "{{ item.description }}"
+        kind: "{{ item.kind }}"
+        organization: "{{ item.organization|default(default_org) }}"
+        username: "{{ item.username|default(omit) }}"
+        password: "{{ item.password|default(omit) }}"
+        ssh_key_data: "{{ item.ssh_key_data|default(omit) }}"
+        ssh_key_unlock: "{{ item.ssh_key_unlock|default(omit) }}"
+        vault_password: "{{ item.vault_password|default(omit) }}"
+        become_password: "{{ item.become_password|default(omit) }}"
+        become_method: "{{ item.become_method|default(omit) }}"
+        state: present
+        tower_verify_ssl: no
+      with_items:
+        - "{{ tower_credentials }}"
+      no_log: true
+
+
+- name: Provision AWX | Ensure correct settings
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Ensure correct settings
+      tower_settings:
+        name: TOWER_URL_BASE
+        value: "http://awx.home.lan"
+        tower_verify_ssl: no
