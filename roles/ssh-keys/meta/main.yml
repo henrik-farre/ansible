@@ -1,3 +1,4 @@
 ---
 dependencies:
-  - { role: packages, packages: ['openssh'] }
+  - { role: packages, packages: ['openssh'], when: ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux" }
+  - { role: packages, packages: ['ssh'], when: ansible_distribution == "Debian" }
