@@ -9,22 +9,16 @@ set -o pipefail
 # Note this breaks passing a variable as args to a command
 IFS=$'\n\t'
 
-for ITEM in user organization; do
-    echo "$ITEM"
-    tower-cli send "${ITEM}.json"
+if [[ ! -f ~/.tower_cli.cfg ]]; then
+    echo "missing ~/.tower_cli.cfg"
+    exit 1
+fi
+
+ansible-playbook provision.yml -D --ask-vault-pass
+
+for ITEM in credential_type notification_template inventory_script inventory project job_template workflow; do
+    echo "Importing $ITEM"
+    tower-cli send "export/${ITEM}.json"
 done
 
-# TODO
-# settings:
-# - baseurl
-# user
-# - set password
-
-ansible-playbook credentials.yml -D
-
-for ITEM in project inventory job_template; do
-    echo "$ITEM"
-    tower-cli send "${ITEM}.json"
-done
-
-ansible-playbook -i hosts cleanup.yml -D
+ansible-playbook cleanup.yml -D

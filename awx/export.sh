@@ -9,7 +9,14 @@ set -o pipefail
 # Note this breaks passing a variable as args to a command
 IFS=$'\n\t'
 
-for ITEM in organization user team credential_type credential notification_template inventory_script inventory project job_template workflow; do
-    echo $ITEM
-    tower-cli receive --${ITEM} all > "${ITEM}.json" || true
+if [[ ! -f ~/.tower_cli.cfg ]]; then
+    echo "missing ~/.tower_cli.cfg"
+    exit 1
+fi
+
+mkdir -p export
+
+for ITEM in credential_type notification_template inventory_script inventory project job_template workflow; do
+    echo "Exporting $ITEM"
+    tower-cli receive --${ITEM} all > "export/${ITEM}.json" || true
 done
