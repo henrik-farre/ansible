@@ -85,8 +85,8 @@
     - ssmtp
     - arpwatch
     - users
-    - dotfiles
     - sshd
     - ssh-client
     - ssh-keys
+    - dotfiles
     - unifi-controller
