@@ -17,6 +17,7 @@
     name: "duplicity-docker-remove-old.service"
     enabled: no
     state: stopped
+  ignore_errors: true
   tags:
     - backup
 
@@ -26,6 +27,7 @@
     name: "duplicity-docker-remove-old.timer"
     enabled: no
     state: stopped
+  ignore_errors: true
   tags:
     - backup
 
