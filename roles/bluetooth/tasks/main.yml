@@ -9,6 +9,17 @@
   tags:
     - bluetooth
 
+- name: Ensure newly-conneced devices are auto connected
+  become: yes
+  blockinfile:
+    path: /etc/pulse/default.pa
+    block: |
+      # automatically switch to newly-connected devices
+      load-module module-switch-on-connect
+    state: present
+  tags:
+    - bluetooth
+
 - name: Allow access to dbus org.mpris interface
   become: yes
   lineinfile:
