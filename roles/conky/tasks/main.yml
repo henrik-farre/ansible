@@ -48,7 +48,7 @@
 - block:
   - name: Download and extract FontAwesome 4.7
     unarchive:
-      src: http://fontawesome.io/assets/font-awesome-4.7.0.zip
+      src: https://fontawesome.com/v4.7.0/assets/font-awesome-4.7.0.zip
       dest: "/tmp/"
       remote_src: True
     when:
