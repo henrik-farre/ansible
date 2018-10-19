@@ -19,6 +19,7 @@
     - system-maintenance
     - global-aliases
     - misc-setup
+    - xdg-dirs
     - dotfiles
     - vim
     - docker

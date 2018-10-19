@@ -1,0 +1,18 @@
+---
+# Based on:
+# - https://www.linuxsecrets.com/archlinux-wiki/wiki.archlinux.org/index.php/Environment_variables.html#Using_pam_env
+# - https://wiki.archlinux.org/index.php/XDG_Base_Directory
+- name: Ensure XDG directories are defined in /etc/security/pam_env.conf
+  become: yes
+  blockinfile:
+    dest: /etc/security/pam_env.conf
+    block: |
+      # Setting variables that reuse your $HOME
+      XDG_CACHE_HOME   DEFAULT=@{HOME}/.cache
+      XDG_CONFIG_HOME  DEFAULT=@{HOME}/.config
+      XDG_DATA_HOME    DEFAULT=@{HOME}/.local/share
+
+      # You can reuse XDG_RUNTIME_DIR for runtime files
+      ICEAUTHORITY     DEFAULT=${XDG_RUNTIME_DIR}/ICEauthority
+  tags:
+    - xdg-dirs
