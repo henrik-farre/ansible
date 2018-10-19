@@ -1,3 +1,4 @@
 ---
 - name: Update font cache
   command: fc-cache -f "{{ ansible_user_dir }}/.local/share/fonts"
+  changed_when: false
