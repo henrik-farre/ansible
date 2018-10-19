@@ -29,6 +29,7 @@
 - **/.local/nodejs
 - **/.local/share/Steam
 - **/.local/share/Trash
+- **/.local/share/fonts
 - **/.local/share/gvfs-metadata
 - **/.local/share/recently-used.xbel*
 - **/.macromedia

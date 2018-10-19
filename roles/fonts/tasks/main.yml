@@ -5,6 +5,7 @@
       path: "{{ ansible_user_dir }}/{{ item }}"
       state: absent
     with_items:
+      - .fonts
       - .fonts.conf
       - .fonts.conf.d
       - .fontconfig
@@ -38,9 +39,9 @@
     tags:
       - fonts
 
-  - name: Create .fonts dir
+  - name: Create fonts directory
     file:
-      path: "{{ ansible_user_dir }}/.fonts/"
+      path: "{{ ansible_user_dir }}/.local/share/fonts"
       owner: "{{ ansible_user_id }}"
       state: directory
       mode: 0700
@@ -59,7 +60,7 @@
   - name: Install mononoki font
     copy:
       src: "/tmp/mononoki/export/webfont/{{ item }}"
-      dest: "{{ ansible_user_dir }}/.fonts/{{ item }}"
+      dest: "{{ ansible_user_dir }}/.local/share/fonts/{{ item }}"
       remote_src: yes
     with_items:
       - "mononoki-BoldItalic.ttf"

@@ -40,7 +40,7 @@
 
 - name: Check if FontAwesome is installed
   stat:
-    path: "{{ ansible_user_dir }}/.fonts/fontawesome-webfont.ttf"
+    path: "{{ ansible_user_dir }}/.local/share/fonts/fontawesome-webfont.ttf"
   register: font_stat
   tags:
     - conky
@@ -59,7 +59,7 @@
   - name: Install FontAwesome
     copy:
       src: "/tmp/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf"
-      dest: "{{ ansible_user_dir }}/.fonts/fontawesome-webfont.ttf"
+      dest: "{{ ansible_user_dir }}/.local/share/fonts/fontawesome-webfont.ttf"
       remote_src: yes
     when:
       - font_stat.stat.exists is defined and font_stat.stat.exists == false
