@@ -6,6 +6,7 @@
   tasks:
     - name: Include roles
       include_role:
-        name: "{{ item }}"
-      with_items:
-        - "{{ role_name.split(',')|list }}"
+        name: "{{ role_item }}"
+      loop: "{{ role_name.split(',') }}"
+      loop_control:
+          loop_var: role_item
