@@ -4,7 +4,7 @@
     file:
       path: "{{ ansible_user_dir }}/{{ item }}"
       state: absent
-    with_items:
+    loop:
       - .fonts
       - .fonts.conf
       - .fonts.conf.d
@@ -62,7 +62,7 @@
       src: "/tmp/mononoki/export/webfont/{{ item }}"
       dest: "{{ ansible_user_dir }}/.local/share/fonts/{{ item }}"
       remote_src: yes
-    with_items:
+    loop:
       - "mononoki-BoldItalic.ttf"
       - "mononoki-Italic.ttf"
       - "mononoki-Bold.ttf"
