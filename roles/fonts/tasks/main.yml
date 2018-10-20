@@ -48,11 +48,20 @@
     tags:
       - fonts
 
+  - name: Check if Mononoki is installed
+    stat:
+      path: "{{ ansible_user_dir }}/.local/share/fonts/mononoki-Regular.ttf"
+    register: font_stat
+    tags:
+      - fonts
+
   - name: Download mononoki font
     git:
       repo: https://github.com/madmalik/mononoki.git
       dest: /tmp/mononoki
       version: master
+    when:
+      - font_stat.stat.exists is defined and font_stat.stat.exists == false
     tags:
       - fonts
 
@@ -67,6 +76,8 @@
       - "mononoki-Italic.ttf"
       - "mononoki-Bold.ttf"
       - "mononoki-Regular.ttf"
+    when:
+      - font_stat.stat.exists is defined and font_stat.stat.exists == false
     notify:
       - Update font cache
     tags:
