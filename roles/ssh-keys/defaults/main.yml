@@ -1,0 +1,3 @@
+---
+ssh:
+  key_file_type: rsa

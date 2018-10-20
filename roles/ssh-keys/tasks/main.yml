@@ -10,7 +10,7 @@
 
 - name: Set ssh key filename
   set_fact:
-    ssh_key_filename: "id_{{ ssh.key_file_type|default('rsa') }}.{{ ansible_hostname }}"
+    ssh_key_filename: "id_{{ ssh.key_file_type }}.{{ ansible_hostname }}"
   tags:
     - ssh-keys
 
@@ -36,8 +36,8 @@
     dest: "{{ ansible_user_dir }}/.ssh/{{ item.dest }}"
     state: link
   with_items:
-    - { src: "{{ ssh_key_filename }}", dest: "id_{{ ssh.key_file_type|default('rsa') }}" }
-    - { src: "{{ ssh_key_filename }}.pub", dest: "id_{{ ssh.key_file_type|default('rsa') }}.pub" }
+    - { src: "{{ ssh_key_filename }}", dest: "id_{{ ssh.key_file_type }}" }
+    - { src: "{{ ssh_key_filename }}.pub", dest: "id_{{ ssh.key_file_type }}.pub" }
   tags:
     - ssh-keys
 
