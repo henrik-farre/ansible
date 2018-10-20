@@ -1,11 +1,4 @@
 ---
-- name: List packages to be installed
-  debug:
-    var: packages
-  when:
-    - debug_packages is defined
-    - debug_packages == True
-
 - name: Install packages on ArchLinux
   become: yes
   pacman:
