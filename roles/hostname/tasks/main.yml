@@ -1,10 +1,10 @@
 ---
-- name:
+- name: Set hostname
   become: yes
   hostname:
     name: "{{ inventory_hostname }}"
 
-- name: add hostname to /etc/hosts
+- name: Add hostname to /etc/hosts
   become: yes
   template:
     src: etc/hosts.j2
