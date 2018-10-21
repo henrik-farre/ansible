@@ -1,0 +1,6 @@
+# Molecule managed
+---
+matching:
+  check_env_match:
+    content: "{{ .Env.XDG_DATA_HOME }}"
+    matches: "/root/.local/share"
