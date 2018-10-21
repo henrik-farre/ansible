@@ -10,7 +10,7 @@
     owner: root
     group: docker
     mode: 0640
-  register: docker_conf
+  notify: Restart docker daemon
   tags:
     - docker
 
@@ -42,6 +42,9 @@
   tags:
     - docker
 
+- name: Ensure docker is restarted
+  meta: flush_handlers
+
 - name: Ensure docker is started
   become: yes
   systemd:
@@ -49,16 +52,6 @@
     state: started
   when:
     - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists == True
-  tags:
-    - docker
-
-- name: Ensure docker is reloaded if configuration has changed
-  become: yes
-  systemd:
-    name: docker
-    state: restarted
-  when:
-    - docker_conf.changed
   tags:
     - docker
 
