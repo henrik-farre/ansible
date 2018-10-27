@@ -48,4 +48,5 @@
   tags:
     - ssmtp
   when:
+    - groups_to_users is defined
     - groups_to_users.ssmtp is defined
