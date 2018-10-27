@@ -1,11 +1,12 @@
-- name: Ensure systemd unit is disabled
-  systemd:
-    name: devilspie2.service
-    enabled: no
-    daemon_reload: no
-    user: yes
-  tags:
-    - devilspie2
+---
+# - name: Ensure systemd unit is disabled
+  # systemd:
+    # name: devilspie2.service
+    # enabled: no
+    # daemon_reload: no
+    # user: yes
+  # tags:
+    # - devilspie2
 
 - name: Ensure systemd unit file is removed
   file:
@@ -13,6 +14,11 @@
     state: absent
   tags:
     - devilspie
+
+- name: Ensure autostart directory exists
+  file:
+    path: "{{ ansible_user_dir }}/.config/autostart"
+    state: directory
 
 - name: Ensure devilspie is auto started
   copy:
