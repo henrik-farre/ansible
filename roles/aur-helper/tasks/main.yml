@@ -1,9 +1,9 @@
 ---
-- name: Manage GPG keys
-  include_role:
-    name: gpg-key-management
-  vars:
-    gpg_key: "{{ aur_pkg_pgp_key }}"
+- name: Ensure GPG key is present
+  gpg_import:
+    key_id: "{{ aur_pkg_pgp_key }}"
+    state: present
+  changed_when: false
 
 - name: Install "{{ aur_pkg_helper }}"
   include_tasks: install_pkg.yml
