@@ -1,4 +1,15 @@
 ---
+- name: Ensure docker directory exists
+  become: yes
+  file:
+    path: /etc/docker
+    state: directory
+    owner: root
+    group: root
+    mode: 0700
+  tags:
+    - docker
+
 - name: Ensure correct storage driver is configured
   become: yes
   copy:
