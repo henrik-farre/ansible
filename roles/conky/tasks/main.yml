@@ -46,34 +46,34 @@
     - conky
 
 - block:
-  - name: Download and extract FontAwesome 4.7
-    unarchive:
-      src: https://fontawesome.com/v4.7.0/assets/font-awesome-4.7.0.zip
-      dest: "/tmp/"
-      remote_src: True
-    when:
-      - font_stat.stat.exists is defined and font_stat.stat.exists == false
-    tags:
-      - conky
+    - name: Download and extract FontAwesome 4.7
+      unarchive:
+        src: https://fontawesome.com/v4.7.0/assets/font-awesome-4.7.0.zip
+        dest: "/tmp/"
+        remote_src: True
+      when:
+        - font_stat.stat.exists is defined and font_stat.stat.exists == false
+      tags:
+        - conky
 
-  - name: Install FontAwesome
-    copy:
-      src: "/tmp/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf"
-      dest: "{{ ansible_user_dir }}/.local/share/fonts/fontawesome-webfont.ttf"
-      remote_src: yes
-    when:
-      - font_stat.stat.exists is defined and font_stat.stat.exists == false
-    notify:
-      - Update font cache
-    tags:
-      - conky
+    - name: Install FontAwesome
+      copy:
+        src: "/tmp/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf"
+        dest: "{{ ansible_user_dir }}/.local/share/fonts/fontawesome-webfont.ttf"
+        remote_src: yes
+      when:
+        - font_stat.stat.exists is defined and font_stat.stat.exists == false
+      notify:
+        - Update font cache
+      tags:
+        - conky
 
   always:
-  - name: Cleanup
-    file:
-      path: /tmp/font-awesome-4.7.0
-      state: absent
-    when:
-      - font_stat.stat.exists is defined and font_stat.stat.exists == false
-    tags:
-      - conky
+    - name: Cleanup
+      file:
+        path: /tmp/font-awesome-4.7.0
+        state: absent
+      when:
+        - font_stat.stat.exists is defined and font_stat.stat.exists == false
+      tags:
+        - conky

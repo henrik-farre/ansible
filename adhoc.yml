@@ -9,4 +9,4 @@
         name: "{{ role_item }}"
       loop: "{{ role_name.split(',') }}"
       loop_control:
-          loop_var: role_item
+        loop_var: role_item
