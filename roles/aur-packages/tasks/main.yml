@@ -1,8 +1,14 @@
-# Environment is needed to work around a bug in pacaur 4.7.10
+---
+- name: Ensure GPG key is present
+  gpg_import:
+    key_id: "{{ gpg_keys }}"
+    state: present
+  changed_when: false
+  when:
+    - gpg_keys is defined
+
 - name: Install packages from AUR
-  command: pacaur -S --noconfirm --noedit "{{ item }}"
-  environment:
-    EDITOR: /usr/bin/nvim
+  command: aurman -S --noconfirm --noedit --skip_news --skip_new_locations --pgp_fetch "{{ item }}"
   with_items:
     - "{{ packages }}"
   tags:
