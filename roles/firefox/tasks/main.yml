@@ -40,6 +40,17 @@
   tags:
     - firefox
 
+- name: Ensure directories for system settings exists
+  become: yes
+  file:
+    path: /usr/lib/firefox/defaults/pref
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  tags:
+    - firefox
+
 - name: Lock down some Firefox settings
   become: yes
   copy:
