@@ -1,3 +1,3 @@
 ---
 dependencies:
-  - { role: packages, packages: ["expac", "pyalpm", "python-regex", "python-requests"] }
+  - { role: packages, packages: ["expac", "pyalpm", "python-regex", "python-requests", "binutils", "git", "base-devel"] }
