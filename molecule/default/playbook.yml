@@ -1,0 +1,66 @@
+---
+- name: Converge
+  become: yes
+  hosts: all
+
+  roles:
+    - facts
+
+- name: Converge
+  hosts: all
+
+  vars:
+    network:
+      local_domain: molecule.test
+    root_password: $6$mysecretsalt$rh7RWZQasLntoaIXXYOKv.GojrDALgKocxb81aAu16OnQ8IOITptuMRl1sPOIbLQxF.fovG2fOF45hcC8RJoq1
+    ssmtp_mailhub: "smtp"
+    ssmtp_root: email@test.test
+    ssmtp_rewrite_domain: molecule.test
+    ssmtp_auth_user: some_user
+    ssmtp_auth_pass: some_pass
+    groups_to_users: []
+    email_address: email@test.test
+
+  roles:
+    - hostname
+    - locale
+    - timezone
+    - ntp
+    - mounts
+    - networking
+    - users
+    - modules
+    - cron
+    - ssmtp
+    - hddtemp
+    - sysctl
+    - journald
+    - firewall
+    - makepkg
+    - sshd
+    - ssh-keys
+    - ssh-client
+    - system-maintenance
+    - global-aliases
+    - misc-setup
+    - xdg-dirs
+    - dotfiles
+    - vim
+    - docker
+    - php
+    - fuse
+    - xorg
+    - lightdm
+    - fonts
+    - cinnamon
+    - conky
+    - zim
+    - samba-client
+    - node
+    - firefox
+    - xcape
+    - systemd-user-units
+    - terminal
+    - aur-helper
+    - cups
+    - devilspie

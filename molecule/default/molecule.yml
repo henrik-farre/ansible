@@ -1,0 +1,32 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: vagrant
+  provider:
+    name: virtualbox
+lint:
+  name: yamllint
+  enabled: False
+platforms:
+  - name: instance
+    box: archlinux/archlinux
+    box_version: 2018.10.05
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      vault_password_file: /tmp/vault_pass.txt
+  env:
+    ANSIBLE_ROLES_PATH: ../../roles
+    ANSIBLE_LIBRARY: ../../roles/gpg-key-management/library
+  lint:
+    name: ansible-lint
+    options:
+      x: ["ANSIBLE10,ANSIBLE0012,ANSIBLE0013"]
+scenario:
+  name: default
+verifier:
+  name: goss
+  lint:
+    name: yamllint
