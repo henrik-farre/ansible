@@ -49,46 +49,6 @@
     tags:
       - backup
 
-  - name: Ensure failed service email script exists
-    become: true
-    copy:
-      content: |
-        #!/bin/bash
-
-        /usr/bin/sendmail -t <<ERRMAIL
-        To: $1
-        From: systemd on $HOSTNAME <root@$HOSTNAME>
-        Subject: $2
-        Content-Transfer-Encoding: 8bit
-        Content-Type: text/plain; charset=UTF-8
-
-        $(systemctl status --full "$2")
-        ERRMAIL
-      dest: /usr/local/bin/systemd-email
-      mode: 0750
-      owner: root
-      group: mail
-    tags:
-      - backup
-
-  - name: Ensure failed service unit exists
-    become: true
-    copy:
-      content: |
-        [Unit]
-        Description=status email for %i to user
-
-        [Service]
-        Type=oneshot
-        ExecStart=/usr/local/bin/systemd-email henrik.farre@gmail.com %i
-        User=root
-        Group=systemd-journal
-      dest: /etc/systemd/system/status-email-enrique@.service
-      mode: 0644
-      owner: root
-    tags:
-      - backup
-
   - name: Include ssh setup tasks
     include_tasks: ssh_setup.yml
 
