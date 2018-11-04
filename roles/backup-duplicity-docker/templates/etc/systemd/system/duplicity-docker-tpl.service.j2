@@ -3,7 +3,7 @@ Description=Duplicity Backup running in docker: performs {{ item }}
 Requires=docker.service
 After=docker.service network-online.target
 Wants=network-online.target
-OnFailure=status-email-enrique@%n.service
+OnFailure=status-email@%n.service
 ConditionPathExistsGlob=!/var/cache/duplicity/*/lockfile.lock
 
 [Service]

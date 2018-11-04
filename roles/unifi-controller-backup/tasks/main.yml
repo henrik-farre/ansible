@@ -17,7 +17,7 @@
     content: |
       [Unit]
       Description=Rsync backup of unifi controller
-      OnFailure=status-email-enrique@%n.service
+      OnFailure=status-email@%n.service
 
       [Service]
       Type=oneshot
