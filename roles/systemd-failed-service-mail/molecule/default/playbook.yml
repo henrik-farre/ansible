@@ -1,0 +1,17 @@
+---
+- name: Converge
+  hosts: all
+
+  vars:
+    network:
+      local_domain: molecule.test
+    root_password: $6$mysecretsalt$rh7RWZQasLntoaIXXYOKv.GojrDALgKocxb81aAu16OnQ8IOITptuMRl1sPOIbLQxF.fovG2fOF45hcC8RJoq1
+    ssmtp_mailhub: "smtp"
+    ssmtp_root: email@test.test
+    ssmtp_rewrite_domain: molecule.test
+    ssmtp_auth_user: some_user
+    ssmtp_auth_pass: some_pass
+    email_address: email@test.test
+
+  roles:
+    - role: systemd-failed-service-mail

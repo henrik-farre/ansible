@@ -1,0 +1,42 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+  options:
+    config-file: "$HOME/.config/yamllint/config"
+platforms:
+  - name: instance
+    pre_build_image: True
+    image: "rockhopperdk/docker-archlinux-systemd:latest"
+    command: /lib/systemd/systemd
+    capabilities:
+      - SYS_ADMIN
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+provisioner:
+  name: ansible
+  playbooks:
+    verify: ../../../../resources/molecule/goss_verify.yml
+  lint:
+    name: ansible-lint
+    options:
+      x: ["ANSIBLE0010,ANSIBLE0012,ANSIBLE0013"]
+scenario:
+  name: default
+  test_sequence:
+    - lint
+    - destroy
+    - syntax
+    - create
+    - prepare
+    - converge
+    - idempotence
+    - verify
+    - destroy
+verifier:
+  name: goss
+  lint:
+    name: yamllint

@@ -1,0 +1,20 @@
+---
+file:
+  /etc/systemd/system/status-email-enrique@.service:
+    exists: false
+  /usr/local/bin/systemd-email:
+    exists: true
+    mode: "0750"
+    owner: root
+    group: mail
+    filetype: file
+    contains:
+      - /usr/bin/sendmail -t <<ERRMAIL
+  /etc/systemd/system/status-email@.service:
+    exists: true
+    mode: "0644"
+    owner: root
+    group: root
+    filetype: file
+    contains:
+      - Description=Status email for %i to user
