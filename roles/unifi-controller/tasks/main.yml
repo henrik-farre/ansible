@@ -6,6 +6,12 @@
         name: dirmngr
         state: latest
 
+    # https://community.ubnt.com/t5/UniFi-Updates-Blog/UniFi-SDN-Controller-5-9-29-Stable-has-been-released/ba-p/2516852
+    - name: Ensure support java version is installed
+      package:
+        name: openjdk-8-jre-headless
+        state: latest
+
     - name: Ensure unifi apt key is available
       apt_key:
         keyserver: keyserver.ubuntu.com
