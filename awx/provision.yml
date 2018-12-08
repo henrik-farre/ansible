@@ -71,9 +71,22 @@
   connection: local
   gather_facts: false
 
+  vars:
+    tower_settings:
+      task_env:
+        HOME: "/var/lib/awx"
+        ANSIBLE_LIBRARY: "/var/lib/awx/projects/_6__home/library/"
+        ANSIBLE_SSH_ARGS: "-o ForwardAgent=yes -o ControlMaster=auto -o ControlPersist=60s"
+
   tasks:
     - name: Ensure correct settings
       tower_settings:
         name: TOWER_URL_BASE
         value: "http://awx.home.lan"
+        tower_verify_ssl: no
+
+    - name: Set the value of AWX_TASK_ENV
+      tower_settings:
+        name: "AWX_TASK_ENV"
+        value: "{{ tower_settings.task_env }}"
         tower_verify_ssl: no
