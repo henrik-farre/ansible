@@ -77,7 +77,7 @@
     - { role: aur-packages, packages: ['mbpfan-git', 'linux-macbook'] }
     - { role: services, services: ['mbpfan'] }
 
-- hosts: unifi-controller
+- hosts: raspberrypi
   roles:
     - locale
     - hostname
@@ -90,4 +90,7 @@
     - ssh-client
     - ssh-keys
     - dotfiles
+
+- hosts: unifi-controller
+  roles:
     - unifi-controller
