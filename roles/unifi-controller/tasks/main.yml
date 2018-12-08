@@ -1,89 +1,61 @@
 ---
-- name: Ensure needed pgp tools are installed
-  become: yes
-  package:
-    name: dirmngr
-    state: latest
-  tags:
-    - unifi-controller
+- name: Ensure all tasks are run with become and correct tag
+  block:
+    - name: Ensure needed pgp tools are installed
+      package:
+        name: dirmngr
+        state: latest
 
-- name: Ensure unifi apt key is available
-  become: yes
-  apt_key:
-    keyserver: keyserver.ubuntu.com
-    id: 06E85760C0A52C50
-  tags:
-    - unifi-controller
+    - name: Ensure unifi apt key is available
+      apt_key:
+        keyserver: keyserver.ubuntu.com
+        id: 06E85760C0A52C50
 
-- name: Ensure unifi repository is available
-  become: yes
-  apt_repository:
-    repo: deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti
-    state: present
-    filename: 100-ubnt.list
-  tags:
-    - unifi-controller
+    - name: Ensure unifi repository is available
+      apt_repository:
+        repo: deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti
+        state: present
+        filename: 100-ubnt.list
 
-- name: Update apt cache
-  become: yes
-  apt:
-    update_cache: yes
-  tags:
-    - unifi-controller
+    - name: Update apt cache
+      apt:
+        update_cache: yes
 
-- name: Ensure unifi controller is installed
-  become: yes
-  package:
-    name: unifi
-    state: latest
-  tags:
-    - unifi-controller
+    - name: Ensure unifi controller is installed
+      package:
+        name: unifi
+        state: latest
 
-- name: Ensure unsupported lib is removed
-  become: yes
-  file:
-    path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
-    state: absent
-  tags:
-    - unifi-controller
+    - name: Ensure unsupported lib is removed
+      file:
+        path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
+        state: absent
+      when:
+        - ansible_facts.ansible_architecture == "armv6l"
 
-- name: Ensure unneeded services are stopped and disabled
-  become: yes
-  service:
-    name: "{{ item }}"
-    state: stopped
-    enabled: no
-  with_items:
-    - triggerhappy
-    - triggerhappy.socket
-    - avahi-daemon
-    - mongodb
-    - rsyslog.service
-    - syslog.socket
-    - alsa-restore.service
-    - dphys-swapfile.service
-  tags:
-    - unifi-controller
+    - name: Ensure mongodb is stopped and disabled
+      service:
+        name: mongodb
+        state: stopped
+        enabled: no
 
-# https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
-- name: Ensure custom config.gateway.json is deployed
-  become: yes
-  copy:
-    content: "{{ unifi.config_gateway|to_nice_json }}"
-    dest: /usr/lib/unifi/data/sites/default/config.gateway.json
-    owner: unifi
-    group: unifi
-    mode: 0600
-  when:
-    - unifi.config_gateway is defined
-  tags:
-    - unifi-controller
+    # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
+    - name: Ensure custom config.gateway.json is deployed
+      copy:
+        content: "{{ unifi.config_gateway|to_nice_json }}"
+        dest: /usr/lib/unifi/data/sites/default/config.gateway.json
+        owner: unifi
+        group: unifi
+        mode: 0600
+      when:
+        - unifi.config_gateway is defined
 
-- name: Ensure unifi service is started and enabled
+    - name: Ensure unifi service is started and enabled
+      service:
+        name: unifi
+        state: started
+        enabled: yes
+  # Block level
   become: yes
-  service:
-    name: unifi
-    state: started
-    enabled: yes
   tags:
     - unifi-controller
