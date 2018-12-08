@@ -31,7 +31,7 @@
         path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
         state: absent
       when:
-        - ansible_facts.ansible_architecture == "armv6l"
+        - ansible_facts.architecture == "armv6l"
 
     - name: Ensure mongodb is stopped and disabled
       service:
