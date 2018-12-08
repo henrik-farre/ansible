@@ -77,7 +77,7 @@
     - { role: aur-packages, packages: ['mbpfan-git', 'linux-macbook'] }
     - { role: services, services: ['mbpfan'] }
 
-- hosts: raspberrypi
+- hosts: debian
   roles:
     - locale
     - hostname
