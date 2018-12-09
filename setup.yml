@@ -1,27 +1,31 @@
 ---
-- hosts: archlinux
+- hosts: all
   roles:
     - hostname
     - locale
     - timezone
     - ntp
+    - ssmtp
+    - users
+    - sshd
+    - ssh-client
+    - ssh-keys
+    - dotfiles
+    - vim
+
+- hosts: archlinux
+  roles:
     - modules
     - cron
-    - ssmtp
     - hddtemp
     - sysctl
     - journald
     - firewall
     - makepkg
-    - sshd
-    - ssh-keys
-    - ssh-client
     - system-maintenance
     - global-aliases
     - misc-setup
     - xdg-dirs
-    - dotfiles
-    - vim
     - docker
     - { role: backup-duplicity-docker, when: duplicity is defined }
     - php
@@ -74,22 +78,12 @@
 
 - hosts: macbook
   roles:
-    - { role: aur-packages, packages: ['mbpfan-git', 'linux-macbook'] }
+    - { role: aur-packages, packages: ['mbpfan-git'] }
     - { role: services, services: ['mbpfan'] }
 
-- hosts: debian
+- hosts: raspberrypi
   roles:
-    - locale
-    - hostname
-    - timezone
-    - ntp
-    - ssmtp
     - arpwatch
-    - users
-    - sshd
-    - ssh-client
-    - ssh-keys
-    - dotfiles
 
 - hosts: unifi-controller
   roles:
