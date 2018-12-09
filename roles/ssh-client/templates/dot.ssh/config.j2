@@ -4,7 +4,7 @@ Host *
   TCPKeepAlive yes
   ServerAliveCountMax 3
   ServerAliveInterval 20
-{% if ansible_distribution != 'RedHat' or (ansible_distribution == 'RedHat' and ansible_distribution_version|version_compare('6.5', '>=')) %}
+{% if ansible_facts.distribution != 'RedHat' or (ansible_facts.distribution == 'RedHat' and ansible_facts.distribution_version|version_compare('6.5', '>=')) %}
   ControlMaster auto
   ControlPath ~/.ssh/master-%r@%h:%p
   ControlPersist 300

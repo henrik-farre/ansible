@@ -18,7 +18,7 @@
   with_items:
     - "locale.conf"
   when:
-    - ansible_distribution != 'Debian'
+    - ansible_facts.distribution != 'Debian'
   tags:
     - locale
 
@@ -30,6 +30,6 @@
     owner: root
     mode: 0644
   when:
-    - ansible_distribution != 'Debian'
+    - ansible_facts.distribution != 'Debian'
   tags:
     - locale

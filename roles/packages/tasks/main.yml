@@ -6,7 +6,7 @@
     update_cache: yes
     state: latest
   when:
-    - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
+    - ansible_facts.distribution == "Archlinux"
   tags:
     - packages
 
@@ -17,6 +17,6 @@
     update_cache: yes
     state: latest
   when:
-    - ansible_distribution == "Debian"
+    - ansible_facts.distribution == "Debian"
   tags:
     - packages
