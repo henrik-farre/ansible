@@ -1,118 +1,99 @@
 ---
-- name: Clone neovim/vim files
-  git:
-    repo: git@github.com:henrik-farre/vimrc.git
-    dest: "{{ ansible_user_dir }}/.config/nvim"
-    version: master
+- name: Ensure tags are set on all tasks
+  block:
+    - name: Clone neovim/vim files
+      git:
+        repo: git@github.com:henrik-farre/vimrc.git
+        dest: "{{ ansible_user_dir }}/.config/nvim"
+        version: master
+
+    - name: Create backups and swaps dirs
+      file:
+        path: "{{ ansible_user_dir }}/.config/nvim/{{ item }}"
+        owner: "{{ ansible_user_id }}"
+        state: directory
+        mode: 0700
+      with_items:
+        - backups
+        - swaps
+
+    - name: Ensure .local/share/applications exists
+      file:
+        path: "{{ ansible_user_dir }}/.local/share/applications"
+        owner: "{{ ansible_user_id }}"
+        state: directory
+        mode: 0700
+
+    - name: Install .desktop file
+      copy:
+        src: neovim.desktop
+        dest: "{{ ansible_user_dir }}/.local/share/applications/neovim.desktop"
+        owner: "{{ ansible_user_id }}"
+
+    # https://github.com/mhinz/neovim-remote
+    - name: Install neovim-remote
+      pip:
+        name: neovim-remote
+        extra_args: --user
+        executable: pip3
+        state: latest
+      when:
+        - ansible_facts.distribution != "Debian"
+
+    - name: Ensure python2 modules are installed on macos
+      pip:
+        name: neovim
+        extra_args: --user
+        executable: pip
+        state: latest
+      when:
+        - ansible_os_family == "Darwin"
+
+    - name: Ensure python3 modules are installed on macos
+      pip:
+        name: neovim
+        extra_args: --user
+        executable: pip3
+        state: latest
+      when:
+        - ansible_os_family == "Darwin"
+
+    # - name: Ensure python2 modules are removed on Archlinux
+      # pip:
+        # name: neovim
+        # extra_args: --user
+        # executable: pip
+        # state: absent
+      # when:
+        # - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
+
+    # - name: Ensure python3 modules are removed on Archlinux
+      # pip:
+        # name: neovim
+        # extra_args: --user
+        # executable: pip3
+        # state: absent
+      # when:
+        # - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
+
+    - name: Check if vim is installed
+      stat:
+        path: /usr/bin/vim
+      register: vim_installation
+
+    - name: Create .vimrc symlink for vim
+      file:
+        src: "{{ ansible_user_dir }}/.config/nvim/init.vim"
+        dest: "{{ ansible_user_dir }}/.vimrc"
+        state: link
+      when: vim_installation.stat.exists == True
+
+    - name: Create .vim symlink for vim
+      file:
+        src: "{{ ansible_user_dir }}/.config/nvim"
+        dest: "{{ ansible_user_dir }}/.vim"
+        state: link
+      when: vim_installation.stat.exists == True
+  # Block:
   tags:
     - vim
-
-- name: Create backups and swaps dirs
-  file:
-    path: "{{ ansible_user_dir }}/.config/nvim/{{ item }}"
-    owner: "{{ ansible_user_id }}"
-    state: directory
-    mode: 0700
-  with_items:
-    - backups
-    - swaps
-  tags:
-    - vim
-
-- name: Ensure .local/share/applications exists
-  file:
-    path: "{{ ansible_user_dir }}/.local/share/applications"
-    owner: "{{ ansible_user_id }}"
-    state: directory
-    mode: 0700
-  tags:
-    - vim
-
-- name: Install .desktop file
-  copy:
-    src: neovim.desktop
-    dest: "{{ ansible_user_dir }}/.local/share/applications/neovim.desktop"
-    owner: "{{ ansible_user_id }}"
-  tags:
-    - vim
-
-# https://github.com/mhinz/neovim-remote
-- name: Install neovim-remote
-  pip:
-    name: neovim-remote
-    extra_args: --user
-    executable: pip3
-    state: latest
-  when:
-    - ansible_facts.distribution != "Debian"
-  tags:
-    - vim
-
-- name: Ensure python2 modules are installed on macos
-  pip:
-    name: neovim
-    extra_args: --user
-    executable: pip
-    state: latest
-  when:
-    - ansible_os_family == "Darwin"
-  tags:
-    - vim
-
-- name: Ensure python3 modules are installed on macos
-  pip:
-    name: neovim
-    extra_args: --user
-    executable: pip3
-    state: latest
-  when:
-    - ansible_os_family == "Darwin"
-  tags:
-    - vim
-
-# - name: Ensure python2 modules are removed on Archlinux
-  # pip:
-    # name: neovim
-    # extra_args: --user
-    # executable: pip
-    # state: absent
-  # when:
-    # - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
-  # tags:
-    # - vim
-
-# - name: Ensure python3 modules are removed on Archlinux
-  # pip:
-    # name: neovim
-    # extra_args: --user
-    # executable: pip3
-    # state: absent
-  # when:
-    # - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
-  # tags:
-    # - vim
-
-- name: Check if vim is installed
-  stat:
-    path: /usr/bin/vim
-  register: vim_installation
-  tags:
-    - vim
-
-- name: Create .vimrc symlink for vim
-  file:
-    src: "{{ ansible_user_dir }}/.config/nvim/init.vim"
-    dest: "{{ ansible_user_dir }}/.vimrc"
-    state: link
-  tags:
-    - vim
-  when: vim_installation.stat.exists == True
-
-- name: Create .vim symlink for vim
-  file:
-    src: "{{ ansible_user_dir }}/.config/nvim"
-    dest: "{{ ansible_user_dir }}/.vim"
-    state: link
-  tags:
-    - vim
-  when: vim_installation.stat.exists == True
