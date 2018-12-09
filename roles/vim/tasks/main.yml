@@ -43,6 +43,8 @@
     extra_args: --user
     executable: pip3
     state: latest
+  when:
+    - ansible_facts.distribution != "Debian"
   tags:
     - vim
 
