@@ -1,3 +1,4 @@
 ---
 dependencies:
-  - { role: packages, packages: ['neovim', 'python-neovim', 'python2-neovim', 'python-psutil', 'python-pip'] }
+  - { role: packages, packages: ['neovim', 'python-neovim', 'python2-neovim', 'python-psutil', 'python-pip'], when: ansible_facts.distribution == 'Archlinux' }
+  - { role: packages, packages: ['neovim'], when: ansible_facts.distribution == "Debian" }
