@@ -5,7 +5,7 @@
     dest: "/root/.ssh/config"
     create: yes
     block: |
-      Host raspberrypi
+      Host unifi
         IdentityFile ~/.ssh/id_rsa.unifi-controller
     marker: "# {mark} ANSIBLE MANAGED BLOCK unifi_controller"
   tags:
@@ -21,7 +21,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/bin/rsync -a --delete -e ssh root@raspberrypi:/var/lib/unifi/ /shared/backup/unifi-controller/
+      ExecStart=/usr/bin/rsync -a --delete -e ssh root@unifi:/var/lib/unifi/ /shared/backup/unifi-controller/
     dest: /etc/systemd/system/unifi-backup.service
     mode: 0644
     owner: root
