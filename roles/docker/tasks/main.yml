@@ -16,7 +16,8 @@
     dest: /etc/docker/daemon.json
     content: |
       {
-        "storage-driver": "overlay2"
+        "storage-driver": "overlay2",
+        "log-opts": { "max-size": "100m" }
       }
     owner: root
     group: docker
@@ -24,6 +25,10 @@
   notify: Restart docker daemon
   tags:
     - docker
+
+- name: Install Docker-CE on Debian
+  include_tasks: Debian.yml
+  when: ansible_facts.distribution == "Debian"
 
 - name: Check if devicemapper directory exist
   become: yes

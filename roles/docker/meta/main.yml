@@ -1,5 +1,5 @@
 ---
 dependencies:
   # python2-docker-py is for Ansible modules
-  - { role: packages, packages: ['docker', 'docker-compose', 'python2-docker'] }
-  - { role: services, services: ['docker'] }
+  - { role: packages, packages: ['docker', 'docker-compose', 'python2-docker'], when: ansible_facts.distribution == "Archlinux" }
+  - { role: services, services: ['docker', 'python-docker'], when: ansible_facts.distribution == "Debian" }

@@ -84,6 +84,7 @@
 - hosts: raspberrypi
   roles:
     - arpwatch
+    - docker
 
   tasks:
     - name: Disable swap
