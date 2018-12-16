@@ -14,7 +14,7 @@
 - name: Add hosts as known hosts
   become: yes
   known_hosts:
-    path: "{{ ansible_user_dir }}/.ssh/known_hosts"
+    path: "/root/.ssh/known_hosts"
     name: "unifi"
     key: "{{ lookup('pipe', 'ssh-keyscan -t rsa unifi') }}"
   tags:
