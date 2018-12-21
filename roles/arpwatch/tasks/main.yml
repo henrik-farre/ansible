@@ -1,26 +1,30 @@
 ---
-- name: install arpwatch
-  become: yes
-  package:
-    name: arpwatch
-    state: latest
-  tags:
-    - arpwatch
+- name: Arpwatch tasks
+  block:
+    - name: Ensure arpwatch is installed
+      package:
+        name: arpwatch
+        state: latest
 
-- name: enable arpwatch
-  become: yes
-  service:
-    name: arpwatch
-    enabled: yes
-    state: started
-  tags:
-    - arpwatch
+    - name: Ensure eth0 is used as device
+      lineinfile:
+        path: /etc/arpwatch.conf
+        state: present
+        regexp: "eth0	-m root$"
+        line: "eth0	-m root"
 
-- name: Ensure arpwatch user is member of the mail group
+    - name: Ensure arpwatch is enabled
+      service:
+        name: arpwatch
+        enabled: yes
+        state: started
+
+    - name: Ensure arpwatch user is member of the mail group
+      user:
+        name: arpwatch
+        groups: mail
+        append: yes
+
   become: yes
-  user:
-    name: arpwatch
-    groups: mail
-    append: yes
   tags:
     - arpwatch
