@@ -5,7 +5,7 @@
     dest: "/root/.ssh/config"
     create: yes
     block: |
-      Host unifi
+      Host {{ hostvars[groups['unifi-controller'][0]]['ansible_fqdn'] }}
         IdentityFile ~/.ssh/id_rsa.unifi-controller
     marker: "# {mark} ANSIBLE MANAGED BLOCK unifi_controller"
   tags:
@@ -15,8 +15,8 @@
   become: yes
   known_hosts:
     path: "/root/.ssh/known_hosts"
-    name: "unifi"
-    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa unifi') }}"
+    name: "{{ hostvars[groups['unifi-controller'][0]]['ansible_fqdn'] }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa ' + hostvars[groups['unifi-controller'][0]]['ansible_fqdn']) }}"
   tags:
     - unifi-controller
 
@@ -30,7 +30,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/bin/rsync -a --delete -e ssh root@unifi:/var/lib/unifi/ /shared/backup/unifi-controller/
+      ExecStart=/usr/bin/rsync -a --delete -e ssh root@{{ hostvars[groups['unifi-controller'][0]]['ansible_fqdn'] }}:/var/lib/unifi/ /shared/backup/unifi-controller/
     dest: /etc/systemd/system/unifi-backup.service
     mode: 0644
     owner: root
