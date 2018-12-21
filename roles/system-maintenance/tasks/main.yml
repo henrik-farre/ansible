@@ -53,7 +53,7 @@
   lineinfile:
     name: /etc/smartd.conf
     regexp: '^DEVICESCAN'
-    line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_address }} -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W 5,45,50'
+    line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }} -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W 5,45,50'
     state: present
   notify: Reload smartd
   tags:

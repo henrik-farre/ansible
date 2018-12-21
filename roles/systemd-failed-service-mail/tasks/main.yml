@@ -39,7 +39,7 @@
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/local/bin/systemd-email {{ email_address }} %i
+      ExecStart=/usr/local/bin/systemd-email {{ email_addresses.internal }} %i
       User=root
       Group=systemd-journal
     dest: /etc/systemd/system/status-email@.service
