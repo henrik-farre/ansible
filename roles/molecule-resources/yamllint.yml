@@ -1,0 +1,22 @@
+---
+extends: default
+
+# Ignore yaml files in template directories
+ignore: |
+  templates/
+
+# https://yamllint.readthedocs.io/en/stable/rules.html
+rules:
+  line-length: disable
+  braces:
+    max-spaces-inside: -1
+    max-spaces-inside-empty: -1
+  truthy: disable
+  comments-indentation: disable
+  document-start: disable
+  new-line-at-end-of-file: disable
+  comments: disable
+  commas: disable
+  empty-lines:
+    max: 2
+    max-end: 2

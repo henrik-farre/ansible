@@ -1,0 +1,10 @@
+# Molecule managed
+
+---
+file:
+  /etc/arpwatch.conf:
+    exists: true
+    owner: root
+    group: root
+    contains:
+      - "/^eth0/"
