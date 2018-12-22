@@ -1,3 +1,4 @@
 *.retry
 awx/export/*.json
 .yamllint
+**/vault_pass.txt
