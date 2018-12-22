@@ -16,11 +16,12 @@
       external: email@test.test
       internal: email@test.test
     root_password: $6$mysecretsalt$rh7RWZQasLntoaIXXYOKv.GojrDALgKocxb81aAu16OnQ8IOITptuMRl1sPOIbLQxF.fovG2fOF45hcC8RJoq1
-    ssmtp_mailhub: "smtp"
-    ssmtp_root: "{{ email_addresses.internal }}"
-    ssmtp_rewrite_domain: molecule.test
-    ssmtp_auth_user: some_user
-    ssmtp_auth_pass: some_pass
+    mail_mailhub: "smtp"
+    mail_mailhub_port: 25
+    mail_root: "{{ email_addresses.internal }}"
+    mail_rewrite_domain: molecule.test
+    mail_auth_user: some_user
+    mail_auth_pass: some_pass
     groups_to_users: []
 
   roles:
@@ -33,7 +34,7 @@
     - users
     - modules
     - cron
-    - ssmtp
+    - system-mail
     - hddtemp
     - sysctl
     - journald
