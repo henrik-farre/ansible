@@ -7,22 +7,23 @@ driver:
     name: virtualbox
 lint:
   name: yamllint
+# https://app.vagrantup.com/archlinux/boxes/archlinux
 platforms:
   - name: instance
     box: archlinux/archlinux
-    box_version: 2018.10.05
+    box_version: 2018.12.05
 provisioner:
   name: ansible
   config_options:
     defaults:
-      vault_password_file: /tmp/vault_pass.txt
+      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/vault_pass.txt
   env:
     ANSIBLE_ROLES_PATH: ../../roles
-    ANSIBLE_LIBRARY: ../../roles/gpg-key-management/library
+    ANSIBLE_LIBRARY: ../../library
   lint:
     name: ansible-lint
     options:
-      x: ["ANSIBLE10,ANSIBLE0012,ANSIBLE0013"]
+      c: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/ansible-lint.yml
 scenario:
   name: default
   test_sequence:
