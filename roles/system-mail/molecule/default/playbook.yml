@@ -1,0 +1,20 @@
+---
+- name: Converge
+  hosts: all
+
+  vars:
+    email_addresses:
+      external: email@test.test
+      internal: email@test.test
+    mail_mailhub: "smtp"
+    mail_mailhub_port: 25
+    mail_root: "{{ email_addresses.internal }}"
+    mail_rewrite_domain: molecule.test
+    mail_auth_user: some_user
+    mail_auth_pass: some_pass
+    groups_to_users:
+      mail:
+        - root
+
+  roles:
+    - role: system-mail

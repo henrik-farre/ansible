@@ -1,0 +1,30 @@
+---
+dependency:
+  name: galaxy
+driver:
+  name: docker
+lint:
+  name: yamllint
+  options:
+    config-file: ${MOLECULE_PROJECT_DIRECTORY}/../molecule-resources/yamllint.yml
+platforms:
+  - name: instance_debian
+    pre_build_image: True
+    image: "rockhopperdk/docker-debian-systemd:latest"
+  - name: instance_archlinux
+    pre_build_image: True
+    image: "rockhopperdk/docker-archlinux-systemd:latest"
+provisioner:
+  name: ansible
+  playbooks:
+    verify: ${MOLECULE_PROJECT_DIRECTORY}/../molecule-resources/goss_verify.yml
+  lint:
+    name: ansible-lint
+    options:
+      c: ${MOLECULE_PROJECT_DIRECTORY}/../molecule-resources/ansible-lint.yml
+scenario:
+  name: default
+verifier:
+  name: goss
+  lint:
+    name: yamllint

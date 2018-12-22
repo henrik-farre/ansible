@@ -1,0 +1,78 @@
+---
+- name: Ensure system mail is configured
+  block:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+        cache_valid_time: 3600
+      when: ansible_facts.distribution == "Debian"
+
+    - name: Update pacman cache
+      pacman:
+        update_cache: yes
+      when: ansible_facts.distribution == "Archlinux"
+
+    - name: Ensure old ssmtp package is removed
+      package:
+        name: ssmtp
+        state: absent
+
+    - name: Ensure old ssmtp config files are removed
+      file:
+        path: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/ssmtp/revaliases
+        - /etc/ssmtp/ssmtp.conf
+        - /etc/ssmtp
+
+    - name: Ensure msmtp is installed
+      package:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - msmtp
+          - msmtp-mta
+
+    - name: Ensure mail command exists
+      package:
+        name: s-nail
+        state: latest
+      when: ansible_facts.distribution == "Archlinux"
+
+    - name: Ensure mail command exists
+      package:
+        name: bsd-mailx
+        state: latest
+      when: ansible_facts.distribution == "Debian"
+
+    - name: Ensure msmtprc exists
+      template:
+        src: etc/msmtprc.j2
+        dest: /etc/msmtprc
+        mode: 0640
+        owner: root
+        group: mail
+
+    - name: Ensure aliases exists
+      template:
+        src: etc/aliases.j2
+        dest: /etc/aliases
+        mode: 0640
+        owner: root
+        group: mail
+
+    - name: Ensure users are members of mail group
+      user:
+        name: "{{ item }}"
+        groups: mail
+        append: yes
+      loop: "{{ groups_to_users.mail }}"
+      when:
+        - groups_to_users is defined
+        - groups_to_users.mail is defined
+
+  become: yes
+  tags:
+    - system-mail

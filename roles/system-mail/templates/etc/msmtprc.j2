@@ -1,0 +1,28 @@
+# Managed by Ansible
+#
+# Example for a system wide configuration file
+
+# A system wide configuration file is optional.
+# If it exists, it usually defines a default account.
+# This allows msmtp to be used like /usr/sbin/sendmail.
+account system
+
+# The SMTP smarthost
+host {{ mail_mailhub }}
+
+port {{ mail_mailhub_port }}
+tls on
+tls_trust_file /etc/ssl/certs/ca-certificates.crt
+auth on
+user {{ mail_auth_user }}
+password {{ mail_auth_pass }}
+
+auto_from on
+maildomain {{ mail_rewrite_domain }}
+
+aliases /etc/aliases
+
+# Syslog logging with facility LOG_MAIL instead of the default LOG_USER
+syslog LOG_MAIL
+
+account default: system
