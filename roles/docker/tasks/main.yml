@@ -5,8 +5,8 @@
     path: /etc/docker
     state: directory
     owner: root
-    group: root
-    mode: 0700
+    group: docker
+    mode: 0750
   tags:
     - docker
 
@@ -14,11 +14,7 @@
   become: yes
   copy:
     dest: /etc/docker/daemon.json
-    content: |
-      {
-        "storage-driver": "overlay2",
-        "log-opts": { "max-size": "100m" }
-      }
+    content: "{{ docker_daemon_options|to_nice_json }}"
     owner: root
     group: docker
     mode: 0640
