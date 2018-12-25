@@ -83,57 +83,9 @@
 
 - hosts: raspberrypi
   roles:
+    - raspbian
     - arpwatch
     - docker
-
-  tasks:
-    - name: Disable swap
-      become: yes
-      command: "{{ item }}"
-      args:
-        removes: /sbin/dphys-swapfile
-      loop:
-        - "swapoff -a"
-        - "dphys-swapfile swapoff"
-        - "dphys-swapfile uninstall"
-
-    - name: Disable stuff
-      become: yes
-      systemd:
-        name: "{{ item }}"
-        state: stopped
-        enabled: no
-      loop:
-        - alsa-restore.service
-        - avahi-daemon
-        - bluetooth
-        - dphys-swapfile.service
-        - rsyslog.service
-        - syslog.socket
-        - triggerhappy
-        - triggerhappy.socket
-        - wpa_supplicant
-      failed_when: False
-
-    - name: Remove stuff
-      become: yes
-      apt:
-        name: "{{ packages }}"
-        state: absent
-        purge: yes
-        autoclean: yes
-        autoremove: yes
-      vars:
-        packages:
-          - rsyslog
-          - dphys-swapfile
-          - triggerhappy
-          - bluetooth
-          - wpasupplicant
-          - wireless-tools
-          - wireless-regdb
-          - v4l-utils
-          - pi-bluetooth
 
 - hosts: unifi-controller
   roles:

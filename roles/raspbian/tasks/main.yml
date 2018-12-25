@@ -1,0 +1,78 @@
+---
+- name: Ensure Raspbian is correctly configured
+  block:
+    - name: Ensure root file system is mounted with correct options
+      mount:
+        path: /
+        src: PARTUUID=6dab4d6d-02
+        fstype: ext4
+        opts: defaults,noatime,commit=60
+        passno: 1
+        dump: 0
+        state: present
+
+    # enable cgroups for memory
+    - name: Ensure /boot/cmdline.txt contains correct options
+      copy:
+        dest: /boot/cmdline.txt
+        content: |
+          dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID=6dab4d6d-02 rootfstype=ext4 elevator=deadline fsck.repair=yes cgroup_enable=memory rootwait
+
+    - name: Ensure /boot/config.txt containts correct options
+      lineinfile:
+        line: '{{ item.key }}={{ item.value }}'
+        dest: /boot/config.txt
+        regexp: "^{{ item.key }}="
+      loop: "{{ config_items|dict2items }}"
+      vars:
+        config_items:
+          gpu_mem: 16
+          "dtparam=i2c_arm": "on"
+
+    - name: Disable swap
+      command: "{{ item }}"
+      args:
+        removes: /sbin/dphys-swapfile
+      loop:
+        - "swapoff -a"
+        - "dphys-swapfile swapoff"
+        - "dphys-swapfile uninstall"
+
+    - name: Disable unneeded services
+      systemd:
+        name: "{{ item }}"
+        state: stopped
+        enabled: no
+      loop:
+        - alsa-restore.service
+        - avahi-daemon
+        - bluetooth
+        - dphys-swapfile.service
+        - rsyslog.service
+        - syslog.socket
+        - triggerhappy
+        - triggerhappy.socket
+        - wpa_supplicant
+      failed_when: False
+
+    - name: Remove unneeded packages
+      apt:
+        name: "{{ packages }}"
+        state: absent
+        purge: yes
+        autoclean: yes
+        autoremove: yes
+      vars:
+        packages:
+          - rsyslog
+          - dphys-swapfile
+          - triggerhappy
+          - bluetooth
+          - wpasupplicant
+          - wireless-tools
+          - wireless-regdb
+          - v4l-utils
+          - pi-bluetooth
+  become: yes
+  tags:
+    - raspbian
