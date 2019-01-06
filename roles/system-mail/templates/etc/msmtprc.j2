@@ -17,7 +17,8 @@ auth on
 user {{ mail_auth_user }}
 password {{ mail_auth_pass }}
 
-auto_from on
+{% if mail_from is defined %}from {{ mail_from }}{% else %}auto_from on{% endif %}
+
 maildomain {{ mail_rewrite_domain }}
 
 aliases /etc/aliases
