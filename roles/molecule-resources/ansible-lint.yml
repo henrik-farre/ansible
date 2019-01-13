@@ -1,4 +1,6 @@
 ---
+# https://docs.ansible.com/ansible-lint/configuring/configuring.html#configuration-file
 skip_list:
   - ANSIBLE0010
   - ANSIBLE0012
+  - '204'
