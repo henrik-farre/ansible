@@ -31,7 +31,7 @@
   become: true
   user:
     name: root
-    password: "{{ root_password }}"
+    password: "{{ root_password_hashed }}"
   no_log: yes
   tags:
     - users
