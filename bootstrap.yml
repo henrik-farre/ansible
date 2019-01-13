@@ -1,5 +1,6 @@
 ---
 - hosts: all
+  become: yes
   roles:
     - pacman-mirrors
     - facts
@@ -13,6 +14,7 @@
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
 
 - hosts: laptop
+  become: yes
   roles:
     # Dialog is required by wifi-menu if doing setup over wifi
     - { role: packages, packages: ['dialog', 'crda'] }
