@@ -2,9 +2,13 @@
 - name: Install systemd boot
   include_role:
     name: systemd-boot
-  when: bootloader == "systemd-boot"
+  when:
+    - bootloader is defined
+    - bootloader == "systemd-boot"
 
 - name: Install grub
   include_role:
     name: grub
-  when: bootloader == "grub"
+  when:
+    - bootloader is defined
+    - bootloader == "grub"
