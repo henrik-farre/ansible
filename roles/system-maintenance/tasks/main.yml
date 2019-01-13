@@ -58,6 +58,7 @@
   notify: Reload smartd
   tags:
     - system-maintenance
+    - molecule-notest
 
 - name: Ensure cronjob is configured
   become: yes
