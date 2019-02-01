@@ -48,3 +48,28 @@
       });
   tags:
     - bluetooth
+
+- name: Ensure a2dp fix scripts are in place
+  become: yes
+  copy:
+    dest: "/{{ item }}"
+    src: "{{ item }}"
+    group: root
+    mode: 0750
+    owner: root
+  loop:
+    - "usr/local/sbin/a2dp-fix-wrapper"
+    - "usr/local/sbin/a2dp-fix"
+  tags:
+    - bluetooth
+
+- name: Ensure udev rule is in place
+  become: yes
+  copy:
+    dest: "/etc/udev/rules.d/80-bt-headset.rules"
+    src: "etc/udev/rules.d/80-bt-headset.rules"
+    group: root
+    mode: 0640
+    owner: root
+  tags:
+    - bluetooth

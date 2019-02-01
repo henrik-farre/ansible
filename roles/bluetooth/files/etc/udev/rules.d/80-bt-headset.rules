@@ -1,1 +1,2 @@
-ACTION=="add", SUBSYSTEM=="bluetooth", RUN+="/usr/local/bin/a2dp-fix-wrapper"
+# Managed by Ansible
+ACTION=="add", SUBSYSTEM=="bluetooth", RUN+="/usr/local/sbin/a2dp-fix-wrapper"

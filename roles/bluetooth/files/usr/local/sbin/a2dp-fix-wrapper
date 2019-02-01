@@ -1,4 +1,5 @@
 #!/bin/bash
+# Managed by Ansible
 
 for PID in $(pgrep pulseaudio); do
     USER=$(grep -z USER= "/proc/$PID/environ" | sed 's/.*=//' | tr -d '\0')
@@ -9,8 +10,8 @@ for PID in $(pgrep pulseaudio); do
     export XAUTHORITY=$HOME/.Xauthority
     export DISPLAY=:0
 
-    sleep 5
+    # sleep 5
     if [[ ! -z $USER ]]; then
-        sudo -u "$USER" -E /usr/local/bin/a2dp-fix
+        sudo -u "$USER" -E /usr/local/sbin/a2dp-fix
     fi
 done
