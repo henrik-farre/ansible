@@ -63,13 +63,14 @@
   tags:
     - bluetooth
 
+# a2dp-fix has to be executable as the user running pulseaudio
 - name: Ensure a2dp fix scripts are in place
   become: yes
   copy:
     dest: "/{{ item }}"
     src: "{{ item }}"
     group: root
-    mode: 0750
+    mode: 0755
     owner: root
   loop:
     - "usr/local/sbin/a2dp-fix-wrapper"
