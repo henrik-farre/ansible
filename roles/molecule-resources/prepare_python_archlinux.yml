@@ -2,8 +2,17 @@
 - name: Prepare
   hosts: all
   gather_facts: false
+  become: true
+
   tasks:
     - name: Install python for Ansible
       raw: echo 'Server = https://mirrors.dotsrc.org/archlinux/$repo/os/$arch' > /etc/pacman.d/mirrorlist && pacman -Sy --noconfir --noprogressbar && pacman -S --noconfirm --noprogressbar python
-      become: true
       changed_when: false
+
+    - name: Update system
+      pacman:
+        update_cache: yes
+        upgrade: yes
+
+    - name: Reboot
+      reboot:

@@ -3,8 +3,21 @@
   become: yes
   hosts: all
 
+  vars:
+    network:
+      local_domain: molecule.test
+
   roles:
+    - pacman-mirrors
     - facts
+    - locale
+    - bootloader
+    - mounts
+    - networking
+    - users
+    - { role: packages, packages: ['git', 'openssh'] }
+    - { role: services, services: ['sshd'] }
+    - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
 
 - name: Converge
   hosts: all
@@ -15,7 +28,6 @@
     email_addresses:
       external: email@test.test
       internal: email@test.test
-    root_password: $6$mysecretsalt$rh7RWZQasLntoaIXXYOKv.GojrDALgKocxb81aAu16OnQ8IOITptuMRl1sPOIbLQxF.fovG2fOF45hcC8RJoq1
     mail_mailhub: "smtp"
     mail_mailhub_port: 25
     mail_root: "{{ email_addresses.internal }}"
@@ -26,12 +38,8 @@
 
   roles:
     - hostname
-    - locale
     - timezone
     - ntp
-    - mounts
-    - networking
-    - users
     - modules
     - cron
     - system-mail

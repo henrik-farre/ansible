@@ -1,42 +1,35 @@
 ---
 dependency:
   name: galaxy
+lint:
+  name: yamllint
+verifier:
+  name: goss
+  lint:
+    name: yamllint
 driver:
   name: vagrant
   provider:
     name: virtualbox
-lint:
-  name: yamllint
 # https://app.vagrantup.com/archlinux/boxes/archlinux
 platforms:
   - name: instance
     box: archlinux/archlinux
     box_version: 2018.12.05
+    groups:
+      - archlinux
+      - desktop
 provisioner:
   name: ansible
+  playbooks:
+    prepare: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/prepare_python_archlinux.yml
   config_options:
     defaults:
-      vault_password_file: ${MOLECULE_SCENARIO_DIRECTORY}/vault_pass.txt
+      vault_password_file: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/vault_pass.txt
   env:
-    ANSIBLE_ROLES_PATH: ../../roles
-    ANSIBLE_LIBRARY: ../../library
+    ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/roles
+    ANSIBLE_LIBRARY: ${MOLECULE_PROJECT_DIRECTORY}/library
   lint:
     name: ansible-lint
     options:
       c: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/ansible-lint.yml
-scenario:
-  name: default
-  test_sequence:
-    - lint
-    - destroy
-    - syntax
-    - create
-    - prepare
-    - converge
-    - idempotence
-    - verify
-    - destroy
-verifier:
-  name: goss
-  lint:
-    name: yamllint
