@@ -75,6 +75,7 @@
 - hosts: laptop
   roles:
     - powersave
+    - bluetooth
 
 - hosts: macbook
   roles:
