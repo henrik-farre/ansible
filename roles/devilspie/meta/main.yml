@@ -1,3 +1,3 @@
 ---
 dependencies:
-  - { role: aur-packages, packages: ['devilspie2'], gpg_keys: "194B631AB2DA2888" }
+  - { role: aur-packages, packages: ['devilspie2', 'lua-socket'], gpg_keys: "194B631AB2DA2888" }
