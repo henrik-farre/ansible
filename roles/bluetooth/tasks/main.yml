@@ -20,13 +20,27 @@
   tags:
     - bluetooth
 
-- name: Allow access to dbus org.mpris interface
+# Test command: dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+#
+# - Looks like it is not needed anymore
+#
+#- name: Allow access to dbus org.mpris interface
+#  become: yes
+#  lineinfile:
+#    name: /etc/dbus-1/system.d/bluetooth.conf
+#    line: '    <allow send_destination="org.mpris"/>'
+#    insertafter: '<policy group="lp">'
+#    state: present
+#  tags:
+#    - bluetooth
+- name: Cleanup old bluetooth.conf.* files
   become: yes
-  lineinfile:
-    name: /etc/dbus-1/system.d/bluetooth.conf
-    line: '    <allow send_destination="org.mpris"/>'
-    insertafter: '<policy group="lp">'
-    state: present
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/dbus-1/system.d/bluetooth.conf.pacnew
+    - /etc/dbus-1/system.d/bluetooth.conf.pacsave
   tags:
     - bluetooth
 
