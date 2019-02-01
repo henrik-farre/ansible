@@ -12,6 +12,7 @@
     - ssh-keys
     - dotfiles
     - vim
+    - { role: packages, packages: "ncdu" }
 
 - hosts: archlinux
   roles:
