@@ -5,8 +5,8 @@
     - locale
     - timezone
     - ntp
-    - system-mail
     - users
+    - system-mail
     - sshd
     - ssh-client
     - ssh-keys
