@@ -55,6 +55,12 @@
     - devilspie
     - { role: aur-packages, packages: "{{ aur_packages }}" }
   tasks:
+    - name: Ensure esound support is disabled in pulseaudio
+      become: yes
+      replace:
+        path: /etc/pulse/default.pa
+        regexp: '^\.ifexists module-esound-.*\nload-module.*\n\.endif'
+        replace: '# esound disabled by Ansible'
     - name: Ensure files does not exist
       file:
         path: "{{ item }}"
