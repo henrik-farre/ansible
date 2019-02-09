@@ -44,7 +44,6 @@
     - cinnamon
     - conky
     - zim
-    - samba-client
     - node
     - firefox
     - xcape
@@ -86,6 +85,7 @@
 
 - hosts: macbook
   roles:
+    - samba-client
     - { role: aur-packages, packages: ['mbpfan-git'] }
     - { role: services, services: ['mbpfan'] }
 
