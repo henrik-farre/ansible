@@ -32,6 +32,28 @@
         name: unifi
         state: latest
 
+    # This should fix the controller not being able to fetch firmware updates
+    # - https://www.reddit.com/r/Ubiquiti/comments/9aowqx/unifi_v5828_missing_firmware_updates/
+    # - WARN system - failed to get firmware update info: java.lang.RuntimeException: Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
+    - name: Get stat of java ca certs
+      stat:
+        path: /etc/ssl/certs/java/cacerts
+      register: java_ca
+
+    - name: Ensure ca file is removed if mimetype is incorrect
+      file:
+        path: /etc/ssl/certs/java/cacerts
+        state: absent
+      when:
+        - java_ca.stat.mimetype != 'application/x-java-keystore'
+
+    - name: Ensure ca file is recreated correctly
+      command: /usr/sbin/update-ca-certificates --fresh
+      args:
+        creates: /etc/ssl/certs/java/cacerts
+      when:
+        - java_ca.stat.mimetype != 'application/x-java-keystore'
+
     - name: Ensure unsupported lib is removed
       file:
         path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
