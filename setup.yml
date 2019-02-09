@@ -59,7 +59,7 @@
       become: yes
       replace:
         path: /etc/pulse/default.pa
-        regexp: '^\.ifexists module-esound-.*\nload-module.*\n\.endif'
+        regexp: '^(#*)\.ifexists module-esound-.*\n(#*)load-module.*\n(#*)\.endif'
         replace: '# esound disabled by Ansible'
     - name: Ensure files does not exist
       file:
