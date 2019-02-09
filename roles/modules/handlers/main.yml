@@ -1,4 +1,4 @@
 ---
 - name: Rebuild mkinitcpio
   become: yes
-  command: mkinitcpio -p linux
+  command: "mkinitcpio -p linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"

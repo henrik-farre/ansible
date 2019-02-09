@@ -1,0 +1,19 @@
+# vim:set ft=sh
+# Managed by Ansible
+{% if ansible_local.hardware.vga_vendor == "Intel Corporation" %}
+MODULES=(i915)
+{% elseif ansible_local.hardware.vga_vendor == "NVIDIA Corporation" %}
+MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
+{% else %}
+MODULES=()
+{% endif %}
+BINARIES=()
+FILES=()
+# Hooks are referred to by their name, and executed in the order they exist in the HOOKS array of the configuration file.
+{% if ansible_facts.ansible_cmdline.cryptdevice is defined %}
+HOOKS=(base udev autodetect modconf keyboard keymap block encrypt filesystems fsck)
+{% if ansible_facts.cmdline.cryptdevice is defined and ansible_facts.system_vendor == 'Apple Inc.' %}
+HOOKS=(base udev autodetect modconf keyboard keymap consolefont block encrypt filesystems fsck)
+{% else %}
+HOOKS=(base udev autodetect modconf block filesystems keyboard fsck)
+{% endif %}
