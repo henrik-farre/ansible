@@ -7,6 +7,7 @@
     - users
 
 - name: Ensure users shell are installed
+  become: yes
   package:
     name: "{{ item.shell|default('bash') }}"
     state: present
