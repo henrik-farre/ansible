@@ -1,13 +1,18 @@
 ---
+- name: Include vaulted vars
+  include_vars:
+    file: users.yml.vault
+  tags:
+    - users
+
 - name: Ensure users shell are installed
   package:
     name: "{{ item.shell|default('bash') }}"
     state: present
-  with_items:
-    - "{{ users }}"
+  loop: "{{ users }}"
   when:
     - users is defined
-  # no_log: yes
+  no_log: yes
   tags:
     - users
 
@@ -17,13 +22,14 @@
     name: "{{ item.name }}"
     shell: "/bin/{{ item.shell|default('bash') }}"
     home: "/{{ users_home_base }}/{{ item.name }}"
+    group: "{{ item.group|default('users') }}"
     groups: "{{ item.groups }}"
-    password: "{{ item.password }}"
-  with_items:
-    - "{{ users }}"
+    append: yes
+    password: "{{ item.password_hashed }}"
+  loop: "{{ users }}"
   when:
     - users is defined
-  # no_log: yes
+  no_log: yes
   tags:
     - users
 
@@ -42,7 +48,7 @@
     name: "{{ item }}"
     state: absent
     remove: yes
-  with_items:
+  loop:
     - "cinnamon"
     - "cinnemon"
     - "pi"

@@ -7,4 +7,4 @@ root_password_vaulted: !vault |
           6235656366333339310a626137323734616131626162326137663262343565656435383033356636
           6334
 root_password: "{{ root_password_vaulted }}"
-root_password_hashed: "{{ root_password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string) }}"
+root_password_hashed: "{{ root_password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string, rounds=10000) }}"
