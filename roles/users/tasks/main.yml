@@ -2,6 +2,7 @@
 - name: Include vaulted vars
   include_vars:
     file: users.yml.vault
+  no_log: yes
   tags:
     - users
 
