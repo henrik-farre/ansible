@@ -2,12 +2,13 @@
 - name: Remove local installed duplicity and dependencies
   become: true
   pacman:
-    name: "{{ item }}"
+    name: "{{ packages }}"
     state: absent
-  with_items:
-    - duplicity
-    - python2-fasteners
-    - python2-monotonic
+  vars:
+    packages:
+      - duplicity
+      - python2-fasteners
+      - python2-monotonic
   tags:
     - backup
 

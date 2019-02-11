@@ -28,13 +28,14 @@
   tags:
     - cinnamon
 
-- name: Install panel widgets config
-  copy:
-    src: "dot.cinnamon/configs/{{ item }}"
-    dest: "{{ ansible_user_dir }}/.cinnamon/configs/"
-    owner: "{{ ansible_user_id }}"
-  with_items:
-    - "menu@cinnamon.org"
-    - "calendar@cinnamon.org"
-  tags:
-    - cinnamon
+# The file changes to often
+# - name: Install panel widgets config
+#  copy:
+#    src: "dot.cinnamon/configs/{{ item }}"
+#    dest: "{{ ansible_user_dir }}/.cinnamon/configs/"
+#    owner: "{{ ansible_user_id }}"
+#  with_items:
+#    - "menu@cinnamon.org"
+#    - "calendar@cinnamon.org"
+#  tags:
+#    - cinnamon

@@ -5,13 +5,14 @@
     - locale
     - timezone
     - ntp
-    - system-mail
     - users
+    - system-mail
     - sshd
     - ssh-client
     - ssh-keys
     - dotfiles
     - vim
+    - { role: packages, packages: "ncdu" }
 
 - hosts: archlinux
   roles:
@@ -43,7 +44,6 @@
     - cinnamon
     - conky
     - zim
-    - samba-client
     - node
     - firefox
     - xcape
@@ -54,6 +54,12 @@
     - devilspie
     - { role: aur-packages, packages: "{{ aur_packages }}" }
   tasks:
+    - name: Ensure esound support is disabled in pulseaudio
+      become: yes
+      replace:
+        path: /etc/pulse/default.pa
+        regexp: '^(#*)\.ifexists module-esound-.*\n(#*)load-module.*\n(#*)\.endif'
+        replace: '# esound disabled by Ansible'
     - name: Ensure files does not exist
       file:
         path: "{{ item }}"
@@ -75,9 +81,11 @@
 - hosts: laptop
   roles:
     - powersave
+    - bluetooth
 
 - hosts: macbook
   roles:
+    - samba-client
     - { role: aur-packages, packages: ['mbpfan-git'] }
     - { role: services, services: ['mbpfan'] }
 

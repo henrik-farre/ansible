@@ -2,7 +2,7 @@
 Name=Firefox Private
 GenericName=Web Browser
 Comment=Browse the World Wide Web
-Exec=env GTK_THEME=Adwaita /usr/lib/firefox/firefox -P Private -no-remote %u
+Exec=/usr/lib/firefox/firefox -P Private -no-remote %u
 Icon=firefox
 Terminal=false
 Type=Application

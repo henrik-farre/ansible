@@ -3,8 +3,9 @@
   become: yes
   pacman:
     name: "{{ packages }}"
-    update_cache: yes
     state: absent
     recurse: yes
   tags:
     - packages-uninstalled
+  failed_when: false
+  # Until https://github.com/ansible/ansible/pull/51311 is fixed

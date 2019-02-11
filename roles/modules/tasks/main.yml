@@ -76,29 +76,14 @@
   tags:
     - modules
 
-- name: Ensure i915 is loaded early
+- name: Ensure mkinitcpio is configured
   become: yes
-  lineinfile:
+  template:
     dest: /etc/mkinitcpio.conf
-    line: 'MODULES="i915"'
-    regexp: 'MODULES='
-    state: present
-  when:
-    - ansible_local.hardware.vga_vendor == "Intel Corporation"
-  notify:
-    - Rebuild mkinitcpio
-  tags:
-    - modules
-
-- name: Ensure nvidia is loaded early
-  become: yes
-  lineinfile:
-    dest: /etc/mkinitcpio.conf
-    line: 'MODULES=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)'
-    regexp: 'MODULES='
-    state: present
-  when:
-    - ansible_local.hardware.vga_vendor == "NVIDIA Corporation"
+    src: etc/mkinitcpio.conf.j2
+    owner: root
+    group: root
+    mode: 0644
   notify:
     - Rebuild mkinitcpio
   tags:
