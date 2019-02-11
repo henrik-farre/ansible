@@ -1,20 +1,35 @@
+[custom-keybindings/custom2]
+binding=['<Super>Scroll_Lock']
+command='/home/enrique/bin/away'
+name='away'
+
+[custom-keybindings/custom1]
+binding=['<Super>Scroll_Lock']
+command='/home/enrique/bin/away'
+name='Stop music and lock'
+
 [custom-keybindings/custom0]
 binding=['<Super>t']
 command='/home/enrique/bin/move_term_to_current_desktop.sh'
 name='Term to workspace'
 
 [/]
-custom-list=['custom0']
+looking-glass-keybinding=@as []
+custom-list=['custom0', 'custom1']
 
 [media-keys]
+play=['AudioPlay']
 terminal=['<Shift><Super>t']
-screensaver=['<Super>Scroll_Lock', 'XF86ScreenSaver']
+screensaver=['XF86ScreenSaver']
+pause=['AudioPause']
+screenshot=['Print']
 
 [wm]
-move-to-workspace-right=['<Shift><Super>Right']
-push-tile-left=@as []
-switch-to-workspace-right=['<Super>k']
-switch-to-workspace-left=['<Super>j']
 toggle-maximized=['<Super>m']
-move-to-workspace-left=['<Shift><Super>Left']
+switch-to-workspace-left=['<Super>j']
+switch-to-workspace-right=['<Super>k']
+move-to-workspace-right=['<Shift><Super>Right']
 maximize-vertically=['<Super>v']
+move-to-workspace-left=['<Shift><Super>Left']
+push-tile-left=@as []
+maximize-horizontally=['<Super>h']
