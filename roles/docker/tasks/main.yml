@@ -40,7 +40,7 @@
     name: docker
     state: stopped
   when:
-    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists == True
+    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
   tags:
     - docker
 
@@ -50,7 +50,7 @@
     path: /var/lib/docker/devicemapper
     state: absent
   when:
-    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists == True
+    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
   tags:
     - docker
 
@@ -63,7 +63,7 @@
     name: docker
     state: started
   when:
-    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists == True
+    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
   tags:
     - docker
 
