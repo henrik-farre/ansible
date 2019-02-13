@@ -15,7 +15,7 @@ driver:
 platforms:
   - name: instance
     box: archlinux/archlinux
-    box_version: 2018.12.05
+    box_version: 2019.02.05
     groups:
       - archlinux
       - desktop
