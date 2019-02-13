@@ -1,4 +1,19 @@
 ---
+- name: Ensure required wireless networking packages are installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - wireless_tools
+      - wpa_supplicant
+  when:
+    - wireless is defined and wireless
+  tags:
+    - networking
+    - networking-wireless
+
 - name: Install network connections
   become: yes
   copy:
@@ -24,7 +39,7 @@
     line: 'WIRELESS_REGDOM="DK"'
     state: present
   when:
-    - wireless is defined and wireless == True
+    - wireless is defined and wireless
   tags:
     - networking
     - networking-wireless
