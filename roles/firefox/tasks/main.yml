@@ -1,4 +1,14 @@
 ---
+- name: Ensure Firefox and dependencies are installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - firefox
+      - flashplugin
+
 - name: Create user Firefox profiles directories
   file:
     path: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}"
