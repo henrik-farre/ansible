@@ -1,0 +1,133 @@
+---
+package_groups:
+  base_utils:
+    - ack
+    - bash
+    - bzip2
+    - fd
+    - fzf
+    - gzip
+    - htop
+    - ncdu
+    - the_silver_searcher
+    - tmux
+    - tree
+    - wget
+    - xz
+    - zip
+  system_utils:
+    - parted
+    - sysfsutils
+    - intel-ucode
+    - logrotate
+    - pciutils
+    - ntfs-3g
+    - inotify-tools
+    - dosfstools
+    - efibootmgr
+    - efivar
+  development_utils:
+    - autoconf
+    - automake
+    - fakeroot
+    - gcc
+    - pkg-config
+    - dkms
+  net_utils:
+    - bind-tools
+    - bridge-utils
+    - curl
+    - fping
+    - gnu-netcat
+    - inetutils
+    - iproute2
+    - iptables
+    - iputils
+    - net-tools
+    - traceroute
+    - unzip
+    - whois
+  desktop:
+    - adwaita-icon-theme
+    - alsa-lib
+    - alsa-tools
+    - alsa-utils
+    - ansible
+    - ansible-lint
+    - aspell
+    - evince
+    # Needed by Remmina
+    - freerdp
+    - gimp
+    - gnome-calculator
+    - gnome-icon-theme
+    - gnome-icon-theme-symbolic
+    - gnome-keyring
+    - gnupg
+    - gnuplot
+    - gst-plugins-base
+    - gst-plugins-base-libs
+    - gst-plugins-good
+    - gstreamer
+    - gthumb
+    - gtk-engine-murrine
+    - gtk-engines
+    - hicolor-icon-theme
+    # Github cli
+    - hub
+    - hunspell
+    - hugo
+    - icedtea-web
+    - imagemagick
+    - jq
+    - libreoffice-fresh
+    - libreoffice-fresh-da
+    - network-manager-applet
+    - numix-gtk-theme
+    - pinentry
+    - powerline-common
+    # Needet by kupfer for window list
+    - kupfer
+    - python2-wnck
+    - python-pip
+    - pwgen
+    # Better RDP client
+    - remmina
+    - ruby
+    - seahorse
+    - sshpass
+    - startup-notification
+    - tangerine-icon-theme
+    - vagrant
+    - virtualbox
+    - virtualbox-guest-iso
+    - virtualbox-host-dkms
+    - wmctrl
+    - wol
+    - xdg-utils
+    - xdotool
+    - xsel
+    - zenity
+  xorg:
+    - xcape
+    - xkeyboard-config
+    - xorg-fonts-alias
+    - xorg-fonts-encodings
+    - xorg-mkfontdir
+    - xorg-mkfontscale
+    - xorg-server
+    - xorg-server-common
+    - xorg-setxkbmap
+    - xorg-xauth
+    - xorg-xdpyinfo
+    - xorg-xev
+    - xorg-xinit
+    - xorg-xinput
+    - xorg-xkbcomp
+    - xorg-xkill
+    - xorg-xmodmap
+    - xorg-xprop
+    - xorg-xrandr
+    - xorg-xrdb
+    - xorg-xset
+    - xorgproto
