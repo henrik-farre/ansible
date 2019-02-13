@@ -1,6 +1,7 @@
 ---
 - hosts: all
   roles:
+    - networking
     - hostname
     - locale
     - timezone
@@ -12,7 +13,14 @@
     - ssh-keys
     - dotfiles
     - vim
-    - { role: packages, packages: "ncdu" }
+    - role: package-group
+      package_group: "base_utils"
+    - role: package-group
+      package_group: "net_utils"
+    - role: package-group
+      package_group: "system_utils"
+    - role: package-group
+      package_group: "development_utils"
 
 - hosts: archlinux
   roles:
@@ -39,7 +47,8 @@
   roles:
     - xorg
     - lightdm
-    - { role: packages, packages: "{{ desktop_packages }}" }
+    - role: package-group
+      package_group: "desktop"
     - fonts
     - cinnamon
     - conky
