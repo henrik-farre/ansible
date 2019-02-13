@@ -34,7 +34,7 @@
   with_items:
     - ".bashrc"
     - ".bash_profile"
-  when: bash_skelfile.stat.islnk is defined and bash_skelfile.stat.islnk == False
+  when: bash_skelfile.stat.islnk is defined and not bash_skelfile.stat.islnk
   tags:
     - dotfiles
 
