@@ -52,7 +52,7 @@
         dest: "/tmp/"
         remote_src: True
       when:
-        - font_stat.stat.exists is defined and font_stat.stat.exists == false
+        - font_stat.stat.exists is defined and not font_stat.stat.exists
       tags:
         - conky
 
@@ -62,7 +62,7 @@
         dest: "{{ ansible_user_dir }}/.local/share/fonts/fontawesome-webfont.ttf"
         remote_src: yes
       when:
-        - font_stat.stat.exists is defined and font_stat.stat.exists == false
+        - font_stat.stat.exists is defined and not font_stat.stat.exists
       notify:
         - Update font cache
       tags:
@@ -74,6 +74,6 @@
         path: /tmp/font-awesome-4.7.0
         state: absent
       when:
-        - font_stat.stat.exists is defined and font_stat.stat.exists == false
+        - font_stat.stat.exists is defined and not font_stat.stat.exists
       tags:
         - conky
