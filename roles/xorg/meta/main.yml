@@ -1,3 +1,0 @@
----
-dependencies:
-  - { role: packages, packages: "{{ xorg_packages }}", when: xorg_packages is defined }

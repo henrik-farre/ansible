@@ -1,4 +1,10 @@
 ---
+- name: Ensure need packages for xorg is installed
+  include_role:
+    name: package-group
+  vars:
+    package_group: xorg
+
 - name: Setup keyboard
   become: yes
   copy:
