@@ -61,7 +61,7 @@
       dest: /tmp/mononoki
       version: master
     when:
-      - font_stat.stat.exists is defined and font_stat.stat.exists == false
+      - font_stat.stat.exists is defined and not font_stat.stat.exists
     tags:
       - fonts
 
@@ -77,7 +77,7 @@
       - "mononoki-Bold.ttf"
       - "mononoki-Regular.ttf"
     when:
-      - font_stat.stat.exists is defined and font_stat.stat.exists == false
+      - font_stat.stat.exists is defined and not font_stat.stat.exists
     notify:
       - Update font cache
     tags:

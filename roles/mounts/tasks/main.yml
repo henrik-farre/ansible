@@ -20,4 +20,4 @@
   tags:
     - mounts
   when:
-    - has_nfs_mount is defined and has_nfs_mount == True
+    - has_nfs_mount is defined and has_nfs_mount

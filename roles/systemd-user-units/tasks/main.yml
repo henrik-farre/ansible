@@ -1,7 +1,7 @@
 ---
 - name: Ensure systemd user directory exits
   file:
-    path: "{{ansible_user_dir}}/.config/systemd/user/"
+    path: "{{ ansible_user_dir }}/.config/systemd/user/"
     state: directory
     owner: "{{ ansible_user_id }}"
     mode: 0700
