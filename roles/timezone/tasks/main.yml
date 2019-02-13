@@ -5,12 +5,14 @@
   tags:
     - timezone
 
+# https://news.ycombinator.com/item?id=13697555
+# man timezone
 - name: Set TZ env
   become: yes
   copy:
     content: |
               # Managed by Ansible
-              export TZ="/usr/share/zoneinfo/Europe/Copenhagen"
+              export TZ=":/etc/localtime"
     dest: /etc/profile.d/tz.sh
     owner: root
     group: root
