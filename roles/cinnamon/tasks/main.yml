@@ -1,41 +1,30 @@
 ---
-- name: Configure default apps
-  command: gsettings set "{{ item.path }}" "{{ item.key }}" "{{ item.value }}"
-  with_items:
-    - { path: 'org.cinnamon.desktop.default-applications.terminal', key: 'exec', value: 'termite' }
-    - { path: 'org.cinnamon', key: 'panels-autohide', value: "['1:intel']" }
-    - { path: 'org.nemo.desktop', key: 'show-desktop-icons', value: 'false' }
+- name: Ensure Cinnamon desktop is configured
+  block:
+    - name: Configure default apps
+      command: gsettings set "{{ item.path }}" "{{ item.key }}" "{{ item.value }}"
+      with_items:
+        - { path: 'org.cinnamon.desktop.default-applications.terminal', key: 'exec', value: 'termite' }
+        - { path: 'org.cinnamon', key: 'panels-autohide', value: "['1:intel']" }
+        - { path: 'org.nemo.desktop', key: 'show-desktop-icons', value: 'false' }
+      changed_when: false
+
+    - name: Copy keybindings
+      copy:
+        src: keybindings.dconf
+        dest: /tmp/keybindings.dconf
+      changed_when: false
+
+
+    # Created with: dconf dump /org/cinnamon/desktop/keybindings/ > keybindings.dconf
+    - name: Import keybindings
+      shell: dconf load /org/cinnamon/desktop/keybindings/ < /tmp/keybindings.dconf
+      changed_when: false
+
+    - name: Ensure configuration directory exists
+      file:
+        path: "{{ ansible_user_dir }}/.cinnamon/configs/"
+        state: directory
+      changed_when: false
   tags:
     - cinnamon
-
-- name: Copy keybindings
-  copy:
-    src: keybindings.dconf
-    dest: /tmp/keybindings.dconf
-  tags:
-    - cinnamon
-
-# Created with: dconf dump /org/cinnamon/desktop/keybindings/ > keybindings.dconf
-- name: Import keybindings
-  shell: dconf load /org/cinnamon/desktop/keybindings/ < /tmp/keybindings.dconf
-  tags:
-    - cinnamon
-
-- name: Ensure configuration directory exists
-  file:
-    path: "{{ ansible_user_dir }}/.cinnamon/configs/"
-    state: directory
-  tags:
-    - cinnamon
-
-# The file changes to often
-# - name: Install panel widgets config
-#  copy:
-#    src: "dot.cinnamon/configs/{{ item }}"
-#    dest: "{{ ansible_user_dir }}/.cinnamon/configs/"
-#    owner: "{{ ansible_user_id }}"
-#  with_items:
-#    - "menu@cinnamon.org"
-#    - "calendar@cinnamon.org"
-#  tags:
-#    - cinnamon
