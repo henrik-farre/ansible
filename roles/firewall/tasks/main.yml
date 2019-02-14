@@ -1,51 +1,46 @@
 ---
-- name: Reset all rules
-  become: yes
-  ufw:
-    state: reset
-  tags:
-    - firewall
+- name: Ensure firewall is configured
+  block:
+    - name: Reset all rules
+      ufw:
+        state: reset
+      changed_when: false
 
-# Reject instead of deny
-- name: Enable ufw
-  become: yes
-  ufw:
-    state: enabled
-    policy: reject
-    logging: on
-  tags:
-    - firewall
+    # Reject instead of deny
+    - name: Enable ufw
+      ufw:
+        state: enabled
+        policy: reject
+        logging: on
+      changed_when: false
 
-- name: Allow OpenSSH
-  become: yes
-  ufw:
-    rule: allow
-    name: SSH
-  tags:
-    - firewall
+    - name: Allow OpenSSH
+      ufw:
+        rule: allow
+        name: SSH
+      changed_when: false
 
-- name: Ensure custom services are configured
-  become: yes
-  ufw:
-    rule: "{{ item.rule|default('allow') }}"
-    name: "{{ item.name }}"
-  tags:
-    - firewall
-  with_items:
-    - "{{ firewall_services }}"
-  when:
-    - firewall_services is defined
+    - name: Ensure custom services are configured
+      ufw:
+        rule: "{{ item.rule|default('allow') }}"
+        name: "{{ item.name }}"
+      with_items:
+        - "{{ firewall_services }}"
+      when:
+        - firewall_services is defined
+      changed_when: false
 
-- name: Ensure custom ports are configured
+    - name: Ensure custom ports are configured
+      ufw:
+        rule: "{{ item.rule|default('allow') }}"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+        comment: "{{ item.comment|default(omit) }}"
+      with_items:
+        - "{{ firewall_ports }}"
+      when:
+        - firewall_ports is defined
+      changed_when: false
   become: yes
-  ufw:
-    rule: "{{ item.rule|default('allow') }}"
-    port: "{{ item.port }}"
-    proto: "{{ item.proto }}"
-    comment: "{{ item.comment|default(omit) }}"
   tags:
     - firewall
-  with_items:
-    - "{{ firewall_ports }}"
-  when:
-    - firewall_ports is defined
