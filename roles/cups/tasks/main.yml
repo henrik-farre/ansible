@@ -24,10 +24,16 @@
   tags:
     - cups
 
+- name: Check if driver is installed
+  stat:
+    path: /opt/brother/Printers/HL1210W/cupswrapper/brcupsconfig4
+  register: hl1210w_bin
+
 - name: Brother HL-1210w Driver | Ensure build dir exists
   file:
     path: /tmp/brother-hl1210w
     state: directory
+  when: not hl1210w_bin.stat.exists
   tags:
     - cups
 
@@ -59,6 +65,7 @@
         cp "$srcdir/opt/brother/Printers/HL1210W/cupswrapper/brother_lpdwrapper_HL1210W"  "$pkgdir/usr/lib/cups/filter/brother_lpdwrapper_HL1210W"
         cp -r "$srcdir/opt/" "$pkgdir/opt/"
       }
+  when: not hl1210w_bin.stat.exists
   tags:
     - cups
 
@@ -67,6 +74,7 @@
   args:
     chdir: /tmp/brother-hl1210w/
     creates: /opt/brother/Printers/HL1210W/cupswrapper/brcupsconfig4
+  when: not hl1210w_bin.stat.exists
   tags:
     - cups
 
