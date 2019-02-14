@@ -1,17 +1,6 @@
 ---
 - name: Ensure system mail is configured
   block:
-    - name: Update apt cache
-      apt:
-        update_cache: yes
-        cache_valid_time: 3600
-      when: ansible_facts.distribution == "Debian"
-
-    - name: Update pacman cache
-      pacman:
-        update_cache: yes
-      when: ansible_facts.distribution == "Archlinux"
-
     - name: Ensure old ssmtp package is removed
       package:
         name: ssmtp
