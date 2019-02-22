@@ -29,10 +29,12 @@ package_groups:
   development_utils:
     - autoconf
     - automake
+    # needed for installing Vim-YouCompleteMe
+    - cmake
+    - dkms
     - fakeroot
     - gcc
     - pkg-config
-    - dkms
   net_utils:
     - bind-tools
     - bridge-utils
