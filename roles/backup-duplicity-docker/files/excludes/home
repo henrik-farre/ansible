@@ -2,8 +2,10 @@
 - **/.VirtualBox
 - **/.Xauthority
 - **/.adobe
+- **/.ansible_async
 - **/.btsync
 - **/.cache
+- **/.cinnamon/spices.cache
 - **/.composer
 - **/.config/composer
 - **/.config/google-chrome
@@ -14,6 +16,7 @@
 - **/.dolphin-emu
 - **/.dotfiles
 - **/.eclipse
+- **/.electron-gyp
 - **/.fonts
 - **/.gem
 - **/.gnupg/*.lock
@@ -48,7 +51,9 @@
 - **/.mozilla/firefox/*/urlclassifier3.sqlite
 - **/.mozilla/firefox/*/xpti.dat
 - **/.mozilla/firefox/Crash Reports
+- **/.node-gyp
 - **/.nv
+- **/.nvm
 - **/.openra
 - **/.pdepend
 - **/.steam
