@@ -1,13 +1,4 @@
 ---
-# As this git repository is cloned using ssh, we need to have ssh-agent forwarded as defined in ansible.cfg
-- name: Clone dot files
-  git:
-    repo: git@github.com:henrik-farre/dotfiles.git
-    dest: "{{ ansible_user_dir }}/.dotfiles"
-    version: master
-  tags:
-    - dotfiles
-
 - name: Ensure directories exist
   file:
     path: "{{ ansible_user_dir }}/{{ item }}"
@@ -17,6 +8,30 @@
   with_items:
     - ".config"
     - ".config/fontconfig"
+    - ".local"
+  tags:
+    - dotfiles
+
+- name: Ensure old dotfile folder is removed
+  file:
+    path: "{{ ansible_user_dir }}/.dotfiles"
+    state: absent
+  tags:
+    - dotfiles
+
+- name: Ensure old shells symlink is removed
+  file:
+    path: "{{ ansible_user_dir }}/.config/shells"
+    state: absent
+  tags:
+    - dotfiles
+
+# As this git repository is cloned using ssh, we need to have ssh-agent forwarded as defined in ansible.cfg
+- name: Clone dot files
+  git:
+    repo: git@github.com:henrik-farre/dotfiles.git
+    dest: "{{ ansible_user_dir }}/.local/dotfiles"
+    version: master
   tags:
     - dotfiles
 
@@ -40,7 +55,7 @@
 
 - name: Symlink files
   file:
-    src: "{{ ansible_user_dir }}/.dotfiles/{{ item }}"
+    src: "{{ ansible_user_dir }}/.local/dotfiles/{{ item }}"
     dest: "{{ ansible_user_dir }}/{{ item }}"
     owner: "{{ ansible_user_id }}"
     state: link
@@ -55,7 +70,7 @@
     - ".config/flake8"
     - ".config/fontconfig/fonts.conf"
     - ".config/htop"
-    - ".config/shells"
+    - ".config/shell.d"
     - ".config/weechat"
     - ".config/yamllint"
     - ".ctags"
@@ -78,7 +93,7 @@
 
 - name: Symlink files macos
   file:
-    src: "{{ ansible_user_dir }}/.dotfiles/{{ item }}"
+    src: "{{ ansible_user_dir }}/.local/dotfiles/{{ item }}"
     dest: "{{ ansible_user_dir }}/{{ item }}"
     owner: "{{ ansible_user_id }}"
     state: link
