@@ -1,4 +1,20 @@
 ---
+- name: Ensure Zim is installed
+  become: yes
+  pacman:
+    name: zim
+    state: latest
+  tags:
+    - zim
+
+- name: Ensure pandoc is installed for copy/paste transformation
+  include_role:
+    name: aur-packages
+  vars:
+    packages: pandoc-bin
+  tags:
+    - zim
+
 - name: Setup Zim Notebook
   git:
     repo: git@bitbucket.org:enrique/notes.git
