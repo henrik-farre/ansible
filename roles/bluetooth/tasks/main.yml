@@ -1,4 +1,39 @@
 ---
+- name: Ensure bluetooth packages are installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - bluez
+      - bluez-utils
+      - bluez-tools
+      - blueman
+  tags:
+    - bluetooth
+
+- name: Ensure pulseaudio bluetooth support is installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ bluetooth.pulseaudio_bt.packages }}"
+  when:
+    - not bluetooth.pulseaudio_bt.packages_from_aur
+  tags:
+    - bluetooth
+
+- name: Ensure pulseaudio bluetooth support is installed
+  become: yes
+  include_role:
+    name: aur-packages
+  vars:
+    packages: "{{ bluetooth.pulseaudio_bt.packages }}"
+  when:
+    - bluetooth.pulseaudio_bt.packages_from_aur
+  tags:
+    - bluetooth
+
 - name: Ensure bluetooth is enabled
   become: yes
   lineinfile:
@@ -6,6 +41,15 @@
     regexp: 'AutoEnable='
     line: 'AutoEnable=true'
     state: present
+  tags:
+    - bluetooth
+
+- name: Ensure bluetooth service is started
+  become: yes
+  systemd:
+    name: bluetooth
+    state: started
+    enabled: yes
   tags:
     - bluetooth
 
@@ -63,6 +107,9 @@
   tags:
     - bluetooth
 
+# https://www.reddit.com/r/linux/comments/at0zo0/til_that_since_2017_its_possible_in_pulseaudio_to/
+# https://github.com/pastleo/fix-bt-a2dp
+# https://github.com/EHfive/pulseaudio-modules-bt/issues/14
 # a2dp-fix has to be executable as the user running pulseaudio
 - name: Ensure a2dp fix scripts are in place
   become: yes
