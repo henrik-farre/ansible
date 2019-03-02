@@ -13,6 +13,6 @@ if [[ "$A2DP_AVAILABLE" == "no" ]] || [[ "$A2DP_AVAILABLE" == "unknown" ]]; then
     dbus-send --system --dest=org.bluez --print-reply "/org/bluez/hci0/dev_${BT_DEVICE_ADDR}" org.bluez.Device1.Connect
 
     pacmd set-card-profile "bluez_card.${BT_DEVICE_ADDR}" off
-    pacmd set-card-profile "bluez_card.${BT_DEVICE_ADDR}" a2dp_sink
-    pacmd set-default-sink "bluez_sink.${BT_DEVICE_ADDR}.a2dp_sink"
+    pacmd set-card-profile "bluez_card.${BT_DEVICE_ADDR}" a2dp_sink_ldac
+    pacmd set-default-sink "bluez_sink.${BT_DEVICE_ADDR}.a2dp_sink_ldac"
 fi
