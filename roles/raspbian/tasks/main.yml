@@ -83,6 +83,25 @@
         user: root
         job: "/usr/bin/truncate --size=2M --no-create /var/log/pihole/pihole-FTL.log"
         cron_file: pihole_truncate
+
+    - name: Ensure directory for journald overrides exists
+      file:
+        path: /etc/systemd/journald.conf.d
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Ensure journald is configured for volatile storage
+      copy:
+        dest: /etc/systemd/journald.conf.d/01-journal-storage.conf
+        group: root
+        content: |
+          # Managed by Ansible
+          [Journal]
+          Storage=volatile
+        mode: 0644
+        owner: root
   become: yes
   tags:
     - raspbian
