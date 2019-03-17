@@ -14,6 +14,14 @@
           - python-pip
       when: ansible_facts.distribution == 'Archlinux'
 
+    - name: Ensure dependencies for neomake are installed
+      include_role:
+        name: aur-packages
+      vars:
+        packages:
+          - hadolint-bin
+      when: ansible_facts.distribution == 'Archlinux'
+
     - name: Ensure packages are installed
       become: yes
       apt:
