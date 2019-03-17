@@ -11,7 +11,7 @@
           - neovim
           - python-neovim
           - python-psutil
-          - python-pip'
+          - python-pip
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure packages are installed
