@@ -1,6 +1,29 @@
 ---
 - name: Ensure tags are set on all tasks
   block:
+    - name: Ensure packages are installed
+      become: yes
+      pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - neovim
+          - python-neovim
+          - python-psutil
+          - python-pip'
+      when: ansible_facts.distribution == 'Archlinux'
+
+    - name: Ensure packages are installed
+      become: yes
+      apt:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - neovim
+      when: ansible_facts.distribution == 'Debian'
+
     - name: Clone neovim/vim files
       git:
         repo: git@github.com:henrik-farre/vimrc.git
