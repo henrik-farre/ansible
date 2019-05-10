@@ -34,6 +34,24 @@
   tags:
     - zim
 
+- name: Ensure ~/.local/share/applications directory exists
+  file:
+    path: "{{ ansible_user_dir }}/.local/share/applications"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - zim
+
+- name: Ensure custom .desktop with light theme exists
+  copy:
+    dest: "{{ ansible_user_dir }}/.local/share/applications/zim.desktop"
+    src: dot.local/share/applications/zim.desktop
+    owner: "{{ ansible_user_id }}"
+    mode: 0600
+  tags:
+    - zim
+
 - name: Ensure notebook config exists
   copy:
     content: |

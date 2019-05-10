@@ -1,0 +1,24 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Exec=env GTK_THEME=Adwaita zim %f
+Icon=zim
+StartupNotify=true
+Terminal=false
+Categories=Utility;TextEditor;GTK;
+MimeType=application/x-zim-notebook;text/x-zim-wiki;
+Keywords=Text;Editor;Write;Wiki;Notes;Notebook;Journal;
+Name=Zim Desktop Wiki
+Comment=Edit text files "wiki style"
+GenericName=Text Editor
+X-Ayatana-Desktop-Shortcuts=X-QuickNote;X-QuickNoteClipboard;
+
+[X-QuickNote Shortcut Group]
+Name=Quick Note
+Exec=zim --plugin quicknote
+TargetEnvironment=Unity
+
+[X-QuickNoteClipboard Shortcut Group]
+Name=Quick Note from Clipboard
+Exec=zim --plugin quicknote input=clipboard
+TargetEnvironment=Unity
