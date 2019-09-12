@@ -7,25 +7,33 @@
       homebrew:
         update_homebrew: yes
 
-    - name: Ensure required packages are installed
+    - name: Ensure required packages are installed (homebrew)
       homebrew:
-        name: "{{ item }}"
+        name: "{{ packages }}"
         state: present
-      with_items:
-        - python@3
-        - tmux
-        - neovim
-        - fzf
-        - wget
-        - the_silver_searcher
-        - reattach-to-user-namespace
-        - shellcheck
-        - npm
-        - gnupg
-        - pinentry-mac
-        # - homebrew/php/php71-xdebug
-        # - homebrew/php/composer
-        # - homebrew/php/phpmd
+      vars:
+        packages:
+          - python@3
+          - tmux
+          - neovim
+          - fzf
+          - wget
+          - the_silver_searcher
+          - reattach-to-user-namespace
+          - shellcheck
+          - npm
+          - gnupg
+          - pinentry-mac
+          # - homebrew/php/php71-xdebug
+          # - homebrew/php/composer
+          # - homebrew/php/phpmd
+    - name: Ensure required packages are installed (homebrew cask)
+      homebrew_cask:
+        name: "{{ packages }}"
+        state: present
+      vars:
+        packages:
+          - slack
 
     - name: Set hostname
       become: yes
