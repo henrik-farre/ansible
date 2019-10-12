@@ -17,6 +17,15 @@
   tags:
     - conky
 
+- name: Find location of CPU sensors
+  find:
+    paths: /sys/devices/platform/coretemp.0/hwmon
+    patterns: 'hwmon*'
+    file_type: directory
+  register: hwmon_location
+  tags:
+    - conky
+
 - name: Write ~/.config/conky/conkyrc
   template:
     src: conkyrc.j2
@@ -40,15 +49,15 @@
 
 - name: Check if FontAwesome is installed
   stat:
-    path: "{{ ansible_user_dir }}/.local/share/fonts/fontawesome-webfont.ttf"
+    path: "{{ ansible_user_dir }}/.local/share/fonts/Font Awesome 5 Free-Regular-400.otf"
   register: font_stat
   tags:
     - conky
 
 - block:
-    - name: Download and extract FontAwesome 4.7
+    - name: Download and extract FontAwesome 5.10.1
       unarchive:
-        src: https://fontawesome.com/v4.7.0/assets/font-awesome-4.7.0.zip
+        src: https://use.fontawesome.com/releases/v5.10.1/fontawesome-free-5.10.1-desktop.zip
         dest: "/tmp/"
         remote_src: True
       when:
@@ -58,9 +67,13 @@
 
     - name: Install FontAwesome
       copy:
-        src: "/tmp/font-awesome-4.7.0/fonts/fontawesome-webfont.ttf"
-        dest: "{{ ansible_user_dir }}/.local/share/fonts/fontawesome-webfont.ttf"
+        src: "/tmp/fontawesome-free-5.10.1-desktop/otfs/{{ item }}"
+        dest: "{{ ansible_user_dir }}/.local/share/fonts/{{ item }}"
         remote_src: yes
+      loop:
+        - "Font Awesome 5 Brands-Regular-400.otf"
+        - "Font Awesome 5 Free-Regular-400.otf"
+        - "Font Awesome 5 Free-Solid-900.otf"
       when:
         - font_stat.stat.exists is defined and not font_stat.stat.exists
       notify:
@@ -71,7 +84,7 @@
   always:
     - name: Cleanup
       file:
-        path: /tmp/font-awesome-4.7.0
+        path: /tmp/fontawesome-free-5.10.1-desktop
         state: absent
       when:
         - font_stat.stat.exists is defined and not font_stat.stat.exists
