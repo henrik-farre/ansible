@@ -5,7 +5,7 @@ conky.config = {
   background = false,
   total_run_times = 0,
 
-  xinerama_head = {{ conky_xinerama_head }},
+-- xinerama_head = {{ conky_xinerama_head }},
 
   use_xft = true,
   font = 'mononoki:size={{ conky_fontsize }}',
@@ -16,8 +16,10 @@ conky.config = {
 
   if_up_strictness = 'address',
   top_cpu_separate = true,
-  top_name_width = 25,
+  top_name_width = 40,
   top_name_verbose = true,
+
+  border_inner_margin = 12,
 
   own_window = true,
   own_window_type = 'normal',
@@ -29,12 +31,12 @@ conky.config = {
   own_window_class = 'conky',
 
   minimum_width = {{ conky_min_size }},
-  minimum_height = 0,
+  minimum_height = 1440,
   maximum_width = {{ conky_max_width }},
---draw_shades = true,
+--draw_shades = false,
   draw_outline = false,
   draw_graph_borders = false,
---draw_borders = false,
+  draw_borders = false,
 -- Font color
   default_color = 'gray',
   default_shade_color = 'black',
@@ -56,19 +58,27 @@ conky.config = {
 };
 
 conky.text = [[
-${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} System $color${hr 1}
+
+${color white}${font Font Awesome 5 Brands}${font} System ${hr 1}$color
 
 Date: ${alignr}${time %A d. %d/%m/%Y (%V) %H:%M}
 Uptime: ${alignr}$uptime
 Kernel: ${alignr}$kernel
 Update(s) available:${alignr} ${execi 3600 checkupdates | wc -l}
 
-${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Temperatures $color${hr 1}
+{% set hwmon_id=hwmon_location.files.0.path[-1] %}
+${font Font Awesome 5 Free Solid}\
+${if_match ${hwmon {{ hwmon_id }} temp 1} > 40}${color red}${endif}\
+${if_match ${hwmon {{ hwmon_id }} temp 1} <= 40}${if_match ${hwmon {{ hwmon_id }} temp 1} > 35}${color orange}${endif}${endif}\
+${if_match ${hwmon {{ hwmon_id }} temp 1} <= 35}${if_match ${hwmon {{ hwmon_id }} temp 1} > 30}${color yellow}${endif}${endif}\
+${if_match ${hwmon {{ hwmon_id }} temp 1} <= 30}${if_match ${hwmon {{ hwmon_id }} temp 1} > 25}${color white}${endif}${endif}\
+${if_match ${hwmon {{ hwmon_id }} temp 1} <= 25}${color lightblue}${endif}\
+${font}${color white} Temperatures ${hr 1}$color
 
-{# hwmon1/temp1 is physical #}
-{% for hwmon_id in range(0, 4) %}
-${if_existing /sys/bus/platform/devices/coretemp.0/hwmon/hwmon{{ hwmon_id }}}CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon {{ hwmon_id }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor%}${endif}{% endfor %}
+{# hwmonX/temp1 is physical #}
+CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon {{ hwmon_id }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}
 
+Motherboard:${alignr}${hwmon 1 temp 1}°C
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 GPU:${alignr}${nvidia temp}°C
 {% endif %}
@@ -76,15 +86,37 @@ GPU:${alignr}${nvidia temp}°C
 {% if data.partitions is defined and data.partitions %}
 {{ data.model }}: ${alignr}${hddtemp /dev/{{ device }}}°C{% endif %}{% endfor %}
 
+
+${color white}${font Font Awesome 5 Free Solid}${font} Fans ${hr 1}$color
+
+{% if ansible_form_factor == 'Laptop' %}
+Left fan: ${alignr}${hwmon 1 fan 1} RPM
+Right fan: ${alignr}${hwmon 1 fan 2} RPM
+{% else %}
+Exhaust fan: ${alignr}${hwmon 1 fan 1} RPM
+CPU fan: ${alignr}${hwmon 1 fan 2} RPM
+Intake fan: ${alignr}${hwmon 1 fan 3} RPM
+{% endif %}
+{% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
+GPU Fan: ${alignr}(${nvidia fanlevel}%) ${nvidia fanspeed} RPM
+{% endif %}
 {% if ansible_form_factor == 'Laptop' %}
 
-${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Battery $color${hr 1}
+${font Font Awesome 5 Free Solid}${if_match "$battery_status" == "charged"}${else}${if_match "$battery_status" == "charging"}${else}\
+${if_match $battery_percent > 80}${color white}${endif}\
+${if_match $battery_percent <= 80}${if_match $battery_percent > 75}${color yellow}${endif}${endif}\
+${if_match $battery_percent <= 75}${if_match $battery_percent > 50}${color orange}${endif}${endif}\
+${if_match $battery_percent <= 50}${if_match $battery_percent > 25}${color #FF8000}${endif}${endif}\
+${if_match $battery_percent < 25}${color red}${endif}\
+${endif}${endif}${font}${color white} Battery ${hr 1}$color
+
 ${battery_bar {{conky_bar_full_size}}}
+Status: ${alignr}${battery_status}
 {% endif %}
 
-${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} CPU $color${hr 1}
+${color white}${font Font Awesome 5 Free Solid}${font} CPU (${execi 10 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor}) ${hr 1}$color
 {% for cpu in range(0, ansible_processor_vcpus, 2) %}
-${cpugraph cpu{{ cpu+1 }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${cpugraph cpu{{ cpu+2 }} {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
+${cpugraph cpu{{ cpu+1 }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${cpugraph cpu{{ cpu+2 }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t}
 ${freq_g cpu{{ cpu+1 }}} GHz ${cpu cpu{{ cpu+1 }}}% ${alignr}${freq_g cpu{{ cpu+2 }}} GHz ${cpu cpu{{ cpu+2 }}}%
 {% endfor %}
 
@@ -98,7 +130,7 @@ ${top name 6}$alignr${top cpu 6} ${top mem 6}
 ${top name 7}$alignr${top cpu 7} ${top mem 7}
 ${top name 8}$alignr${top cpu 8} ${top mem 8}
 
-${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} Memory $color${hr 1}
+${color white}${font Font Awesome 5 Free Solid}${font} Memory ${hr 1}$color
 
 Highest MEM $alignr CPU% / MEM%
 ${top_mem name 1}$alignr${top_mem cpu 1} ${top_mem mem 1}
@@ -113,7 +145,7 @@ ${top_mem name 8}$alignr${top_mem cpu 8} ${top_mem mem 8}
 ${memgraph {{ conky_graph_full_size }} {{ conky_graph_color_1 }} -t}
 Ram ${alignr}$mem / $memmax ($memperc% used)
 
-${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} FILESYSTEM & I/O $color${hr 1}
+${color white}${font Font Awesome 5 Free Solid}${font} FILESYSTEM & I/O ${hr 1}$color
 
 Highest I/O $alignr READ / WRITE
 ${top_io name 1}$alignr${top_io io_read 1}   ${top_io io_write 1}
@@ -125,13 +157,17 @@ ${top_io name 6}$alignr${top_io io_read 6}   ${top_io io_write 6}
 ${top_io name 7}$alignr${top_io io_read 7}   ${top_io io_write 7}
 ${top_io name 8}$alignr${top_io io_read 8}   ${top_io io_write 8}
 
-${diskiograph_read {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
+${diskiograph_read {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t}
 Read ${diskio_read}$alignr Write ${diskio_write}
 
 Root: $alignr${fs_used /} /${fs_size /} (${fs_free /} / ${fs_free_perc /}% free)
 ${fs_bar {{conky_bar_full_size}} /}
 
-${color white}${font FontAwesome:pixelsize={{ conky_fontsize_awesome }}}${font} NETWORK $color${hr 1}
+Boot: $alignr${fs_used /boot} /${fs_size /boot} (${fs_free /boot} / ${fs_free_perc /boot}% free)
+${fs_bar 4,290 /boot}
+
+${color white}${font Font Awesome 5 Free Solid}
+${if_up wlp3s0}${else} ${endif}${font} NETWORK ${hr 1}$color
 
 {% for interface in ansible_interfaces %}
 {% if interface in ('eth0','enp0s25','ens9','wlp3s0') %}
@@ -147,10 +183,17 @@ Down: ${downspeed {{ interface }}} (${totaldown {{ interface }}}) ${alignr}Up: $
 
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 
-${color white}Nvidia GPU $color${hr 1}
+${color white}${font Font Awesome 5 Free Solid}${font} GPU (${nvidia modelname}) ${hr 1}$color
 
-${nvidiagraph gpufreq {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${nvidiagraph memfreq {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
-GPU: ${nvidia gpufreq}/${nvidia gpufreqmax} MHz ${alignr} Mem: ${nvidia memfreq}/${nvidia memfreqmax} MHz
+${nvidiagraph gpufreq 20,137 23a51c ff661c -t} ${alignr}${nvidiagraph memfreq 20,137 23a5e0 4e66e0 -t}
+GPU Freq: ${nvidia gpufreq}/${nvidia gpufreqmax} MHz ${alignr} Mem Freq: ${nvidia memfreq}/${nvidia memfreqmax} MHz
 
+${nvidiagraph gpuutil 20,290 23a51c ff661c -t}
+GPU utilization: ${alignr}${nvidia gpuutil}%
 {% endif %}
+
+${color white}${font Font Awesome 5 Free Solid}${font} Sound ${hr 1}$color
+
+$pa_sink_description
+$pa_card_active_profile
 ]];
