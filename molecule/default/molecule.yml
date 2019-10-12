@@ -1,16 +1,5 @@
 ---
-dependency:
-  name: galaxy
-lint:
-  name: yamllint
-verifier:
-  name: goss
-  lint:
-    name: yamllint
-driver:
-  name: vagrant
-  provider:
-    name: virtualbox
+# --base-config roles/molecule-resources/base-config-vagrant.yml
 # https://app.vagrantup.com/archlinux/boxes/archlinux
 platforms:
   - name: instance
@@ -21,15 +10,9 @@ platforms:
       - desktop
 provisioner:
   name: ansible
-  playbooks:
-    prepare: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/prepare_python_archlinux.yml
   config_options:
     defaults:
       vault_password_file: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/vault_pass.txt
   env:
     ANSIBLE_ROLES_PATH: ${MOLECULE_PROJECT_DIRECTORY}/roles
     ANSIBLE_LIBRARY: ${MOLECULE_PROJECT_DIRECTORY}/library
-  lint:
-    name: ansible-lint
-    options:
-      c: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/ansible-lint.yml
