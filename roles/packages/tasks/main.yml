@@ -1,22 +1,16 @@
 ---
-- name: Install packages on ArchLinux
+- name: "Install packages on ArchLinux : {{ packages|join(', ') }}"
   become: yes
   pacman:
     name: "{{ packages }}"
-    update_cache: yes
     state: latest
   when:
     - ansible_facts.distribution == "Archlinux"
-  tags:
-    - packages
 
 - name: Install packages on Debian
   become: yes
   apt:
     name: "{{ packages }}"
-    update_cache: yes
     state: latest
   when:
     - ansible_facts.distribution == "Debian"
-  tags:
-    - packages
