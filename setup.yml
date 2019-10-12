@@ -76,6 +76,7 @@
     - cups
     - devilspie
     - { role: aur-packages, packages: "{{ aur_packages }}" }
+    - spotify
   tasks:
     - name: Ensure esound support is disabled in pulseaudio
       become: yes
