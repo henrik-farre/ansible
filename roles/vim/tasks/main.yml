@@ -1,7 +1,7 @@
 ---
 - name: Ensure tags are set on all tasks
   block:
-    - name: Ensure packages are installed
+    - name: Ensure Neovim and dependencies are installed
       become: yes
       pacman:
         name: "{{ packages }}"
@@ -14,15 +14,7 @@
           - python-pip
       when: ansible_facts.distribution == 'Archlinux'
 
-    - name: Ensure dependencies for neomake are installed
-      include_role:
-        name: aur-packages
-      vars:
-        packages:
-          - hadolint-bin
-      when: ansible_facts.distribution == 'Archlinux'
-
-    - name: Ensure packages are installed
+    - name: Ensure Neovim is installed
       become: yes
       apt:
         name: "{{ packages }}"
@@ -31,6 +23,15 @@
         packages:
           - neovim
       when: ansible_facts.distribution == 'Debian'
+
+    # Somehow using include_role here breaks molecule...
+    - name: Ensure dependencies for neomake are installed
+      import_role:
+        name: aur-packages
+      vars:
+        packages:
+          - hadolint-bin
+      when: ansible_facts.distribution == 'Archlinux'
 
     - name: Clone neovim/vim files
       git:

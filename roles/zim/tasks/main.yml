@@ -8,7 +8,7 @@
     - zim
 
 - name: Ensure pandoc is installed for copy/paste transformation
-  include_role:
+  import_role:
     name: aur-packages
   vars:
     packages: pandoc-bin
