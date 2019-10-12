@@ -6,6 +6,7 @@ package_groups:
     - bzip2
     - fd
     - fzf
+    - gnupg
     - gzip
     - htop
     - ncdu
@@ -49,6 +50,7 @@ package_groups:
     - traceroute
     - unzip
     - whois
+    - wol
   desktop:
     - adwaita-icon-theme
     - alsa-lib
@@ -65,7 +67,6 @@ package_groups:
     - gnome-icon-theme
     - gnome-icon-theme-symbolic
     - gnome-keyring
-    - gnupg
     - gnuplot
     - gst-plugins-base
     - gst-plugins-base-libs
@@ -85,12 +86,9 @@ package_groups:
     - libreoffice-fresh
     - libreoffice-fresh-da
     - network-manager-applet
-    - numix-gtk-theme
     - pinentry
     - powerline-common
-    # Needet by kupfer for window list
     - kupfer
-    - python2-wnck
     - python-pip
     - pwgen
     # Better RDP client
@@ -105,7 +103,6 @@ package_groups:
     - virtualbox-guest-iso
     - virtualbox-host-dkms
     - wmctrl
-    - wol
     - xdg-utils
     - xdotool
     - xsel
