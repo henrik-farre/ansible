@@ -1,13 +1,5 @@
 ---
-# - name: Ensure systemd unit is disabled
-  # systemd:
-    # name: devilspie2.service
-    # enabled: no
-    # daemon_reload: no
-    # user: yes
-  # tags:
-    # - devilspie2
-
+# For detecting hostname in config file
 - name: Ensure devilspie2 dependencies are installed
   become: yes
   pacman:
@@ -39,6 +31,11 @@
       - devilspie2
     gpg_keys: 194B631AB2DA2888
   when: not devilspie2_bin.stat.exists
+
+- name: Ensure devilspie configuration exists
+  template:
+    src: dot.config/devilspie2/devilspie2.lua.j2
+    dest: "{{ ansible_user_dir }}/.config/devilspie2/devilspie2.lua"
 
 - name: Ensure devilspie is auto started
   copy:
