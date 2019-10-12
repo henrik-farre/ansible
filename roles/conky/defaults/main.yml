@@ -2,16 +2,16 @@
 conky_xinerama_head: 1
 conky_fontsize: 7
 conky_fontsize_awesome: 12
-conky_min_size: 230
-conky_max_width: 230
+conky_min_size: 290
+conky_max_width: 290
 conky_gap_x: 12
-conky_gap_y: 12
-conky_bar_cpu_size: "4,107"
-conky_bar_full_size: "4,230"
-conky_graph_half_size: "20,107"
-conky_graph_full_size: "20,230"
-conky_graph_color_1: "23a51c 125346"
-conky_graph_color_2: "ff661c 8d362d"
+conky_gap_y: 0
+conky_bar_cpu_size: "4,137"
+conky_bar_full_size: "4,290"
+conky_graph_half_size: "20,137"
+conky_graph_full_size: "20,290"
+conky_graph_color_1: "23a51c ff661c"
+conky_graph_color_2: "23a5e0 4e66e0"
 conky_cpu_hwmon:
   - {sensor: 0, temp: 2}
   - {sensor: 0, temp: 3}
