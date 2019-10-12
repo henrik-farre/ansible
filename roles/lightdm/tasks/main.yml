@@ -1,4 +1,12 @@
 ---
+- name: Ensure Lightdm background is downloaded
+  become: yes
+  get_url:
+    dest: /usr/share/backgrounds/archlinux/archlinux-logo-light.png
+    url: https://www.archlinux.org/static/logos/archlinux-logo-light-1200dpi.7ccd81fd52dc.png
+  tags:
+    - lightdm
+
 - name: Ensure lightdm-gtk-greeter is configured
   become: yes
   copy:
