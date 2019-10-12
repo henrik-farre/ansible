@@ -24,5 +24,6 @@
     regexp: '^storage.size='
     line: 'storage.size=512'
     state: present
+    create: yes
   tags:
     - spotify
