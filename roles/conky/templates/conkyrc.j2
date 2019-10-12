@@ -66,7 +66,7 @@ Uptime: ${alignr}$uptime
 Kernel: ${alignr}$kernel
 Update(s) available:${alignr} ${execi 3600 checkupdates | wc -l}
 
-{% set hwmon_id=hwmon_location.files.0.path[-1] %}
+{% if hwmon_location.files.0 is defined %}{% set hwmon_id=hwmon_location.files.0.path[-1] %}
 ${font Font Awesome 5 Free Solid}\
 ${if_match ${hwmon {{ hwmon_id }} temp 1} > 40}${color red}${endif}\
 ${if_match ${hwmon {{ hwmon_id }} temp 1} <= 40}${if_match ${hwmon {{ hwmon_id }} temp 1} > 35}${color orange}${endif}${endif}\
@@ -76,7 +76,7 @@ ${if_match ${hwmon {{ hwmon_id }} temp 1} <= 25}${color lightblue}${endif}\
 ${font}${color white} Temperatures ${hr 1}$color
 
 {# hwmonX/temp1 is physical #}
-CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon {{ hwmon_id }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}
+CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon {{ hwmon_id }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}{% endif %}
 
 Motherboard:${alignr}${hwmon 1 temp 1}°C
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
