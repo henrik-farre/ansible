@@ -10,8 +10,8 @@
       lineinfile:
         path: /etc/arpwatch.conf
         state: present
-        regexp: "eth0	-m root$"
-        line: "eth0	-m root"
+        regexp: "eth0	-m root$" # noqa 203
+        line: "eth0	-m root" # noqa 203
 
     - name: Ensure arpwatch is enabled
       service:

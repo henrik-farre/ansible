@@ -35,7 +35,7 @@
 
 - name: Import gpg keys
   become: true
-  shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc
+  shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc # noqa 306
   args:
     chdir: "/root/.gnupg"
   tags:
@@ -43,7 +43,7 @@
 
 - name: Import ownertrust
   become: true
-  shell: gpg --import-ownertrust ownertrust
+  shell: gpg --import-ownertrust ownertrust # noqa 305
   args:
     chdir: "/root/.gnupg"
   tags:
