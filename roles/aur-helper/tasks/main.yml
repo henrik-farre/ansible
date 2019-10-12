@@ -4,6 +4,60 @@
     key_id: "{{ aur_pkg_pgp_key }}"
     state: present
   changed_when: false
+  tags:
+    - aur-helper
 
-- name: Install "{{ aur_pkg_helper }}"
-  include_tasks: install_pkg.yml
+- name: Install dependencies for "{{ aur_pkg_helper }}"
+  become: yes
+  pacman:
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - expac
+      - pyalpm
+      - python-regex
+      - python-requests
+      - binutils
+      - git
+      - base-devel
+  tags:
+    - aur-helper
+
+- name: Build package
+  block:
+    - name: Set build dir
+      set_fact:
+        build_dir: "{{ ansible_user_dir }}/tmp/{{ aur_pkg_helper }}"
+
+    - name: Ensure clean build dir
+      file:
+        path: "{{ build_dir }}"
+        state: absent
+
+    - name: Check if package "{{ aur_pkg_helper }}" is installed
+      stat:
+        path: "{{ aur_pkg_helper_path }}"
+      register: stat_pkg
+
+    - name: Git clone "{{ aur_pkg_helper }}"
+      git:
+        repo: https://aur.archlinux.org/{{ aur_pkg_helper }}.git
+        dest: "{{ build_dir }}"
+        accept_hostkey: yes
+        version: master
+      when: not stat_pkg.stat.exists
+
+    - name: Build "{{ aur_pkg_helper }}" using makepkg
+      command: makepkg -si --noconfirm --noprogressbar
+      args:
+        chdir: "{{ build_dir }}"
+        creates: "{{ aur_pkg_helper_path }}"
+      when: not stat_pkg.stat.exists
+
+  always:
+    - name: Ensure no files are left after building
+      file:
+        path: "{{ build_dir }}"
+        state: absent
+  tags:
+    - aur-helper
