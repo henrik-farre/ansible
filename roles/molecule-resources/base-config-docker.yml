@@ -1,0 +1,21 @@
+---
+driver:
+  name: docker
+dependency:
+  name: galaxy
+lint:
+  name: yamllint
+  options:
+    config-file: ${MOLECULE_PROJECT_DIRECTORY}/../molecule-resources/yamllint.yml
+verifier:
+  name: goss
+  lint:
+    name: yamllint
+provisioner:
+  name: ansible
+  playbooks:
+    verify: ${MOLECULE_PROJECT_DIRECTORY}/../molecule-resources/verify_goss_3.7.yml
+  lint:
+    name: ansible-lint
+    options:
+      c: ${MOLECULE_PROJECT_DIRECTORY}/../molecule-resources/ansible-lint.yml

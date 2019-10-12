@@ -1,0 +1,20 @@
+---
+dependency:
+  name: galaxy
+lint:
+  name: yamllint
+  options:
+    config-file: ./yamllint.yml
+verifier:
+  name: goss
+  lint:
+    name: yamllint
+provisioner:
+  name: ansible
+  playbooks:
+    prepare: ./prepare_python_archlinux.yml
+    verify: ./verify_goss_3.7.yml
+  lint:
+    name: ansible-lint
+    options:
+      c: ./ansible-lint.yml
