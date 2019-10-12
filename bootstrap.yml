@@ -12,6 +12,7 @@
     - { role: packages, packages: ['git', 'openssh'] }
     - { role: services, services: ['sshd'] }
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
+    - aur-helper
 
 - hosts: laptop
   become: yes
