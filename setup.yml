@@ -12,6 +12,7 @@
       become: yes
       pacman:
         update_cache: yes
+      changed_when: false
       when: ansible_facts.distribution == "Archlinux"
 
   roles:
