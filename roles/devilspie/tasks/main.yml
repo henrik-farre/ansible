@@ -18,19 +18,11 @@
     path: "{{ ansible_user_dir }}/.config/autostart"
     state: directory
 
-- name: Check if devilspie2 is installed
-  stat:
-    path: /usr/bin/devilspie2
-  register: devilspie2_bin
-
-- name: Ensure devilspie2 is compiled and installed
-  include_role:
-    name: aur-packages
-  vars:
-    packages:
-      - devilspie2
-    gpg_keys: 194B631AB2DA2888
-  when: not devilspie2_bin.stat.exists
+- name: Ensure devilspie2 is installed
+  become: yes
+  become_user: aur_builder
+  aur:
+    name: devilspie2
 
 - name: Ensure devilspie configuration exists
   template:

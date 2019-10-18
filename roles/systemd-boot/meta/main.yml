@@ -1,3 +1,0 @@
----
-dependencies:
-  - { role: aur-packages, packages: ['systemd-boot-pacman-hook'] }

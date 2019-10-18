@@ -1,10 +1,9 @@
 ---
 - name: Ensure spotify is installed
-  include_role:
-    name: aur-packages
-  vars:
-    packages:
-      - spotify
+  become: yes
+  become_user: aur_builder
+  aur:
+    name: spotify
   tags:
     - spotify
   when: ansible_facts.distribution == 'Archlinux'

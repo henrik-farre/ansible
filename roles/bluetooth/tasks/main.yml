@@ -24,10 +24,10 @@
     - bluetooth
 
 - name: Ensure pulseaudio bluetooth support is installed
-  include_role:
-    name: aur-packages
-  vars:
-    packages: "{{ bluetooth.pulseaudio_bt.packages }}"
+  become: yes
+  become_user: aur_builder
+  aur:
+    name: "{{ bluetooth.pulseaudio_bt.packages }}"
   when:
     - bluetooth.pulseaudio_bt.packages_from_aur
   tags:

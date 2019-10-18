@@ -24,13 +24,11 @@
           - neovim
       when: ansible_facts.distribution == 'Debian'
 
-    # Somehow using include_role here breaks molecule...
     - name: Ensure dependencies for neomake are installed
-      import_role:
-        name: aur-packages
-      vars:
-        packages:
-          - hadolint-bin
+      become: yes
+      become_user: aur_builder
+      aur:
+        name: hadolint-bin
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Clone neovim/vim files

@@ -72,12 +72,16 @@
     - xcape
     - systemd-user-units
     - terminal
-    - aur-helper
     - cups
     - devilspie
-    - { role: aur-packages, packages: "{{ aur_packages }}" }
     - spotify
   tasks:
+    - name: Install packages from AUR
+      become: yes
+      become_user: aur_builder
+      aur:
+        name: "{{ aur_packages }}"
+      when: aur_packages|length > 0
     - name: Ensure esound support is disabled in pulseaudio
       become: yes
       replace:
@@ -108,9 +112,14 @@
     - bluetooth
 
 - hosts: macbook
+  pre_tasks:
+    - name: Ensure mbpfan is installed
+      become: yes
+      become_user: aur_builder
+      aur:
+        name: mbpfan-git
   roles:
     - samba-client
-    - { role: aur-packages, packages: ['mbpfan-git'] }
     - { role: services, services: ['mbpfan'] }
 
 - hosts: raspberrypi
