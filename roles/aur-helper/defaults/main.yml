@@ -1,4 +1,8 @@
 ---
-aur_pkg_helper: aurman
-aur_pkg_helper_path: /usr/bin/aurman
-aur_pkg_pgp_key: "0x465022E743D71E39"
+aur_pkg_helper: yay-bin
+aur_pkg_helper_path: /usr/bin/yay
+aur_pkg_pgp_key: ""
+aur_pkg_deps:
+  - git
+  - base-devel
+  - binutils
