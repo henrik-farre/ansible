@@ -28,6 +28,7 @@
     - ssh-keys
     - dotfiles
     - vim
+    - sensors
     - role: package-group
       package_group: "base_utils"
     - role: package-group

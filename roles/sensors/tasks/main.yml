@@ -1,0 +1,40 @@
+---
+- name: Ensure lm_sensors is installed
+  become: yes
+  pacman:
+    name: lm_sensors
+    state: latest
+  tags:
+    - sensors
+
+- name: Debugging
+  debug:
+    var: ansible_facts.facter_dmi.board.product
+  tags:
+    - sensors
+
+- name: Display paths of all .txt files in dir
+  debug:
+    msg: "{{ lookup('fileglob', 'etc/modules-load.d/{{ ansible_facts.facter_dmi.board.product }}.conf') }}"
+  tags:
+    - sensors
+
+- name: Ensure modules for current motherboard are loaded
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/modules-load.d/"
+  with_fileglob:
+    - "etc/modules-load.d/{{ ansible_facts.facter_dmi.board.product }}.conf"
+  tags:
+    - sensors
+
+- name: Ensure custom sensors config for current motherboard is installed
+  become: yes
+  copy:
+    src: "{{ item }}"
+    dest: "/etc/sensors.d/"
+  with_fileglob:
+    - "etc/sensors.d/{{ ansible_facts.facter_dmi.board.product }}.conf"
+  tags:
+    - sensors
