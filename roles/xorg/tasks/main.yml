@@ -19,9 +19,14 @@
 - name: Install Intel video driver
   become: yes
   pacman:
-    name: ["xf86-video-intel", "libva-intel-driver", "libva-vdpau-driver", "libvdpau-va-gl"]
-    update_cache: yes
+    name: "{{ packages }}"
     state: latest
+  vars:
+    packages:
+      - xf86-video-intel
+      - libva-intel-driver
+      - libva-vdpau-driver
+      - libvdpau-va-gl
   when:
     - ansible_local.hardware.vga_vendor == "Intel Corporation"
   tags:
@@ -30,10 +35,36 @@
 - name: Install Nvidia video driver
   become: yes
   pacman:
-    name: ["nvidia-dkms", "libvdpau", "nvidia-settings", "nvidia-utils"]
-    update_cache: yes
+    name: "{{ packages }}"
     state: latest
+  vars:
+    packages:
+      - nvidia-dkms
+      - libvdpau
+      - nvidia-settings
+      - nvidia-utils
   when:
     - ansible_local.hardware.vga_vendor == "NVIDIA Corporation"
+  tags:
+    - xorg
+
+- name: Install AMD video driver
+  become: yes
+  pacman:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - xf86-video-amdgpu
+      - libva-mesa-driver
+      - mesa-vdpau
+      - vulkan-icd-loader
+      - vulkan-radeon
+      - lib32-libva-mesa-driver
+      - lib32-mesa-vdpau
+      - lib32-vulkan-icd-loader
+      - lib32-vulkan-radeon
+  when:
+    - ansible_local.hardware.vga_vendor == "Advanced Micro Devices, Inc. [AMD/ATI]"
   tags:
     - xorg
