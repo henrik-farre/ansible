@@ -1,4 +1,11 @@
 ---
+- name: Ensure facter is installed
+  pacman:
+    name: facter
+    state: latest
+  tags:
+    - facts
+
 - name: Ensure /etc/ansible/facts.d/ exists
   file:
     path: /etc/ansible/facts.d/
