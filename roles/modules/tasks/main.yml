@@ -39,26 +39,6 @@
     - modules
     - modprobe
 
-- name: Clean modules-load.d, Capture files in path and register
-  command: ls -1 /etc/modules-load.d
-  register: modules_load_d_files
-  changed_when: False
-  tags:
-    - modules
-
-- name: Clean modules-load.d, Remove files except specified
-  become: yes
-  file:
-    path: "/etc/modules-load.d/{{ item }}"
-    state: absent
-  with_items:
-    - "{{ modules_load_d_files.stdout_lines }}"
-  when:
-    - modules_load_d is defined
-    - item not in modules_load_d
-  tags:
-    - modules
-
 - name: Ensure modules are loaded
   become: yes
   copy:
