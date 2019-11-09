@@ -17,15 +17,6 @@
   tags:
     - conky
 
-- name: Find location of CPU sensors
-  find:
-    paths: /sys/devices/platform/coretemp.0/hwmon
-    patterns: 'hwmon*'
-    file_type: directory
-  register: hwmon_location
-  tags:
-    - conky
-
 - name: Write ~/.config/conky/conkyrc
   template:
     src: conkyrc.j2

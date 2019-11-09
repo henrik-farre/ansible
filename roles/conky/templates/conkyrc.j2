@@ -66,21 +66,23 @@ Uptime: ${alignr}$uptime
 Kernel: ${alignr}$kernel
 Update(s) available:${alignr} ${execi 3600 checkupdates | wc -l}
 
-{% if hwmon_location.files.0 is defined %}{% set hwmon_id=hwmon_location.files.0.path[-1] %}
 ${font Font Awesome 5 Free Solid}\
-${if_match ${hwmon {{ hwmon_id }} temp 1} > 40}${color red}${endif}\
-${if_match ${hwmon {{ hwmon_id }} temp 1} <= 40}${if_match ${hwmon {{ hwmon_id }} temp 1} > 35}${color orange}${endif}${endif}\
-${if_match ${hwmon {{ hwmon_id }} temp 1} <= 35}${if_match ${hwmon {{ hwmon_id }} temp 1} > 30}${color yellow}${endif}${endif}\
-${if_match ${hwmon {{ hwmon_id }} temp 1} <= 30}${if_match ${hwmon {{ hwmon_id }} temp 1} > 25}${color white}${endif}${endif}\
-${if_match ${hwmon {{ hwmon_id }} temp 1} <= 25}${color lightblue}${endif}\
+${if_match ${hwmon coretemp temp 1} > 45}${color red}${endif}\
+${if_match ${hwmon coretemp temp 1} <= 45}${if_match ${hwmon coretemp temp 1} > 40}${color orange}${endif}${endif}\
+${if_match ${hwmon coretemp temp 1} <= 40}${if_match ${hwmon coretemp temp 1} > 36}${color yellow}${endif}${endif}\
+${if_match ${hwmon coretemp temp 1} <= 36}${if_match ${hwmon coretemp temp 1} > 25}${color white}${endif}${endif}\
+${if_match ${hwmon coretemp temp 1} <= 25}${color lightblue}${endif}\
 ${font}${color white} Temperatures ${hr 1}$color
 
 {# hwmonX/temp1 is physical #}
-CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon {{ hwmon_id }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}{% endif %}
+CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon coretemp temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}
 
-Motherboard:${alignr}${hwmon 1 temp 1}°C
+Motherboard:${alignr}${hwmon nct6793 temp 1}°C
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 GPU:${alignr}${nvidia temp}°C
+{% endif %}
+{% if ansible_local.hardware.vga_vendor == 'Advanced Micro Devices, Inc. [AMD/ATI]' %}
+GPU:${alignr}${hwmon amdgpu temp 1}°C
 {% endif %}
 {% for device, data in ansible_devices.items() %}
 {% if data.partitions is defined and data.partitions %}
@@ -93,12 +95,15 @@ ${color white}${font Font Awesome 5 Free Solid}${font} Fans ${hr 1}$color
 Left fan: ${alignr}${hwmon 1 fan 1} RPM
 Right fan: ${alignr}${hwmon 1 fan 2} RPM
 {% else %}
-Exhaust fan: ${alignr}${hwmon 1 fan 1} RPM
-CPU fan: ${alignr}${hwmon 1 fan 2} RPM
-Intake fan: ${alignr}${hwmon 1 fan 3} RPM
+Exhaust fan: ${alignr}${hwmon nct6793 fan 1} RPM
+CPU fan: ${alignr}${hwmon nct6793 fan 2} RPM
+Intake fan: ${alignr}${hwmon nct6793 fan 3} RPM
 {% endif %}
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 GPU Fan: ${alignr}(${nvidia fanlevel}%) ${nvidia fanspeed} RPM
+{% endif %}
+{% if ansible_local.hardware.vga_vendor == 'Advanced Micro Devices, Inc. [AMD/ATI]' %}
+GPU Fan:${alignr}${hwmon amdgpu fan 1} RPM
 {% endif %}
 {% if ansible_form_factor == 'Laptop' %}
 
@@ -120,7 +125,7 @@ ${cpugraph cpu{{ cpu+1 }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} 
 ${freq_g cpu{{ cpu+1 }}} GHz ${cpu cpu{{ cpu+1 }}}% ${alignr}${freq_g cpu{{ cpu+2 }}} GHz ${cpu cpu{{ cpu+2 }}}%
 {% endfor %}
 
-Highest CPU $alignr CPU% / MEM%
+${color white}Highest CPU $alignr CPU% / MEM%${color}
 ${top name 1}$alignr${top cpu 1} ${top mem 1}
 ${top name 2}$alignr${top cpu 2} ${top mem 2}
 ${top name 3}$alignr${top cpu 3} ${top mem 3}
@@ -132,7 +137,7 @@ ${top name 8}$alignr${top cpu 8} ${top mem 8}
 
 ${color white}${font Font Awesome 5 Free Solid}${font} Memory ${hr 1}$color
 
-Highest MEM $alignr CPU% / MEM%
+${color white}Highest MEM $alignr CPU% / MEM%${color}
 ${top_mem name 1}$alignr${top_mem cpu 1} ${top_mem mem 1}
 ${top_mem name 2}$alignr${top_mem cpu 2} ${top_mem mem 2}
 ${top_mem name 3}$alignr${top_mem cpu 3} ${top_mem mem 3}
@@ -147,7 +152,7 @@ Ram ${alignr}$mem / $memmax ($memperc% used)
 
 ${color white}${font Font Awesome 5 Free Solid}${font} FILESYSTEM & I/O ${hr 1}$color
 
-Highest I/O $alignr READ / WRITE
+${color white}Highest I/O $alignr READ / WRITE${color}
 ${top_io name 1}$alignr${top_io io_read 1}   ${top_io io_write 1}
 ${top_io name 2}$alignr${top_io io_read 2}   ${top_io io_write 2}
 ${top_io name 3}$alignr${top_io io_read 3}   ${top_io io_write 3}
@@ -161,13 +166,15 @@ ${diskiograph_read {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${a
 Read ${diskio_read}$alignr Write ${diskio_write}
 
 Root: $alignr${fs_used /} /${fs_size /} (${fs_free /} / ${fs_free_perc /}% free)
-${fs_bar {{conky_bar_full_size}} /}
+${if_match ${fs_free_perc} <= 1}${color red}${endif}${fs_bar {{conky_bar_full_size}} /}${color}
 
 Boot: $alignr${fs_used /boot} /${fs_size /boot} (${fs_free /boot} / ${fs_free_perc /boot}% free)
-${fs_bar 4,290 /boot}
+${if_match ${fs_free_perc} <= 1}${color red}${endif}${fs_bar {{conky_bar_full_size}} /boot}${color}
 
 ${color white}${font Font Awesome 5 Free Solid}
 ${if_up wlp3s0}${else} ${endif}${font} NETWORK ${hr 1}$color
+
+DNS:${alignr}$nameserver
 
 {% for interface in ansible_interfaces %}
 {% if interface in ('eth0','enp0s25','ens9','wlp3s0') %}
