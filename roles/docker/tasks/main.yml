@@ -67,14 +67,74 @@
   tags:
     - docker
 
-- name: Ensure unused images/volumes and containers are cleaned
+- name: Remove old cronjob
   become: yes
   cron:
+    state: absent
     name: "Clean docker"
     special_time: weekly
     job: "docker system prune -f"
     user: root
     cron_file: "docker_prune"
+  tags:
+    - docker
+
+- name: Prune unused docker images, containers and more | systemd service
+  become: yes
+  copy:
+    dest: /etc/systemd/system/docker-prune.service
+    content: |
+      [Unit]
+      Description=Prune unused docker images, containers and more
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/docker system prune -f
+    owner: root
+    mode: 0644
+  tags:
+    - docker
+
+- name: Prune unused docker images, containers and more | systemd timer
+  become: yes
+  copy:
+    dest: /etc/systemd/system/docker-prune.timer
+    content: |
+      [Unit]
+      Description=Prune unused docker images, containers and more | Weekly job
+
+      [Timer]
+      OnCalendar=weekly
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    owner: root
+    mode: 0644
+  tags:
+    - docker
+
+- name: Reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
+  tags:
+    - docker
+
+- name: Enable systemd services
+  become: yes
+  systemd:
+    name: "docker-prune.service"
+    enabled: yes
+  tags:
+    - docker
+
+- name: Enable systemd timers
+  become: yes
+  systemd:
+    name: "docker-prune.timer"
+    enabled: yes
+    state: started
   tags:
     - docker
 
