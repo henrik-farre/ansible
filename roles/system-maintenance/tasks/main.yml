@@ -28,6 +28,13 @@
   when:
     - ansible_hostname == "spookcentral"
 
+- name: Ensure fstrim timer is started
+  become: yes
+  systemd:
+    name: fstrim.timer
+    state: started
+    enabled: yes
+
 - name: Ensure cronjob is configured
   become: yes
   cron:

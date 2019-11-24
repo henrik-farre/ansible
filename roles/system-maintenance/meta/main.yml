@@ -1,4 +1,3 @@
 ---
 dependencies:
   - cron
-  - { role: services, services: ['alsa-restore', 'fstrim.timer'] }
