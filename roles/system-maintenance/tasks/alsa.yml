@@ -1,0 +1,13 @@
+---
+- name: Ensure alsa-utils are installed
+  become: yes
+  pacman:
+    state: latest
+    name: alsa-utils
+
+- name: Ensure alsa-restore service is started
+  become: yes
+  systemd:
+    name: alsa-restore
+    state: started
+    enabled: yes
