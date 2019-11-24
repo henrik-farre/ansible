@@ -1,0 +1,145 @@
+---
+- name: Ensure needed pacman contrib utilies are installed
+  become: yes
+  pacman:
+    state: latest
+    name: pacman-contrib
+  tags:
+    - system-maintenance
+
+- name: Pacman cache | Remove old cron script 1
+  become: yes
+  cron:
+    state: absent
+    name: "Clean pacman cache"
+    special_time: weekly
+    job: "paccache -rv"
+    user: root
+    cron_file: paccache
+  tags:
+    - system-maintenance
+
+- name: Pacman cache | Remove old cron script 2
+  become: yes
+  cron:
+    state: absent
+    name: "Clean pacman cache"
+    special_time: weekly
+    job: "paccache -rvuk0"
+    user: root
+    cron_file: paccache_uninstalled
+  tags:
+    - system-maintenance
+
+# Removed, does nothing
+- name: Ensure the pacman database is optimized monthly
+  become: yes
+  cron:
+    state: absent
+    name: "Optimize pacman database"
+    special_time: monthly
+    job: "pacman-optimize"
+    user: root
+    cron_file: pacman-optimize
+  tags:
+    - system-maintenance
+
+- name: Pacman cache | Only keep 2 most recent package versions | systemd service
+  become: yes
+  copy:
+    dest: /etc/systemd/system/paccache-delete-oldversions.service
+    content: |
+      [Unit]
+      Description=Only keep 2 most recent package versions
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/paccache -rvk2
+    owner: root
+    mode: 0644
+  tags:
+    - system-maintenance
+
+- name: Pacman cache | Only keep 2 most recent package versions | systemd timer
+  become: yes
+  copy:
+    dest: /etc/systemd/system/paccache-delete-oldversions.timer
+    content: |
+      [Unit]
+      Description=Pacman cache cleanup old versions | Weekly job
+
+      [Timer]
+      OnCalendar=weekly
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    owner: root
+    mode: 0644
+  tags:
+    - system-maintenance
+
+- name: Pacman cache | Remove uninstalled packages | systemd service
+  become: yes
+  copy:
+    dest: /etc/systemd/system/paccache-delete-uninstalled.service
+    content: |
+      [Unit]
+      Description=Remove uninstalled packages from pacman cache
+
+      [Service]
+      Type=oneshot
+      ExecStart=/usr/bin/paccache -rvuk0
+    owner: root
+    mode: 0644
+  tags:
+    - system-maintenance
+
+- name: Pacman cache | Remove uninstalled packages | systemd timer
+  become: yes
+  copy:
+    dest: /etc/systemd/system/paccache-delete-uninstalled.timer
+    content: |
+      [Unit]
+      Description=Pacman cache cleanup uninstalled packages | Weekly job
+
+      [Timer]
+      OnCalendar=weekly
+      Persistent=true
+
+      [Install]
+      WantedBy=timers.target
+    owner: root
+    mode: 0644
+  tags:
+    - system-maintenance
+
+- name: Reload systemd
+  become: yes
+  systemd:
+    daemon_reload: yes
+  tags:
+    - system-maintenance
+
+- name: Enable systemd services
+  become: yes
+  systemd:
+    name: "paccache-delete-{{ item }}.service"
+    enabled: yes
+  with_items:
+    - uninstalled
+    - oldversions
+  tags:
+    - system-maintenance
+
+- name: Enable systemd timers
+  become: yes
+  systemd:
+    name: "paccache-delete-{{ item }}.timer"
+    enabled: yes
+    state: started
+  with_items:
+    - uninstalled
+    - oldversions
+  tags:
+    - system-maintenance
