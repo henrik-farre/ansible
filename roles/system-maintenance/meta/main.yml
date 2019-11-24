@@ -1,5 +1,5 @@
 ---
 dependencies:
   - cron
-  - { role: packages, packages: ['smartmontools', 'alsa-utils'] }
-  - { role: services, services: ['smartd', 'alsa-restore', 'fstrim.timer'] }
+  - { role: packages, packages: ['alsa-utils'] }
+  - { role: services, services: ['alsa-restore', 'fstrim.timer'] }

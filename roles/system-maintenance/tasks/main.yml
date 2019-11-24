@@ -4,6 +4,11 @@
   tags:
     - system-maintenance
 
+- name: Include smartd tasks
+  include_tasks: smartd.yml
+  tags:
+    - system-maintenance
+
 # TODO: better when check instead of hostname
 - name: Ensure RAID is checked monthly
   become: yes
@@ -17,18 +22,6 @@
     - system-maintenance
   when:
     - ansible_hostname == "spookcentral"
-
-- name: Ensure smartd is configured
-  become: yes
-  lineinfile:
-    name: /etc/smartd.conf
-    regexp: '^DEVICESCAN'
-    line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }} -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W 5,45,50'
-    state: present
-  notify: Reload smartd
-  tags:
-    - system-maintenance
-    - molecule-notest
 
 - name: Ensure cronjob is configured
   become: yes

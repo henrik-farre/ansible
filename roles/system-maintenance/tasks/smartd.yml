@@ -1,0 +1,25 @@
+---
+- name: Ensure smartmontools are installed
+  become: yes
+  pacman:
+    state: latest
+    name: smartmontools
+
+- name: Ensure smartd is configured
+  become: yes
+  lineinfile:
+    name: /etc/smartd.conf
+    regexp: '^DEVICESCAN'
+    line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }} -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W 5,45,50'
+    state: present
+  notify: Reload smartd
+  tags:
+    - system-maintenance
+    - molecule-notest
+
+- name: Ensure smartd service is started
+  become: yes
+  systemd:
+    name: smartd
+    state: started
+    enabled: yes
