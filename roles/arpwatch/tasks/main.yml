@@ -6,16 +6,16 @@
         name: arpwatch
         state: latest
 
-    - name: Ensure eth0 is used as device
+    - name: Ensure args are configured correctly
       lineinfile:
-        path: /etc/arpwatch.conf
+        path: /etc/default/arpwatch
         state: present
-        regexp: "eth0	-m root$" # noqa 203
-        line: "eth0	-m root" # noqa 203
+        regexp: "ARGS=" # noqa 203
+        line: 'ARGS="-N -p -m root"' # noqa 203
 
-    - name: Ensure arpwatch is enabled
-      service:
-        name: arpwatch
+    - name: Ensure arpwatch is enabled for eth0
+      systemd:
+        name: arpwatch@eth0.service
         enabled: yes
         state: started
 
