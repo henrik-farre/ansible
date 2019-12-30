@@ -6,6 +6,8 @@
     name: "{{ packages }}"
   vars:
     packages:
+      - networkmanager
+      - nm-connection-editor
       - wireless_tools
       - wpa_supplicant
   when:
@@ -43,3 +45,14 @@
   tags:
     - networking
     - networking-wireless
+
+- name: Ensure services are enabled
+  become: yes
+  systemd:
+    name: "{{ item }}"
+    enabled: yes
+  loop:
+    - NetworkManager
+    - NetworkManager-wait-online
+  tags:
+    - networking
