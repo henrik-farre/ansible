@@ -1,4 +1,16 @@
 ---
+- name: Install Docker-CE on Debian
+  include_tasks: Debian.yml
+  when: ansible_facts.distribution == "Debian"
+  tags:
+    - docker
+
+- name: Install Docker-CE on Archlinux
+  include_tasks: Archlinux.yml
+  when: ansible_facts.distribution == "Archlinux"
+  tags:
+    - docker
+
 - name: Ensure docker directory exists
   become: yes
   file:
@@ -21,10 +33,6 @@
   notify: Restart docker daemon
   tags:
     - docker
-
-- name: Install Docker-CE on Debian
-  include_tasks: Debian.yml
-  when: ansible_facts.distribution == "Debian"
 
 - name: Check if devicemapper directory exist
   become: yes

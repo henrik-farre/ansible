@@ -1,0 +1,13 @@
+---
+- name: Ensure Docker and related packages are installed
+  become: yes
+  pacman:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - docker
+      - docker-compose
+      - python-docker
+  tags:
+    - docker

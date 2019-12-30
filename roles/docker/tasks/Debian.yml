@@ -11,27 +11,37 @@
       - curl
       - gnupg2
       - software-properties-common
+  tags:
+    - docker
 
 - name: Add Docker official GPG key
   become: true
   apt_key:
-    url: https://download.docker.com/linux/raspbian/gpg
+    url: https://download.docker.com/linux/debian/gpg
     state: present
+  tags:
+    - docker
 
-- name: Add Docker CE repository with correct channels (Raspbian)
+- name: Add Docker CE repository with correct channels
   become: true
   apt_repository:
-    repo: "deb [arch=armhf] https://download.docker.com/linux/raspbian stretch stable"
+    repo: "deb [arch=arm64] https://download.docker.com/linux/{{ ansible_facts.distribution|lower }} {{ ansible_facts.distribution_release }} stable"
     state: present
     filename: 'docker-ce'
+  tags:
+    - docker
 
 - name: Update APT cache
   become: true
   apt:
     update_cache: yes
+  tags:
+    - docker
 
 - name: Ensure docker-ce is installed
   become: yes
   apt:
     name: docker-ce
     state: latest
+  tags:
+    - docker
