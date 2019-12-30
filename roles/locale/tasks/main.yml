@@ -1,4 +1,14 @@
 ---
+- name: Ensure locales are installed
+  become: yes
+  apt:
+    name: locales
+    state: latest
+  when:
+    - ansible_facts.distribution == 'Debian'
+  tags:
+    - locale
+
 - name: Generate locales
   become: yes
   locale_gen:
@@ -19,6 +29,15 @@
     - "locale.conf"
   when:
     - ansible_facts.distribution != 'Debian'
+  tags:
+    - locale
+
+- name: Ensure terminus font is installed
+  become: yes
+  pacman:
+    name: terminus-font
+    state: latest
+  when: ansible_facts.distribution == "Archlinux"
   tags:
     - locale
 

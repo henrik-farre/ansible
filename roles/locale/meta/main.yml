@@ -1,3 +1,0 @@
----
-dependencies:
-  - { role: packages, packages: ['terminus-font'], when: ansible_facts.distribution == "Archlinux" }
