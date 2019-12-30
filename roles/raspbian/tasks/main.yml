@@ -1,27 +1,45 @@
 ---
+# TODO: location of boot files
 - name: Ensure Raspbian is correctly configured
   block:
     - name: Ensure root file system is mounted with correct options
       mount:
         path: /
-        src: PARTUUID=6dab4d6d-02
+        src: LABEL=RASPIROOT
         fstype: ext4
         opts: defaults,noatime,commit=60
         passno: 1
         dump: 0
         state: present
 
-    # enable cgroups for memory
-    - name: Ensure /boot/cmdline.txt contains correct options
-      copy:
-        dest: /boot/cmdline.txt
-        content: |
-          dwc_otg.lpm_enable=0 console=serial0,115200 console=tty1 root=PARTUUID=6dab4d6d-02 rootfstype=ext4 elevator=deadline fsck.repair=yes cgroup_enable=memory rootwait
+    - name: Ensure /tmp is mounted as tmpfs
+      mount:
+        path: /tmp
+        src: tmpfs
+        fstype: tmpfs
+        opts: "nodev,nosuid,size=128m"
+        state: mounted
 
-    - name: Ensure /boot/config.txt containts correct options
+    - name: Ensure /var/log is mounted as tmpfs
+      mount:
+        path: /var/log
+        src: tmpfs
+        fstype: tmpfs
+        opts: "defaults,noatime,nosuid,mode=0755,size=128m"
+        state: mounted
+
+    # enable cgroups for memory
+    - name: Ensure /boot/firmware/cmdline.txt contains correct options
+      copy:
+        dest: /boot/firmware/cmdline.txt
+        content: |
+          dwc_otg.lpm_enable=0 console=tty0 console=ttyS1,115200 root=LABEL=RASPIROOT rootfstype=ext4 elevator=deadline fsck.repair=yes cgroup_enable=memory rootwait
+          # console=tty0 console=ttyS1,115200 root=/dev/mmcblk0p2 rw elevator=deadline fsck.repair=yes net.ifnames=0 cma=64M rootwait
+
+    - name: Ensure /boot/firmware/config.txt containts correct options
       lineinfile:
         line: '{{ item.key }}={{ item.value }}'
-        dest: /boot/config.txt
+        dest: /boot/firmware/config.txt
         regexp: "^{{ item.key }}="
       loop: "{{ config_items|dict2items }}"
       vars:
