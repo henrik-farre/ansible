@@ -1,4 +1,11 @@
 ---
+- name: Ensure sudo is installed
+  become: yes
+  package:
+    name: sudo
+    state: latest
+
+# TODO: ensure users are in wheel/sudo group
 # Using multiline for content is important, sudo needs newline
 - name: Enable sudo access for wheel group
   become: yes
@@ -9,6 +16,18 @@
     validate: 'visudo -cf %s'
   when:
     - ansible_facts.distribution != 'Debian'
+  tags:
+    - sudo
+
+- name: Enable sudo access for sudo group
+  become: yes
+  copy:
+    content: |
+      %wheel ALL=(ALL) ALL
+    dest: /etc/sudoers.d/10-grant-sudo-group
+    validate: 'visudo -cf %s'
+  when:
+    - ansible_facts.distribution == 'Debian'
   tags:
     - sudo
 
