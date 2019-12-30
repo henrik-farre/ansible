@@ -1,4 +1,5 @@
 ---
+# TODO: This overrides the values in the inventory
 - name: Include vaulted vars
   include_vars:
     file: users.yml.vault
