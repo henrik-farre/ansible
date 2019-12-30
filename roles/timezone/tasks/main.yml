@@ -1,5 +1,6 @@
 ---
 - name: Set timezone to Europe/Copenhagen
+  become: yes
   timezone:
     name: Europe/Copenhagen
   tags:
