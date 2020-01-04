@@ -1,21 +1,16 @@
 ---
-- name: Ensure SSD values for Samsung SSD 850 EVO exist in hddtemp.db
+- name: Ensure values for SSDs exist in hddtemp.db
   become: yes
   lineinfile:
     name: /usr/share/hddtemp/hddtemp.db
-    regexp: '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250G B"'
-    line: '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250G B"'
+    regexp: "{{ item }}"
+    line: "{{ item }}"
     state: present
-  tags:
-    - hddtemp
-
-- name: Ensure SSD values for REALSSD C300 2.5 exist in hddtemp.db
-  become: yes
-  lineinfile:
-    name: /usr/share/hddtemp/hddtemp.db
-    regexp: '"REALSSD C300 2.5" 189 C "REALSSD C300 2.5"'
-    line: '"REALSSD C300 2.5" 189 C "REALSSD C300 2.5"'
-    state: present
+  loop:
+    - '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250GB"'
+    - '"Samsung SSD 860 EVO 500G B" 190 C "Samsung SSD 860 EVO 500GB"'
+    - '"Samsung SSD 860 QVO 2TB" 190 C "Samsung SSD 860 QVO 2TB"'
+    - '"REALSSD C300 2.5" 189 C "REALSSD C300 2.5"'
   tags:
     - hddtemp
 
