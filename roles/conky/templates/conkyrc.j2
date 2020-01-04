@@ -86,8 +86,9 @@ GPU:${alignr}${hwmon amdgpu temp 1}°C
 {% endif %}
 {% for device, data in ansible_devices.items() %}
 {% if data.partitions is defined and data.partitions %}
-{{ data.model }}: ${alignr}${hddtemp /dev/{{ device }}}°C{% endif %}{% endfor %}
+{{ data.model }}: ${alignr}${hddtemp /dev/{{ device }}}°C{% endif %}
 
+{% endfor %}
 
 ${color white}${font Font Awesome 5 Free Solid}${font} Fans ${hr 1}$color
 
@@ -165,11 +166,11 @@ ${top_io name 8}$alignr${top_io io_read 8}   ${top_io io_write 8}
 ${diskiograph_read {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t}
 Read ${diskio_read}$alignr Write ${diskio_write}
 
-Root: $alignr${fs_used /} /${fs_size /} (${fs_free /} / ${fs_free_perc /}% free)
-${if_match ${fs_free_perc} <= 1}${color red}${endif}${fs_bar {{conky_bar_full_size}} /}${color}
+{% for mount in ansible_mounts %}
+{{ mount.mount }}: $alignr${fs_used {{ mount.mount }}} /${fs_size {{ mount.mount }}} (${fs_free {{ mount.mount }}} / ${fs_free_perc {{ mount.mount }}}% free)
+${if_match ${fs_free_perc {{ mount.mount }}} <= 1}${color red}${endif}${fs_bar {{conky_bar_full_size}} {{ mount.mount }}}${color}
 
-Boot: $alignr${fs_used /boot} /${fs_size /boot} (${fs_free /boot} / ${fs_free_perc /boot}% free)
-${if_match ${fs_free_perc} <= 1}${color red}${endif}${fs_bar {{conky_bar_full_size}} /boot}${color}
+{% endfor %}
 
 ${color white}${font Font Awesome 5 Free Solid}
 ${if_up wlp3s0}${else} ${endif}${font} NETWORK ${hr 1}$color
