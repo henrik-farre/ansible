@@ -77,26 +77,26 @@ ${font}${color white} Temperatures ${hr 1}$color
 {# hwmonX/temp1 is physical #}
 CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon coretemp temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}
 
+{% if ansible_form_factor == 'Desktop' %}
 Motherboard:${alignr}${hwmon nct6793 temp 1}°C
+{% endif %}
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 GPU:${alignr}${nvidia temp}°C
 {% endif %}
 {% if ansible_local.hardware.vga_vendor == 'Advanced Micro Devices, Inc. [AMD/ATI]' %}
 GPU:${alignr}${hwmon amdgpu temp 1}°C
 {% endif %}
-{% for device, data in ansible_devices.items() %}
-{% if data.partitions is defined and data.partitions %}
+{% for device, data in ansible_devices.items() %}{% if data.partitions is defined and data.partitions and device[:4] != 'nvme' %}
 {{ data.model }}: ${alignr}${hddtemp /dev/{{ device }}}°C{% endif %}
 
 {% endfor %}
-
 ${color white}${font Font Awesome 5 Free Solid}${font} Fans ${hr 1}$color
 
 {% if ansible_form_factor == 'Laptop' %}
 Left fan: ${alignr}${hwmon 1 fan 1} RPM
 Right fan: ${alignr}${hwmon 1 fan 2} RPM
 {% elif ansible_form_factor == 'Notebook' %}
-Fan: ${alignr}${hwmon thinkpad-isa-0000 fan 1} RPM
+Fan: ${alignr}${hwmon thinkpad fan 1} RPM
 {% else %}
 Exhaust fan: ${alignr}${hwmon nct6793 fan 1} RPM
 CPU fan: ${alignr}${hwmon nct6793 fan 2} RPM
@@ -116,10 +116,9 @@ ${if_match $battery_percent <= 80}${if_match $battery_percent > 75}${color yello
 ${if_match $battery_percent <= 75}${if_match $battery_percent > 50}${color orange}${endif}${endif}\
 ${if_match $battery_percent <= 50}${if_match $battery_percent > 25}${color #FF8000}${endif}${endif}\
 ${if_match $battery_percent < 25}${color red}${endif}\
-${endif}${endif}${font}${color white} Battery ${hr 1}$color
+${endif}${endif}${font}${color white} Battery (${battery_status}) ${hr 1}$color
 
 ${battery_bar {{conky_bar_full_size}}}
-Status: ${alignr}${battery_status}
 {% endif %}
 
 ${color white}${font Font Awesome 5 Free Solid}${font} CPU (${execi 10 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor}) ${hr 1}$color
@@ -173,9 +172,8 @@ Read ${diskio_read}$alignr Write ${diskio_write}
 ${if_match ${fs_free_perc {{ mount.mount }}} <= 1}${color red}${endif}${fs_bar {{conky_bar_full_size}} {{ mount.mount }}}${color}
 
 {% endfor %}
-
 ${color white}${font Font Awesome 5 Free Solid}
-${if_up wlp3s0}${else} ${endif}${font} NETWORK ${hr 1}$color
+${if_up wlp0s20f3}${else} ${endif}${font} NETWORK ${hr 1}$color
 
 DNS:${alignr}$nameserver
 
