@@ -95,6 +95,8 @@ ${color white}${font Font Awesome 5 Free Solid}${font} Fans ${hr 1}$color
 {% if ansible_form_factor == 'Laptop' %}
 Left fan: ${alignr}${hwmon 1 fan 1} RPM
 Right fan: ${alignr}${hwmon 1 fan 2} RPM
+{% elif ansible_form_factor == 'Notebook' %}
+Fan: ${alignr}${hwmon thinkpad-isa-0000 fan 1} RPM
 {% else %}
 Exhaust fan: ${alignr}${hwmon nct6793 fan 1} RPM
 CPU fan: ${alignr}${hwmon nct6793 fan 2} RPM
@@ -106,7 +108,7 @@ GPU Fan: ${alignr}(${nvidia fanlevel}%) ${nvidia fanspeed} RPM
 {% if ansible_local.hardware.vga_vendor == 'Advanced Micro Devices, Inc. [AMD/ATI]' %}
 GPU Fan:${alignr}${hwmon amdgpu fan 1} RPM
 {% endif %}
-{% if ansible_form_factor == 'Laptop' %}
+{% if ansible_form_factor == 'Laptop' or ansible_form_factor == 'Notebook' %}
 
 ${font Font Awesome 5 Free Solid}${if_match "$battery_status" == "charged"}${else}${if_match "$battery_status" == "charging"}${else}\
 ${if_match $battery_percent > 80}${color white}${endif}\
@@ -178,9 +180,9 @@ ${if_up wlp3s0}${else} ${endif}${font} NETWORK ${hr 1}$color
 DNS:${alignr}$nameserver
 
 {% for interface in ansible_interfaces %}
-{% if interface in ('eth0','enp0s25','ens9','wlp3s0') %}
+{% if interface in ('eth0','enp0s25','ens9','wlp3s0', 'wlp0s20f3', 'enp0s31f6', 'wwp0s20f0u7') %}
 ${if_up {{ interface }}}{{ interface }}:$alignr${addr {{ interface }}} / ${execi 7200 curl -s http://icanhazip.com/}
-{% if interface == 'wlp3s0' %}
+{% if interface == 'wlp3s0' or interface == 'wlp0s20f3' %}
 Wireless network: ${alignr}${wireless_essid}
 Speed / Frequency: ${alignr}${wireless_bitrate {{ interface }}} / ${wireless_freq {{ interface }}}
 ${wireless_link_bar {{conky_bar_full_size}} {{ interface }}}
