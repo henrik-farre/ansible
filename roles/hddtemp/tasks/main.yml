@@ -1,19 +1,4 @@
 ---
-- name: Ensure values for SSDs exist in hddtemp.db
-  become: yes
-  lineinfile:
-    name: /usr/share/hddtemp/hddtemp.db
-    regexp: "{{ item }}"
-    line: "{{ item }}"
-    state: present
-  loop:
-    - '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250GB"'
-    - '"Samsung SSD 860 EVO 500G B" 190 C "Samsung SSD 860 EVO 500GB"'
-    - '"Samsung SSD 860 QVO 2TB" 190 C "Samsung SSD 860 QVO 2TB"'
-    - '"REALSSD C300 2.5" 189 C "REALSSD C300 2.5"'
-  tags:
-    - hddtemp
-
 - name: Ensure list of non-removeable devices is reset
   set_fact:
     non_removable_devices: []
@@ -27,55 +12,33 @@
   when:
     - item.value.removable == "0"
     - item.value.partitions
+    - item.key[:4] != "nvme"
   tags:
     - hddtemp
   no_log: True
 
-- name: Ensure directory for custom unit exist
-  become: yes
-  file:
-    dest: /etc/systemd/system/hddtemp.service.d
-    state: directory
-    owner: root
-    group: root
-    mode: 0750
+- name: Debugging
+  debug:
+    var: non_removable_devices
+  tags:
+    - hddtemp
+
+- name: Include tasks if host has disks supporting hddtemp
+  include_tasks:
+    file: setup.yml
+    apply:
+      become: yes
   when:
     - non_removable_devices|length > 1
   tags:
     - hddtemp
 
-- name: Ensure custom unit exist
-  become: yes
-  copy:
-    dest: /etc/systemd/system/hddtemp.service.d/customexec.conf
-    content: |
-      [Service]
-      ExecStart=
-      ExecStart=/usr/bin/hddtemp -dF {{ non_removable_devices|join(' ') }}
-    owner: root
-    group: root
-    mode: 0640
+- name: Include tasks if host does not have disks supporting hddtemp
+  include_tasks:
+    file: remove.yml
+    apply:
+      become: yes
   when:
-    - non_removable_devices|length > 1
-  tags:
-    - hddtemp
-
-- name: Ensure custom unit is removed if there are no devices
-  become: yes
-  file:
-    path: /etc/systemd/system/hddtemp.service.d/customexec.conf
-    state: absent
-  when:
-    - non_removable_devices|length == 1
-  tags:
-    - hddtemp
-
-- name: Ensure directory for custom unit is removed if there are no devices
-  become: yes
-  file:
-    path: /etc/systemd/system/hddtemp.service.d
-    state: absent
-  when:
-    - non_removable_devices|length == 1
+    - non_removable_devices|length < 1
   tags:
     - hddtemp

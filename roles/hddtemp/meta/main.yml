@@ -1,4 +1,0 @@
----
-dependencies:
-  - { role: packages, packages: ['hddtemp'] }
-  - { role: services, services: ['hddtemp'] }

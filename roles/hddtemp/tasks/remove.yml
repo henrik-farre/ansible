@@ -1,0 +1,31 @@
+---
+- name: Ensure custom unit is removed if there are no devices
+  file:
+    path: /etc/systemd/system/hddtemp.service.d/customexec.conf
+    state: absent
+  tags:
+    - hddtemp
+
+- name: Ensure directory for custom unit is removed if there are no devices
+  file:
+    path: /etc/systemd/system/hddtemp.service.d
+    state: absent
+  tags:
+    - hddtemp
+
+- name: Ensure hddtemp service is disabled
+  systemd:
+    name: hddtemp
+    state: stopped
+    enabled: no
+    daemon_reload: yes
+  ignore_errors: yes
+  tags:
+    - hddtemp
+
+- name: Ensure hddtemp package is removed
+  pacman:
+    state: latest
+    name: hddtemp
+  tags:
+    - hddtemp
