@@ -27,6 +27,7 @@ package_groups:
     - dosfstools
     - efibootmgr
     - efivar
+    - fwupd
   development_utils:
     - autoconf
     - automake
