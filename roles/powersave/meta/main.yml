@@ -1,4 +1,0 @@
----
-dependencies:
-  - {role: packages, packages: ['tlp', 'tlp-rdw', 'ethtool', 'x86_energy_perf_policy']}
-  - {role: services, services: ['tlp', 'tlp-sleep', 'NetworkManager-dispatcher']}
