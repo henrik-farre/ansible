@@ -1,0 +1,19 @@
+---
+# libqmi is for wwan support
+- name: Run tasks with become
+  block:
+    - name: Ensure needed packages are installed
+      pacman:
+        state: latest
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - fprintd
+          - libqmi
+          - nvme-cli
+      when:
+        - ansible_system_vendor == "LENOVO"
+        - ansible_product_version == "ThinkPad T490"
+      tags:
+        - thinkpad
+  become: yes
