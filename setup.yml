@@ -113,6 +113,11 @@
     - powersave
     - bluetooth
 
+- hosts: thinkpad
+  roles:
+    - thinkpad
+    - samba-client
+
 - hosts: macbook
   pre_tasks:
     - name: Ensure mbpfan is installed
@@ -121,7 +126,6 @@
       aur:
         name: mbpfan-git
   roles:
-    - samba-client
     - { role: services, services: ['mbpfan'] }
 
 - hosts: raspberrypi
