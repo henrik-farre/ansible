@@ -28,12 +28,43 @@
   when:
     - ansible_hostname == "spookcentral"
 
-- name: Ensure fstrim timer is started
+- name: Ensure list of nvme devices is reset
+  set_fact:
+    nvme_devices: []
+  tags:
+    - system-maintenance
+
+- name: Build list of nvme devices
+  set_fact:
+    nvme_devices: "{{ nvme_devices|default([]) + ['/dev/' ~ item.key] }}"
+  with_dict: "{{ ansible_devices }}"
+  when:
+    - item.key[:4] == "nvme"
+  tags:
+    - system-maintenance
+  no_log: True
+
+- name: Ensure fstrim timer is started on supported devices
   become: yes
   systemd:
     name: fstrim.timer
     state: started
     enabled: yes
+  when:
+    - nvme_devices|length == 0
+  tags:
+    - system-maintenance
+
+- name: Ensure fstrim timer is disabled on unsupported devices
+  become: yes
+  systemd:
+    name: fstrim.timer
+    state: stopped
+    enabled: no
+  when:
+    - nvme_devices|length > 0
+  tags:
+    - system-maintenance
 
 - name: Ensure cronjob is configured
   become: yes
