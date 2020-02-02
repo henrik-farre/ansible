@@ -3,7 +3,7 @@
   become: yes
   pacman:
     state: latest
-    name: "packages"
+    name: "{{ packages }}"
   vars:
     packages:
       - pacman-contrib
