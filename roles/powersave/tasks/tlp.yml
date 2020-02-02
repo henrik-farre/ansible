@@ -1,0 +1,32 @@
+---
+- name: Ensure tlp and dependencies are installed
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - 'tlp'
+      - 'tlp-rdw'
+      - 'ethtool'
+      - 'x86_energy_perf_policy'
+
+- name: Ensure tlp is configured
+  copy:
+    dest: /etc/default/tlp
+    src: etc/default/tlp
+    mode: 0644
+    owner: root
+    group: root
+  tags:
+    - powersave
+
+- name: Ensure tlp and needed services are started and enabled
+  systemd:
+    name: "{{ services }}"
+    enabled: yes
+    state: started
+  vars:
+    services:
+      - tlp
+      - tlp-sleep
+      - NetworkManager-dispatcher
