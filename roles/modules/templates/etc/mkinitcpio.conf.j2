@@ -19,7 +19,7 @@ FILES=()
 
 # Hooks are referred to by their name, and executed in the order they exist in the HOOKS array of the configuration file.
 HOOKS=(base udev autodetect modconf keyboard keymap)
-{% if ansible_facts.system_vendor == 'Apple Inc.' %}
+{% if ansible_facts.form_factor in ['Laptop', 'Notebook'] %}
 HOOKS+=(consolefont)
 {% endif %}
 {% if ansible_facts.cmdline.cryptdevice is defined %}
