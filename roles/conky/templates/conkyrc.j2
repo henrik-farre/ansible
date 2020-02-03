@@ -86,10 +86,15 @@ GPU:${alignr}${nvidia temp}°C
 {% if ansible_local.hardware.vga_vendor == 'Advanced Micro Devices, Inc. [AMD/ATI]' %}
 GPU:${alignr}${hwmon amdgpu temp 1}°C
 {% endif %}
-{% for device, data in ansible_devices.items() %}{% if data.partitions is defined and data.partitions and device[:4] != 'nvme' %}
-{{ data.model }}: ${alignr}${hddtemp /dev/{{ device }}}°C{% endif %}
-
+{% for device, data in ansible_devices.items() %}
+{%- if data.partitions is defined and data.partitions and device[:4] != 'nvme' -%}
+{{ data.model }}: ${alignr}${hddtemp /dev/{{ device }}}°C
+{% endif %}
 {% endfor %}
+{%- if ansible_product_version == "ThinkPad T490" -%}
+NVME: ${alignr}${hwmon nvme temp 1}°C
+{% endif %}
+
 ${color white}${font Font Awesome 5 Free Solid}${font} Fans ${hr 1}$color
 
 {% if ansible_form_factor == 'Laptop' %}
@@ -181,7 +186,7 @@ DNS:${alignr}$nameserver
 {% if interface in ('eth0','enp0s25','ens9','wlp3s0', 'wlp0s20f3', 'enp0s31f6', 'wwp0s20f0u7') %}
 ${if_up {{ interface }}}{{ interface }}:$alignr${addr {{ interface }}} / ${execi 7200 curl -s http://icanhazip.com/}
 {% if interface == 'wlp3s0' or interface == 'wlp0s20f3' %}
-Wireless network: ${alignr}${wireless_essid}
+Wireless network: ${alignr}${wireless_essid {{interface}} }
 Speed / Frequency: ${alignr}${wireless_bitrate {{ interface }}} / ${wireless_freq {{ interface }}}
 ${wireless_link_bar {{conky_bar_full_size}} {{ interface }}}
 {% endif %}
