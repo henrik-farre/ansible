@@ -178,10 +178,9 @@ ${if_match ${fs_free_perc {{ mount.mount }}} <= 1}${color red}${endif}${fs_bar {
 
 {% endfor %}
 ${color white}${font Font Awesome 5 Free Solid}
-${if_up wlp0s20f3}${else} ${endif}${font} NETWORK ${hr 1}$color
+${if_up wlp0s20f3}${else}${endif}${font} NETWORK ${hr 1}$color
 
 DNS:${alignr}$nameserver
-
 {% for interface in ansible_interfaces %}
 {% if interface in ('eth0','enp0s25','ens9','wlp3s0', 'wlp0s20f3', 'enp0s31f6', 'wwp0s20f0u7','ens4u1u1') %}
 ${if_up {{ interface }}}{{ interface }}:$alignr${addr {{ interface }}} / ${execi 7200 curl -s http://icanhazip.com/}
