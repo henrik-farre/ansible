@@ -1,0 +1,83 @@
+---
+- name: Ensure backup exist of unifi controller
+  hosts: unifi-controller
+
+  vars:
+    date_for_filename: "{{ now(fmt='%Y-%m-%d_%H-%M-%S') }}"
+    backup_basepath: "/shared/backup/unifi-controller"
+
+  roles:
+    - mounts
+
+  tasks:
+    - name: Ensure cleanup
+      block:
+        - name: Ensure current backup directory is empty
+          file:
+            path: "{{ backup_basepath }}/current"
+            state: absent
+
+        - name: Ensure backup directories exists
+          file:
+            path: "{{ backup_basepath }}/{{ item }}"
+            state: directory
+          loop:
+            - current/mongodump
+            - archived/mongodump
+            - archived/unifi
+
+        - name: Perform mongodump
+          command: "mongodump --port 27117 -o {{ backup_basepath }}/current/mongodump/"
+
+        - name: "Compress current/mongodump to {{ backup_basepath }}/archive/mongodump/backup_{{ date_for_filename }}.tar.bz2"
+          archive:
+            path: "{{ backup_basepath }}/current/mongodump"
+            dest: "{{ backup_basepath }}/archived/mongodump/backup_{{ date_for_filename }}.tar.bz2"
+            format: bz2
+
+        # Root can't write to nfs - use a temporary location
+        - name: "Compress /var/lib/unifi/ to /tmp/unifi_tmp_backup.tar.bz2"
+          become: yes
+          archive:
+            path: "/var/lib/unifi/"
+            dest: "/tmp/unifi_tmp_backup.tar.bz2"
+            format: bz2
+            exclude_path:
+              - /var/lib/unifi/db
+            mode: 0644
+
+        - name: "Copy temporary unifi to {{ backup_basepath }}/archive/unifi/backup_{{ date_for_filename }}.tar.bz2 "
+          copy:
+            src: /tmp/unifi_tmp_backup.tar.bz2
+            dest: "{{ backup_basepath }}/archived/unifi/backup_{{ date_for_filename }}.tar.bz2"
+            remote_src: yes
+
+        - name: Cleanup | Find all mongodump files
+          find:
+            paths: "{{ backup_basepath }}/archived/mongodump/"
+            file_type: file
+          register: all_mongodump_files
+
+        - name: Cleanup | Keep 7 newest files, delete rest
+          file:
+            path: "{{ item.path }}"
+            state: absent
+          with_items: "{{ (all_mongodump_files.files | sort(attribute='ctime', reverse=True))[7:] }}"
+
+        - name: Cleanup | Find all unifi files
+          find:
+            paths: "{{ backup_basepath }}/archived/unifi/"
+            file_type: file
+          register: all_unifi_files
+
+        - name: Cleanup | Keep 7 newest files, delete rest
+          file:
+            path: "{{ item.path }}"
+            state: absent
+          with_items: "{{ (all_unifi_files.files | sort(attribute='ctime', reverse=True))[7:] }}"
+      always:
+        - name: Cleanup | Remove tmp unifi backup
+          become: yes
+          file:
+            path: "/tmp/unifi_tmp_backup.tar.bz2"
+            state: absent
