@@ -12,17 +12,14 @@
   tags:
     - dotfiles
 
-- name: Ensure old dotfile folder is removed
+- name: Remove old symlinks/directories
   file:
-    path: "{{ ansible_user_dir }}/.dotfiles"
+    path: "{{ ansible_user_dir }}/{{ item }}"
     state: absent
-  tags:
-    - dotfiles
-
-- name: Ensure old shells symlink is removed
-  file:
-    path: "{{ ansible_user_dir }}/.config/shells"
-    state: absent
+  loop:
+    - ".tmux.conf"
+    - ".config/shells"
+    - ".dotfiles"
   tags:
     - dotfiles
 
@@ -71,6 +68,7 @@
     - ".config/fontconfig/fonts.conf"
     - ".config/htop"
     - ".config/shell.d"
+    - ".config/tmux"
     - ".config/weechat"
     - ".config/yamllint"
     - ".ctags"
@@ -84,22 +82,8 @@
     - ".npmrc"
     - ".pearrc"
     - ".screenrc"
-    - ".tmux.conf"
     - ".tmuxinator"
     - ".zshrc"
     - "bin"
-  tags:
-    - dotfiles
-
-- name: Symlink files macos
-  file:
-    src: "{{ ansible_user_dir }}/.local/dotfiles/{{ item }}"
-    dest: "{{ ansible_user_dir }}/{{ item }}"
-    owner: "{{ ansible_user_id }}"
-    state: link
-  with_items:
-    - ".tmux-osx.conf"
-  when:
-    - ansible_os_family == 'Darwin'
   tags:
     - dotfiles
