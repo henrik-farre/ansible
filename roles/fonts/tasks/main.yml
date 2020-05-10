@@ -1,5 +1,28 @@
 ---
 - block:
+  - name: Ensure fonts and releated packages are installed
+    pacman:
+      state: latest
+      name: "{{ packages }}"
+    vars:
+      packages:
+        - cantarell-fonts
+        - noto-fonts
+        - noto-fonts-emoji
+        - powerline-fonts
+        - ttf-anonymous-pro
+        - ttf-bitstream-vera
+        - ttf-dejavu
+        - ttf-droid
+        - ttf-freefont
+        - ttf-hack
+        - ttf-inconsolata
+        - ttf-liberation
+        - ttf-roboto
+        - ttf-roboto-mono
+        - ttf-ubuntu-font-family
+        - unzip
+
   - name: Ensure old fontconfig directories are absent
     file:
       path: "{{ ansible_user_dir }}/{{ item }}"

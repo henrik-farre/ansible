@@ -1,4 +1,0 @@
----
-# unzip for downloading fonts
-dependencies:
-  - { role: packages, packages: ['cantarell-fonts', 'powerline-fonts', 'ttf-dejavu', 'ttf-anonymous-pro', 'ttf-bitstream-vera', 'ttf-dejavu', 'ttf-droid', 'ttf-freefont', 'ttf-hack', 'ttf-inconsolata', 'ttf-liberation', 'ttf-ubuntu-font-family', 'unzip'] }
