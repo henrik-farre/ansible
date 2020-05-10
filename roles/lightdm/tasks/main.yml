@@ -1,4 +1,17 @@
 ---
+- name: Ensure lightdm and releated packages are installed
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - lightdm
+      - lightdm-gtk-greeter
+      - archlinux-wallpaper
+      - adapta-gtk-theme
+  tags:
+    - lightdm
+
 - name: Ensure Lightdm background is downloaded
   become: yes
   get_url:
@@ -14,3 +27,10 @@
     src: etc/lightdm/lightdm-gtk-greeter.conf
   tags:
     - lightdm
+
+- name: Ensure service is started
+  become: yes
+  systemd:
+    name: lightdm
+    state: stated
+    enabled: yes
