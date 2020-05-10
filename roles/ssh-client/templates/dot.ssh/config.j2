@@ -3,7 +3,7 @@ Host *
   Compression yes
   TCPKeepAlive yes
   ServerAliveCountMax 3
-  ServerAliveInterval 20
+  ServerAliveInterval 5
 {% if ansible_facts.distribution != 'RedHat' or (ansible_facts.distribution == 'RedHat' and ansible_facts.distribution_version is version('6.5', '>=')) %}
   ControlMaster auto
   ControlPath ~/.ssh/master-%r@%h:%p
