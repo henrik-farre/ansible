@@ -78,6 +78,18 @@
       when:
         - unifi.config_gateway is defined
 
+    # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
+    # - Disable analytics
+    # Note: remember to force provision devices for changes to apply
+    - name: Ensure custom config.properties is deployed
+      copy:
+        content: |
+          config.system_cfg.1=system.analytics.anonymous=disabled
+        dest: /usr/lib/unifi/data/sites/default/config.properties
+        owner: unifi
+        group: unifi
+        mode: 0600
+
     - name: Ensure unifi service is started and enabled
       service:
         name: unifi
