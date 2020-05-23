@@ -70,13 +70,11 @@
     # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
     - name: Ensure custom config.gateway.json is deployed
       copy:
-        content: "{{ unifi.config_gateway|to_nice_json }}"
+        src: "config.gateway.json"
         dest: /usr/lib/unifi/data/sites/default/config.gateway.json
         owner: unifi
         group: unifi
         mode: 0600
-      when:
-        - unifi.config_gateway is defined
 
     # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
     # - Disable analytics
