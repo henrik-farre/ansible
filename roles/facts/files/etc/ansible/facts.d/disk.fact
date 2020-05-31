@@ -1,0 +1,10 @@
+#!/bin/bash
+
+# Fix common errors:
+# Referencing undefined variables (which default to "")
+# Ignoring failing commands
+set -o nounset
+set -o errexit
+set -o pipefail
+
+lsblk -O -J

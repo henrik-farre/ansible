@@ -26,3 +26,8 @@
     - etc/ansible/facts.d/*.fact
   tags:
     - facts
+
+- name: "Re-run setup to use custom facts"
+  setup: ~
+  tags:
+    - facts
