@@ -17,3 +17,4 @@ conky_cpu_hwmon:
   - {sensor: 0, temp: 3}
   - {sensor: 0, temp: 4}
   - {sensor: 0, temp: 5}
+conky_max_elements: 8
