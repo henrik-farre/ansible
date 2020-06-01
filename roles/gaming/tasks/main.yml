@@ -1,0 +1,91 @@
+---
+- name: Become and tag block
+  block:
+    - name: Ensure package is installed
+      pacman:
+        state: "latest"
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - steam
+          - steam-native-runtime
+
+    - name: Install gamemode from AUR
+      become: yes
+      become_user: aur_builder
+      aur:
+        name: gamemode
+      vars:
+        packages:
+          - gamemode
+          - lib32-gamemode
+
+    - name: Ensure gamemode group exists
+      group:
+        name: gamemode
+        state: present
+        system: yes
+
+    - name: Ensure users are members of gamemode group
+      user:
+        name: "{{ item }}"
+        groups: gamemode
+        append: yes
+      loop: "{{ groups_to_users.gamemode }}"
+
+    - name: Ensure global gamemode.ini exists
+      copy:
+        src: etc/gamemode.ini
+        dest: /etc/gamemode.ini
+
+    - name: Ensure local gamemode.ini exists
+      copy:
+        src: dot.config/gamemode.ini
+        dest: /home/enrique/.config/gamemode.ini
+        owner: enrique
+        mode: 0640
+
+    # Sticky group
+    - name: Ensure directory for steam library exists with correct permissions
+      file:
+        path: /opt/steam-library
+        state: directory
+        owner: root
+        group: games
+        mode: 02775
+
+    # sudo setfacl -d -m g::rwx /opt/steam-library
+    - name: Ensure the games group can rwx all files by setting default ACL
+      acl:
+        path: /opt/steam-library
+        etype: group
+        permissions: rwx
+        default: yes
+        state: present
+
+    - name: Ensure tmpfile.d exits
+      copy:
+        dest: /etc/tmpfiles.d/block_steam_debug_upload.conf
+        content: |
+          # Managed by Ansible
+          # Prevent crash dumps being uploaded to valve (env is included)
+          L     /tmp/dumps -    -    -     -   /dev/null
+        mode: 0644
+        owner: root
+
+    - name: Enable magic sysrq
+      sysctl:
+        name: kernel.sysrq
+        value: "1"
+        sysctl_file: /etc/sysctl.d/10-magic-sysrq.conf
+
+    # https://steamcommunity.com/app/221410/discussions/0/1640915206474070669/
+    - name: Ensure Steam uses ACO shader compiler
+      lineinfile:
+        dest: "/etc/environment"
+        regexp: '^RADV_PERFTEST='
+        line: "RADV_PERFTEST=aco"
+  # block
+  become: yes
+  tags:
+    - gaming
