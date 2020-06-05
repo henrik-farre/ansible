@@ -38,46 +38,11 @@
   tags:
     - conky
 
-- name: Check if FontAwesome is installed
-  stat:
-    path: "{{ ansible_user_dir }}/.local/share/fonts/Font Awesome 5 Free-Regular-400.otf"
-  register: font_stat
+- name: Ensure font awesome is installed
+  become: yes
+  pacman:
+    name: ttf-font-awesome
+    state: latest
+  notify: Update font cache
   tags:
     - conky
-
-- block:
-    - name: Download and extract FontAwesome 5.10.1
-      unarchive:
-        src: https://use.fontawesome.com/releases/v5.10.1/fontawesome-free-5.10.1-desktop.zip
-        dest: "/tmp/"
-        remote_src: True
-      when:
-        - font_stat.stat.exists is defined and not font_stat.stat.exists
-      tags:
-        - conky
-
-    - name: Install FontAwesome
-      copy:
-        src: "/tmp/fontawesome-free-5.10.1-desktop/otfs/{{ item }}"
-        dest: "{{ ansible_user_dir }}/.local/share/fonts/{{ item }}"
-        remote_src: yes
-      loop:
-        - "Font Awesome 5 Brands-Regular-400.otf"
-        - "Font Awesome 5 Free-Regular-400.otf"
-        - "Font Awesome 5 Free-Solid-900.otf"
-      when:
-        - font_stat.stat.exists is defined and not font_stat.stat.exists
-      notify:
-        - Update font cache
-      tags:
-        - conky
-
-  always:
-    - name: Cleanup
-      file:
-        path: /tmp/fontawesome-free-5.10.1-desktop
-        state: absent
-      when:
-        - font_stat.stat.exists is defined and not font_stat.stat.exists
-      tags:
-        - conky
