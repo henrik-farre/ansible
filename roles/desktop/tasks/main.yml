@@ -1,0 +1,44 @@
+---
+- name: Set tag
+  block:
+    # https://github.com/rfjakob/earlyoom
+    - name: Ensure earlyoom is installed
+      become: yes
+      pacman:
+        state: latest
+        name: earlyoom
+
+    - name: Ensure earlyoom is started and enabled
+      become: yes
+      systemd:
+        name: earlyoom
+        state: started
+        enabled: yes
+
+    # https://github.com/cdown/psi-notify/
+    - name: Install psi-notify from AUR
+      become: yes
+      become_user: aur_builder
+      aur:
+        name: psi-notify
+
+    - name: Install psi-notify config file
+      copy:
+        dest: "{{ ansible_user_dir }}/.config/psi-notify"
+        content: |
+          update 5
+          log_pressures false
+
+          threshold cpu some avg10 50.00
+          threshold memory some avg10 10.00
+          threshold io full avg10 15.00
+
+    - name: Ensure psi-notify is started and enabled
+      systemd:
+        name: psi-notify
+        state: started
+        enabled: yes
+        scope: user
+  # block
+  tags:
+    - desktop

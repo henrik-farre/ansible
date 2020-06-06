@@ -72,12 +72,12 @@
     - zim
     - node
     - firefox
-    - xcape
     - systemd-user-units
     - terminal
     - cups
     - devilspie
     - spotify
+    - desktop
   tasks:
     - name: Install packages from AUR
       become: yes
