@@ -1,15 +1,18 @@
 ---
-- hosts: all
+- name: Update all hosts
+  hosts: debian,archlinux
   become: yes
+
   tasks:
-    - name: Update system packages
+    - name: Update Debian hosts
+      apt:
+        update_cache: yes
+        name: "*"
+        state: latest
+      when: ansible_facts.distribution == "Debian"
+
+    - name: Update ArchLinux hosts
       pacman:
         update_cache: yes
         upgrade: yes
-
-    - name: Install neovim-remote
-      pip:
-        name: neovim-remote
-        extra_args: --user
-        executable: pip3
-        state: latest
+      when: ansible_facts.distribution == "Archlinux"
