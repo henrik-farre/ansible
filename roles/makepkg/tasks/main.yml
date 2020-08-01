@@ -9,3 +9,11 @@
     mode: 0644
   tags:
     - makepkg
+
+- name: Ensure makepkg.packnew does not exist
+  become: yes
+  file:
+    path: /etc/makepkg.conf.pacnew
+    state: absent
+  tags:
+    - makepkg
