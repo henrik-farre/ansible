@@ -1,6 +1,11 @@
 ---
 - name: Ensure system mail is configured
   block:
+    - name: Load vaulted files
+      include_vars:
+        file: mail.yml.vault
+      no_log: true
+
     - name: Ensure old ssmtp package is removed
       package:
         name: ssmtp
