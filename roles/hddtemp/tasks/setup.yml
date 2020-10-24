@@ -14,6 +14,7 @@
     state: present
   loop:
     - '"Samsung SSD 850 EVO 250G B" 190 C "Samsung SSD 850 EVO 250GB"'
+    - '"Samsung SSD 860 EVO 250G B" 190 C "Samsung SSD 850 EVO 250GB"'
     - '"Samsung SSD 860 EVO 500G B" 190 C "Samsung SSD 860 EVO 500GB"'
     - '"Samsung SSD 860 QVO 2TB" 190 C "Samsung SSD 860 QVO 2TB"'
     - '"REALSSD C300 2.5" 189 C "REALSSD C300 2.5"'
