@@ -80,11 +80,11 @@
         sysctl_file: /etc/sysctl.d/10-magic-sysrq.conf
 
     # https://steamcommunity.com/app/221410/discussions/0/1640915206474070669/
-    - name: Ensure Steam uses ACO shader compiler
+    - name: Remove RADV PERFTEST env var, it is default now
       lineinfile:
         dest: "/etc/environment"
         regexp: '^RADV_PERFTEST='
-        line: "RADV_PERFTEST=aco"
+        state: absent
   # block
   become: yes
   tags:
