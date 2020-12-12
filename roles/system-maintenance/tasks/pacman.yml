@@ -213,3 +213,14 @@
   tags:
     - system-maintenance
     - pacman-mirrors
+
+- name: Reflector config
+  become: yes
+  lineinfile:
+    path: /etc/xdg/reflector/reflector.conf
+    state: present
+    regexp: '--sort'
+    line: '--sort rate'
+  tags:
+    - system-maintenance
+    - pacman-mirrors
