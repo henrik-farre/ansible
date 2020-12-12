@@ -2,6 +2,7 @@
 - name: Include pacman tasks
   include_tasks: pacman.yml
   tags:
+    - pacman-mirrors
     - system-maintenance
 
 - name: Include smartd tasks
