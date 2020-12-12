@@ -161,6 +161,15 @@
     - system-maintenance
     - pacman-mirrors
 
+- name: Remove old cronjob script
+  become: yes
+  file:
+    path: /usr/local/sbin/pacman-sort-mirrors.sh
+    state: absent
+  tags:
+    - system-maintenance
+    - pacman-mirrors
+
 - name: Ensure pacman hook directory exist
   become: yes
   file:
@@ -172,6 +181,7 @@
     - system-maintenance
     - pacman-mirrors
 
+# https://wiki.archlinux.org/index.php/Reflector#pacman_hook
 - name: Ensure pacman mirrorlist hook is present
   become: yes
   copy:
@@ -183,12 +193,23 @@
       Target = pacman-mirrorlist
 
       [Action]
-      Description = Updating mirror list...
+      Description = Updating pacman-mirrorlist with reflector and removing pacnew...
       When = PostTransaction
       Depends = reflector
-      Exec = /usr/bin/bash -c "/usr/bin/reflector --country Denmark --country Germany --country Norway --country Sweden --country Ireland --country Netherlands --country 'United Kingdom' --fastest 5 --protocol https --sort rate --threads 10 --age 12 --save /etc/pacman.d/mirrorlist && if [[ -f /etc/pacman.d/mirrorlist.pacnew ]]; then rm /etc/pacman.d/mirrorlist.pacnew; fi"
+      Exec = /bin/sh -c 'systemctl start reflector.service; if [ -f /etc/pacman.d/mirrorlist.pacnew ]; then rm /etc/pacman.d/mirrorlist.pacnew; fi'
     owner: root
     mode: 0750
+  tags:
+    - system-maintenance
+    - pacman-mirrors
+
+- name: Reflector config
+  become: yes
+  lineinfile:
+    path: /etc/xdg/reflector/reflector.conf
+    state: present
+    regexp: '--country'
+    line: '--country Denmark,Germany,Norway,Sweden,Ireland,Netherlands'
   tags:
     - system-maintenance
     - pacman-mirrors
