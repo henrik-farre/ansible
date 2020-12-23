@@ -16,6 +16,7 @@ platforms:
     groups:
       - archlinux
       - desktop
+      - gaming
 provisioner:
   name: ansible
   connection_options:
@@ -35,7 +36,9 @@ provisioner:
         mail_rewrite_domain: molecule.test
         mail_auth_user: some_user
         mail_auth_pass: some_pass
-        groups_to_users: []
+        groups_to_users:
+          gamemode:
+            - vagrant
         host_packages: []
         host_services: []
         host_uninstalled_packages: []
