@@ -98,7 +98,6 @@ package_groups:
     - seahorse
     - sshpass
     - startup-notification
-    - tangerine-icon-theme
     - vagrant
     - virtualbox
     - virtualbox-guest-iso
@@ -109,9 +108,7 @@ package_groups:
     - xsel
     - zenity
   xorg:
-    - xcape
     - xkeyboard-config
-    - xorg-fonts-alias
     - xorg-fonts-encodings
     - xorg-mkfontdir
     - xorg-mkfontscale
