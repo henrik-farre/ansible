@@ -1,5 +1,6 @@
 ---
 - name: Ensure lightdm and releated packages are installed
+  become: yes
   pacman:
     state: latest
     name: "{{ packages }}"
@@ -32,5 +33,5 @@
   become: yes
   systemd:
     name: lightdm
-    state: stated
+    state: started
     enabled: yes
