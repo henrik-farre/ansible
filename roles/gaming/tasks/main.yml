@@ -1,6 +1,27 @@
 ---
 - name: Become and tag block
   block:
+    - name: Enable multilib repo in pacman - part 1
+      lineinfile:
+        path: /etc/pacman.conf
+        regexp: '\[multilib\]'
+        line: "[multilib]"
+        state: present
+
+    - name: Enable multilib repo in pacman - part 2
+      lineinfile:
+        path: /etc/pacman.conf
+        regexp: 'Include '
+        line: "Include = /etc/pacman.d/mirrorlist"
+        insertafter: "[multilib]"
+        state: present
+
+    - name: Update pacman cache
+      pacman:
+        update_cache: yes
+      changed_when: false
+      when: ansible_facts.distribution == "Archlinux"
+
     - name: Ensure package is installed
       pacman:
         state: "latest"
@@ -32,6 +53,9 @@
         groups: gamemode
         append: yes
       loop: "{{ groups_to_users.gamemode }}"
+      when:
+        - groups_to_users is defined
+        - groups_to_users.gamemode is defined
 
     - name: Ensure global gamemode.ini exists
       copy:
@@ -39,10 +63,10 @@
         dest: /etc/gamemode.ini
 
     - name: Ensure local gamemode.ini exists
+      become: no
       copy:
         src: dot.config/gamemode.ini
-        dest: /home/enrique/.config/gamemode.ini
-        owner: enrique
+        dest: "{{ ansible_user_dir }}/.config/gamemode.ini"
         mode: 0640
 
     # Sticky group
