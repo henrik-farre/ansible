@@ -1,5 +1,4 @@
 ---
-# --base-config roles/molecule-resources/base-config-vagrant.yml
 # https://app.vagrantup.com/archlinux/boxes/archlinux
 driver:
   name: vagrant
@@ -10,20 +9,18 @@ dependency:
 platforms:
   - name: instance
     box: archlinux/archlinux
-    box_version: 2019.10.02
+    box_version: 20201201.10292
+    config_options:
+      ssh.keep_alive: yes
+      ssh.remote_user: "'vagrant'"
     groups:
       - archlinux
       - desktop
-lint:
-  name: yamllint
-  options:
-    config-file: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/yamllint.yml
-verifier:
-  name: goss
-  lint:
-    name: yamllint
 provisioner:
   name: ansible
+  connection_options:
+    ansible_ssh_user: vagrant
+  provision: yes
   inventory:
     group_vars:
       all:
@@ -42,7 +39,8 @@ provisioner:
         host_packages: []
         host_services: []
         host_uninstalled_packages: []
-        aur_packages: []
+        aur_packages:
+          - tangerine-icon-theme
   config_options:
     defaults:
       vault_password_file: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/vault_pass.txt
@@ -51,8 +49,8 @@ provisioner:
     ANSIBLE_LIBRARY: ${MOLECULE_PROJECT_DIRECTORY}/library
   playbooks:
     prepare: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/prepare_python_archlinux.yml
-    verify: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/verify_goss_3.7.yml
-  lint:
-    name: ansible-lint
-    options:
-      c: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/ansible-lint.yml
+lint: |
+  export ANSIBLE_LIBRARY=${MOLECULE_PROJECT_DIRECTORY}/library
+  set -e
+  yamllint -c ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/yamllint.yml .
+  ansible-lint -c ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/ansible-lint.yml
