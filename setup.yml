@@ -16,7 +16,6 @@
       when: ansible_facts.distribution == "Archlinux"
 
   roles:
-    - { role: facts, become: yes }
     - networking
     - hostname
     - locale
