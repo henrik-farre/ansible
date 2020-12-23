@@ -26,7 +26,7 @@
   tags:
     - conky
 
-- name: Ensure conky is autostated
+- name: Ensure conky is autostarted
   copy:
     content: |
       [Desktop Entry]
