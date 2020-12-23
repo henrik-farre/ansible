@@ -1,5 +1,5 @@
 ---
-- name: Ensure required wireless networking packages are installed
+- name: Ensure package is installed
   become: yes
   pacman:
     state: latest
@@ -7,6 +7,16 @@
   vars:
     packages:
       - networkmanager
+  tags:
+    - networking
+
+- name: Ensure required wireless networking packages are installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
       - nm-connection-editor
       - wireless_tools
       - wpa_supplicant
