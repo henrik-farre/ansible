@@ -85,10 +85,10 @@
   tags:
     - cups
 
-- name: Ensure Cups daemon is enabled and started
+- name: Ensure Cups can be started ondemand
   become: yes
   service:
-    name: org.cups.cupsd.service
+    name: cups.socket
     state: started
     enabled: yes
   tags:
