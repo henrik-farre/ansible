@@ -1,6 +1,7 @@
 ---
 - block:
   - name: Ensure fonts and releated packages are installed
+    become: yes
     pacman:
       state: latest
       name: "{{ packages }}"
