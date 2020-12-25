@@ -109,6 +109,34 @@
         dest: "/etc/environment"
         regexp: '^RADV_PERFTEST='
         state: absent
+
+    - name: Disable freesync for some Steam games
+      become: yes
+      copy:
+        dest: /usr/share/drirc.d/02-steam_games.conf
+        content: |
+          <?xml version="1.0" standalone="yes"?>
+          <!DOCTYPE driconf [
+            <!ELEMENT driconf      (device+)>
+            <!ELEMENT device       (application | engine)+>
+            <!ATTLIST device       driver CDATA #IMPLIED>
+            <!ELEMENT application  (option+)>
+            <!ATTLIST application  name CDATA #REQUIRED
+                                    executable CDATA #REQUIRED>
+            <!ELEMENT engine       (option+)>
+            <!ATTLIST engine       engine_name_match CDATA #REQUIRED
+                                    engine_versions CDATA #REQUIRED>
+            <!ELEMENT option       EMPTY>
+            <!ATTLIST option       name CDATA #REQUIRED
+                                    value CDATA #REQUIRED>
+          ]>
+          <driconf>
+            <device>
+              <application name="Cities Skylines" executable="Cities.x64">
+                <option name="adaptive_sync" value="false" />
+              </application>
+            </device>
+          </driconf>
   # block
   become: yes
   tags:
