@@ -5,6 +5,14 @@
     state: latest
     name: alsa-utils
 
+- name: Ensure asound.state exists
+  become: yes
+  command: alsactl store
+  args:
+    creates: /var/lib/alsa/asound.state
+  when:
+    - ansible_virtualization_type != 'virtualbox'
+
 - name: Ensure alsa-restore service is started
   become: yes
   systemd:
