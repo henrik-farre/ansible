@@ -37,13 +37,135 @@ provisioner:
         mail_auth_user: some_user
         mail_auth_pass: some_pass
         groups_to_users:
+          docker:
+            - vagrant
+          games:
+            - vagrant
+          lp:
+            - vagrant
+          mail:
+            - vagrant
+          sys:
+            - vagrant
           gamemode:
             - vagrant
         host_packages: []
         host_services: []
-        host_uninstalled_packages: []
+        host_uninstalled_packages:
+          - usb_modeswitch
+          - acpid
+          - compositeproto
+          - damageproto
+          - dmxproto
+          - exo
+          - fixesproto
+          - fontsproto
+          - garcon
+          - gstreamer0.10
+          - gstreamer0.10-bad
+          - gstreamer0.10-bad-plugins
+          - gstreamer0.10-base
+          - gstreamer0.10-base-plugins
+          - gstreamer0.10-ffmpeg
+          - gstreamer0.10-good
+          - gstreamer0.10-good-plugins
+          - gstreamer0.10-ugly
+          - gtk-xfce-engine
+          - gtkspell
+          - gtkspell3
+          - i7z-git
+          - inputproto
+          - kbproto
+          - libnm-gtk
+          - libxfce4ui
+          - libxfont
+          - light-locker
+          - pacaur
+          - randrproto
+          - recordproto
+          - renderproto
+          - ruby2.3
+          - scrnsaverproto
+          - tango-icon-theme
+          - tango-icon-theme-extras
+          - thunar
+          - thunar-volman
+          - videoproto
+          - vingre
+          - xextproto
+          - xf86dgaproto
+          - xf86vidmodeproto
+          - xfburn
+          - xfce4-appfinder
+          - xfce4-datetime-plugin
+          - xfce4-icon-theme
+          - xfce4-mixer
+          - xfce4-notifyd
+          - xfce4-panel
+          - xfce4-power-manager
+          - xfce4-screenshooter
+          - xfce4-sensors-plugin
+          - xfce4-session
+          - xfce4-settings
+          - xfce4-time-out-plugin
+          - xfce4-xkb-plugin
+          - xfconf
+          - xfdesktop
+          - xfwm4
+          - xfwm4-themes
+          - xineramaproto
+          - xorg-fonts-misc
+          - xorg-iceauth
+          - xorg-server-utils
+          - xorg-sessreg
+          - xorg-smproxy
+          - xorg-utils
+          - xorg-x11perf
+          - xorg-xbacklight
+          - xorg-xcmsdb
+          - xorg-xcursorgen
+          - xorg-xdriinfo
+          - xorg-xgamma
+          - xorg-xhost
+          - xorg-xkb-utils
+          - xorg-xkbevd
+          - xorg-xkbutils
+          - xorg-xlsatoms
+          - xorg-xlsclients
+          - xorg-xpr
+          - xorg-xrefresh
+          - xorg-xsetroot
+          - xorg-xvinfo
+          - xorg-xwd
+          - xorg-xwininfo
+          - xorg-xwud
+          - xproto
+          - yaourt
         aur_packages:
           - tangerine-icon-theme
+          - universal-ctags-git
+          - virtualbox-ext-oracle
+          - shellcheck-git-static
+        linux_kernel_variant: zen
+        has_nfs_mount: True
+        modules_modprobe_d:
+          - 00-blacklist.conf
+          - 50-sound.conf
+        firewall_services:
+          - name: Synergy
+        firewall_ports:
+          - port: 27031
+            proto: udp
+            comment: Steam in home streaming
+          - port: 27036
+            proto: udp
+            comment: Steam in home streaming
+          - port: 27036
+            proto: tcp
+            comment: Steam in home streaming
+          - port: 27037
+            proto: tcp
+            comment: Steam in home streaming
   config_options:
     defaults:
       vault_password_file: ${MOLECULE_PROJECT_DIRECTORY}/roles/molecule-resources/vault_pass.txt
