@@ -1,0 +1,5 @@
+- name: Ensure correct kernel is installed
+  become: yes
+  pacman:
+    state: latest
+    name: "linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"
