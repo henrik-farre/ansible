@@ -1,4 +1,10 @@
 ---
+- name: Merge default variables with custom ones set in the inventory
+  set_fact:
+    bluetooth: "{{ bluetooth_defaults|combine(bluetooth, recursive=True) }}"
+  tags:
+    - bluetooth
+
 - name: Ensure bluetooth packages are installed
   become: yes
   pacman:
@@ -10,6 +16,16 @@
       - bluez-utils
       - bluez-tools
       - blueman
+  tags:
+    - bluetooth
+
+- name: Ensure bluetooth firmware is installed
+  become: yes
+  become_user: aur_builder
+  aur:
+    name: "{{ bluetooth.firmware }}"
+  when:
+    - bluetooth.firmware
   tags:
     - bluetooth
 
@@ -87,6 +103,7 @@
   tags:
     - bluetooth
 
+# https://wiki.archlinux.org/index.php/Blueman#Permissions
 - name: Allow useers in the wheel group to access blueman funtionality
   become: yes
   copy:
@@ -103,34 +120,5 @@
               return polkit.Result.YES;
           }
       });
-  tags:
-    - bluetooth
-
-# https://www.reddit.com/r/linux/comments/at0zo0/til_that_since_2017_its_possible_in_pulseaudio_to/
-# https://github.com/pastleo/fix-bt-a2dp
-# https://github.com/EHfive/pulseaudio-modules-bt/issues/14
-# a2dp-fix has to be executable as the user running pulseaudio
-- name: Ensure a2dp fix scripts are in place
-  become: yes
-  copy:
-    dest: "/{{ item }}"
-    src: "{{ item }}"
-    group: root
-    mode: 0755
-    owner: root
-  loop:
-    - "usr/local/sbin/a2dp-fix-wrapper"
-    - "usr/local/sbin/a2dp-fix"
-  tags:
-    - bluetooth
-
-- name: Ensure udev rule is in place
-  become: yes
-  copy:
-    dest: "/etc/udev/rules.d/80-bt-headset.rules"
-    src: "etc/udev/rules.d/80-bt-headset.rules"
-    group: root
-    mode: 0640
-    owner: root
   tags:
     - bluetooth
