@@ -1,9 +1,71 @@
 ---
-- name: Ensure need packages for xorg is installed
-  include_role:
-    name: package-group
+- name: Ensure needed packages for xorg are installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
   vars:
-    package_group: xorg
+    packages:
+      - xkeyboard-config
+      - xorg-fonts-encodings
+      - xorg-mkfontdir
+      - xorg-mkfontscale
+      - xorg-server
+      - xorg-server-common
+      - xorg-setxkbmap
+      - xorg-xauth
+      - xorg-xdpyinfo
+      - xorg-xev
+      - xorg-xinit
+      - xorg-xinput
+      - xorg-xkbcomp
+      - xorg-xkill
+      - xorg-xmodmap
+      - xorg-xprop
+      - xorg-xrandr
+      - xorg-xrdb
+      - xorg-xset
+      - xorgproto
+
+- name: Ensure unused packages for xorg are removed
+  become: yes
+  pacman:
+    state: absent
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - compositeproto
+      - damageproto
+      - dmxproto
+      - fixesproto
+      - fontsproto
+      - xineramaproto
+      - xorg-fonts-misc
+      - xorg-iceauth
+      - xorg-server-utils
+      - xorg-sessreg
+      - xorg-smproxy
+      - xorg-utils
+      - xorg-x11perf
+      - xorg-xbacklight
+      - xorg-xcmsdb
+      - xorg-xcursorgen
+      - xorg-xdriinfo
+      - xorg-xgamma
+      - xorg-xhost
+      - xorg-xkb-utils
+      - xorg-xkbevd
+      - xorg-xkbutils
+      - xorg-xlsatoms
+      - xorg-xlsclients
+      - xorg-xpr
+      - xorg-xrefresh
+      - xorg-xsetroot
+      - xorg-xvinfo
+      - xorg-xwd
+      - xorg-xwininfo
+      - xorg-xwud
+      - xproto
 
 - name: Setup keyboard
   become: yes
