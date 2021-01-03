@@ -1,10 +1,4 @@
 ---
-- name: Include pacman tasks
-  include_tasks: pacman.yml
-  tags:
-    - pacman-mirrors
-    - system-maintenance
-
 - name: Include smartd tasks
   include_tasks: smartd.yml
   tags:
@@ -62,15 +56,6 @@
     name: fstrim.timer
     state: started
     enabled: yes
-  tags:
-    - system-maintenance
-
-- name: Ensure fstrim timer is disabled on unsupported devices
-  become: yes
-  systemd:
-    name: fstrim.timer
-    state: stopped
-    enabled: no
   tags:
     - system-maintenance
 
