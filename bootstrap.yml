@@ -2,13 +2,16 @@
 - hosts: all
   become: yes
   roles:
-    - kernel
     - facts
+    - kernel
+    - modules
     - locale
     - bootloader
     - mounts
     - networking
     - users
+    - cron
+    - pacman
     - { role: packages, packages: ['git', 'openssh'] }
     - { role: services, services: ['sshd'] }
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
