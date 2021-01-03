@@ -1,7 +1,6 @@
 ---
 package_groups:
   base_utils:
-    - ack
     - bash
     - bzip2
     - fd
@@ -19,15 +18,23 @@ package_groups:
   system_utils:
     - parted
     - sysfsutils
-    - intel-ucode
+    - i7z
     - logrotate
     - pciutils
     - ntfs-3g
     - inotify-tools
     - dosfstools
     - efibootmgr
+    - efitools
     - efivar
     - fwupd
+    - dmidecode
+    - ethtool
+    - glances
+    - hdparm
+    - iotop
+    - zsh-autosuggestions
+    - zsh-syntax-highlighting
   development_utils:
     - autoconf
     - automake
@@ -37,6 +44,24 @@ package_groups:
     - fakeroot
     - gcc
     - pkg-config
+    # adb and friends
+    - android-tools
+    - android-udev
+    - argocd-cli
+    - eslint
+    - flake8
+    - helm
+    - kubectl
+    - kubectx
+    - awxkit
+    - aws-cli
+    - k9s
+    - molecule
+    - terraform
+    - yamllint
+    - jq
+    - yq
+    - packer
   net_utils:
     - bind-tools
     - bridge-utils
@@ -60,6 +85,10 @@ package_groups:
     - ansible
     - ansible-lint
     - aspell
+    # aspell-da is in aur
+    - aspell-en
+    - barrier
+    - barrier-headless
     - evince
     # Needed by Remmina
     - freerdp
@@ -68,6 +97,8 @@ package_groups:
     - gnome-icon-theme
     - gnome-icon-theme-symbolic
     - gnome-keyring
+    - gnome-screenshot
+    - gpaste
     - gnuplot
     - gst-plugins-base
     - gst-plugins-base-libs
@@ -107,24 +138,13 @@ package_groups:
     - xdotool
     - xsel
     - zenity
-  xorg:
-    - xkeyboard-config
-    - xorg-fonts-encodings
-    - xorg-mkfontdir
-    - xorg-mkfontscale
-    - xorg-server
-    - xorg-server-common
-    - xorg-setxkbmap
-    - xorg-xauth
-    - xorg-xdpyinfo
-    - xorg-xev
-    - xorg-xinit
-    - xorg-xinput
-    - xorg-xkbcomp
-    - xorg-xkill
-    - xorg-xmodmap
-    - xorg-xprop
-    - xorg-xrandr
-    - xorg-xrdb
-    - xorg-xset
-    - xorgproto
+    - materia-gtk-theme
+    - signal-desktop
+    - weechat
+    - solaar
+
+aur_package_groups:
+  desktop:
+    - aspell-da
+  development_utils:
+    - shellcheck-bin
