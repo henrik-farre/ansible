@@ -1,28 +1,7 @@
 ---
 - name: Become and tag block
   block:
-    - name: Enable multilib repo in pacman - part 1
-      lineinfile:
-        path: /etc/pacman.conf
-        regexp: '\[multilib\]'
-        line: "[multilib]"
-        state: present
-
-    - name: Enable multilib repo in pacman - part 2
-      lineinfile:
-        path: /etc/pacman.conf
-        regexp: 'Include '
-        line: "Include = /etc/pacman.d/mirrorlist"
-        insertafter: "[multilib]"
-        state: present
-
-    - name: Update pacman cache
-      pacman:
-        update_cache: yes
-      changed_when: false
-      when: ansible_facts.distribution == "Archlinux"
-
-    - name: Ensure package is installed
+    - name: Ensure packages are installed
       pacman:
         state: "latest"
         name: "{{ packages }}"
@@ -30,16 +9,18 @@
         packages:
           - steam
           - steam-native-runtime
+          - schedtool
 
     - name: Install gamemode from AUR
       become: yes
       become_user: aur_builder
       aur:
-        name: gamemode
+        name: "{{ packages }}"
       vars:
         packages:
           - gamemode
           - lib32-gamemode
+          - protontricks
 
     - name: Ensure gamemode group exists
       group:
