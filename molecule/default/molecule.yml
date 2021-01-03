@@ -25,6 +25,9 @@ provisioner:
   inventory:
     group_vars:
       all:
+        has_bluetooth: true
+        bluetooth:
+          firmware: "broadcom-bt-firmware-git"
         network:
           local_domain: molecule.test
         email_addresses:
@@ -54,12 +57,7 @@ provisioner:
         host_uninstalled_packages:
           - usb_modeswitch
           - acpid
-          - compositeproto
-          - damageproto
-          - dmxproto
           - exo
-          - fixesproto
-          - fontsproto
           - garcon
           - gstreamer0.10
           - gstreamer0.10-bad
@@ -113,33 +111,6 @@ provisioner:
           - xfdesktop
           - xfwm4
           - xfwm4-themes
-          - xineramaproto
-          - xorg-fonts-misc
-          - xorg-iceauth
-          - xorg-server-utils
-          - xorg-sessreg
-          - xorg-smproxy
-          - xorg-utils
-          - xorg-x11perf
-          - xorg-xbacklight
-          - xorg-xcmsdb
-          - xorg-xcursorgen
-          - xorg-xdriinfo
-          - xorg-xgamma
-          - xorg-xhost
-          - xorg-xkb-utils
-          - xorg-xkbevd
-          - xorg-xkbutils
-          - xorg-xlsatoms
-          - xorg-xlsclients
-          - xorg-xpr
-          - xorg-xrefresh
-          - xorg-xsetroot
-          - xorg-xvinfo
-          - xorg-xwd
-          - xorg-xwininfo
-          - xorg-xwud
-          - xproto
           - yaourt
         aur_packages:
           - tangerine-icon-theme
