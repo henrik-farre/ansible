@@ -24,9 +24,6 @@
     mode: 0600
   with_items:
     - "entries/arch.conf"
-    - "entries/arch-macbook.conf"
-    - "entries/arch-macbook-fallback.conf"
-    - "loader.conf"
   tags:
     - bootloader
     - systemd-boot
