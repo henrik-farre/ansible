@@ -14,7 +14,7 @@
     - users
     - cron
     - pacman
-    - { role: packages, packages: ['git', 'openssh'] }
+    - { role: packages, packages: ['git', 'openssh', 'inetutils'] }
     - { role: services, services: ['sshd'] }
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
 
