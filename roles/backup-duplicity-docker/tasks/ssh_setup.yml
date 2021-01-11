@@ -1,4 +1,15 @@
 ---
+- name: Ensure ~root/.ssh exists
+  become: true
+  file:
+    path: /root/.ssh
+    group: root
+    state: directory
+    mode: 0600
+    owner: root
+  tags:
+    - backup
+
 - name: Install ssh keys
   become: true
   copy:
