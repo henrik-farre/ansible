@@ -4,6 +4,12 @@
     state: latest
     name: "linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"
 
+- name: Ensure correct kernel headers are instaleld
+  become: yes
+  pacman:
+    state: latest
+    name: "linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}-headers"
+
 - name: Ensure correct CPU microcode is installed for Intel
   become: yes
   pacman:
