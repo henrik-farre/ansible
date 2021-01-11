@@ -1,0 +1,16 @@
+---
+- name: Ensure solaar is installed
+  become: yes
+  pacman:
+    state: latest
+    name: solaar
+  tags:
+    - solaar
+
+- name: Ensure solaar is autostarted on login
+  file:
+    path: "{{ ansible_user_dir }}/.config/autostart/solaar.desktop"
+    src: /usr/share/applications/solaar.desktop
+    state: link
+  tags:
+    - solaar

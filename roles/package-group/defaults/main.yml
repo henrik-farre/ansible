@@ -141,7 +141,6 @@ package_groups:
     - materia-gtk-theme
     - signal-desktop
     - weechat
-    - solaar
 
 aur_package_groups:
   desktop:
