@@ -1,0 +1,25 @@
+---
+- name: Ensure signal-desktop is installed
+  become: yes
+  pacman:
+    state: latest
+    name: signal-desktop
+  tags:
+    - signal-desktop
+
+- name: Ensure signal-desktop is autostarted on login and stayes in tray
+  copy:
+    dest: "{{ ansible_user_dir }}/.config/autostart/signal-desktop.desktop"
+    content: |
+      #!/usr/bin/env xdg-open
+      [Desktop Entry]
+      Type=Application
+      Name=Signal (Tray)
+      GenericName=Messenger (tray mode)
+      Comment=Signal Private Messenger (Start in Tray)
+      Icon=signal
+      Exec=signal-desktop --start-in-tray
+      Categories=Network;Messenger;
+      StartupNotify=false
+  tags:
+    - signal-desktop
