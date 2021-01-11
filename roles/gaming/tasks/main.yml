@@ -68,15 +68,10 @@
         default: yes
         state: present
 
-    - name: Ensure tmpfile.d exits
-      copy:
-        dest: /etc/tmpfiles.d/block_steam_debug_upload.conf
-        content: |
-          # Managed by Ansible
-          # Prevent crash dumps being uploaded to valve (env is included)
-          L     /tmp/dumps -    -    -     -   /dev/null
-        mode: 0644
-        owner: root
+    - name: Ensure tmpfile.d to block upload is removed
+      file:
+        path: /etc/tmpfiles.d/block_steam_debug_upload.conf
+        state: absent
 
     - name: Enable magic sysrq
       sysctl:
