@@ -62,6 +62,7 @@ package_groups:
     - jq
     - yq
     - packer
+    - python-pre-commit
   net_utils:
     - bind-tools
     - bridge-utils
