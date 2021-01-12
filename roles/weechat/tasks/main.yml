@@ -1,9 +1,13 @@
 ---
-- name: Ensure weechat is installed
+- name: Ensure weechat and dependencies are installed
   become: yes
   pacman:
     state: latest
-    name: weechat
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - weechat
+      - perl-pod-parser
   tags:
     - weechat
 
