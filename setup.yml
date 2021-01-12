@@ -75,6 +75,7 @@
     - signal-desktop
     - jira
     - zim
+    - weechat
     - node
     - firefox
     - systemd-user-units

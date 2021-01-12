@@ -1,0 +1,19 @@
+---
+- name: Ensure weechat is installed
+  become: yes
+  pacman:
+    state: latest
+    name: weechat
+  tags:
+    - weechat
+
+- name: Ensure secure option are copied
+  copy:
+    dest: "{{ ansible_user_dir }}/.config/weechat/{{ item }}"
+    src: "dot.config/weechat/{{ item }}.vault"
+    mode: 0400
+  loop:
+    - sec_pass
+    - sec.conf
+  tags:
+    - weechat

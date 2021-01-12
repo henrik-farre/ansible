@@ -140,7 +140,6 @@ package_groups:
     - xsel
     - zenity
     - materia-gtk-theme
-    - weechat
 
 aur_package_groups:
   desktop:
