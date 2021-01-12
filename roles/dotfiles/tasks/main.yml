@@ -78,6 +78,7 @@
     - ".gitconfig-work"
     - ".gitignore"
     - ".inputrc"
+    - ".jira.d"
     - ".jshintrc"
     - ".npmrc"
     - ".pearrc"

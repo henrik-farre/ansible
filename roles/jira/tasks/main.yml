@@ -1,0 +1,25 @@
+- name: Find latest release of go-jira
+  uri:
+    url: https://api.github.com/repos/go-jira/jira/releases/latest
+    return_content: true
+  register: json_response
+  tags:
+    - jira
+
+- name: Ensure ~/.local/bin directory exist
+  file:
+    path: "{{ ansible_user_dir }}/.local/bin"
+    state: directory
+    mode: 0700
+  tags:
+    - jira
+
+- name: Download latest release of go-jira
+  get_url:
+    url: "{{ item.browser_download_url }}"
+    dest: "{{ ansible_user_dir }}/.local/bin/jira"
+    mode: 0750
+  loop: "{{ json_response.json.assets }}"
+  when: item.name == 'jira-linux-amd64'
+  tags:
+    - jira
