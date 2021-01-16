@@ -120,6 +120,8 @@ package_groups:
     - libreoffice-fresh
     - libreoffice-fresh-da
     - network-manager-applet
+    # Fallback WM
+    - openbox
     - pinentry
     - powerline-common
     - kupfer
