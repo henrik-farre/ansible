@@ -9,6 +9,17 @@
   tags:
     - mounts
 
+- name: Ensure nfs support is installed
+  become: yes
+  pacman:
+    name: nfs-utils
+    state: latest
+  tags:
+    - mounts
+  when:
+    - has_nfs_mount is defined and has_nfs_mount
+
+
 - name: Ensure NFS share is mounted
   become: yes
   mount:
