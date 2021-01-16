@@ -117,7 +117,6 @@ package_groups:
     - hugo
     - icedtea-web
     - imagemagick
-    - jq
     - libreoffice-fresh
     - libreoffice-fresh-da
     - network-manager-applet
