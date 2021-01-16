@@ -74,6 +74,7 @@ package_groups:
     - iptables
     - iputils
     - net-tools
+    - nmap
     - traceroute
     - unzip
     - whois
