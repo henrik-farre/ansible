@@ -8,9 +8,19 @@
     - solaar
 
 - name: Ensure solaar is autostarted on login
-  file:
-    path: "{{ ansible_user_dir }}/.config/autostart/solaar.desktop"
-    src: /usr/share/applications/solaar.desktop
-    state: link
+  copy:
+    dest: "{{ ansible_user_dir }}/.config/autostart/solaar.desktop"
+    content: |
+      [Desktop Entry]
+      Name=Solaar
+      Comment=Logitech Unifying Receiver peripherals manager
+      Exec=solaar -w hide
+      Icon=solaar
+      StartupNotify=true
+      Terminal=false
+      Type=Application
+      Keywords=logitech;unifying;receiver;mouse;keyboard;
+      Categories=Utility;GTK;
+      X-GNOME-UsesNotifications=true
   tags:
     - solaar
