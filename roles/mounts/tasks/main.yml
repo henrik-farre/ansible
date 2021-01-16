@@ -19,7 +19,6 @@
   when:
     - has_nfs_mount is defined and has_nfs_mount
 
-
 - name: Ensure NFS share is mounted
   become: yes
   mount:
