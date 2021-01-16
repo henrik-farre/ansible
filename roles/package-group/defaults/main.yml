@@ -8,6 +8,7 @@ package_groups:
     - gnupg
     - gzip
     - htop
+    - man-db
     - ncdu
     - the_silver_searcher
     - tmux
