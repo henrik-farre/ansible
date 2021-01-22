@@ -8,6 +8,8 @@
     packages:
       - firefox
       - flashplugin
+  tags:
+    - firefox
 
 - name: Create user Firefox profiles directories
   file:
@@ -48,29 +50,17 @@
   with_items:
     - "firefox-private.desktop"
     - "firefox-work.desktop"
+    - "open-link.desktop"
   tags:
     - firefox
 
-- name: Ensure directories for system settings exists
+- name: Remove hardcoded prefs
   become: yes
   file:
-    path: /usr/lib/firefox/defaults/pref
-    state: directory
-    owner: root
-    group: root
-    mode: 0755
-  tags:
-    - firefox
-
-- name: Lock down some Firefox settings
-  become: yes
-  copy:
-    src: "{{ item.src }}"
-    dest: "{{ item.dest }}"
-    owner: root
-    mode: 0644
+    path: "{{ item }}"
+    state: absent
   with_items:
-    - {src: "usr/lib/firefox/defaults/pref/autoconfig.js", dest: "/usr/lib/firefox/defaults/pref/autoconfig.js"}
-    - {src: "usr/lib/firefox/mozilla.cfg", dest: "/usr/lib/firefox/mozilla.cfg"}
+    - /usr/lib/firefox/defaults/pref/autoconfig.js
+    - /usr/lib/firefox/mozilla.cfg
   tags:
     - firefox

@@ -2,7 +2,7 @@
 Name=Firefox Work
 GenericName=Web Browser
 Comment=Browse the World Wide Web
-Exec=/usr/lib/firefox/firefox -P Work -no-remote %u
+Exec=/usr/lib/firefox/firefox -P Work
 Icon=firefox
 Terminal=false
 Type=Application
