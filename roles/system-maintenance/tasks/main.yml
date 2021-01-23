@@ -9,19 +9,18 @@
   tags:
     - system-maintenance
 
-# TODO: better when check instead of hostname
-- name: Ensure RAID is checked monthly
-  become: yes
-  copy:
-    src: cron.monthly/raid_maintenance
-    dest: /etc/cron.monthly/raid_maintenance
-    owner: root
-    group: root
-    mode: 0750
-  tags:
-    - system-maintenance
-  when:
-    - ansible_hostname == "spookcentral"
+#- name: Ensure RAID is checked monthly
+#  become: yes
+#  copy:
+#    src: cron.monthly/raid_maintenance
+#    dest: /etc/cron.monthly/raid_maintenance
+#    owner: root
+#    group: root
+#    mode: 0750
+#  tags:
+#    - system-maintenance
+#  when:
+#    - ansible_hostname == "spookcentral"
 
 # I looks like trim should also be called on nvme drives
 - name: Ensure list of nvme devices is reset
@@ -67,5 +66,21 @@
     special_time: daily
     user: root
     name: "Clean user ~/.cache directory"
+  tags:
+    - system-maintenance
+
+# Lifted from https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler
+- name: Ensure correct scheduler are used for devices
+  become: yes
+  copy:
+    dest: /etc/udev/rules.d/60-ioschedulers.rules
+    content: |
+      # set scheduler for NVMe
+      ACTION=="add|change", KERNEL=="nvme[0-9]n[0-9]", ATTR{queue/scheduler}="none"
+      # set scheduler for SSD and eMMC
+      ACTION=="add|change", KERNEL=="sd[a-z]|mmcblk[0-9]*", ATTR{queue/rotational}=="0", ATTR{queue/scheduler}="mq-deadline"
+      # set scheduler for rotating disks
+      ACTION=="add|change", KERNEL=="sd[a-z]", ATTR{queue/rotational}=="1", ATTR{queue/scheduler}="bfq"
+    mode: 0644
   tags:
     - system-maintenance
