@@ -5,12 +5,34 @@
     state: latest
     name: smartmontools
 
+# Based on https://wiki.archlinux.org/index.php/S.M.A.R.T.#Notifying_potential_problems
+- name: Ensure desktop notification script is installed
+  become: yes
+  copy:
+    dest: /usr/share/smartmontools/smartd_warning.d/smartdnotify
+    group: root
+    content: |
+      #!/bin/sh
+
+      IFS=$'\n'
+      for LINE in `w -hs`
+      do
+          USER=`echo $LINE | awk '{print $1}'`
+          USER_ID=`id -u $USER`
+          DISP_ID=`echo $LINE | awk '{print $8}'`
+          sudo -u $USER DISPLAY=$DISP_ID DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send "S.M.A.R.T Error ($SMARTD_FAILTYPE)" "$SMARTD_MESSAGE" --icon=dialog-warning
+      done
+    mode: 0700
+    owner: root
+  tags:
+    - system-maintenance
+
 - name: Ensure smartd is configured
   become: yes
   lineinfile:
     name: /etc/smartd.conf
     regexp: '^DEVICESCAN'
-    line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }} -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W {{ smartd.temperatures }}'
+    line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }},@smartdnotify -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W {{ smartd.temperatures }}'
     state: present
   notify: Reload smartd
   tags:
