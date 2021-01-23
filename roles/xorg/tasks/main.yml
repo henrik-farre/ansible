@@ -67,14 +67,31 @@
       - xorg-xwud
       - xproto
 
-- name: Setup keyboard
+- name: Setup keyboards and mice
   become: yes
   copy:
-    src: etc/X11/xorg.conf.d/20-keyboard.conf
-    dest: /etc/X11/xorg.conf.d/20-keyboard.conf
+    src: "etc/X11/xorg.conf.d/{{ item }}"
+    dest: "/etc/X11/xorg.conf.d/{{ item }}"
     owner: root
     group: root
     mode: 0644
+  loop:
+    - 20-keyboard.conf
+    - 70-logitech-master-mx.conf
+  tags:
+    - xorg
+
+- name: Setup extra devices
+  become: yes
+  copy:
+    src: "etc/X11/xorg.conf.d/{{ item }}"
+    dest: "/etc/X11/xorg.conf.d/{{ item }}"
+    owner: root
+    group: root
+    mode: 0644
+  loop: "{{ xorg_conf_d_files }}"
+  when:
+    - xorg_conf_d_files
   tags:
     - xorg
 
@@ -126,6 +143,19 @@
       - lib32-mesa-vdpau
       - lib32-vulkan-icd-loader
       - lib32-vulkan-radeon
+  when:
+    - ansible_local.hardware.vga_vendor == "Advanced Micro Devices, Inc. [AMD/ATI]"
+  tags:
+    - xorg
+
+- name: Ensure AMD video driver is configured
+  become: yes
+  copy:
+    dest: /etc/X11/xorg.conf.d/30-amdgpu.conf
+    src: etc/X11/xorg.conf.d/30-amdgpu.conf
+    group: root
+    mode: 0644
+    owner: root
   when:
     - ansible_local.hardware.vga_vendor == "Advanced Micro Devices, Inc. [AMD/ATI]"
   tags:
