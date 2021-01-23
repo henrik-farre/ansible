@@ -15,9 +15,9 @@
 
 - name: Ensure Lightdm background is downloaded
   become: yes
-  get_url:
+  copy:
     dest: /usr/share/backgrounds/archlinux/archlinux-logo-light.png
-    url: https://www.archlinux.org/static/logos/archlinux-logo-light-1200dpi.7ccd81fd52dc.png
+    src: archlinux-logo-light-black-bg.png
   tags:
     - lightdm
 
