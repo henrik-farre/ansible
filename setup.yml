@@ -44,6 +44,7 @@
 - hosts: archlinux
   gather_facts: no
   roles:
+    - bootloader
     - hddtemp
     - sysctl
     - journald
