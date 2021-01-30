@@ -42,6 +42,7 @@
       aur_package_group: "development_utils"
 
 - hosts: archlinux
+  gather_facts: no
   roles:
     - hddtemp
     - sysctl
@@ -61,6 +62,7 @@
     - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
 
 - hosts: desktop
+  gather_facts: no
   roles:
     - xorg
     - lightdm
@@ -105,26 +107,32 @@
         - "{{ ansible_user_dir }}/.yaourtrc"
 
 - hosts: gaming
+  gather_facts: no
   roles:
     - gaming
 
 - hosts: htpc
+  gather_facts: no
   roles:
     - kodi-shutdown-check
     - unifi-controller-backup
     - getmail
 
 - hosts: laptop
+  gather_facts: no
   roles:
     - powersave
     - bluetooth
 
 - hosts: thinkpad
+  gather_facts: no
   roles:
     - thinkpad
     - samba-client
 
 - hosts: macbook
+  gather_facts: no
+
   pre_tasks:
     - name: Ensure mbpfan is installed
       become: yes
@@ -135,11 +143,13 @@
     - { role: services, services: ['mbpfan'] }
 
 - hosts: raspberrypi
+  gather_facts: no
   roles:
     - raspbian
     - arpwatch
     - docker
 
 - hosts: unifi-controller
+  gather_facts: no
   roles:
     - unifi-controller
