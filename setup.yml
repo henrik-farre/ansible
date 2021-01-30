@@ -43,6 +43,7 @@
 
 - hosts: archlinux
   roles:
+    - bootloader
     - hddtemp
     - sysctl
     - journald
