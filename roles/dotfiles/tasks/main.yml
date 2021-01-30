@@ -83,7 +83,6 @@
     - ".npmrc"
     - ".pearrc"
     - ".screenrc"
-    - ".tmuxinator"
     - ".zshrc"
     - "bin"
   tags:
