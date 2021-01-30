@@ -1,0 +1,6 @@
+title   {{ item.title }}
+linux   /vmlinuz-linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}
+{% endif %}
+initrd  /{% if ansible_processor[2] is match('AMD') %}amd{% else %}intel{% endif %}-ucode.img
+initrd  /initramfs-linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}.img
+options {% for option in item.options %}{{ option }}{% if not loop.last%} {% endif %}{% endfor %}

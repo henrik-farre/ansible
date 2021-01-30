@@ -5,25 +5,41 @@
     path: "{{ item }}"
     state: directory
     owner: root
-    mode: 0700
-  with_items:
+    mode: 0755
+  loop:
     - "/boot/loader"
     - "/boot/loader/entries"
   tags:
     - bootloader
     - systemd-boot
 
-# Currently only used on workstation, should be expanded to handle
-# multiple systems
-- name: Ensure loader and entries for systemd-boot exist
+- name: Ensure loader config exists
   become: yes
   copy:
-    src: "boot/loader/{{ item }}"
-    dest: "/boot/loader/{{ item }}"
+    dest: /boot/loader/loader.conf
+    group: root
+    content: |
+      default {{ systemd_boot.entries[0].name }}
+      timeout 4
+      console-mode max
+    mode: 0644
     owner: root
-    mode: 0600
-  with_items:
-    - "entries/arch.conf"
+  when:
+    - systemd_boot.entries
+  tags:
+    - bootloader
+    - systemd-boot
+
+- name: Ensure entries for systemd-boot exist
+  become: yes
+  template:
+    src: "boot/loader/entries/entry.conf.j2"
+    dest: "/boot/loader/entries/{{ item.name }}.conf"
+    owner: root
+    mode: 0644
+  loop: "{{ systemd_boot.entries }}"
+  when:
+    - systemd_boot.entries
   tags:
     - bootloader
     - systemd-boot
