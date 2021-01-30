@@ -7,25 +7,13 @@
   tags:
     - sensors
 
-- name: Debugging
-  debug:
-    var: ansible_facts.facter_dmi.board.product
-  tags:
-    - sensors
-
-- name: Display paths of all .txt files in dir
-  debug:
-    msg: "{{ lookup('fileglob', 'etc/modules-load.d/{{ ansible_facts.facter_dmi.board.product }}.conf') }}"
-  tags:
-    - sensors
-
 - name: Ensure modules for current motherboard are loaded
   become: yes
   copy:
     src: "{{ item }}"
     dest: "/etc/modules-load.d/"
   with_fileglob:
-    - "etc/modules-load.d/{{ ansible_facts.facter_dmi.board.product }}.conf"
+    - "etc/modules-load.d/{{ ansible_facts.facter_dmi.board.product|replace(' ', '_') }}.conf"
   tags:
     - sensors
 
@@ -35,6 +23,6 @@
     src: "{{ item }}"
     dest: "/etc/sensors.d/"
   with_fileglob:
-    - "etc/sensors.d/{{ ansible_facts.facter_dmi.board.product }}.conf"
+    - "etc/sensors.d/{{ ansible_facts.facter_dmi.board.product|replace(' ', '_') }}.conf"
   tags:
     - sensors
