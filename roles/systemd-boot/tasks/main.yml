@@ -19,8 +19,9 @@
     dest: /boot/loader/loader.conf
     group: root
     content: |
+      # Managed by Ansible
       default {{ systemd_boot.entries[0].name }}
-      timeout 4
+      timeout 3
       console-mode max
     mode: 0644
     owner: root

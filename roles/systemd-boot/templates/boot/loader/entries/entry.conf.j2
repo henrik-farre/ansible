@@ -1,3 +1,4 @@
+# Managed by Ansible
 title   {{ item.title }}
 linux   /vmlinuz-linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}
 {% endif %}
