@@ -111,6 +111,9 @@
               <application name="Cities Skylines" executable="Cities.x64">
                 <option name="adaptive_sync" value="false" />
               </application>
+              <application name="XCOM 2 War of the Choosen" executable="XCOM2WotC">
+                <option name="adaptive_sync" value="false" />
+              </application>
             </device>
           </driconf>
   # block
