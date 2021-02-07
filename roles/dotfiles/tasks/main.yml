@@ -84,6 +84,6 @@
     - ".screenrc"
     - ".zshrc"
     - "bin"
-    - ".local/dotfiles/.local/share/barrier/.barrier.conf"
+    - ".local/share/barrier/.barrier.conf"
   tags:
     - dotfiles
