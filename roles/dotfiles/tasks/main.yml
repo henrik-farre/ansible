@@ -66,7 +66,6 @@
     - ".config/devilspie2"
     - ".config/flake8"
     - ".config/fontconfig/fonts.conf"
-    - ".config/htop"
     - ".config/shell.d"
     - ".config/tmux"
     - ".config/weechat"
@@ -85,5 +84,6 @@
     - ".screenrc"
     - ".zshrc"
     - "bin"
+    - ".local/dotfiles/.local/share/barrier/.barrier.conf"
   tags:
     - dotfiles
