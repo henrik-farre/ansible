@@ -9,6 +9,7 @@
     - ".config"
     - ".config/fontconfig"
     - ".local"
+    - ".local/share/barrier/"
   tags:
     - dotfiles
 
