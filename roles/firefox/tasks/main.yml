@@ -7,7 +7,6 @@
   vars:
     packages:
       - firefox
-      - flashplugin
   tags:
     - firefox
 
