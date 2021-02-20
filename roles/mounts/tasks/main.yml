@@ -18,6 +18,7 @@
     - mounts
   when:
     - has_nfs_mount is defined and has_nfs_mount
+    - ansible_facts.distribution != "Debian"
 
 - name: Ensure NFS share is mounted
   become: yes
