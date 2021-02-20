@@ -1,5 +1,6 @@
 ---
-terminal_font: mononoki
+# Nerd font variant for icons in neovim
+terminal_font: mononoki Nerd Font
 terminal_font_size: 10
 # Alternatives tried:
 # Hack 9
