@@ -74,33 +74,32 @@
 
   - name: Check if Mononoki is installed
     stat:
-      path: "{{ ansible_user_dir }}/.local/share/fonts/mononoki-Regular.ttf"
+      path: "{{ ansible_user_dir }}/.local/share/fonts/mononoki Bold Italic Nerd Font Complete Mono.ttf"
     register: font_stat
     tags:
       - fonts
 
-  - name: Download mononoki font
-    git:
-      repo: https://github.com/madmalik/mononoki.git
-      dest: /tmp/mononoki
-      version: master
+  - name: Find latest release of nerd font patched mononoki
+    uri:
+      url: https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest
+      return_content: true
+    register: json_response
     when:
       - font_stat.stat.exists is defined and not font_stat.stat.exists
     tags:
       - fonts
 
-  # http://stackoverflow.com/a/35650167
-  - name: Install mononoki font
-    copy:
-      src: "/tmp/mononoki/export/webfont/{{ item }}"
-      dest: "{{ ansible_user_dir }}/.local/share/fonts/{{ item }}"
+  - name: Download latest release of nerd font patched mononoki
+    unarchive:
+      src: "{{ item.browser_download_url }}"
+      dest: "{{ ansible_user_dir }}/.local/share/fonts/"
       remote_src: yes
-    loop:
-      - "mononoki-BoldItalic.ttf"
-      - "mononoki-Italic.ttf"
-      - "mononoki-Bold.ttf"
-      - "mononoki-Regular.ttf"
+      exclude:
+        - "*Windows*"
+    loop: "{{ json_response.json.assets }}"
     when:
+      - json_response.json is defined
+      - item.name == 'Mononoki.zip'
       - font_stat.stat.exists is defined and not font_stat.stat.exists
     notify:
       - Update font cache
