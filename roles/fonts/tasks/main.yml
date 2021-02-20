@@ -1,115 +1,106 @@
 ---
-- block:
-  - name: Ensure fonts and releated packages are installed
-    become: yes
-    pacman:
-      state: latest
-      name: "{{ packages }}"
-    vars:
-      packages:
-        - cantarell-fonts
-        - noto-fonts
-        - noto-fonts-emoji
-        - powerline-fonts
-        - ttf-anonymous-pro
-        - ttf-bitstream-vera
-        - ttf-dejavu
-        - ttf-droid
-        - ttf-freefont
-        - ttf-hack
-        - ttf-inconsolata
-        - ttf-liberation
-        - ttf-roboto
-        - ttf-roboto-mono
-        - ttf-ubuntu-font-family
-        - unzip
+- name: Ensure fonts and releated packages are installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - cantarell-fonts
+      - noto-fonts
+      - noto-fonts-emoji
+      - powerline-fonts
+      - ttf-anonymous-pro
+      - ttf-bitstream-vera
+      - ttf-dejavu
+      - ttf-droid
+      - ttf-freefont
+      - ttf-hack
+      - ttf-inconsolata
+      - ttf-liberation
+      - ttf-roboto
+      - ttf-roboto-mono
+      - ttf-ubuntu-font-family
+      - unzip
 
-  - name: Ensure old fontconfig directories are absent
-    file:
-      path: "{{ ansible_user_dir }}/{{ item }}"
-      state: absent
-    loop:
-      - .fonts
-      - .fonts.conf
-      - .fonts.conf.d
-      - .fontconfig
-    tags:
-      - fonts
+- name: Ensure old fontconfig directories are absent
+  file:
+    path: "{{ ansible_user_dir }}/{{ item }}"
+    state: absent
+  loop:
+    - .fonts
+    - .fonts.conf
+    - .fonts.conf.d
+    - .fontconfig
+  tags:
+    - fonts
 
-  - name: Enable LCD filter
-    become: yes
-    file:
-      src: /etc/fonts/conf.avail/11-lcdfilter-default.conf
-      dest: /etc/fonts/conf.d/11-lcdfilter-default.conf
-      state: link
-    tags:
-      - fonts
+- name: Enable LCD filter
+  become: yes
+  file:
+    src: /etc/fonts/conf.avail/11-lcdfilter-default.conf
+    dest: /etc/fonts/conf.d/11-lcdfilter-default.conf
+    state: link
+  tags:
+    - fonts
 
-  - name: Enable sub-pixel rendering
-    become: yes
-    file:
-      src: /etc/fonts/conf.avail/10-sub-pixel-rgb.conf
-      dest: /etc/fonts/conf.d/10-sub-pixel-rgb.conf
-      state: link
-    tags:
-      - fonts
+- name: Enable sub-pixel rendering
+  become: yes
+  file:
+    src: /etc/fonts/conf.avail/10-sub-pixel-rgb.conf
+    dest: /etc/fonts/conf.d/10-sub-pixel-rgb.conf
+    state: link
+  tags:
+    - fonts
 
-  - name: Enable hinting
-    become: yes
-    file:
-      src: /etc/fonts/conf.avail/10-hinting-slight.conf
-      dest: /etc/fonts/conf.d/10-hinting-slight.conf
-      state: link
-    tags:
-      - fonts
+- name: Enable hinting
+  become: yes
+  file:
+    src: /etc/fonts/conf.avail/10-hinting-slight.conf
+    dest: /etc/fonts/conf.d/10-hinting-slight.conf
+    state: link
+  tags:
+    - fonts
 
-  - name: Create fonts directory
-    file:
-      path: "{{ ansible_user_dir }}/.local/share/fonts"
-      owner: "{{ ansible_user_id }}"
-      state: directory
-      mode: 0700
-    tags:
-      - fonts
+- name: Create fonts directory
+  file:
+    path: "{{ ansible_user_dir }}/.local/share/fonts"
+    owner: "{{ ansible_user_id }}"
+    state: directory
+    mode: 0700
+  tags:
+    - fonts
 
-  - name: Check if Mononoki is installed
-    stat:
-      path: "{{ ansible_user_dir }}/.local/share/fonts/mononoki Bold Italic Nerd Font Complete Mono.ttf"
-    register: font_stat
-    tags:
-      - fonts
+- name: Check if Mononoki is installed
+  stat:
+    path: "{{ ansible_user_dir }}/.local/share/fonts/mononoki Bold Italic Nerd Font Complete Mono.ttf"
+  register: font_stat
+  tags:
+    - fonts
 
-  - name: Find latest release of nerd font patched mononoki
-    uri:
-      url: https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest
-      return_content: true
-    register: json_response
-    when:
-      - font_stat.stat.exists is defined and not font_stat.stat.exists
-    tags:
-      - fonts
+- name: Find latest release of nerd font patched mononoki
+  uri:
+    url: https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest
+    return_content: true
+  register: json_response
+  when:
+    - font_stat.stat.exists is defined and not font_stat.stat.exists
+  tags:
+    - fonts
 
-  - name: Download latest release of nerd font patched mononoki
-    unarchive:
-      src: "{{ item.browser_download_url }}"
-      dest: "{{ ansible_user_dir }}/.local/share/fonts/"
-      remote_src: yes
-      exclude:
-        - "*Windows*"
-    loop: "{{ json_response.json.assets }}"
-    when:
-      - json_response.json is defined
-      - item.name == 'Mononoki.zip'
-      - font_stat.stat.exists is defined and not font_stat.stat.exists
-    notify:
-      - Update font cache
-    tags:
-      - fonts
-
-  always:
-    - name: Cleanup
-      file:
-        path: /tmp/mononoki
-        state: absent
-      tags:
-        - fonts
+- name: Download latest release of nerd font patched mononoki
+  unarchive:
+    src: "{{ item.browser_download_url }}"
+    dest: "{{ ansible_user_dir }}/.local/share/fonts/"
+    remote_src: yes
+    exclude:
+      - "*Windows*"
+  loop: "{{ json_response.json.assets }}"
+  when:
+    - json_response.json is defined
+    - item.name == 'Mononoki.zip'
+    - font_stat.stat.exists is defined and not font_stat.stat.exists
+  notify:
+    - Update font cache
+  tags:
+    - fonts
