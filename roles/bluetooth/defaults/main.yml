@@ -1,6 +1,2 @@
 ---
-bluetooth_defaults:
-  pulseaudio_bt:
-    packages_from_aur: false
-    packages:
-      - pulseaudio-bluetooth
+bluetooth_defaults: []
