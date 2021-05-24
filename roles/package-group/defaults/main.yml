@@ -110,6 +110,7 @@ package_groups:
     - gthumb
     - gtk-engine-murrine
     - gtk-engines
+    - gvfs-mtp
     - hicolor-icon-theme
     # Github cli
     - hub
