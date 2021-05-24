@@ -9,5 +9,7 @@
     - "jshint"
     - "csslint"
     - "json"
+    # Needed by neovim/neoformat
+    - "fixjson"
   tags:
     - node
