@@ -3,7 +3,9 @@
 #
 - name: Merge default variables with custom ones set in the inventory
   set_fact:
-    bluetooth: "{{ bluetooth_defaults|combine(bluetooth, recursive=True) }}"
+    bluetooth_combined: "{{ bluetooth_defaults|combine(bluetooth, recursive=True) }}"
+  when:
+    - bluetooth is defined
   tags:
     - bluetooth
 
@@ -36,9 +38,9 @@
   become: yes
   become_user: aur_builder
   aur:
-    name: "{{ bluetooth.firmware }}"
+    name: "{{ bluetooth_combined.firmware }}"
   when:
-    - bluetooth.firmware
+    - bluetooth_combined.firmware
   tags:
     - bluetooth
 
