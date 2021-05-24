@@ -1,7 +1,20 @@
 ---
+# TODO configure pipewire bluetooth
+#
 - name: Merge default variables with custom ones set in the inventory
   set_fact:
     bluetooth: "{{ bluetooth_defaults|combine(bluetooth, recursive=True) }}"
+  tags:
+    - bluetooth
+
+- name: Ensure old files are removed
+  become: yes
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /usr/local/sbin/a2dp-fix-wrapper
+    - /usr/local/sbin/a2dp-fix
   tags:
     - bluetooth
 
@@ -29,26 +42,6 @@
   tags:
     - bluetooth
 
-- name: Ensure pulseaudio bluetooth support is installed
-  become: yes
-  pacman:
-    state: latest
-    name: "{{ bluetooth.pulseaudio_bt.packages }}"
-  when:
-    - not bluetooth.pulseaudio_bt.packages_from_aur
-  tags:
-    - bluetooth
-
-- name: Ensure pulseaudio bluetooth support is installed
-  become: yes
-  become_user: aur_builder
-  aur:
-    name: "{{ bluetooth.pulseaudio_bt.packages }}"
-  when:
-    - bluetooth.pulseaudio_bt.packages_from_aur
-  tags:
-    - bluetooth
-
 - name: Ensure bluetooth is enabled
   become: yes
   lineinfile:
@@ -65,17 +58,6 @@
     name: bluetooth
     state: started
     enabled: yes
-  tags:
-    - bluetooth
-
-- name: Ensure newly-conneced devices are auto connected
-  become: yes
-  blockinfile:
-    path: /etc/pulse/default.pa
-    block: |
-      # automatically switch to newly-connected devices
-      load-module module-switch-on-connect
-    state: present
   tags:
     - bluetooth
 
