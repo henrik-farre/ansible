@@ -1,0 +1,19 @@
+- name: Ensure yubikey related packages are installed
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - yubikey-manager-qt
+      - yubikey-personalization-gui
+      - pam-u2f
+      - libfido2
+
+- name: Ensure pcscd is enabled and started
+  become: yes
+  systemd:
+    name: pcscd.socket
+    state: started
+    enabled: yes
+    daemon_reload: yes
