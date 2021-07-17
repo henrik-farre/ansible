@@ -101,13 +101,14 @@ ${color {{ conky_heading_color }}}${font {{ conky_heading_icon_font }}} ${fon
 Left fan: ${alignr}${hwmon 1 fan 1} RPM
 Right fan: ${alignr}${hwmon 1 fan 2} RPM
 {% elif ansible_form_factor == 'Notebook' %}
-Fan: ${alignr}${hwmon thinkpad fan 1} RPM
+Fan 1: ${alignr}${hwmon thinkpad fan 1} RPM
+Fan 2: ${alignr}${hwmon thinkpad fan 2} RPM
 {% else %}
 {% for item in conky_fan_hwmon %}
 {{ item.label }}: ${alignr}${hwmon {{ item.module }} fan {{item.fan}}} RPM
 {% endfor %}
 {% endif %}
-{% if 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
+{% if 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list and ansible_form_factor != 'Notebook' %}
 GPU Fan: ${alignr}(${nvidia fanlevel}%) ${nvidia fanspeed} RPM
 {% endif %}
 {% if 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
@@ -115,7 +116,7 @@ GPU Fan:${alignr}${hwmon amdgpu fan 1} RPM
 {% endif %}
 {% if ansible_form_factor == 'Laptop' or ansible_form_factor == 'Notebook' %}
 
-${font {{ conky_heading_icon_font }}}${if_match "$battery_status" == "charged"} ${else}${if_match "$battery_status" == "charging"} ${else}\
+${color {{ conky_heading_color }}}${font {{ conky_heading_icon_font }}}${if_match "$battery_status" == "charged"} ${else}${if_match "$battery_status" == "charging"} ${else}\
 ${if_match $battery_percent > 80}${color {{ conky_heading_color }}} ${endif}\
 ${if_match $battery_percent <= 80}${if_match $battery_percent > 75}${color yellow} ${endif}${endif}\
 ${if_match $battery_percent <= 75}${if_match $battery_percent > 50}${color orange} ${endif}${endif}\
