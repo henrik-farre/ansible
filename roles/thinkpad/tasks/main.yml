@@ -1,6 +1,11 @@
 ---
 # libqmi is for wwan support
 - name: Run tasks with become
+  become: yes
+  when:
+    - ansible_system_vendor == "LENOVO"
+  tags:
+    - thinkpad
   block:
     - name: Ensure needed packages are installed
       pacman:
@@ -11,9 +16,39 @@
           - fprintd
           - libqmi
           - nvme-cli
-      when:
-        - ansible_system_vendor == "LENOVO"
-        - ansible_product_version == "ThinkPad T490"
-      tags:
-        - thinkpad
-  become: yes
+
+    - name: Ensure fprint pam config is installed
+      copy:
+        dest: /etc/pam.d/common-fprint
+        group: root
+        content: |
+          # Managed by Ansible
+          # https://wiki.archlinux.org/title/Fprint
+          #auth        sufficient     pam_unix.so try_first_pass likeauth nullok
+          auth        sufficient     pam_fprintd.so
+        mode: 0644
+        owner: root
+
+    - name: Insert new rule for fprintd in sudo
+      lineinfile:
+        name: /etc/pam.d/sudo
+        regex: "^auth.*include.*common-fprint$"
+        line: "auth        include     common-fprint"
+        state: present
+        insertbefore: "^auth.*sufficient.*pam_unix.so.*"
+
+    - name: Insert new rule for fprintd in polkit
+      lineinfile:
+        name: /etc/pam.d/polkit-1
+        regex: "^auth.*include.*common-fprint$"
+        line: "auth       include      common-fprint"
+        state: present
+        insertbefore: "^auth.*include.*system-auth"
+
+    - name: Insert new rule for fprintd in cinnamon-screensaver
+      lineinfile:
+        name: /etc/pam.d/cinnamon-screensaver
+        regex: "^auth.*include.*common-fprint$"
+        line: "auth       include      common-fprint"
+        state: present
+        insertbefore: "^-auth.*sufficient.*pam_selinux_permit.so"

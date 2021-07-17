@@ -1,4 +1,7 @@
 - name: Become and tag block
+  become: yes
+  tags:
+    - pacman
   block:
     - name: Enable multilib repo in pacman - part 1
       lineinfile:
@@ -14,6 +17,13 @@
         regexp: 'Include '
         line: "Include = /etc/pacman.d/mirrorlist"
         insertafter: "[multilib]"
+        state: present
+
+    - name: Ensure parallel downloads are enabled
+      lineinfile:
+        path: /etc/pacman.conf
+        regexp: '.*ParallelDownloads = .*'
+        line: "ParallelDownloads = 5"
         state: present
 
     - name: Update pacman cache
@@ -190,6 +200,3 @@
         state: present
         regexp: '--sort'
         line: '--sort rate'
-  become: yes
-  tags:
-    - pacman

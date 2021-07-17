@@ -10,7 +10,7 @@
   tags:
     - makepkg
 
-- name: Ensure makepkg.packnew does not exist
+- name: Ensure makepkg.pacnew does not exist
   become: yes
   file:
     path: /etc/makepkg.conf.pacnew
