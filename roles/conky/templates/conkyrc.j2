@@ -81,10 +81,10 @@ CPU: ${alignr}{% for item in conky_cpu_hwmon %}{% if item.label is defined %} {{
 {% if ansible_form_factor == 'Desktop' %}
 Motherboard:${alignr}${hwmon {{ conky_mb_hwmon[0].module }} temp {{ conky_mb_hwmon[0].temp }}}°C
 {% endif %}
-{% if 'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }} %}
+{% if 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 GPU:${alignr}${nvidia temp}°C
 {% endif %}
-{% if 'Advanced Micro Devices, Inc. [AMD/ATI]' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }} %}
+{% if 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 GPU:${alignr}${hwmon amdgpu temp 1}°C
 {% endif %}
 {% for device in ansible_local.disk.blockdevices %}
@@ -107,10 +107,10 @@ Fan: ${alignr}${hwmon thinkpad fan 1} RPM
 {{ item.label }}: ${alignr}${hwmon {{ item.module }} fan {{item.fan}}} RPM
 {% endfor %}
 {% endif %}
-in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }}
+{% if 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 GPU Fan: ${alignr}(${nvidia fanlevel}%) ${nvidia fanspeed} RPM
 {% endif %}
-{% if 'Advanced Micro Devices, Inc. [AMD/ATI]' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }} %}
+{% if 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 GPU Fan:${alignr}${hwmon amdgpu fan 1} RPM
 {% endif %}
 {% if ansible_form_factor == 'Laptop' or ansible_form_factor == 'Notebook' %}
@@ -178,7 +178,7 @@ ${wireless_link_bar {{conky_bar_full_size}} {{ interface }}}
 ${downspeedgraph {{ interface }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${upspeedgraph {{ interface }} {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
 Down: ${downspeed {{ interface }}} (${totaldown {{ interface }}}) ${alignr}Up: ${upspeed {{ interface }}} (${totalup {{ interface }}})${endif}{% endif %}{% endfor %}
 
-{% if 'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }} %}
+{% if 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 
 ${color white}${font Font Awesome 5 Free Solid}${font} GPU (${nvidia modelname}) ${hr 1}$color
 
