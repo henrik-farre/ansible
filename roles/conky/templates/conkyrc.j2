@@ -127,9 +127,9 @@ ${battery_bar {{conky_bar_full_size}}}
 {% endif %}
 
 ${color white}${font Font Awesome 5 Free Solid}${font} CPU (${execi 10 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor}) ${hr 1}$color
-{% for cpu in range(0, ansible_processor_vcpus, 2) %}
-${cpugraph cpu{{ cpu+1 }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${cpugraph cpu{{ cpu+2 }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t}
-${freq_g cpu{{ cpu+1 }}} GHz ${cpu cpu{{ cpu+1 }}}% ${alignr}${freq_g cpu{{ cpu+2 }}} GHz ${cpu cpu{{ cpu+2 }}}%
+{% for cpu in range(0, ansible_processor_vcpus, 4) %}
+${cpugraph cpu{{ cpu+1 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t} ${cpugraph cpu{{ cpu+2 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t} ${cpugraph cpu{{ cpu+3 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t} ${cpugraph cpu{{ cpu+4 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t}
+${freq_g {{ cpu+1 }}} GHz ${cpu cpu{{ cpu+1 }}}%  ${goto 89}${freq_g {{ cpu+2 }}} GHz ${cpu cpu{{ cpu+2 }}}%  ${goto 164}${freq_g {{ cpu+3 }}} GHz ${cpu cpu{{ cpu+3 }}}%  ${goto 239}${freq_g {{ cpu+4 }}} GHz ${cpu cpu{{ cpu+4 }}}%
 {% endfor %}
 
 ${color white}Highest CPU $alignr CPU% / MEM%${color}

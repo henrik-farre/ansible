@@ -8,6 +8,7 @@ conky_gap_x: 12
 conky_gap_y: 0
 conky_bar_cpu_size: "4,137"
 conky_bar_full_size: "4,290"
+conky_graph_quarter_size: "20,68"
 conky_graph_half_size: "20,137"
 conky_graph_full_size: "20,290"
 conky_graph_color_1: "23a51c ff661c"
