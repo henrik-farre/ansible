@@ -68,18 +68,18 @@ Update(s) available:${alignr} ${execi 3600 checkupdates | wc -l}
 Zim status:${alignr} ${if_match ${execi 300 git -C ~/Documents/Zim status --porcelain | wc -l} > 0}${color red}not in ${endif}sync${color}
 
 ${font Font Awesome 5 Free Solid}\
-${if_match ${hwmon coretemp temp 1} > 45}${color red}${endif}\
-${if_match ${hwmon coretemp temp 1} <= 45}${if_match ${hwmon coretemp temp 1} > 40}${color orange}${endif}${endif}\
-${if_match ${hwmon coretemp temp 1} <= 40}${if_match ${hwmon coretemp temp 1} > 36}${color yellow}${endif}${endif}\
-${if_match ${hwmon coretemp temp 1} <= 36}${if_match ${hwmon coretemp temp 1} > 25}${color white}${endif}${endif}\
-${if_match ${hwmon coretemp temp 1} <= 25}${color lightblue}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.high}}}${color red}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{conky_cpu_temp_scale.high}}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.medium}}}${color orange}${endif}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{conky_cpu_temp_scale.medium}}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.low}}}${color yellow}${endif}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{conky_cpu_temp_scale.low}}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.lowest}}}${color white}${endif}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{conky_cpu_temp_scale.lowest}}}${color lightblue}${endif}\
 ${font}${color white} Temperatures ${hr 1}$color
 
 {# hwmonX/temp1 is physical #}
-CPU: ${alignr}{% for item in conky_cpu_hwmon %}${hwmon coretemp temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}
+CPU: ${alignr}{% for item in conky_cpu_hwmon %}{% if item.label%} {{ item.label }}:{% endif %}${hwmon {{ item.module }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}
 
 {% if ansible_form_factor == 'Desktop' %}
-Motherboard:${alignr}${hwmon nct6793 temp 1}°C
+Motherboard:${alignr}${hwmon {{ conky_mb_hwmon[0].module }} temp {{ conky_mb_hwmon[0].temp }}}°C
 {% endif %}
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 GPU:${alignr}${nvidia temp}°C
@@ -91,7 +91,7 @@ GPU:${alignr}${hwmon amdgpu temp 1}°C
 {%- if device.tran == 'sata' -%}
 {{ device.model|replace('_', ' ') }}: ${alignr}${hddtemp {{ device.path }}}°C
 {% elif device.tran == 'nvme' %}
-{{ device.model|replace('_', ' ') }}: ${alignr}${hwmon nvme temp 1}°C
+Nvme ({{ device.model|replace('_', ' ') }}): ${alignr}${hwmon nvme temp 1}°C
 {% endif %}
 {% endfor %}
 
@@ -103,9 +103,9 @@ Right fan: ${alignr}${hwmon 1 fan 2} RPM
 {% elif ansible_form_factor == 'Notebook' %}
 Fan: ${alignr}${hwmon thinkpad fan 1} RPM
 {% else %}
-Exhaust fan: ${alignr}${hwmon nct6793 fan 1} RPM
-CPU fan: ${alignr}${hwmon nct6793 fan 2} RPM
-Intake fan: ${alignr}${hwmon nct6793 fan 3} RPM
+{% for item in conky_fan_hwmon %}
+{{ item.label }}: ${alignr}${hwmon {{ item.module }} fan {{item.fan}}} RPM
+{% endfor %}
 {% endif %}
 {% if ansible_local.hardware.vga_vendor == 'NVIDIA Corporation' %}
 GPU Fan: ${alignr}(${nvidia fanlevel}%) ${nvidia fanspeed} RPM
@@ -167,7 +167,7 @@ ${color white}${font Font Awesome 5 Free Solid}${if_up wlp0s20f3}${else}${
 
 DNS:${alignr}$nameserver
 {% for interface in ansible_interfaces %}
-{% if interface in ('eth0','enp0s25','ens9','wlp3s0', 'wlp0s20f3', 'enp0s31f6', 'wwp0s20f0u7','ens4u1u1') %}
+{% if interface in ('eth0','enp0s25','ens9','wlp3s0', 'wlp0s20f3', 'enp0s31f6', 'wwp0s20f0u7','ens4u1u1', 'enp4s0') %}
 ${if_up {{ interface }}}{{ interface }}:$alignr${addr {{ interface }}} / ${execi 7200 curl -s http://icanhazip.com/}
 {% if interface == 'wlp3s0' or interface == 'wlp0s20f3' %}
 Wireless network: ${alignr}${wireless_essid {{interface}} }
@@ -188,9 +188,4 @@ GPU Freq: ${nvidia gpufreq}/${nvidia gpufreqmax} MHz ${alignr} Mem Freq: ${nvidi
 ${nvidiagraph gpuutil 20,290 23a51c ff661c -t}
 GPU utilization: ${alignr}${nvidia gpuutil}%
 {% endif %}
-
-${color white}${font Font Awesome 5 Free Solid}${font} Sound ${hr 1}$color
-
-$pa_sink_description
-$pa_card_active_profile
 ]];
