@@ -12,9 +12,21 @@ conky_graph_half_size: "20,137"
 conky_graph_full_size: "20,290"
 conky_graph_color_1: "23a51c ff661c"
 conky_graph_color_2: "23a5e0 4e66e0"
+conky_cpu_temp_scale:
+  high: 70
+  medium: 60
+  low: 50
+  lowest: 40
 conky_cpu_hwmon:
-  - {sensor: 0, temp: 2}
-  - {sensor: 0, temp: 3}
-  - {sensor: 0, temp: 4}
-  - {sensor: 0, temp: 5}
+  - {sensor: 0, temp: 2, module: "coretemp"}
+  - {sensor: 0, temp: 3, module: "coretemp"}
+  - {sensor: 0, temp: 4, module: "coretemp"}
+  - {sensor: 0, temp: 5, module: "coretemp"}
+conky_mb_hwmon:
+  - temp: 1
+    module: nct6793
+conky_fan_hwmon:
+  - fan: 1
+    module: nct6793
+    label: "Exhaust fan"
 conky_max_elements: 8
