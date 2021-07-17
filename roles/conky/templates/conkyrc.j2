@@ -115,13 +115,13 @@ GPU Fan:${alignr}${hwmon amdgpu fan 1} RPM
 {% endif %}
 {% if ansible_form_factor == 'Laptop' or ansible_form_factor == 'Notebook' %}
 
-${font {{ conky_heading_icon_font }}}${if_match "$battery_status" == "charged"}${else}${if_match "$battery_status" == "charging"}${else}\
-${if_match $battery_percent > 80}${color white}${endif}\
-${if_match $battery_percent <= 80}${if_match $battery_percent > 75}${color yellow}${endif}${endif}\
-${if_match $battery_percent <= 75}${if_match $battery_percent > 50}${color orange}${endif}${endif}\
-${if_match $battery_percent <= 50}${if_match $battery_percent > 25}${color #FF8000}${endif}${endif}\
-${if_match $battery_percent < 25}${color red}${endif}\
-${endif}${endif}${font}${color white} Battery (${battery_status}) ${hr 1}$color
+${font {{ conky_heading_icon_font }}}${if_match "$battery_status" == "charged"} ${else}${if_match "$battery_status" == "charging"} ${else}\
+${if_match $battery_percent > 80}${color {{ conky_heading_color }}} ${endif}\
+${if_match $battery_percent <= 80}${if_match $battery_percent > 75}${color yellow} ${endif}${endif}\
+${if_match $battery_percent <= 75}${if_match $battery_percent > 50}${color orange} ${endif}${endif}\
+${if_match $battery_percent <= 50}${if_match $battery_percent > 25}${color #FF8000} ${endif}${endif}\
+${if_match $battery_percent < 25}${color red} ${endif}\
+${endif}${endif}${font}${color {{ conky_heading_color }}}Battery (${battery_status}) ${hr 1}$color
 
 ${battery_bar {{conky_bar_full_size}}}
 {% endif %}
