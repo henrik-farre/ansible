@@ -1,9 +1,13 @@
 ---
-- name: Ensure Zim is installed
+- name: Ensure Zim and dependencies are installed
   become: yes
   pacman:
     name: zim
     state: latest
+  vars:
+    package:
+      - zim
+      - gtksourceview3
   tags:
     - zim
 
