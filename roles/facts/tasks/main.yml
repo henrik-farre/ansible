@@ -1,8 +1,12 @@
 ---
-- name: Ensure facter is installed
+- name: Ensure needed packages are installed
   pacman:
-    name: facter
+    name: "{{ packages }}"
     state: latest
+  vars:
+    packages:
+      - facter
+      - lshw
   tags:
     - facts
 

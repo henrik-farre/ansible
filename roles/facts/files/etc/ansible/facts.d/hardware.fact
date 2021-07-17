@@ -9,5 +9,5 @@ set -o pipefail
 IFS=$'\n\t'
 
 echo "{"
-echo "\"vga_vendor\"" : "\"$(lspci -m | grep VGA | cut -f4 -d\")\""
+echo "\"video\"": $(lshw -c video -json 2>/dev/null)
 echo "}"

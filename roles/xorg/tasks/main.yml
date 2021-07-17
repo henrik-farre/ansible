@@ -107,7 +107,7 @@
       - libva-vdpau-driver
       - libvdpau-va-gl
   when:
-    - ansible_local.hardware.vga_vendor == "Intel Corporation"
+    - "'Intel Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }}"
   tags:
     - xorg
 
@@ -123,7 +123,7 @@
       - nvidia-settings
       - nvidia-utils
   when:
-    - ansible_local.hardware.vga_vendor == "NVIDIA Corporation"
+    - "'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }}"
   tags:
     - xorg
 
@@ -144,7 +144,7 @@
       - lib32-vulkan-icd-loader
       - lib32-vulkan-radeon
   when:
-    - ansible_local.hardware.vga_vendor == "Advanced Micro Devices, Inc. [AMD/ATI]"
+    - "'Advanced Micro Devices, Inc. [AMD/ATI]' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }}"
   tags:
     - xorg
 
@@ -157,6 +157,6 @@
     mode: 0644
     owner: root
   when:
-    - ansible_local.hardware.vga_vendor == "Advanced Micro Devices, Inc. [AMD/ATI]"
+    - "'Advanced Micro Devices, Inc. [AMD/ATI]' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }}"
   tags:
     - xorg
