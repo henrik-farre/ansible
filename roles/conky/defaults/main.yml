@@ -1,8 +1,10 @@
 ---
 conky_xinerama_head: 1
 conky_font: "mononoki Nerd Font:size=7"
-conky_heading_color: "#23a5e0"
-conky_heading_icon_font: "mononoki Nerd Font:size=21"
+conky_heading_font: "mononoki Nerd Font:size=14"
+conky_heading_color: "#ffffff"
+conky_heading_icon_color: "#0a374c"
+conky_heading_icon_font: "mononoki Nerd Font:size=63"
 conky_min_size: 290
 conky_max_width: 290
 conky_gap_x: 12
@@ -17,16 +19,16 @@ conky_graph_color_2: "23a5e0 4e66e0"
 conky_cpu_temp_scale:
   high:
     temp: 70
-    color: "#ff0000"
+    color: "#800000"
   medium:
     temp: 60
-    color: "#ffff00"
+    color: "#996400"
   low:
     temp: 50
-    color: "#ff8000"
+    color: "#804000"
   lowest:
     temp: 40
-    color: "#739adb"
+    color: "#0a377c"
 conky_cpu_hwmon:
   - {sensor: 0, temp: 2, module: "coretemp"}
   - {sensor: 0, temp: 3, module: "coretemp"}
