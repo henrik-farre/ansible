@@ -1,15 +1,15 @@
 ---
 conky_xinerama_head: 1
 conky_font: "mononoki Nerd Font:size=7"
-conky_heading_font: "mononoki Nerd Font:size=14"
+conky_heading_font: "mononoki Nerd Font:size=7"
 conky_heading_color: "#ffffff"
 conky_heading_icon_color: "#0a374c"
-conky_heading_icon_font: "mononoki Nerd Font:size=63"
+conky_heading_icon_font: "mononoki Nerd Font:size=14"
 conky_min_size: 290
 conky_max_width: 290
 conky_gap_x: 12
 conky_gap_y: 0
-conky_bar_cpu_size: "4,137"
+conky_bar_half_size: "4,145"
 conky_bar_full_size: "4,290"
 conky_graph_quarter_size: "20,68"
 conky_graph_half_size: "20,137"

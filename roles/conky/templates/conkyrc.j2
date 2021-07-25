@@ -1,5 +1,5 @@
 {% macro heading(title, icon='') -%}
-${voffset -10}${offset -20}${color {{ conky_heading_icon_color }}}${font {{ conky_heading_icon_font }}}{{icon}}${voffset -15}${goto 14}${font {{ conky_heading_font }}}${color {{ conky_heading_color }}}{{ title }} ${hr 1}$color$font
+${color {{ conky_heading_color }}}${font {{ conky_heading_icon_font }}}{{icon}} ${font {{ conky_heading_font }}}{{ title }} ${hr 1}$color$font
 {%- endmacro %}
 conky.config = {
 -- {{ ansible_managed }}
@@ -62,23 +62,31 @@ conky.config = {
 
 conky.text = [[
 {{ heading('System', '') }}
+
 Date: ${alignr}${time %A d. %d/%m/%Y (%V) %H:%M}
 Uptime: ${alignr}$uptime
 Kernel: ${alignr}$kernel
 Update(s) available:${alignr} ${execi 3600 checkupdates | wc -l}
 Zim status:${alignr} ${if_match ${execi 300 git -C ~/Documents/Zim status --porcelain | wc -l} > 0}${color red}not in ${endif}sync${color}
+{% if ansible_form_factor == 'Laptop' or ansible_form_factor == 'Notebook' %}
+Battery (${battery_status}) ${if_match "$battery_status" == "charged"}${else}${if_match "$battery_status" == "charging"}${else}\
+${if_match $battery_percent > 80}${color {{ conky_heading_color }}}${endif}\
+${if_match $battery_percent <= 80}${if_match $battery_percent > 75}${color yellow}${endif}${endif}\
+${if_match $battery_percent <= 75}${if_match $battery_percent > 50}${color orange}${endif}${endif}\
+${if_match $battery_percent <= 50}${if_match $battery_percent > 25}${color #FF8000}${endif}${endif}\
+${if_match $battery_percent < 25}${color red} ${endif}\
+${endif}${endif}: ${alignr}${battery_bar {{conky_bar_half_size}}}$color
+{% endif %}
 
-${voffset -10}${offset -20}${color {{ conky_heading_icon_color }}}${font {{ conky_heading_icon_font }}}\
-${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{ conky_cpu_temp_scale.high.temp }}}${color {{conky_cpu_temp_scale.high.color }}}${endif}\
-${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.high.temp }}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.medium.temp }}}${color {{conky_cpu_temp_scale.medium.color }}}${endif}${endif}\
-${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.medium.temp }}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.low.temp }}}${color {{conky_cpu_temp_scale.low.color }}}${endif}${endif}\
-${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.low.temp }}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.lowest.temp }}}${color {{conky_cpu_temp_scale.lowest.color }}}${endif}${endif}\
-${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.lowest.temp }}}${color {{ conky_heading_icon_color }}}${endif}\
-${voffset -15}${goto 14}${font {{ conky_heading_font }}}${color {{ conky_heading_color }}}TEMPERATURES ${hr 1}$color$font
+${font {{ conky_heading_icon_font }}}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{ conky_cpu_temp_scale.high.temp }}}${color {{conky_cpu_temp_scale.high.color }}} ${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.high.temp }}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.medium.temp }}}${color {{conky_cpu_temp_scale.medium.color }}} ${endif}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.medium.temp }}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.low.temp }}}${color {{conky_cpu_temp_scale.low.color }}} ${endif}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.low.temp }}}${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} > {{conky_cpu_temp_scale.lowest.temp }}}${color {{conky_cpu_temp_scale.lowest.color }}} ${endif}${endif}\
+${if_match ${hwmon {{ conky_cpu_hwmon[0].module }} temp 1} <= {{ conky_cpu_temp_scale.lowest.temp }}} ${endif}\
+${color {{ conky_heading_color }}}${font {{ conky_heading_font }}}TEMPERATURES ${hr 1}$color$font
 
-{# hwmonX/temp1 is physical #}
-CPU: ${alignr}{% for item in conky_cpu_hwmon %}{% if item.label is defined %} {{ item.label }}:{% endif %}${hwmon {{ item.module }} temp {{ item.temp }}}°C{% if not loop.last %} /{% endif %}{% endfor %}
-
+CPU: ${alignr}{% for item in conky_cpu_hwmon %}{% if item.label is defined %} {{ item.label }}:{% endif %}${hwmon {{ item.module }} temp {{ item.temp }}}{% if not loop.last %} /{% endif %}{% endfor %}°C
 {% if ansible_form_factor == 'Desktop' %}
 Motherboard:${alignr}${hwmon {{ conky_mb_hwmon[0].module }} temp {{ conky_mb_hwmon[0].temp }}}°C
 {% endif %}
@@ -97,6 +105,7 @@ Nvme ({{ device.model|replace('_', ' ') }}): ${alignr}${hwmon nvme temp 1}°C
 {% endfor %}
 
 {{ heading('Fans','') }}
+
 {% if ansible_form_factor == 'Laptop' %}
 Left fan: ${alignr}${hwmon 1 fan 1} RPM
 Right fan: ${alignr}${hwmon 1 fan 2} RPM
@@ -114,55 +123,42 @@ GPU Fan: ${alignr}(${nvidia fanlevel}%) ${nvidia fanspeed} RPM
 {% if 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 GPU Fan:${alignr}${hwmon amdgpu fan 1} RPM
 {% endif %}
-{% if ansible_form_factor == 'Laptop' or ansible_form_factor == 'Notebook' %}
-
-${color {{ conky_heading_color }}}${font {{ conky_heading_icon_font }}}${if_match "$battery_status" == "charged"}${else}${if_match "$battery_status" == "charging"}${else}\
-${if_match $battery_percent > 80}${color {{ conky_heading_color }}} ${endif}\
-${if_match $battery_percent <= 80}${if_match $battery_percent > 75}${color yellow} ${endif}${endif}\
-${if_match $battery_percent <= 75}${if_match $battery_percent > 50}${color orange} ${endif}${endif}\
-${if_match $battery_percent <= 50}${if_match $battery_percent > 25}${color #FF8000} ${endif}${endif}\
-${if_match $battery_percent < 25}${color red} ${endif}\
-${endif}${endif}${font}${color {{ conky_heading_color }}}  Battery (${battery_status}) ${hr 1}$color
-
-${battery_bar {{conky_bar_full_size}}}
-{% endif %}
 
 {{ heading('CPU (${execi 10 cat /sys/devices/system/cpu/cpu0/cpufreq/scaling_governor})', '') }}
+
+Highest CPU $alignr CPU% / MEM%
+{% for item in range(1,conky_max_elements+1)%}
+${top name {{ item }}}$alignr${top cpu {{ item }}} ${top mem {{ item }}}
+{% endfor %}
 {% for cpu in range(0, ansible_processor_vcpus, 4) %}
 ${cpugraph cpu{{ cpu+1 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t} ${cpugraph cpu{{ cpu+2 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t} ${cpugraph cpu{{ cpu+3 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t} ${cpugraph cpu{{ cpu+4 }} {{ conky_graph_quarter_size }} {{ conky_graph_color_1 }} -t}
 ${freq_g {{ cpu+1 }}} GHz ${cpu cpu{{ cpu+1 }}}%  ${goto 89}${freq_g {{ cpu+2 }}} GHz ${cpu cpu{{ cpu+2 }}}%  ${goto 164}${freq_g {{ cpu+3 }}} GHz ${cpu cpu{{ cpu+3 }}}%  ${goto 239}${freq_g {{ cpu+4 }}} GHz ${cpu cpu{{ cpu+4 }}}%
 {% endfor %}
 
-${color {{ conky_heading_color }}}Highest CPU $alignr CPU% / MEM%${color}
-{% for item in range(1,conky_max_elements+1)%}
-${top name {{ item }}}$alignr${top cpu {{ item }}} ${top mem {{ item }}}
-{% endfor %}
-
 {{ heading('Memory', '') }}
-${color {{ conky_heading_color }}}Highest MEM $alignr CPU% / MEM%${color}
+
+Highest MEM $alignr CPU% / MEM%
 {% for item in range(1,conky_max_elements+1)%}
 ${top_mem name {{ item }}}$alignr${top_mem cpu {{ item }}} ${top_mem mem {{ item }}}
 {% endfor %}
-
 ${memgraph {{ conky_graph_full_size }} {{ conky_graph_color_1 }} -t}
 Ram ${alignr}$mem / $memmax ($memperc% used)
 
 {{ heading('FILESYSTEM & I/O', '') }}
+
 {# Spaces are needed to align read vaules beneath header #}
-${color {{ conky_heading_color }}}Highest I/O $alignr READ / WRITE${color}
+Highest I/O $alignr READ / WRITE
 {% for item in range(1,conky_max_elements+1)%}
 ${top_io name {{ item }}}$alignr${top_io io_read {{ item }}}   ${top_io io_write {{ item }}}
 {% endfor %}
-
-${diskiograph_read {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t}
+${diskiograph_read {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${diskiograph_write {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
 Read ${diskio_read}$alignr Write ${diskio_write}
 
 {% for mount in ansible_mounts %}
-{{ mount.mount }}: $alignr${fs_used {{ mount.mount }}} /${fs_size {{ mount.mount }}} (${fs_free {{ mount.mount }}} / ${fs_free_perc {{ mount.mount }}}% free)
-${if_match ${fs_free_perc {{ mount.mount }}} <= 1}${color red}${endif}${fs_bar {{conky_bar_full_size}} {{ mount.mount }}}${color}
-
+{{ mount.mount }}: $alignr${fs_free {{ mount.mount }}} free of${fs_size {{ mount.mount }}} ${if_match ${fs_free_perc {{ mount.mount }}} <= 1}${color red}${endif}${fs_bar {{conky_bar_half_size}} {{ mount.mount }}}${color}
 {% endfor %}
-{{ heading('NETWORK', '${if_up wlp0s20f3} ${else} ${endif}') }}
+
+{{ heading('NETWORK', '${if_up wlp0s20f3}${else}${endif}') }}
 
 DNS:${alignr}$nameserver
 {% for interface in ansible_interfaces %}
@@ -171,19 +167,16 @@ ${if_up {{ interface }}}{{ interface }}:$alignr${addr {{ interface }}} / ${execi
 {% if interface == 'wlp3s0' or interface == 'wlp0s20f3' %}
 Wireless network: ${alignr}${wireless_essid {{interface}} }
 Speed / Frequency: ${alignr}${wireless_bitrate {{ interface }}} / ${wireless_freq {{ interface }}}
-${wireless_link_bar {{conky_bar_full_size}} {{ interface }}}
+Link quality:${alignr}${wireless_link_bar {{conky_bar_half_size}} {{ interface }}}
 {% endif %}
-
 ${downspeedgraph {{ interface }} {{ conky_graph_half_size }} {{ conky_graph_color_1 }} -t} ${alignr}${upspeedgraph {{ interface }} {{ conky_graph_half_size }} {{ conky_graph_color_2 }} -t}
 Down: ${downspeed {{ interface }}} (${totaldown {{ interface }}}) ${alignr}Up: ${upspeed {{ interface }}} (${totalup {{ interface }}})${endif}{% endif %}{% endfor %}
 
 {% if 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 
 {{ heading('GPU (${nvidia modelname})', '') }}
-
 ${nvidiagraph gpufreq 20,137 23a51c ff661c -t} ${alignr}${nvidiagraph memfreq 20,137 23a5e0 4e66e0 -t}
 GPU Freq: ${nvidia gpufreq}/${nvidia gpufreqmax} MHz ${alignr} Mem Freq: ${nvidia memfreq}/${nvidia memfreqmax} MHz
-
 ${nvidiagraph gpuutil 20,290 23a51c ff661c -t}
 GPU utilization: ${alignr}${nvidia gpuutil}%
 {% endif %}
