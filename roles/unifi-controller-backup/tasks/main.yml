@@ -8,6 +8,7 @@
       Host {{ hostvars[groups['unifi-controller'][0]]['ansible_fqdn'] }}
         IdentityFile ~/.ssh/id_rsa.unifi-controller
     marker: "# {mark} ANSIBLE MANAGED BLOCK unifi_controller"
+    mode: 0600
   tags:
     - unifi-controller
 
@@ -25,13 +26,14 @@
   copy:
     content: |
       [Unit]
-      Description=Rsync backup of unifi controller
+      Description=Start AWX backup job of unifi controller
       OnFailure=status-email@%n.service
 
       [Service]
       Type=oneshot
-      ExecStart=/usr/bin/rsync -a --delete -e ssh root@{{ hostvars[groups['unifi-controller'][0]]['ansible_fqdn'] }}:/var/lib/unifi/ /shared/backup/unifi-controller/
-    dest: /etc/systemd/system/unifi-backup.service
+      User=enrique
+      ExecStart=/shared/enrique/.local/bin/tower-cli job launch -J "Unifi controller - backup" --wait --no-input
+      dest: /etc/systemd/system/unifi-backup.service
     mode: 0644
     owner: root
   tags:
@@ -47,8 +49,7 @@
       After=network-online.target
 
       [Timer]
-      OnCalendar=18:00
-      Persistent=True
+      OnBootSec=10min
       RandomizedDelaySec=600
 
       [Install]
