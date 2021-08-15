@@ -3,8 +3,7 @@ Name=Neovim
 GenericName=Text Editor
 GenericName[de]=Texteditor
 Comment=Edit text files
-TryExec=nvim
-Exec=termite --icon=nvim.png --name="neovim" -e "bash -ic 'nvim %F'"
+Exec=/home/enrique/bin/xneovim
 Terminal=false
 Type=Application
 Keywords=Text;editor;
