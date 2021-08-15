@@ -16,6 +16,7 @@
       aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman
     dest: /etc/sudoers.d/50-aur_builder
     validate: 'visudo -cf %s'
+    mode: 0600
 
 - name: Ensure GPG key is present
   become: yes
