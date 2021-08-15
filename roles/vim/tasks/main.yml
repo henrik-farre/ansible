@@ -1,5 +1,7 @@
 ---
 - name: Ensure tags are set on all tasks
+  tags:
+    - vim
   block:
     - name: Ensure Neovim and dependencies are installed
       become: yes
@@ -12,6 +14,7 @@
           - python-neovim
           - python-psutil
           - python-pip
+          - bash-language-server
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure Neovim is installed
@@ -24,11 +27,44 @@
           - neovim
       when: ansible_facts.distribution == 'Debian'
 
-    - name: Ensure dependencies for neomake are installed
+    - name: Ensure dependencies for linter plugins are installed
       become: yes
       become_user: aur_builder
       aur:
         name: hadolint-bin
+      when: ansible_facts.distribution == 'Archlinux'
+
+    # groovy-language-server-git requires java-11-openjdk
+    - name: Ensure Neovim language servers are installed
+      become: yes
+      pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - bash-language-server
+          - pyright
+          - jdk11-openjdk
+      when: ansible_facts.distribution == 'Archlinux'
+
+    - name: Ensure correct Java version to install groovy-language-server-git
+      become: yes
+      command: "archlinux-java set java-11-openjdk"
+
+    - name: Ensure Neovim language servers are installed (from AUR)
+      become: yes
+      become_user: aur_builder
+      aur:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - ansible-language-server
+          - vscode-langservers-extracted
+          - dockerfile-language-server
+          - terraform-ls
+          - vim-language-server
+          - yaml-language-server
+          - groovy-language-server-git
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Clone neovim/vim files
@@ -52,13 +88,14 @@
         path: "{{ ansible_user_dir }}/.local/share/applications"
         owner: "{{ ansible_user_id }}"
         state: directory
-        mode: 0700
+        mode: 0755
 
     - name: Install .desktop file
       copy:
         src: neovim.desktop
         dest: "{{ ansible_user_dir }}/.local/share/applications/neovim.desktop"
         owner: "{{ ansible_user_id }}"
+        mode: 0644
 
     # https://github.com/mhinz/neovim-remote
     - name: Install neovim-remote
@@ -124,6 +161,3 @@
         dest: "{{ ansible_user_dir }}/.vim"
         state: link
       when: vim_installation.stat.exists
-  # Block:
-  tags:
-    - vim
