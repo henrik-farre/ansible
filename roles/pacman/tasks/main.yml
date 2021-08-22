@@ -26,6 +26,13 @@
         line: "ParallelDownloads = 5"
         state: present
 
+    - name: Ensure color is enabled
+      lineinfile:
+        path: /etc/pacman.conf
+        regexp: '.*Color'
+        line: "Color"
+        state: present
+
     - name: Update pacman cache
       pacman:
         update_cache: yes
