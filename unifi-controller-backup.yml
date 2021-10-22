@@ -39,11 +39,11 @@
             format: bz2
 
         # Root can't write to nfs - use a temporary location
-        - name: "Compress /var/lib/unifi/ to /tmp/unifi_tmp_backup.tar.bz2"
+        - name: "Compress /var/lib/unifi/ to /var/tmp/unifi_tmp_backup.tar.bz2"
           become: yes
           archive:
             path: "/var/lib/unifi/"
-            dest: "/tmp/unifi_tmp_backup.tar.bz2"
+            dest: "/var/tmp/unifi_tmp_backup.tar.bz2"
             format: bz2
             exclude_path:
               - /var/lib/unifi/db
@@ -51,7 +51,7 @@
 
         - name: "Copy temporary unifi to {{ backup_basepath }}/archive/unifi/backup_{{ date_for_filename }}.tar.bz2 "
           copy:
-            src: /tmp/unifi_tmp_backup.tar.bz2
+            src: /var/tmp/unifi_tmp_backup.tar.bz2
             dest: "{{ backup_basepath }}/archived/unifi/backup_{{ date_for_filename }}.tar.bz2"
             remote_src: yes
 
@@ -82,5 +82,5 @@
         - name: Cleanup | Remove tmp unifi backup
           become: yes
           file:
-            path: "/tmp/unifi_tmp_backup.tar.bz2"
+            path: "/var/tmp/unifi_tmp_backup.tar.bz2"
             state: absent
