@@ -1,6 +1,7 @@
 ---
 # bootstrap.yml has to be run before this playbook
-- hosts: all
+- name: Setup
+  hosts: all
   pre_tasks:
     - name: Update apt cache
       become: yes
