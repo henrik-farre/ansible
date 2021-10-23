@@ -35,6 +35,7 @@
       Type=Application
     dest: "{{ ansible_user_dir }}/.config/autostart/conky.desktop"
     owner: "{{ ansible_user_id }}"
+    mode: 0644
   tags:
     - conky
 

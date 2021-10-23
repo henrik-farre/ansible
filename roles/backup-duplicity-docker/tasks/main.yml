@@ -129,7 +129,7 @@
     - name: Ensure latest docker image is pulled
       docker_image:
         name: rockhopperdk/duplicity-docker:latest
-        force: yes
+        source: pull
       tags:
         - backup
 

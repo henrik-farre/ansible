@@ -5,7 +5,7 @@
     path: /root/.ssh
     group: root
     state: directory
-    mode: 0600
+    mode: 0700
     owner: root
   tags:
     - backup
@@ -31,6 +31,7 @@
     create: yes
     block: "{{ ssh_config }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK backup_host"
+    mode: 0400
   vars:
     ssh_config: !vault |
         $ANSIBLE_VAULT;1.1;AES256
