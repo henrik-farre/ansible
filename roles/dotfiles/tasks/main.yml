@@ -71,6 +71,7 @@
     - ".config/tmux"
     - ".config/weechat"
     - ".config/yamllint"
+    - ".config/yay"
     - ".ctags"
     - ".gemrc"
     - ".git_template"
