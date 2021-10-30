@@ -9,7 +9,7 @@ dependency:
 platforms:
   - name: instance
     box: archlinux/archlinux
-    box_version: 20201201.10292
+    box_version: 20211001.35402
     config_options:
       ssh.keep_alive: yes
       ssh.remote_user: "'vagrant'"

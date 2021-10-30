@@ -4,11 +4,11 @@
 # - https://bbs.archlinux.org/viewtopic.php?id=231393
 
 MODULES=()
-{% if 'Intel Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }} %}
+{% if 'Intel Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 MODULES+=(i915)
-{% elif 'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }} %}
+{% elif 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 MODULES+=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
-{% elif 'Advanced Micro Devices, Inc. [AMD/ATI]' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }} %}
+{% elif 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 MODULES+=(amdgpu)
 {% endif %}
 
