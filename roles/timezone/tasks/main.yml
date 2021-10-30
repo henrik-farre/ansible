@@ -7,13 +7,14 @@
     - timezone
 
 # https://news.ycombinator.com/item?id=13697555
+# Slack and MS teams do not understand if TZ points to a file prefixed with :
 # man timezone
 - name: Set TZ env
   become: yes
   copy:
     content: |
               # Managed by Ansible
-              export TZ=":/etc/localtime"
+              export TZ="Europe/Copenhagen"
     dest: /etc/profile.d/tz.sh
     owner: root
     group: root
