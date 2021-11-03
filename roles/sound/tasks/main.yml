@@ -1,3 +1,17 @@
+- name: Ensure pipewire is installed
+  become: yes
+  pacman:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - pipewire
+      - pipewire-pulse
+      - pipewire-alsa
+      - pipewire-media-session
+  tags:
+    - sound
+
 - name: Ensure old pulseaudio services are disabled
   become: yes
   systemd:
@@ -30,19 +44,5 @@
   file:
     path: /etc/pulse/
     state: absent
-  tags:
-    - sound
-
-- name: Ensure pipewire is installed
-  become: yes
-  pacman:
-    name: "{{ packages }}"
-    state: latest
-  vars:
-    packages:
-      - pipewire
-      - pipewire-pulse
-      - pipewire-alsa
-      - pipewire-media-session
   tags:
     - sound
