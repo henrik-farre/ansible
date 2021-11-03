@@ -57,7 +57,7 @@
     - xdg-dirs
     - docker
     - { role: backup-duplicity-docker, when: duplicity is defined }
-    - php
+    # - php
     - fuse
     - { role: packages, packages: "{{ host_packages }}" }
     - { role: services, services: "{{ host_services }}" }
@@ -66,19 +66,20 @@
 - hosts: desktop
   gather_facts: no
   roles:
-    - xorg
-    - lightdm
     - sound
+    - { role: xorg, when: display_server == 'x11' }
+    - { role: wayland, when: display_server == 'wayland' }
+    - { role: lightdm, when: desktop_environment != 'gnome' }
     - role: package-group
       package_group: "desktop"
     - role: package-group
       aur_package_group: "desktop"
     - fonts
-    - cinnamon
-    - conky
+    - { role: cinnamon, when: desktop_environment == 'cinnamon' }
+    - { role: gnome, when: desktop_environment == 'gnome' }
+    - { role: conky, when: display_server == 'x11' }
     - solaar
     - signal-desktop
-    - jira
     - zim
     - weechat
     - node
@@ -86,7 +87,7 @@
     - systemd-user-units
     - terminal
     - cups
-    - devilspie
+    - { role: devilspie, when: display_server == 'x11' }
     - spotify
     - desktop
     - yubikey

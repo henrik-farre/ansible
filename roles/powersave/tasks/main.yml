@@ -30,6 +30,18 @@
       tags:
         - powersave
 
+    - name: Ensure powersave profile daemon is installed
+      pacman:
+        name: power-profiles-daemon
+        state: latest
+      when: desktop_environment == 'gnome'
+
+    - name: Ensure powersave profile daemon is enabled and started
+      ansible.builtin.systemd:
+        name: power-profiles-daemon
+        state: started
+        enabled: yes
+
     - name: Include tlp tasks
       include_tasks: tlp.yml
       tags:
