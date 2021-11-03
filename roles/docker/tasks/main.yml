@@ -130,6 +130,15 @@
   tags:
     - docker
 
+- name: Enable docker socket
+  become: yes
+  systemd:
+    name: "docker.socket"
+    enabled: yes
+    state: started
+  tags:
+    - docker
+
 - name: Enable systemd services
   become: yes
   systemd:
