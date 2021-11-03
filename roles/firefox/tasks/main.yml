@@ -70,6 +70,8 @@
     mode: 0750
     state: directory
   when: display_server == 'wayland'
+  tags:
+    - firefox
 
 - name: Ensure firefox is configured for wayland
   ansible.builtin.copy:
@@ -77,3 +79,5 @@
     mode: 0640
     content: "MOZ_ENABLE_WAYLAND=1"
   when: display_server == 'wayland'
+  tags:
+    - firefox
