@@ -18,3 +18,12 @@
     content: |
       --enable-features=UseOzonePlatform
       --ozone-platform=wayland
+
+- name: Ensure required packages are installed
+  pacman:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - wl-clipboard
+      - qt5-wayland

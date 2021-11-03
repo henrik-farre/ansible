@@ -1,5 +1,5 @@
 ---
-- name: Placeholder for Gnome role
+- name: Ensure packages are installed
   pacman:
     name: "{{ packages }}"
     state: latest
@@ -7,9 +7,14 @@
     packages:
       - gdm
       - gnome-shell
+      - gnome-menus
+      - gnome-settings-daemon
+      - gnome-session
+      - gnome-control-center
+      - gnome-icon-theme-extras
+      - gnome-tweaks
       - gnome-shell-extensions
       - gnome-shell-extension-gtile
-      - gnome-menus
-      - gnome-control-center
+      - gnome-shell-extension-appindicator
   tags:
     - gnome
