@@ -60,8 +60,7 @@
     content: |
       Cmnd_Alias  POWER       =   /usr/bin/shutdown -h now, /usr/bin/shutdown -r now, /usr/bin/halt, /usr/bin/poweroff, /usr/bin/reboot
       Cmnd_Alias  PACMAN      =   /usr/bin/pacman
-      Cmnd_Alias  CPUPOWER    =   /usr/bin/cpupower
-      %wheel      ALL         =   (root)  NOPASSWD: POWER, PACMAN, CPUPOWER
+      %wheel      ALL         =   (root)  NOPASSWD: POWER, PACMAN
     dest: /etc/sudoers.d/40-cmnd-aliases-for-wheel
     validate: 'visudo -cf %s'
   when:
