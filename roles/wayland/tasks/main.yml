@@ -20,6 +20,7 @@
       --ozone-platform=wayland
 
 - name: Ensure required packages are installed
+  become: yes
   pacman:
     name: "{{ packages }}"
     state: latest
