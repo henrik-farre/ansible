@@ -9,6 +9,7 @@
       vars:
         packages:
           - cinnamon
+          - network-manager-applet
           - kupfer
 
     - name: Configure default apps
