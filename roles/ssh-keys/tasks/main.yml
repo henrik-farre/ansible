@@ -75,7 +75,7 @@
   known_hosts:
     path: "{{ ansible_user_dir }}/.ssh/known_hosts"
     name: "{{ item }}"
-    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ item }}') }}"
+    key: "{{ lookup('pipe', '/usr/bin/ssh-keyscan -t rsa ' + item|quote) }}"
   with_items:
     - "github.com"
     - "bitbucket.com"
