@@ -22,11 +22,11 @@
 
 - name: Ensure tlp and needed services are started and enabled
   systemd:
-    name: "{{ services }}"
+    name: "{{ item }}"
     enabled: yes
     state: started
-  vars:
-    services:
-      - tlp
-      - tlp-sleep
-      - NetworkManager-dispatcher
+  loop:
+    - tlp
+    - NetworkManager-dispatcher
+  tags:
+    - powersave
