@@ -20,6 +20,8 @@
       - nm-connection-editor
       - wireless_tools
       - wpa_supplicant
+      - crda
+      - wireless-regdb
   when:
     - wireless is defined and wireless
   tags:

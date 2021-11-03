@@ -21,6 +21,4 @@
 - hosts: laptop
   become: yes
   roles:
-    # Dialog is required by wifi-menu if doing setup over wifi
-    - { role: packages, packages: ['dialog', 'crda'] }
     - { role: networking, wireless: true }
