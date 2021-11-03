@@ -67,7 +67,7 @@
   roles:
     - sound
     - { role: xorg, when: display_server == 'x11' }
-    - { role: wayland, when: display_server == 'wayland' }
+    - { role: wayland, when: display_server == 'wayland', tags: ['wayland'] }
     - { role: lightdm, when: desktop_environment != 'gnome' }
     - role: package-group
       package_group: "desktop"
@@ -75,7 +75,7 @@
       aur_package_group: "desktop"
     - fonts
     - { role: cinnamon, when: desktop_environment == 'cinnamon' }
-    - { role: gnome, when: desktop_environment == 'gnome' }
+    - { role: gnome, when: desktop_environment == 'gnome', tags: ['gnome'] }
     - { role: conky, when: display_server == 'x11' }
     - solaar
     - signal-desktop
