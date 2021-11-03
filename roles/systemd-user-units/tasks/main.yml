@@ -30,6 +30,6 @@
     name: update-if-online.service
     enabled: yes
     daemon_reload: yes
-    user: yes
+    scope: user
   tags:
     - systemd-user-units
