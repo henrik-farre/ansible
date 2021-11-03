@@ -63,6 +63,7 @@ package_groups:
     - terraform
     - yamllint
     - jq
+    - go-yq
     - packer
     - python-pre-commit
   net_utils:
@@ -138,4 +139,3 @@ aur_package_groups:
     - aspell-da
   development_utils:
     - shellcheck-bin
-    - yq2-bin
