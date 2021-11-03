@@ -30,9 +30,32 @@
       - bluez
       - bluez-utils
       - bluez-tools
+  tags:
+    - bluetooth
+
+- name: Ensure bluetooth packages are installed in other desktop environments
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
       - blueman
   tags:
     - bluetooth
+  when: desktop_environment != 'gnome'
+
+- name: Ensure bluetooth packages are installed in gnome
+  become: yes
+  pacman:
+    state: latest
+    name: "{{ packages }}"
+  vars:
+    packages:
+      - gnome-bluetooth
+  tags:
+    - bluetooth
+  when: desktop_environment == 'gnome'
 
 - name: Ensure bluetooth firmware is installed
   become: yes
@@ -40,6 +63,7 @@
   aur:
     name: "{{ bluetooth_combined.firmware }}"
   when:
+    - bluetooth_combined is defined
     - bluetooth_combined.firmware
   tags:
     - bluetooth
