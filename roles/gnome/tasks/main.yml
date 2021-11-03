@@ -1,4 +1,15 @@
 ---
 - name: Placeholder for Gnome role
-  ansible.builtin.debug:
-    msg: Gnome!
+  pacman:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - gdm
+      - gnome-shell
+      - gnome-shell-extensions
+      - gnome-shell-extension-gtile
+      - gnome-menus
+      - gnome-control-center
+  tags:
+    - gnome
