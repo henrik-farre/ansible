@@ -1,5 +1,6 @@
 ---
 - name: Run tasks with become
+  become: yes
   block:
     - name: Ensure systemd-rfkill.* is masked
       systemd:
@@ -41,6 +42,12 @@
         name: power-profiles-daemon
         state: started
         enabled: yes
+      when: desktop_environment == 'gnome'
+
+    - name: Ensure powertop is installed
+      pacman:
+        name: powertop
+        state: latest
 
     - name: Include tlp tasks
       include_tasks: tlp.yml
@@ -81,5 +88,3 @@
       when: ansible_system_vendor == 'Apple Inc.'
       tags:
         - powersave
-  # block
-  become: yes
