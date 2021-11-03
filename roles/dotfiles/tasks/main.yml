@@ -64,7 +64,6 @@
     - ".ansible-lint"
     - ".bash_profile"
     - ".bashrc"
-    - ".config/devilspie2"
     - ".config/flake8"
     - ".config/fontconfig/fonts.conf"
     - ".config/shell.d"
