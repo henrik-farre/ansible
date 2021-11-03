@@ -26,6 +26,10 @@
       - xorg-xrdb
       - xorg-xset
       - xorgproto
+      - wmctrl
+      - xdotool
+      # Fallback WM
+      - openbox
 
 - name: Ensure unused packages for xorg are removed
   become: yes

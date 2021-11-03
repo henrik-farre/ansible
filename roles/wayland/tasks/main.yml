@@ -28,3 +28,4 @@
     packages:
       - wl-clipboard
       - qt5-wayland
+      - xorg-xlsclients

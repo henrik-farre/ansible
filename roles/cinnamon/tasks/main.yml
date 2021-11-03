@@ -1,6 +1,16 @@
 ---
 - name: Ensure Cinnamon desktop is configured
   block:
+    - name: Ensure needed packages for xorg are installed
+      become: yes
+      pacman:
+        state: latest
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - cinnamon
+          - kupfer
+
     - name: Configure default apps
       command: gsettings set "{{ item.path }}" "{{ item.key }}" "{{ item.value }}"
       with_items:

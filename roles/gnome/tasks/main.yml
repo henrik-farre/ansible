@@ -17,5 +17,10 @@
       - gnome-shell-extensions
       - gnome-shell-extension-gtile
       - gnome-shell-extension-appindicator
+      - gnome-calculator
+      - gnome-icon-theme
+      - gnome-icon-theme-symbolic
+      - gnome-keyring
+      - gnome-screenshot
   tags:
     - gnome

@@ -37,6 +37,8 @@ package_groups:
     - zsh-autosuggestions
     - zsh-syntax-highlighting
   development_utils:
+    - ansible
+    - ansible-lint
     - autoconf
     - automake
     # needed for installing Vim-YouCompleteMe
@@ -61,7 +63,6 @@ package_groups:
     - terraform
     - yamllint
     - jq
-    - yq
     - packer
     - python-pre-commit
   net_utils:
@@ -85,8 +86,6 @@ package_groups:
     - alsa-lib
     - alsa-tools
     - alsa-utils
-    - ansible
-    - ansible-lint
     - aspell
     # aspell-da is in aur
     - aspell-en
@@ -96,11 +95,6 @@ package_groups:
     # Needed by Remmina
     - freerdp
     - gimp
-    - gnome-calculator
-    - gnome-icon-theme
-    - gnome-icon-theme-symbolic
-    - gnome-keyring
-    - gnome-screenshot
     - gpaste
     - gnuplot
     - gst-plugins-base
@@ -121,11 +115,8 @@ package_groups:
     - libreoffice-fresh
     - libreoffice-fresh-da
     - network-manager-applet
-    # Fallback WM
-    - openbox
     - pinentry
     - powerline-common
-    - kupfer
     - python-pip
     - pwgen
     # Better RDP client
@@ -138,10 +129,7 @@ package_groups:
     - virtualbox
     - virtualbox-guest-iso
     - virtualbox-host-dkms
-    - wmctrl
     - xdg-utils
-    - xdotool
-    - xsel
     - zenity
     - materia-gtk-theme
 
@@ -150,3 +138,4 @@ aur_package_groups:
     - aspell-da
   development_utils:
     - shellcheck-bin
+    - yq2-bin

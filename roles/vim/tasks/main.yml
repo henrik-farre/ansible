@@ -17,6 +17,17 @@
           - bash-language-server
       when: ansible_facts.distribution == 'Archlinux'
 
+    - name: Ensure Neovim and dependencies are installed
+      pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - xsel
+      when:
+        - ansible_facts.distribution == 'Archlinux'
+        - display_server == 'x11'
+
     - name: Ensure Neovim is installed
       apt:
         name: "{{ packages }}"
