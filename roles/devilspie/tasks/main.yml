@@ -24,6 +24,12 @@
   aur:
     name: devilspie2
 
+- name: Manage files and file properties
+  ansible.builtin.file:
+    path: "{{ ansible_user_dir }}/.config/devilspie2"
+    state: directory
+    mode: 0750
+
 - name: Ensure devilspie configuration exists
   template:
     src: dot.config/devilspie2/devilspie2.lua.j2
