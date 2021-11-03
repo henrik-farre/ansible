@@ -1,4 +1,12 @@
 ---
+- name: Install termite from AUR
+  become: yes
+  become_user: aur_builder
+  aur:
+    name: termite
+  tags:
+    - terminal
+
 - name: Check if configuration directory exist as a symlink
   stat:
     path: "{{ ansible_user_dir }}/.config/termite"
