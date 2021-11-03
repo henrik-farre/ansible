@@ -11,6 +11,9 @@ MODULES+=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
 {% elif 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 MODULES+=(amdgpu)
 {% endif %}
+{% if mkinitcpio_modules is defined %}
+MODULES+=({{ mkinitcpio_modules|join(' ') }})
+{% endif %}
 
 BINARIES=()
 
