@@ -57,7 +57,6 @@
     - xdg-dirs
     - docker
     - { role: backup-duplicity-docker, when: duplicity is defined }
-    # - php
     - fuse
     - { role: packages, packages: "{{ host_packages }}" }
     - { role: services, services: "{{ host_services }}" }
