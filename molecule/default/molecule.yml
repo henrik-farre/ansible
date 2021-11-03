@@ -25,6 +25,8 @@ provisioner:
   inventory:
     group_vars:
       all:
+        desktop_environment: cinnamon
+        display_server: x11
         has_bluetooth: true
         bluetooth:
           firmware: "broadcom-bt-firmware-git"
