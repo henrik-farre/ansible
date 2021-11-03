@@ -42,6 +42,10 @@
           - bash-language-server
           - pyright
           - jdk11-openjdk
+          - vscode-css-languageserver
+          - vscode-html-languageserver
+          - vscode-json-languageserver
+          - yaml-language-server
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure correct Java version to install groovy-language-server-git
@@ -54,11 +58,9 @@
       vars:
         packages:
           - ansible-language-server
-          - vscode-langservers-extracted
           - dockerfile-language-server
           - terraform-ls
           - vim-language-server
-          - yaml-language-server
           - groovy-language-server-git
       when: ansible_facts.distribution == 'Archlinux'
 
