@@ -1,0 +1,4 @@
+---
+- name: Placeholder for Gnome role
+  ansible.builtin.debug:
+    msg: Gnome!

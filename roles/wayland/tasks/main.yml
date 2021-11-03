@@ -1,0 +1,4 @@
+---
+- name: Placeholder for Wayland role
+  ansible.builtin.debug:
+    msg: Wayland!
