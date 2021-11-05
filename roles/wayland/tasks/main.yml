@@ -11,9 +11,18 @@
     mode: 0640
     content: "QT_QPA_PLATFORM=wayland"
 
-- name: Ensure QT is configured for wayland
+- name: Ensure Electron is configured for wayland
   ansible.builtin.copy:
     dest: "{{ ansible_user_dir }}/.config/electron-flags.conf"
+    mode: 0640
+    content: |
+      --enable-features=UseOzonePlatform
+      --ozone-platform=wayland
+
+# Remember to enable: chrome://flags/#enable-webrtc-pipewire-capturer
+- name: Ensure Chromium is configured for wayland
+  ansible.builtin.copy:
+    dest: "{{ ansible_user_dir }}/.config/chromium-flags.conf"
     mode: 0640
     content: |
       --enable-features=UseOzonePlatform
@@ -29,3 +38,4 @@
       - wl-clipboard
       - qt5-wayland
       - xorg-xlsclients
+      - xdg-desktop-portal-gtk # Needed for WebRTC screen sharing
