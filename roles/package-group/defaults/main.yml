@@ -57,7 +57,6 @@ package_groups:
     - kubectl
     - kubectx
     - awxkit
-    - aws-cli
     - k9s
     - molecule
     - terraform
@@ -139,3 +138,5 @@ aur_package_groups:
     - 1password
   development_utils:
     - shellcheck-bin
+    - aws-cli-v2-bin
+    - asdf-vm
