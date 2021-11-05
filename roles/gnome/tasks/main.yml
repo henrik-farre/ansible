@@ -24,3 +24,44 @@
       - gnome-screenshot
   tags:
     - gnome
+
+- name: Ensure integration to extensions.gnome.org is installed
+  become_user: aur_builder
+  aur:
+    name: chrome-gnome-shell-git
+  tags:
+    - gnome
+
+#> # From pacman:
+#> gnome-extensions enable "appindicatorsupport@rgcjonas.gmail.com"
+#> GPaste@gnome-shell-extensions.gnome.org
+#> gTile@vibou
+#>
+#> # default:
+#> workspace-indicator@gnome-shell-extensions.gcampax.github.com
+#>
+#>
+#> # Download from web
+#> hidetopbar@mathieu.bidon.ca
+#> workspace-switch-wraparound@theychx.org
+#> Move_Clock@rmy.pobox.com
+#>
+#> settings:
+#>   gsettings:
+#>     org.gnome.desktop.input-sources xkb-options ['lv3:ralt_switch', 'ctrl:nocaps']
+#>     org.gnome.desktop.wm.preferences mouse-button-modifier '<Alt>'
+#>     org.gnome.desktop.interface font-hinting 'full'
+#>     org.gnome.desktop.interface font-antialiasing 'rgba'
+#
+#
+#>   dconf:
+#>     [org/gnome/desktop/input-sources]
+#>     xkb-options=['lv3:ralt_switch', 'ctrl:nocaps']
+#
+#>     [org/gnome/desktop/interface]
+#>     font-antialiasing='rgba'
+#>     font-hinting='full'
+#>
+#>     [org/gnome/desktop/wm/preferences]
+#>     mouse-button-modifier='<Alt>'
+#>
