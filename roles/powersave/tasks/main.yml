@@ -35,14 +35,14 @@
       pacman:
         name: power-profiles-daemon
         state: latest
-      when: desktop_environment == 'gnome'
+      when: inventory_hostname in groups['surface']
 
     - name: Ensure powersave profile daemon is enabled and started
       ansible.builtin.systemd:
         name: power-profiles-daemon
         state: started
         enabled: yes
-      when: desktop_environment == 'gnome'
+      when: inventory_hostname in groups['surface']
 
     - name: Ensure powertop is installed
       pacman:
@@ -53,6 +53,7 @@
       include_tasks: tlp.yml
       tags:
         - powersave
+      when: inventory_hostname not in groups['surface']
 
     # Based on https://aur.archlinux.org/cgit/aur.git/tree/macbook-wakeup.service?h=linux-macbook
     - name: Ensure wakeup is configured on macbook pro
