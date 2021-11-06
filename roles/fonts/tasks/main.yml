@@ -52,6 +52,17 @@
          </accept>
        </alias>
       </fontconfig>
+  tags:
+    - fonts
+
+- name: Enable LCD filter
+  become: yes
+  file:
+    src: /usr/share/fontconfig/conf.default/30-win32-aliases.conf
+    dest: /etc/fonts/conf.d/30-win32-aliases.conf
+    state: link
+  tags:
+    - fonts
 
 - name: Ensure old fontconfig directories are absent
   file:
@@ -91,6 +102,16 @@
     state: link
   tags:
     - fonts
+
+- name: Disable bitmaps
+  become: yes
+  file:
+    src: /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf
+    dest: /etc/fonts/conf.d/70-no-bitmaps.conf
+    state: link
+  tags:
+    - fonts
+
 
 - name: Create fonts directory
   file:
