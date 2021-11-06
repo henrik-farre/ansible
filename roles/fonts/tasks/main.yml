@@ -55,15 +55,6 @@
   tags:
     - fonts
 
-- name: Enable LCD filter
-  become: yes
-  file:
-    src: /usr/share/fontconfig/conf.default/30-win32-aliases.conf
-    dest: /etc/fonts/conf.d/30-win32-aliases.conf
-    state: link
-  tags:
-    - fonts
-
 - name: Ensure old fontconfig directories are absent
   file:
     path: "{{ ansible_user_dir }}/{{ item }}"
