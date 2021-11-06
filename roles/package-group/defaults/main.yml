@@ -141,3 +141,4 @@ aur_package_groups:
     - shellcheck-bin
     - aws-cli-v2-bin
     - asdf-vm
+    - tflint-bin
