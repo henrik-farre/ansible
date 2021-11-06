@@ -23,6 +23,36 @@
       - ttf-ubuntu-font-family
       - unzip
 
+- name: Ensure Windows fonts are preferred - Requires ttf-ms-win11 package
+  become: yes
+  copy:
+    mode: 0644
+    owner: root
+    dest: /etc/fonts/conf.d/31-ttf-ms-win11.conf
+    content: |
+      <?xml version="1.0"?>
+      <!DOCTYPE fontconfig SYSTEM "fonts.dtd">
+      <fontconfig>
+       <alias binding="same">
+         <family>Helvetica</family>
+         <accept>
+         <family>Arial</family>
+         </accept>
+       </alias>
+       <alias binding="same">
+         <family>Times</family>
+         <accept>
+         <family>Times New Roman</family>
+         </accept>
+       </alias>
+       <alias binding="same">
+         <family>Courier</family>
+         <accept>
+         <family>Courier New</family>
+         </accept>
+       </alias>
+      </fontconfig>
+
 - name: Ensure old fontconfig directories are absent
   file:
     path: "{{ ansible_user_dir }}/{{ item }}"
