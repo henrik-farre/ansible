@@ -16,6 +16,7 @@ package_groups:
     - wget
     - xz
     - zip
+    - p7zip
   system_utils:
     - parted
     - sysfsutils
