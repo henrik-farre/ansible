@@ -39,3 +39,19 @@
       - qt5-wayland
       - xorg-xlsclients
       - xdg-desktop-portal-gtk # Needed for WebRTC screen sharing
+
+# https://linuxreviews.org/Intel_graphics#Hardware_Video_Decoding_.2F_Encoding
+- name: Install Intel related packages
+  become: yes
+  pacman:
+    name: "{{ packages }}"
+    state: latest
+  vars:
+    packages:
+      - libva-vdpau-driver
+      - libvdpau-va-gl
+      - vulkan-intel
+      - libva-utils
+      - intel-media-driver # Replaces libva-intel-driver for newer cpus
+  when:
+    - "'Intel Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }}"
