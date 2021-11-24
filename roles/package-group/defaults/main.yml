@@ -23,6 +23,7 @@ package_groups:
     - i7z
     - logrotate
     - pciutils
+    - usbutils
     - ntfs-3g
     - inotify-tools
     - dosfstools
