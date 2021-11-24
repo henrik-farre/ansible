@@ -18,24 +18,24 @@ package_groups:
     - zip
     - p7zip
   system_utils:
-    - parted
-    - sysfsutils
-    - i7z
-    - logrotate
-    - pciutils
-    - usbutils
-    - ntfs-3g
-    - inotify-tools
+    - dmidecode
     - dosfstools
     - efibootmgr
     - efitools
     - efivar
-    - fwupd
-    - dmidecode
     - ethtool
+    - fwupd
     - glances
     - hdparm
+    - i7z
+    - inotify-tools
     - iotop
+    - logrotate
+    - ntfs-3g
+    - parted
+    - pciutils
+    - sysfsutils
+    - usbutils
     - zsh-autosuggestions
     - zsh-syntax-highlighting
   development_utils:
