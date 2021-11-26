@@ -67,6 +67,7 @@ package_groups:
     - go-yq
     - packer
     - python-pre-commit
+    - python-debugpy
   net_utils:
     - bind-tools
     - bridge-utils
