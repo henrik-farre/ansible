@@ -1,4 +1,8 @@
 ---
+#
+# This playbook is run by AWX
+# - triggeret by a systemd timer which is installed by the unifi-controller-backup role
+#
 - name: Ensure backup exist of unifi controller
   hosts: unifi-controller
 
