@@ -1,26 +1,4 @@
 ---
-- name: Ensure ssh config exists for unifi controller
-  become: true
-  blockinfile:
-    dest: "/root/.ssh/config"
-    create: yes
-    block: |
-      Host {{ hostvars[groups['unifi-controller'][0]]['ansible_fqdn'] }}
-        IdentityFile ~/.ssh/id_rsa.unifi-controller
-    marker: "# {mark} ANSIBLE MANAGED BLOCK unifi_controller"
-    mode: 0600
-  tags:
-    - unifi-controller
-
-- name: Add hosts as known hosts
-  become: yes
-  known_hosts:
-    path: "/root/.ssh/known_hosts"
-    name: "{{ hostvars[groups['unifi-controller'][0]]['ansible_fqdn'] }}"
-    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa ' + hostvars[groups['unifi-controller'][0]]['ansible_fqdn']) }}"
-  tags:
-    - unifi-controller
-
 - name: Ensure backup service exists
   become: yes
   copy:
