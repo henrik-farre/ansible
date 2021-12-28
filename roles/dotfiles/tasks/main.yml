@@ -83,6 +83,7 @@
     - ".npmrc"
     - ".pearrc"
     - ".screenrc"
+    - ".tflint.hcl"
     - ".zshrc"
     - "bin"
     - ".local/share/barrier/.barrier.conf"

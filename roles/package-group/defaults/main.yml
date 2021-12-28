@@ -18,23 +18,24 @@ package_groups:
     - zip
     - p7zip
   system_utils:
-    - parted
-    - sysfsutils
-    - i7z
-    - logrotate
-    - pciutils
-    - ntfs-3g
-    - inotify-tools
+    - dmidecode
     - dosfstools
     - efibootmgr
     - efitools
     - efivar
-    - fwupd
-    - dmidecode
     - ethtool
+    - fwupd
     - glances
     - hdparm
+    - i7z
+    - inotify-tools
     - iotop
+    - logrotate
+    - ntfs-3g
+    - parted
+    - pciutils
+    - sysfsutils
+    - usbutils
     - zsh-autosuggestions
     - zsh-syntax-highlighting
   development_utils:
@@ -66,6 +67,7 @@ package_groups:
     - go-yq
     - packer
     - python-pre-commit
+    - python-debugpy
   net_utils:
     - bind-tools
     - bridge-utils
@@ -77,6 +79,7 @@ package_groups:
     - iptables
     - iputils
     - net-tools
+    - nfs-utils
     - nmap
     - traceroute
     - unzip
@@ -141,3 +144,4 @@ aur_package_groups:
     - shellcheck-bin
     - aws-cli-v2-bin
     - asdf-vm
+    - tflint-bin
