@@ -8,21 +8,22 @@
   tags:
     - cups
 
-- name: Ensure admin authentication through PolicyKit
-  become: yes
-  copy:
-    dest: /etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
-    content: |
-      polkit.addRule(function(action, subject) {
-          if (action.id == "org.opensuse.cupspkhelper.mechanism.all-edit" &&
-              subject.isInGroup("wheel")){
-              return polkit.Result.YES;
-          }
-      });
-    mode: 0600
-    owner: root
-  tags:
-    - cups
+# Broken: polkitd: Error compiling script /etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
+#- name: Ensure admin authentication through PolicyKit
+#  become: yes
+#  copy:
+#    dest: /etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
+#    content: |
+#      polkit.addRule(function(action, subject) {
+#          if (action.id == "org.opensuse.cupspkhelper.mechanism.all-edit" &&
+#              subject.isInGroup("wheel")){
+#              return polkit.Result.YES;
+#          }
+#      });
+#    mode: 0600
+#    owner: root
+#  tags:
+#    - cups
 
 - name: Check if driver is installed
   stat:
