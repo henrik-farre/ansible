@@ -1,85 +1,75 @@
 ---
-- name: Ensure Firefox and dependencies are installed
-  become: yes
-  pacman:
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - firefox
+- name: Firefox configuration
   tags:
     - firefox
+  block:
+    - name: Ensure Firefox and dependencies are installed
+      become: yes
+      pacman:
+        state: latest
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - firefox
 
-- name: Create user Firefox profiles directories
-  file:
-    path: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}"
-    owner: "{{ ansible_user_id }}"
-    state: directory
-    mode: 0700
-  with_items:
-    - "Work"
-    - "Private"
-  tags:
-    - firefox
+    - name: Create user Firefox profiles directories
+      file:
+        path: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}"
+        owner: "{{ ansible_user_id }}"
+        state: directory
+        mode: 0700
+      with_items:
+        - "Work"
+        - "Private"
 
-- name: Install profiles.ini
-  copy:
-    src: "profiles.ini"
-    dest: "{{ ansible_user_dir }}/.mozilla/firefox/"
-    owner: "{{ ansible_user_id }}"
-  tags:
-    - firefox
+    - name: Install profiles.ini
+      copy:
+        src: "profiles.ini"
+        dest: "{{ ansible_user_dir }}/.mozilla/firefox/"
+        owner: "{{ ansible_user_id }}"
 
-- name: Install user prefs pr profile
-  template:
-    src: "profile/user.js.j2"
-    dest: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}/user.js"
-    owner: "{{ ansible_user_id }}"
-  with_items:
-    - "Work"
-    - "Private"
-  tags:
-    - firefox
+    - name: Install user prefs pr profile
+      template:
+        src: "profile/user.js.j2"
+        dest: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}/user.js"
+        owner: "{{ ansible_user_id }}"
+      with_items:
+        - "Work"
+        - "Private"
 
-- name: Install .desktop file
-  copy:
-    src: "{{ item }}"
-    dest: "{{ ansible_user_dir }}/.local/share/applications/{{ item }}"
-    owner: "{{ ansible_user_id }}"
-  with_items:
-    - "firefox-private.desktop"
-    - "firefox-work.desktop"
-    - "open-link.desktop"
-  tags:
-    - firefox
+    - name: Install .desktop file
+      copy:
+        src: "{{ item }}"
+        dest: "{{ ansible_user_dir }}/.local/share/applications/{{ item }}"
+        owner: "{{ ansible_user_id }}"
+      with_items:
+        - "firefox-private.desktop"
+        - "firefox-work.desktop"
+        - "open-link.desktop"
 
-- name: Remove hardcoded prefs
-  become: yes
-  file:
-    path: "{{ item }}"
-    state: absent
-  with_items:
-    - /usr/lib/firefox/defaults/pref/autoconfig.js
-    - /usr/lib/firefox/mozilla.cfg
-  tags:
-    - firefox
+    - name: Remove hardcoded prefs
+      become: yes
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /usr/lib/firefox/defaults/pref/autoconfig.js
+        - /usr/lib/firefox/mozilla.cfg
 
-- name: Ensure environment config dir exists
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.config/environment.d/"
-    mode: 0750
-    state: directory
-  when: display_server == 'wayland'
-  tags:
-    - firefox
-    - wayland
+    - name: Ensure environment config dir exists
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/.config/environment.d/"
+        mode: 0750
+        state: directory
+      when: display_server == 'wayland'
+      tags:
+        - wayland
 
-- name: Ensure firefox is configured for wayland
-  ansible.builtin.copy:
-    dest: "{{ ansible_user_dir }}/.config/environment.d/firefox-wayland.conf"
-    mode: 0640
-    content: "MOZ_ENABLE_WAYLAND=1"
-  when: display_server == 'wayland'
-  tags:
-    - firefox
-    - wayland
+    - name: Ensure firefox is configured for wayland
+      ansible.builtin.copy:
+        dest: "{{ ansible_user_dir }}/.config/environment.d/firefox-wayland.conf"
+        mode: 0640
+        content: "MOZ_ENABLE_WAYLAND=1"
+      when: display_server == 'wayland'
+      tags:
+        - wayland
