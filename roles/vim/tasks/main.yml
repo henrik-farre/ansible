@@ -111,11 +111,10 @@
 
     # https://github.com/mhinz/neovim-remote
     - name: Install neovim-remote
-      pip:
+      become: yes
+      become_user: aur_builder
+      aur:
         name: neovim-remote
-        extra_args: --user
-        executable: pip3
-        state: latest
       when:
         - ansible_facts.distribution != "Debian"
 
