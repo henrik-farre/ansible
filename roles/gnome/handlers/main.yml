@@ -1,0 +1,5 @@
+---
+- name: Remove gnome first start done file
+  file:
+    path: "{{ ansible_user_dir }}/.local/bin/gnome-first-start.sh.done"
+    state: absent

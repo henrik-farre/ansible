@@ -1,67 +1,46 @@
 ---
-- name: Ensure packages are installed
-  become: yes
-  pacman:
-    name: "{{ packages }}"
-    state: latest
-  vars:
-    packages:
-      - gdm
-      - gnome-shell
-      - gnome-menus
-      - gnome-settings-daemon
-      - gnome-session
-      - gnome-control-center
-      - gnome-icon-theme-extras
-      - gnome-tweaks
-      - gnome-shell-extensions
-      - gnome-shell-extension-gtile
-      - gnome-shell-extension-appindicator
-      - gnome-calculator
-      - gnome-icon-theme
-      - gnome-icon-theme-symbolic
-      - gnome-keyring
-      - gnome-screenshot
+- name: Ensure Gnome is configured
   tags:
     - gnome
+  block:
+    - name: Ensure packages are installed
+      become: yes
+      pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - gdm
+          - gnome-shell
+          - gnome-menus
+          - gnome-settings-daemon
+          - gnome-session
+          - gnome-control-center
+          - gnome-icon-theme-extras
+          - gnome-tweaks
+          - gnome-shell-extensions
+          - gnome-shell-extension-gtile
+          - gnome-shell-extension-appindicator
+          - gnome-calculator
+          - gnome-icon-theme
+          - gnome-icon-theme-symbolic
+          - gnome-keyring
+          - gnome-screenshot
 
-- name: Ensure integration to extensions.gnome.org is installed
-  become_user: aur_builder
-  aur:
-    name: chrome-gnome-shell-git
-  tags:
-    - gnome
+    - name: Ensure integration to extensions.gnome.org is installed
+      become_user: aur_builder
+      aur:
+        name: chrome-gnome-shell-git
 
-#> # From pacman:
-#> gnome-extensions enable "appindicatorsupport@rgcjonas.gmail.com"
-#> GPaste@gnome-shell-extensions.gnome.org
-#> gTile@vibou
-#>
-#> # default:
-#> workspace-indicator@gnome-shell-extensions.gcampax.github.com
-#>
-#>
-#> # Download from web
-#> hidetopbar@mathieu.bidon.ca
-#> workspace-switch-wraparound@theychx.org
-#> Move_Clock@rmy.pobox.com
-#>
-#> settings:
-#>   gsettings:
-#>     org.gnome.desktop.input-sources xkb-options ['lv3:ralt_switch', 'ctrl:nocaps']
-#>     org.gnome.desktop.wm.preferences mouse-button-modifier '<Alt>'
-#>     org.gnome.desktop.interface font-hinting 'full'
-#>     org.gnome.desktop.interface font-antialiasing 'rgba'
-#
-#
-#>   dconf:
-#>     [org/gnome/desktop/input-sources]
-#>     xkb-options=['lv3:ralt_switch', 'ctrl:nocaps']
-#
-#>     [org/gnome/desktop/interface]
-#>     font-antialiasing='rgba'
-#>     font-hinting='full'
-#>
-#>     [org/gnome/desktop/wm/preferences]
-#>     mouse-button-modifier='<Alt>'
-#>
+    - name: Ensure gnome first startup script is installed
+      copy:
+        dest: "{{ ansible_user_dir }}/.local/bin/gnome-first-start.sh"
+        src: "local/bin/gnome-first-start.sh"
+        mode: 0750
+      notify: Remove gnome first start done file
+
+    - name: Ensure desktop file for first start is installed
+      template:
+        dest: "{{ ansible_user_dir }}/.config/autostart/gnome-first-start.desktop"
+        src: gnome-first-start.desktop.j2
+        mode: 0640
