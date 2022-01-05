@@ -53,3 +53,5 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ binding "<Super>n"
 
 touch ~/.local/bin/gnome-first-start.sh.done
+
+notify-send "Gnome first start was run"
