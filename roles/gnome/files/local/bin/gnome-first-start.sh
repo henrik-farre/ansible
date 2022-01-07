@@ -39,6 +39,7 @@ gsettings set org.gnome.desktop.calendar show-weekdate true
 gsettings set org.gnome.desktop.interface clock-show-weekday true
 gsettings set org.gnome.desktop.wm.preferences button-layout 'appmenu:minimize,maximize,close'
 gsettings set org.gnome.mutter center-new-windows true
+gsettings set org.gnome.desktop.wm.preferences action-middle-click-titlebar 'lower'
 
 gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/','/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/']"
 
