@@ -1,12 +1,18 @@
 ---
-- name: Set tag
+- name: Ensure memory/cpu/io monitoring/notification and handling for desktop is enabled
+  tags:
+    - desktop
   block:
     # https://github.com/rfjakob/earlyoom
-    - name: Ensure earlyoom is installed
+    - name: Ensure earlyoom and dependencies is installed
       become: yes
       pacman:
         state: latest
-        name: earlyoom
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - earlyoom
+          - systembus-notify
 
     - name: Ensure earlyoom is started and enabled
       become: yes
@@ -25,6 +31,7 @@
     - name: Install psi-notify config file
       copy:
         dest: "{{ ansible_user_dir }}/.config/psi-notify"
+        mode: 0640
         content: |
           update 5
           log_pressures false
@@ -39,6 +46,3 @@
         state: started
         enabled: yes
         scope: user
-  # block
-  tags:
-    - desktop
