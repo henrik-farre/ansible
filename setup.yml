@@ -121,6 +121,7 @@
   roles:
     - powersave
     - bluetooth
+    - apparmor
 
 - hosts: thinkpad
   gather_facts: no
