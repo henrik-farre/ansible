@@ -28,4 +28,8 @@ HOOKS+=(consolefont)
 {% if ansible_facts.cmdline.cryptdevice is defined %}
 HOOKS+=(encrypt)
 {% endif %}
-HOOKS+=(modconf block filesystems fsck)
+HOOKS+=(modconf block filesystems)
+{% if ansible_facts.cmdline.resume is defined %}
+HOOKS+=(resume)
+{% endif %}
+HOOKS+=(fsck)
