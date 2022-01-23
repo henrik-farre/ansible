@@ -14,6 +14,14 @@
           - earlyoom
           - systembus-notify
 
+    - name: Ensure earlyoom is configured correctly
+      lineinfile:
+        dest: "/etc/default/earlyoom"
+        regexp: 'EARLYOOM_ARGS='
+        line: "EARLYOOM_ARGS=\"-m 5 -r 3600 -n --avoid '(^|/)(init|systemd|Xorg|sshd)$'\""
+        firstmatch: yes
+        state: present
+
     - name: Ensure earlyoom is started and enabled
       become: yes
       systemd:
