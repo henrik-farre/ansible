@@ -26,6 +26,7 @@
           - gnome-icon-theme-symbolic
           - gnome-keyring
           - gnome-screenshot
+          - xdg-desktop-portal-gnome
           - nautilus
 
     - name: Ensure integration to extensions.gnome.org is installed

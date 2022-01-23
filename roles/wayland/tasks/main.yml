@@ -42,7 +42,6 @@
           - wl-clipboard
           - qt5-wayland
           - xorg-xlsclients
-          - xdg-desktop-portal-gtk # Needed for WebRTC screen sharing
 
     # https://linuxreviews.org/Intel_graphics#Hardware_Video_Decoding_.2F_Encoding
     - name: Install Intel related packages
