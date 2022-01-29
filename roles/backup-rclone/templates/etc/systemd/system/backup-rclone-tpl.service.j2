@@ -1,0 +1,10 @@
+[Unit]
+Description=Rclone backup: {{ item.name }}
+Requires=docker.service
+After=docker.service network-online.target
+Wants=network-online.target
+OnFailure=status-email@%n.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/rclone copy --immutable --exclude ".DS_Store" --max-age 1y --no-traverse --verbose --transfers 16 --log-systemd {{ item.src }} {{ item.dest }}:

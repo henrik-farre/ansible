@@ -115,6 +115,7 @@
     - kodi-shutdown-check
     - unifi-controller-backup
     - getmail
+    - backup-rclone
 
 - hosts: laptop
   gather_facts: no

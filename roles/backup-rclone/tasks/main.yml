@@ -1,0 +1,64 @@
+---
+- name: Ensure rclone is configured for backup
+  become: yes
+  tags:
+    - backup-rclone
+    - backup
+  block:
+    - name: Ensure vaulted vars are loaded
+      include_vars:
+        file: rclone.yml.vault
+
+    - name: Ensure rclone is installed
+      pacman:
+        name: rclone
+        state: latest
+
+    - name: Ensure config directory exists
+      file:
+        state: directory
+        path: /root/.config/rclone/
+        mode: 0700
+
+    - name: Copy config file
+      copy:
+        dest: /root/.config/rclone/rclone.conf
+        src: dot.config/rclone/rclone.conf.vault
+        mode: 0500
+
+    - name: Install systemd services
+      become: true
+      template:
+        src: "etc/systemd/system/backup-rclone-tpl.service.j2"
+        dest: "/etc/systemd/system/backup-rclone-{{ item.name }}.service"
+        owner: root
+        mode: 0644
+      loop: "{{ backup_rclone_backups }}"
+
+    - name: Install systemd timers
+      become: true
+      template:
+        src: "etc/systemd/system/backup-rclone-tpl.timer.j2"
+        dest: "/etc/systemd/system/backup-rclone-{{ item.name }}.timer"
+        owner: root
+        mode: 0644
+      loop: "{{ backup_rclone_backups }}"
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable systemd services
+      become: true
+      systemd:
+        name: "backup-rclone-{{ item.name }}.service"
+        enabled: yes
+      loop: "{{ backup_rclone_backups }}"
+
+    - name: Enable systemd timers
+      become: true
+      systemd:
+        name: "backup-rclone-{{ item.name }}.timer"
+        enabled: yes
+        state: started
+      loop: "{{ backup_rclone_backups }}"
