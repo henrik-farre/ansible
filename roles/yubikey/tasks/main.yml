@@ -1,19 +1,33 @@
-- name: Ensure yubikey related packages are installed
-  become: yes
-  pacman:
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - yubikey-manager-qt
-      - yubikey-personalization-gui
-      - pam-u2f
-      - libfido2
+---
+- name: Ensure yubikey is configured
+  tags:
+    - yubikey
+  block:
+    - name: Ensure yubikey related packages are installed
+      become: yes
+      pacman:
+        state: latest
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - yubikey-manager-qt
+          - yubikey-personalization-gui
+          - pam-u2f
+          - libfido2
 
-- name: Ensure pcscd is enabled and started
-  become: yes
-  systemd:
-    name: pcscd.socket
-    state: started
-    enabled: yes
-    daemon_reload: yes
+    - name: Ensure pcscd is enabled and started
+      become: yes
+      systemd:
+        name: pcscd.socket
+        state: started
+        enabled: yes
+        daemon_reload: yes
+
+    - name: Prepare yubikey config
+      file:
+        path: "{{ ansible_user_dir }}/.config/Yubico"
+        state: directory
+        mode: 0700
+
+# pamu2fcfg -o pam://subsurface -i pam://subsurface > ~/.config/Yubico/u2f_keys
+# pamu2fcfg -o pam://subsurface -i pam://subsurface -n >> ~/.config/Yubico/u2f_keys
