@@ -7,4 +7,4 @@ OnFailure=status-email@%n.service
 
 [Service]
 Type=oneshot
-ExecStart=/usr/bin/rclone copy --immutable --exclude ".DS_Store" --max-age 1y --no-traverse --verbose --transfers 16 --log-systemd {{ item.src }} {{ item.dest }}:
+ExecStart=/usr/bin/rclone copy --immutable --exclude ".DS_Store" --max-age 1y --no-traverse --verbose --transfers 4 --checkers 3 --log-systemd {{ item.src }} {{ item.dest }}:
