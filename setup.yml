@@ -122,6 +122,7 @@
     - powersave
     - bluetooth
     - apparmor
+    - secureboot
 
 - hosts: thinkpad
   gather_facts: no
