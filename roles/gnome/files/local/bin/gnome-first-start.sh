@@ -33,6 +33,7 @@ gsettings set org.gnome.mutter dynamic-workspaces false
 gsettings set org.gnome.mutter center-new-windows true
 
 # Window manager keybindings
+gsettings set org.gnome.shell.keybindings toggle-message-tray "@as []"
 gsettings set org.gnome.desktop.wm.keybindings toggle-maximized "['<Super>m']"
 gsettings set org.gnome.desktop.wm.keybindings maximize-horizontally "['<Super>h']"
 gsettings set org.gnome.desktop.wm.keybindings maximize-vertically "['<Super>v']"
