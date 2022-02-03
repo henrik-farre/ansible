@@ -27,7 +27,6 @@
         mode: 0500
 
     - name: Install systemd services
-      become: true
       template:
         src: "etc/systemd/system/backup-rclone-tpl.service.j2"
         dest: "/etc/systemd/system/backup-rclone-{{ item.name }}.service"
@@ -36,7 +35,6 @@
       loop: "{{ backup_rclone_backups }}"
 
     - name: Install systemd timers
-      become: true
       template:
         src: "etc/systemd/system/backup-rclone-tpl.timer.j2"
         dest: "/etc/systemd/system/backup-rclone-{{ item.name }}.timer"
@@ -49,14 +47,12 @@
         daemon_reload: yes
 
     - name: Enable systemd services
-      become: true
       systemd:
         name: "backup-rclone-{{ item.name }}.service"
         enabled: yes
       loop: "{{ backup_rclone_backups }}"
 
     - name: Enable systemd timers
-      become: true
       systemd:
         name: "backup-rclone-{{ item.name }}.timer"
         enabled: yes
