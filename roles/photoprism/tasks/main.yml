@@ -1,0 +1,64 @@
+---
+- name: Ensure photoprism is configured
+  become: yes
+  tags:
+    - photoprism
+  block:
+    - name: Install photoprism backup script
+      copy:
+        dest: /usr/local/bin/backup-photoprism.sh
+        content: |
+          #!/bin/bash
+          /usr/bin/docker-compose exec --no-TTY photoprism photoprism backup --index - | gzip > /shared/backup/photoprism/$(date +"%Y-%m-%d").sql.gz
+          /usr/bin/docker-compose exec --no-TTY photoprism photoprism backup --albums --albums-path /photoprism/storage/albums-backup/
+          /usr/bin/tar Jcvf /shared/backup/photoprism/$(date +"%Y-%m-%d")-albums-backup.xz /shared/docker-volumes/photoprism/storage/albums-backup
+        mode: 0750
+
+    - name: Install systemd services for backup
+      copy:
+        dest: /etc/systemd/system/backup-photoprism.service
+        content: |
+          [Unit]
+          Description=Backup Photoprism database
+          OnFailure=status-email@%n.service
+
+          [Service]
+          WorkingDirectory=/usr/local/etc/photoprism
+
+          Type=oneshot
+          ExecStart=/usr/local/bin/backup-photoprism.sh
+        owner: root
+        mode: 0644
+
+    - name: Install systemd timers
+      copy:
+        dest: "/etc/systemd/system/backup-photoprism.timer"
+        content: |
+          [Unit]
+          Description=Backup photoprism
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          OnCalendar=monthly
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Reload systemd
+      systemd:
+        daemon_reload: yes
+
+    - name: Enable systemd services
+      systemd:
+        name: "backup-photoprism.service"
+        enabled: yes
+
+    - name: Enable systemd timers
+      systemd:
+        name: "backup-photoprism.timer"
+        enabled: yes
+        state: started

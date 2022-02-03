@@ -116,6 +116,7 @@
     - unifi-controller-backup
     - getmail
     - backup-rclone
+    - photoprism
 
 - hosts: laptop
   gather_facts: no
