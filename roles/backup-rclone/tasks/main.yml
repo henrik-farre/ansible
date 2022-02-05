@@ -25,22 +25,47 @@
         dest: /root/.config/rclone/rclone.conf
         src: dot.config/rclone/rclone.conf.vault
         mode: 0500
+      no_log: true
 
-    - name: Install systemd services
-      template:
-        src: "etc/systemd/system/backup-rclone-tpl.service.j2"
-        dest: "/etc/systemd/system/backup-rclone-{{ item.name }}.service"
+    - name: Ensure local systemd directory exists
+      file:
+        state: directory
+        path: /usr/local/lib/systemd/system
+        mode: 0755
+
+    - name: Install systemd service template
+      copy:
+        dest: "/usr/local/lib/systemd/system/backup-rclone@.service"
+        content: |
+          [Unit]
+          Description=Rclone backup: %i
+          Wants=network-online.target
+          OnFailure=status-email@%n.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/rclone copy --immutable --exclude ".DS_Store" --max-age 1y --no-traverse --verbose --transfers 4 --checkers 3 --log-systemd /shared/%i/ remote_%i_crypt:
         owner: root
         mode: 0644
-      loop: "{{ backup_rclone_backups }}"
 
-    - name: Install systemd timers
-      template:
-        src: "etc/systemd/system/backup-rclone-tpl.timer.j2"
-        dest: "/etc/systemd/system/backup-rclone-{{ item.name }}.timer"
+    - name: Install systemd timer template
+      copy:
+        dest: "/usr/local/lib/systemd/system/backup-rclone@.timer"
+        content: |
+          [Unit]
+          Description=Rclone backup: %i
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          OnCalendar=weekly
+          Persistent=True
+          RandomizedDelaySec=600
+
+          [Install]
+          WantedBy=timers.target
         owner: root
         mode: 0644
-      loop: "{{ backup_rclone_backups }}"
 
     - name: Reload systemd
       systemd:
@@ -48,13 +73,13 @@
 
     - name: Enable systemd services
       systemd:
-        name: "backup-rclone-{{ item.name }}.service"
+        name: "backup-rclone@{{ item.name }}.service"
         enabled: yes
       loop: "{{ backup_rclone_backups }}"
 
     - name: Enable systemd timers
       systemd:
-        name: "backup-rclone-{{ item.name }}.timer"
+        name: "backup-rclone@{{ item.name }}.timer"
         enabled: yes
         state: started
       loop: "{{ backup_rclone_backups }}"
