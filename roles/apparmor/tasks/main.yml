@@ -62,8 +62,14 @@
         - apparmor
         - auditd
 
+- name: Install desktop dependencies for AppArmor
+  tags:
+    - apparmor
+    - apparmor-desktop
+  when:
+    - display_server is defined
+  block:
     - name: Ensure notifications for apparmor denied are enabled
-      become: no
       copy:
         dest: "{{ ansible_user_dir }}/.config/autostart/apparmor-notify.desktop"
         content: |

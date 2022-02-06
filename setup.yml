@@ -112,6 +112,7 @@
 - hosts: htpc
   gather_facts: no
   roles:
+    - apparmor
     - kodi-shutdown-check
     - unifi-controller-backup
     - getmail
