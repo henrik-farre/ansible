@@ -46,6 +46,7 @@
   gather_facts: no
   roles:
     - bootloader
+    - pacman
     - hddtemp
     - sysctl
     - journald
