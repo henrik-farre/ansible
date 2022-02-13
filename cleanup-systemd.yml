@@ -1,0 +1,26 @@
+---
+- name: Cleanup systemd before moving to /usr/local
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Disable
+      systemd:
+        name: "{{ item }}"
+        enabled: no
+        state: stopped
+      loop:
+        - paccache-delete-uninstalled.timer
+        - paccache-delete-oldversions.timer
+        - paccache-delete-uninstalled.service
+        - paccache-delete-oldversions.service
+
+    - name: remove
+      file:
+        path: "/etc/systemd/system/{{ item }}"
+        state: absent
+      loop:
+        - paccache-delete-uninstalled.timer
+        - paccache-delete-oldversions.timer
+        - paccache-delete-uninstalled.service
+        - paccache-delete-oldversions.service
