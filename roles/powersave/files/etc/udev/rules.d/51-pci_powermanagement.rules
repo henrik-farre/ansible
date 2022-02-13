@@ -1,0 +1,2 @@
+# Managed by Ansible
+SUBSYSTEM=="pci", ATTR{power/control}="auto"
