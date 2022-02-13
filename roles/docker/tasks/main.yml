@@ -1,170 +1,142 @@
 ---
-- name: Install Docker-CE on Debian
-  include_tasks: Debian.yml
-  when: ansible_facts.distribution == "Debian"
+- name: Ensure docker is installed and configured
   tags:
     - docker
+  block:
+    - name: Install Docker-CE on Debian
+      include_tasks: Debian.yml
+      when: ansible_facts.distribution == "Debian"
 
-- name: Install Docker-CE on Archlinux
-  include_tasks: Archlinux.yml
-  when: ansible_facts.distribution == "Archlinux"
-  tags:
-    - docker
+    - name: Install Docker-CE on Archlinux
+      include_tasks: Archlinux.yml
+      when: ansible_facts.distribution == "Archlinux"
 
-- name: Ensure docker directory exists
-  become: yes
-  file:
-    path: /etc/docker
-    state: directory
-    owner: root
-    group: docker
-    mode: 0750
-  tags:
-    - docker
+    - name: Ensure docker directory exists
+      become: yes
+      file:
+        path: /etc/docker
+        state: directory
+        owner: root
+        group: docker
+        mode: 0750
 
-- name: Ensure correct storage driver is configured
-  become: yes
-  copy:
-    dest: /etc/docker/daemon.json
-    content: "{{ docker_daemon_options|to_nice_json }}"
-    owner: root
-    group: docker
-    mode: 0640
-  notify: Restart docker daemon
-  tags:
-    - docker
+    - name: Ensure correct storage driver is configured
+      become: yes
+      copy:
+        dest: /etc/docker/daemon.json
+        content: "{{ docker_daemon_options|to_nice_json }}"
+        owner: root
+        group: docker
+        mode: 0640
+      notify: Restart docker daemon
 
-- name: Check if devicemapper directory exist
-  become: yes
-  stat:
-    path: /var/lib/docker/devicemapper
-  register: docker_devicemapper
-  tags:
-    - docker
+    - name: Check if devicemapper directory exist
+      become: yes
+      stat:
+        path: /var/lib/docker/devicemapper
+      register: docker_devicemapper
 
-- name: Ensure docker is stopped before removing devicemapper
-  become: yes
-  systemd:
-    name: docker
-    state: stopped
-  when:
-    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
-  tags:
-    - docker
+    - name: Ensure docker is stopped before removing devicemapper
+      become: yes
+      systemd:
+        name: docker
+        state: stopped
+      when:
+        - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
 
-- name: Ensure devicemapper directory is removed
-  become: yes
-  file:
-    path: /var/lib/docker/devicemapper
-    state: absent
-  when:
-    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
-  tags:
-    - docker
+    - name: Ensure devicemapper directory is removed
+      become: yes
+      file:
+        path: /var/lib/docker/devicemapper
+        state: absent
+      when:
+        - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
 
-- name: Ensure docker is restarted
-  meta: flush_handlers
+    - name: Ensure docker is restarted
+      meta: flush_handlers
 
-- name: Ensure docker is started
-  become: yes
-  systemd:
-    name: docker
-    state: started
-    enabled: yes
-  when:
-    - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
-  tags:
-    - docker
+    - name: Ensure docker is started
+      become: yes
+      systemd:
+        name: docker
+        state: started
+        enabled: yes
+      when:
+        - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
 
-- name: Remove old cronjob
-  become: yes
-  cron:
-    state: absent
-    name: "Clean docker"
-    special_time: weekly
-    job: "docker system prune -f"
-    user: root
-    cron_file: "docker_prune"
-  tags:
-    - docker
+    - name: Remove old cronjob
+      become: yes
+      cron:
+        state: absent
+        name: "Clean docker"
+        special_time: weekly
+        job: "docker system prune -f"
+        user: root
+        cron_file: "docker_prune"
 
-- name: Prune unused docker images, containers and more | systemd service
-  become: yes
-  copy:
-    dest: /etc/systemd/system/docker-prune.service
-    content: |
-      [Unit]
-      Description=Prune unused docker images, containers and more
+    - name: Prune unused docker images, containers and more | systemd service
+      become: yes
+      copy:
+        dest: /etc/systemd/system/docker-prune.service
+        content: |
+          [Unit]
+          Description=Prune unused docker images, containers and more
 
-      [Service]
-      Type=oneshot
-      ExecStart=/usr/bin/docker system prune -f
-    owner: root
-    mode: 0644
-  tags:
-    - docker
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/docker system prune -f
+        owner: root
+        mode: 0644
 
-- name: Prune unused docker images, containers and more | systemd timer
-  become: yes
-  copy:
-    dest: /etc/systemd/system/docker-prune.timer
-    content: |
-      [Unit]
-      Description=Prune unused docker images, containers and more | Weekly job
+    - name: Prune unused docker images, containers and more | systemd timer
+      become: yes
+      copy:
+        dest: /etc/systemd/system/docker-prune.timer
+        content: |
+          [Unit]
+          Description=Prune unused docker images, containers and more | Weekly job
 
-      [Timer]
-      OnCalendar=weekly
-      Persistent=true
+          [Timer]
+          OnCalendar=weekly
+          Persistent=true
 
-      [Install]
-      WantedBy=timers.target
-    owner: root
-    mode: 0644
-  tags:
-    - docker
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
 
-- name: Reload systemd
-  become: yes
-  systemd:
-    daemon_reload: yes
-  tags:
-    - docker
+    - name: Reload systemd
+      become: yes
+      systemd:
+        daemon_reload: yes
 
-- name: Enable docker socket
-  become: yes
-  systemd:
-    name: "docker.socket"
-    enabled: yes
-    state: started
-  tags:
-    - docker
+    - name: Enable docker socket
+      become: yes
+      systemd:
+        name: "docker.socket"
+        enabled: yes
+        state: started
 
-- name: Enable systemd services
-  become: yes
-  systemd:
-    name: "docker-prune.service"
-    enabled: yes
-  tags:
-    - docker
+    - name: Enable systemd services
+      become: yes
+      systemd:
+        name: "docker-prune.service"
+        enabled: yes
 
-- name: Enable systemd timers
-  become: yes
-  systemd:
-    name: "docker-prune.timer"
-    enabled: yes
-    state: started
-  tags:
-    - docker
+    - name: Enable systemd timers
+      become: yes
+      systemd:
+        name: "docker-prune.timer"
+        enabled: yes
+        state: started
 
-- name: Ensure users are members of docker group
-  become: yes
-  user:
-    name: "{{ item }}"
-    groups: docker
-    append: yes
-  with_items:
-    - "{{ groups_to_users.docker }}"
-  tags:
-    - docker
-  when:
-    - groups_to_users.docker is defined
+    - name: Ensure users are members of docker group
+      become: yes
+      user:
+        name: "{{ item }}"
+        groups: docker
+        append: yes
+      with_items:
+        - "{{ groups_to_users.docker }}"
+      when:
+        - groups_to_users.docker is defined
