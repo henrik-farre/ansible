@@ -1,91 +1,26 @@
 ---
-- name: Run tasks with become
+- name: Ensure power saving is configured
   become: yes
+  tags:
+    - powersave
   block:
-    - name: Ensure systemd-rfkill.* is masked
-      systemd:
-        name: "{{ item }}"
-        masked: true
-      with_items:
-        - systemd-rfkill.service
-        - systemd-rfkill.socket
-      tags:
-        - powersave
-
-    - name: Ensure acpi_call is installed on thinkpad hardware
-      pacman:
-        name: acpi_call-dkms
-        state: present
-      when:
-        - ansible_system_vendor == "LENOVO"
-      tags:
-        - powersave
-
-    - name: Ensure bbswitch is installed on thinkpad hardware
-      pacman:
-        name: bbswitch-dkms
-        state: latest
-      when:
-        - ansible_system_vendor == "LENOVO"
-        - ansible_product_version == "ThinkPad T490"
-      tags:
-        - powersave
-
     - name: Ensure powersave profile daemon is installed
       pacman:
         name: power-profiles-daemon
         state: latest
-      when: inventory_hostname in groups['surface']
 
     - name: Ensure powersave profile daemon is enabled and started
       ansible.builtin.systemd:
         name: power-profiles-daemon
         state: started
         enabled: yes
-      when: inventory_hostname in groups['surface']
 
-    - name: Ensure powertop is installed
+    - name: Ensure powersaving related packages are installed
       pacman:
-        name: powertop
         state: latest
-
-    - name: Include tlp tasks
-      include_tasks: tlp.yml
-      tags:
-        - powersave
-      when: inventory_hostname not in groups['surface']
-
-    # Based on https://aur.archlinux.org/cgit/aur.git/tree/macbook-wakeup.service?h=linux-macbook
-    - name: Ensure wakeup is configured on macbook pro
-      copy:
-        dest: /etc/systemd/system/macbook-wakeup.service
-        content: |
-          [Unit]
-          Description=Configure LID-only device events for linux-macbook
-          ConditionPathExists=/proc/acpi/wakeup
-          After=suspend.target
-
-          [Service]
-          Type=oneshot
-          ExecStart=/bin/sh -c "awk '$1 !~ /^LID/ && $3 ~ /enabled/ {print $1}' /proc/acpi/wakeup | xargs -I{} echo '{}' > /proc/acpi/wakeup"
-          ExecStart=/bin/sh -c "awk '$1 ~ /^LID/ && $3 ~ /disabled/ {print $1}' /proc/acpi/wakeup | xargs -I{} echo '{}' > /proc/acpi/wakeup"
-          RemainAfterExit=yes
-          TimeoutSec=0
-
-          [Install]
-          WantedBy=multi-user.target sleep.target
-        mode: 0644
-        owner: root
-        group: root
-      when: ansible_system_vendor == 'Apple Inc.'
-      tags:
-        - powersave
-
-    - name: Enable systemd services
-      systemd:
-        name: "macbook-wakeup.service"
-        enabled: yes
-        daemon_reload: yes
-      when: ansible_system_vendor == 'Apple Inc.'
-      tags:
-        - powersave
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - 'powertop'
+          - 'ethtool'
+          - 'x86_energy_perf_policy'
