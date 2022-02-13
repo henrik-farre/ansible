@@ -14,6 +14,8 @@
         - paccache-delete-oldversions.timer
         - paccache-delete-uninstalled.service
         - paccache-delete-oldversions.service
+        - docker-prune.timer
+      ignore_errors: yes
 
     - name: remove
       file:
@@ -24,3 +26,4 @@
         - paccache-delete-oldversions.timer
         - paccache-delete-uninstalled.service
         - paccache-delete-oldversions.service
+        - docker-prune.timer

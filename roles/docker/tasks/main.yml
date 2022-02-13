@@ -77,10 +77,11 @@
     - name: Prune unused docker images, containers and more | systemd service
       become: yes
       copy:
-        dest: /etc/systemd/system/docker-prune.service
+        dest: /usr/local/lib/systemd/system/docker-prune.service
         content: |
           [Unit]
           Description=Prune unused docker images, containers and more
+          OnFailure=status-email@%n.service
 
           [Service]
           Type=oneshot
@@ -91,7 +92,7 @@
     - name: Prune unused docker images, containers and more | systemd timer
       become: yes
       copy:
-        dest: /etc/systemd/system/docker-prune.timer
+        dest: /usr/local/lib/systemd/system/docker-prune.timer
         content: |
           [Unit]
           Description=Prune unused docker images, containers and more | Weekly job
