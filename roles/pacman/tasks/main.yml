@@ -3,6 +3,9 @@
   tags:
     - pacman
   block:
+    - name: Include tasks to cleanup old ansible
+      include_tasks: cleanup.yml
+
     - name: Enable multilib repo in pacman - part 1
       lineinfile:
         path: /etc/pacman.conf
@@ -48,82 +51,32 @@
           - pacman-contrib
           - reflector
 
-    - name: Pacman cache | Remove old cron script 1
-      cron:
-        state: absent
-        name: "Clean pacman cache"
-        special_time: weekly
-        job: "paccache -rv"
-        user: root
-        cron_file: paccache
+    - name: Ensure local systemd directory exists
+      file:
+        state: directory
+        path: /usr/local/lib/systemd/system
+        mode: 0755
 
-    - name: Pacman cache | Remove old cron script 2
-      cron:
-        state: absent
-        name: "Clean pacman cache"
-        special_time: weekly
-        job: "paccache -rvuk0"
-        user: root
-        cron_file: paccache_uninstalled
-
-    # Removed, does nothing
-    - name: Ensure the pacman database is optimized monthly
-      cron:
-        state: absent
-        name: "Optimize pacman database"
-        special_time: monthly
-        job: "pacman-optimize"
-        user: root
-        cron_file: pacman-optimize
-
-    - name: Pacman cache | Only keep 2 most recent package versions | systemd service
+    - name: Pacman cache | Remove uninstalled and old packages | systemd service
       copy:
-        dest: /etc/systemd/system/paccache-delete-oldversions.service
+        dest: /usr/local/lib/systemd/system/pacman-cache-cleanup.service
         content: |
           [Unit]
-          Description=Only keep 2 most recent package versions
+          Description=Pacman cache cleanup cache
+          OnFailure=status-email@%n.service
 
           [Service]
           Type=oneshot
-          ExecStart=/usr/bin/paccache -rvk2
+          ExecStart=/usr/bin/paccache --remove --verbose --uninstalled --keep 0 ; /usr/bin/paccache --remove --verbose --keep 2
         owner: root
         mode: 0644
 
-    - name: Pacman cache | Only keep 2 most recent package versions | systemd timer
+    - name: Pacman cache | Remove uninstalled and old packages | systemd timer
       copy:
-        dest: /etc/systemd/system/paccache-delete-oldversions.timer
+        dest: /usr/local/lib/systemd/system/pacman-cache-cleanup.timer
         content: |
           [Unit]
-          Description=Pacman cache cleanup old versions | Weekly job
-
-          [Timer]
-          OnCalendar=weekly
-          Persistent=true
-
-          [Install]
-          WantedBy=timers.target
-        owner: root
-        mode: 0644
-
-    - name: Pacman cache | Remove uninstalled packages | systemd service
-      copy:
-        dest: /etc/systemd/system/paccache-delete-uninstalled.service
-        content: |
-          [Unit]
-          Description=Remove uninstalled packages from pacman cache
-
-          [Service]
-          Type=oneshot
-          ExecStart=/usr/bin/paccache -rvuk0
-        owner: root
-        mode: 0644
-
-    - name: Pacman cache | Remove uninstalled packages | systemd timer
-      copy:
-        dest: /etc/systemd/system/paccache-delete-uninstalled.timer
-        content: |
-          [Unit]
-          Description=Pacman cache cleanup uninstalled packages | Weekly job
+          Description=Pacman cache cleanup cache | Weekly job
 
           [Timer]
           OnCalendar=weekly
@@ -140,34 +93,14 @@
 
     - name: Enable systemd services
       systemd:
-        name: "paccache-delete-{{ item }}.service"
+        name: "pacman-cache-cleanup.service"
         enabled: yes
-      with_items:
-        - uninstalled
-        - oldversions
 
     - name: Enable systemd timers
       systemd:
-        name: "paccache-delete-{{ item }}.timer"
+        name: "pacman-cache-cleanup.timer"
         enabled: yes
         state: started
-      with_items:
-        - uninstalled
-        - oldversions
-
-    - name: Remove old cronjob
-      cron:
-        state: absent
-        cron_file: pacman-mirrors-rank
-        job: /usr/local/sbin/pacman-sort-mirrors.sh
-        user: root
-        special_time: daily
-        name: pacman-mirrors-rank
-
-    - name: Remove old cronjob script
-      file:
-        path: /usr/local/sbin/pacman-sort-mirrors.sh
-        state: absent
 
     - name: Ensure pacman hook directory exist
       file:
@@ -176,23 +109,12 @@
         owner: root
         mode: 0750
 
+    # No need to update mirrorlist on changes to mirrorlist - just enable timer
     # https://wiki.archlinux.org/index.php/Reflector#pacman_hook
-    - name: Ensure pacman mirrorlist hook is present
-      copy:
-        dest: /etc/pacman.d/hooks/mirrorupgrade.hook
-        content: |
-          [Trigger]
-          Operation = Upgrade
-          Type = Package
-          Target = pacman-mirrorlist
-
-          [Action]
-          Description = Updating pacman-mirrorlist with reflector and removing pacnew...
-          When = PostTransaction
-          Depends = reflector
-          Exec = /bin/sh -c 'systemctl start reflector.service; if [ -f /etc/pacman.d/mirrorlist.pacnew ]; then rm /etc/pacman.d/mirrorlist.pacnew; fi'
-        owner: root
-        mode: 0750
+    - name: Ensure pacman mirrorlist hook is absent
+      file:
+        path: /etc/pacman.d/hooks/mirrorupgrade.hook
+        state: absent
 
     - name: Reflector config
       lineinfile:
@@ -207,3 +129,9 @@
         state: present
         regexp: '--sort'
         line: '--sort rate'
+
+    - name: Enable systemd timers
+      systemd:
+        name: "reflector.timer"
+        enabled: yes
+        state: started
