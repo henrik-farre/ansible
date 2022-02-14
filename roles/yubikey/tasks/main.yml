@@ -12,6 +12,7 @@
         packages:
           - yubikey-manager-qt
           - yubikey-personalization-gui
+          - yubioath-desktop
           - pam-u2f
           - libfido2
 
@@ -29,5 +30,11 @@
         state: directory
         mode: 0700
 
-# pamu2fcfg -o pam://subsurface -i pam://subsurface > ~/.config/Yubico/u2f_keys
-# pamu2fcfg -o pam://subsurface -i pam://subsurface -n >> ~/.config/Yubico/u2f_keys
+    - name: Ensure yubioath-desktop is auto started on login
+      file:
+        state: link
+        src: /usr/share/applications/com.yubico.yubioath.desktop
+        path: "{{ ansible_user_dir }}/.config/autostart/com.yubico.yubioath.desktop"
+
+# pamu2fcfg -o pam://$(hostname) -i pam://$(hostname) > ~/.config/Yubico/u2f_keys
+# pamu2fcfg -o pam://$(hostname) -i pam://$(hostname) -n >> ~/.config/Yubico/u2f_keys
