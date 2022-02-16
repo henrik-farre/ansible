@@ -1,6 +1,5 @@
 ---
 - name: GPG config
-  become: true
   copy:
     content: |
       pinentry-mode loopback
@@ -12,7 +11,6 @@
     - backup
 
 - name: Import gpg keys, devault
-  become: true
   copy:
     src: "root/gpg/private.asc.vault"
     dest: "/root/.gnupg/private.asc"
@@ -23,7 +21,6 @@
     - backup
 
 - name: Import ownertrust, devault
-  become: true
   copy:
     src: "root/gpg/ownertrust.vault"
     dest: "/root/.gnupg/ownertrust"
@@ -34,7 +31,6 @@
     - backup
 
 - name: Import gpg keys
-  become: true
   shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc # noqa 306
   args:
     chdir: "/root/.gnupg"
@@ -42,7 +38,6 @@
     - backup
 
 - name: Import ownertrust
-  become: true
   shell: gpg --import-ownertrust ownertrust # noqa 305
   args:
     chdir: "/root/.gnupg"

@@ -1,158 +1,166 @@
 ---
-- block:
-  - name: Include cleanup tasks
-    include_tasks: cleanup.yml
-    tags:
-      - backup
+- name: Ensure duplicity is configured for backup
+  become: yes
+  tags:
+    - backup
+    - duplicity-backup
+  block:
+    - name: Include cleanup tasks
+      include_tasks: cleanup.yml
 
-  - name: Ensure directory exist
-    become: true
-    file:
-      path: /usr/local/etc/duplicity-docker
-      mode: 0750
-      owner: root
-      group: docker
-      state: directory
-    tags:
-      - backup
+    - name: Ensure directory exist
+      file:
+        path: /usr/local/etc/duplicity-docker
+        mode: 0750
+        owner: root
+        group: docker
+        state: directory
 
-  - name: Ensure docker compose env file exists for current host
-    become: true
-    template:
-      src: "usr/local/etc/duplicity-docker/settings.env.j2"
-      dest: "/usr/local/etc/duplicity-docker/settings.env"
-      mode: 0640
-      owner: root
-      group: docker
-    tags:
-      - backup
+    - name: Ensure docker compose env file exists for current host
+      template:
+        src: "usr/local/etc/duplicity-docker/settings.env.j2"
+        dest: "/usr/local/etc/duplicity-docker/settings.env"
+        mode: 0640
+        owner: root
+        group: docker
 
-    # Note "cmd" is for running other actions like "list", e.g.:
-    # docker-compose -f duplicity-cmd.yml run --rm duplicity list home
-  - name: Ensure docker compose files exists for current host
-    become: true
-    template:
-      src: "usr/local/etc/duplicity-docker/duplicity.yml.j2"
-      dest: "/usr/local/etc/duplicity-docker/duplicity-{{ item }}.yml"
-      mode: 0640
-      owner: root
-      group: docker
-    with_items:
-      - backup
-      - clean
-      - remove-old-inc
-      - remove-old-set
-      - cmd
-    tags:
-      - backup
+      # Note "cmd" is for running other actions like "list", e.g.:
+      # docker-compose -f duplicity-cmd.yml run --rm duplicity list home
+    - name: Ensure docker compose files exists for current host
+      template:
+        src: "usr/local/etc/duplicity-docker/duplicity.yml.j2"
+        dest: "/usr/local/etc/duplicity-docker/duplicity-{{ item }}.yml"
+        mode: 0640
+        owner: root
+        group: docker
+      with_items:
+        - backup
+        - clean
+        - remove-old-inc
+        - remove-old-set
+        - cmd
 
-  - name: Install directory excludes
-    become: true
-    copy:
-      src: "excludes/{{ item.src }}"
-      dest: "{{ item.dest }}/.duplicity_exclude"
-      owner: root
-      mode: 0400
-    with_items:
-      - "{{ duplicity.excludes }}"
-    when:
-      - duplicity.excludes is defined
-    tags:
-      - backup
+    - name: Install directory excludes
+      copy:
+        src: "excludes/{{ item.src }}"
+        dest: "{{ item.dest }}/.duplicity_exclude"
+        owner: root
+        mode: 0400
+      with_items:
+        - "{{ duplicity.excludes }}"
+      when:
+        - duplicity.excludes is defined
 
-  - name: Include ssh setup tasks
-    include_tasks: ssh_setup.yml
+    - name: Include ssh setup tasks
+      include_tasks: ssh_setup.yml
 
-  - name: Include gpg setup tasks
-    include_tasks: gpg_setup.yml
+    - name: Include gpg setup tasks
+      include_tasks: gpg_setup.yml
 
-  - name: Install systemd services
-    become: true
-    template:
-      src: "etc/systemd/system/duplicity-docker-tpl.service.j2"
-      dest: "/etc/systemd/system/duplicity-docker-{{ item }}.service"
-      owner: root
-      mode: 0644
-    with_items:
-      - backup
-      - clean
-      - remove-old-inc
-      - remove-old-set
-    tags:
-      - backup
+    - name: Install systemd services
+      copy:
+        content: |
+          [Unit]
+          Description=Duplicity Backup running in docker: performs %i
+          Requires=docker.service
+          After=docker.service network-online.target
+          Wants=network-online.target
+          OnFailure=status-email@%n.service
+          ConditionPathExistsGlob=!/var/cache/duplicity/*/lockfile.lock
 
-  - name: Install systemd timers
-    become: true
-    template:
-      src: "etc/systemd/system/duplicity-docker-tpl.timer.j2"
-      dest: "/etc/systemd/system/duplicity-docker-{{ item }}.timer"
-      owner: root
-      mode: 0644
-    with_items:
-      - backup
-      - clean
-      - remove-old-inc
-      - remove-old-set
-    tags:
-      - backup
+          [Service]
+          WorkingDirectory=/usr/local/etc/duplicity-docker
 
-  - name: Enable systemd services
-    become: true
-    systemd:
-      name: "duplicity-docker-{{ item }}.service"
-      enabled: yes
-      daemon_reload: yes
-    with_items:
-      - backup
-      - clean
-      - remove-old-inc
-      - remove-old-set
-    tags:
-      - backup
+          # Remove old containers, images and volumes
+          ExecStartPre=-/usr/bin/docker-compose -f duplicity-%i.yml down -v
+          ExecStartPre=-/usr/bin/docker-compose -f duplicity-%i.yml rm -fv
+          ExecStartPost=-/usr/bin/docker-compose -f duplicity-%i.yml down -v
 
-  - name: Enable systemd timers
-    become: true
-    systemd:
-      name: "duplicity-docker-{{ item }}.timer"
-      enabled: yes
-      state: started
-      daemon_reload: yes
-    with_items:
-      - backup
-      - clean
-      - remove-old-inc
-      - remove-old-set
-    tags:
-      - backup
+          Type=oneshot
+          ExecStart=/usr/bin/docker-compose -f duplicity-%i.yml up duplicity-%i
+        dest: "/usr/local/lib/systemd/system/duplicity-docker@.service"
+        owner: root
+        mode: 0644
+
+    - name: Install weekly systemd timers
+      copy:
+        content: |
+          [Unit]
+          Description=Duplicity: %i
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          Unit=duplicity-docker@%i.service
+          OnCalendar=weekly
+          Persistent=True
+          RandomizedDelaySec=600
+
+          [Install]
+          WantedBy=timers.target
+        dest: "/usr/local/lib/systemd/system/duplicity-docker-weekly@.timer"
+        owner: root
+        mode: 0644
+
+    - name: Install daily systemd timers
+      copy:
+        content: |
+          [Unit]
+          Description=Duplicity: %i
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          Unit=duplicity-docker@%i.service
+          OnCalendar=daily
+          Persistent=True
+          RandomizedDelaySec=600
+
+          [Install]
+          WantedBy=timers.target
+        dest: "/usr/local/lib/systemd/system/duplicity-docker-daily@.timer"
+        owner: root
+        mode: 0644
+
+    - name: Enable systemd services
+      systemd:
+        name: "duplicity-docker@{{ item }}.service"
+        enabled: yes
+        daemon_reload: yes
+      with_items:
+        - backup
+        - clean
+        - remove-old-inc
+        - remove-old-set
+
+    - name: Enable systemd timers
+      systemd:
+        name: "duplicity-docker-{{ item.schedule }}@{{ item.name }}.timer"
+        enabled: yes
+        state: started
+        daemon_reload: yes
+      loop:
+        - name: backup
+          schedule: daily
+        - name: clean
+          schedule: weekly
+        - name: remove-old-inc
+          schedule: weekly
+        - name: remove-old-set
+          schedule: weekly
 
   always:
     - name: Ensure latest docker image is pulled
       docker_image:
         name: rockhopperdk/duplicity-docker:latest
         source: pull
-      tags:
-        - backup
-
-    - name: Cleanup git clone
-      file:
-        path: /tmp/dupebackup
-        state: absent
-      delegate_to: localhost
-      tags:
-        - backup
 
     - name: Cleanup gpg keys
-      become: true
       file:
         path: "/root/.gnupg/private.asc"
         state: absent
-      tags:
-        - backup
 
     - name: Cleanup ownertrust
-      become: true
       file:
         path: "/root/.gnupg/ownertrust"
         state: absent
-      tags:
-        - backup
