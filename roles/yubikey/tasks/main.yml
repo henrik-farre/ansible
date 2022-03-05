@@ -24,6 +24,16 @@
         enabled: yes
         daemon_reload: yes
 
+    - name: Ensure usbhid is loaded
+      become: yes
+      copy:
+        dest: /etc/modules-load.d/yubikey.conf
+        mode: 0644
+        content: |
+          # Managed by Ansible
+          # Needed by Yubikey
+          usbhid
+
     - name: Prepare yubikey config
       file:
         path: "{{ ansible_user_dir }}/.config/Yubico"
