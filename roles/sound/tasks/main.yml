@@ -1,48 +1,67 @@
-- name: Ensure pipewire is installed
+- name: Configure pipewire system wide
   become: yes
-  pacman:
-    name: "{{ packages }}"
-    state: latest
-  vars:
-    packages:
-      - pipewire
-      - pipewire-pulse
-      - pipewire-alsa
-      - pipewire-media-session
   tags:
     - sound
+  block:
+    - name: Ensure pipewire is installed
+      pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - pipewire
+          - pipewire-pulse
+          - pipewire-alsa
+          - wireplumber
 
-- name: Ensure old pulseaudio services are disabled
-  become: yes
-  systemd:
-    enabled: no
-    state: stopped
-    name: "{{ item }}"
-  ignore_errors: yes
-  loop:
-    - pulseaudio.socket
-    - pulseaudio.service
-  tags:
-    - sound
+    - name: Get the list of services
+      service_facts:
 
-- name: Ensure pulseaudio related packages are uninstalled
-  become: yes
-  pacman:
-    name: "{{ packages }}"
-    state: absent
-  vars:
-    packages:
-      - pulseaudio-alsa
-      - pulseaudio
-      - pulseaudio-modules-bt-git
-      - pulseaudio-bluetooth
-  tags:
-    - sound
+    - name: Ensure old pulseaudio services are disabled
+      systemd:
+        enabled: no
+        state: stopped
+        name: "{{ item }}"
+      when: item in services
+      loop:
+        - pulseaudio.socket
+        - pulseaudio.service
 
-- name: Ensure old pulseaudio config files are removed
-  become: yes
+    - name: Ensure pulseaudio related packages are uninstalled
+      pacman:
+        name: "{{ packages }}"
+        state: absent
+      vars:
+        packages:
+          - pulseaudio-alsa
+          - pulseaudio
+          - pulseaudio-modules-bt-git
+          - pulseaudio-bluetooth
+
+- name: Ensure wireplumber config directory exists
   file:
-    path: /etc/pulse/
-    state: absent
+    path: "{{ ansible_user_dir }}/.config/wireplumber/main.lua.d/"
+    state: directory
+    mode: 0750
+  tags:
+    - sound
+
+- name: Ensure USB audio in Thinkpad dock is disabled
+  copy:
+    dest: "{{ ansible_user_dir }}/.config/wireplumber/main.lua.d/51-alsa-disable.lua"
+    content: |
+      rule = {
+        matches = {
+          {
+            { "device.name", "equals", "alsa_card.usb-Lenovo_ThinkPad_Thunderbolt_3_Dock_USB_Audio_000000000000-00" },
+          },
+        },
+        apply_properties = {
+          ["device.disabled"] = true,
+        },
+      }
+
+      table.insert(alsa_monitor.rules,rule)
+    mode: 0640
   tags:
     - sound
