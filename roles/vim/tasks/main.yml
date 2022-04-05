@@ -57,6 +57,8 @@
           - vscode-html-languageserver
           - vscode-json-languageserver
           - yaml-language-server
+          - python-lsp-server
+          - python-rope
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure correct Java version to install groovy-language-server-git
