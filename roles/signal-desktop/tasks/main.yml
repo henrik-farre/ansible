@@ -1,25 +1,38 @@
 ---
 - name: Ensure signal-desktop is installed
   become: yes
-  pacman:
+  ansible.builtin.pacman:
     state: latest
     name: signal-desktop
   tags:
     - signal-desktop
 
-- name: Ensure signal-desktop is autostarted on login and stayes in tray
-  copy:
-    dest: "{{ ansible_user_dir }}/.config/autostart/signal-desktop.desktop"
+- name: Ensure signal-desktop desktop entry is configured to use wayland
+  ansible.builtin.copy:
+    dest: "{{ ansible_user_dir }}/.local/share/applications/signal-desktop.desktop"
+    mode: 0640
     content: |
-      #!/usr/bin/env xdg-open
       [Desktop Entry]
       Type=Application
-      Name=Signal (Tray)
-      GenericName=Messenger (tray mode)
-      Comment=Signal Private Messenger (Start in Tray)
-      Icon=signal
-      Exec=signal-desktop --start-in-tray
-      Categories=Network;Messenger;
-      StartupNotify=false
+      Name=Signal
+      Comment=Signal - Private Messenger
+      Comment[de]=Signal - Sicherer Messenger
+      Icon=signal-desktop
+      Exec=signal-desktop --start-in-tray --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland -- %u
+      Terminal=false
+      Categories=Network;InstantMessaging;
+      StartupWMClass=Signal
+      MimeType=x-scheme-handler/sgnl;
+      Keywords=sgnl;chat;im;messaging;messenger;sms;security;privat;
+      X-GNOME-UsesNotifications=true
+  tags:
+    - signal-desktop
+    - wayland
+
+- name: Ensure signal-desktop is autostarted on login and stayes in tray
+  ansible.builtin.copy:
+    src: "{{ ansible_user_dir }}/.local/share/applications/signal-desktop.desktop"
+    dest: "{{ ansible_user_dir }}/.config/autostart/signal-desktop.desktop"
+    state: link
   tags:
     - signal-desktop
