@@ -22,10 +22,7 @@
           - gnome-shell-extension-gtile
           - gnome-shell-extension-appindicator
           - gnome-calculator
-          - gnome-icon-theme
-          - gnome-icon-theme-symbolic
           - gnome-keyring
-          - gnome-screenshot
           - xdg-desktop-portal-gnome
           - nautilus
 
