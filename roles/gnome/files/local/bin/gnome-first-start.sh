@@ -74,6 +74,8 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/ command "1password --quick-access"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/ binding "<Ctrl><Shift>Q"
 
+# Font settings
+gsettings set org.gnome.desktop.interface font-antialiasing 'rgba'
 
 touch ~/.local/bin/gnome-first-start.sh.done
 
