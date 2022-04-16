@@ -43,3 +43,25 @@
         dest: "{{ ansible_user_dir }}/.config/autostart/gnome-first-start.desktop"
         src: gnome-first-start.desktop.j2
         mode: 0640
+
+    - name: Check if gtk4 settings exists
+      ansible.builtin.stat:
+        path: "{{ ansible_user_dir }}/.config/gtk-4.0/settings.ini"
+      register: gtk4_settings
+
+    - name: Ensure gtk 4 font settings are set
+      ansible.builtin.lineinfile:
+        path: "{{ ansible_user_dir }}/.config/gtk-4.0/settings.ini"
+        state: present
+        regexp: '^gtk-hint-font-metrics=.*'
+        line: 'gtk-hint-font-metrics=1'
+      when: gtk4_settings.stat.exists
+
+    - name: Ensure gtk 4 font settings are set
+      ansible.builtin.copy:
+        dest: "{{ ansible_user_dir }}/.config/gtk-4.0/settings.ini"
+        content: |
+          [Settings]
+          gtk-hint-font-metrics=1
+        mode: 0640
+      when: not gtk4_settings.stat.exists
