@@ -145,3 +145,4 @@ aur_package_groups:
     - aws-cli-v2-bin
     - asdf-vm
     - tflint-bin
+    - ugrep

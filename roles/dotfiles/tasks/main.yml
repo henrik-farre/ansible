@@ -84,6 +84,7 @@
     - ".pearrc"
     - ".screenrc"
     - ".tflint.hcl"
+    - ".ugrep"
     - ".zshrc"
     - "bin"
     - ".local/share/barrier/.barrier.conf"
