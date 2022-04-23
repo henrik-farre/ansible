@@ -93,8 +93,6 @@ package_groups:
     - aspell
     # aspell-da is in aur
     - aspell-en
-    - barrier
-    - barrier-headless
     - evince
     # Needed by Remmina
     - freerdp
