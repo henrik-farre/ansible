@@ -102,7 +102,7 @@
     - ".config/npm"
     - ".tflint.hcl"
     - ".ugrep"
-    - ".zshrc"
+    - ".config/zsh"
     - "bin"
   tags:
     - dotfiles
