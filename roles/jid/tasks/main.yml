@@ -1,0 +1,26 @@
+- name: Find latest release of jid
+  uri:
+    url: https://api.github.com/repos/simeji/jid/releases/latest
+    return_content: true
+  register: json_response
+  tags:
+    - jid
+
+- name: Ensure ~/.local/bin directory exist
+  file:
+    path: "{{ ansible_user_dir }}/.local/bin"
+    state: directory
+    mode: 0700
+  tags:
+    - jid
+
+- name: Download latest release of jid
+  unarchive:
+    src: "{{ item.browser_download_url }}"
+    dest: "{{ ansible_user_dir }}/.local/bin/"
+    remote_src: yes
+    mode: 0750
+  loop: "{{ json_response.json.assets }}"
+  when: item.name == 'jid_linux_amd64.zip'
+  tags:
+    - jid

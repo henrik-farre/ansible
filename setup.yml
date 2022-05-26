@@ -92,6 +92,7 @@
     - desktop
     - yubikey
     - { role: bluetooth, when: has_bluetooth is defined }
+    - jid
   tasks:
     - name: Ensure files does not exist
       file:
