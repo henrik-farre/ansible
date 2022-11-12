@@ -17,6 +17,22 @@ package_groups:
     - xz
     - zip
     - p7zip
+  base_utils_debian:
+    - bash
+    - bzip2
+    - fd-find
+    - fzf
+    - gnupg
+    - gzip
+    - htop
+    - man-db
+    - ncdu
+    - silversearcher-ag
+    - tmux
+    - tree
+    - wget
+    - zip
+    - p7zip
   system_utils:
     - dmidecode
     - dosfstools

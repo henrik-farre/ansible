@@ -1,14 +1,14 @@
 ---
-- name: "Install '{{ package_group }}': {{ package_groups[package_group]|join(', ') }}"
+- name: "Install '{{ package_group }}': {{ package_groups[package_group] | join(', ') }}"
   become: true
-  community.general.pacman:
+  ansible.builtin.package:
     state: latest
     name: "{{ package_groups[package_group] }}"
   when:
     - package_group is defined
     - package_groups[package_group] is defined
 
-- name: "Install AUR '{{ aur_package_group }}': {{ aur_package_groups[aur_package_group]|join(', ') }}"
+- name: "Install AUR '{{ aur_package_group }}': {{ aur_package_groups[aur_package_group] | join(', ') }}"
   become: true
   become_user: aur_builder
   aur:
@@ -16,3 +16,4 @@
   when:
     - aur_package_group is defined
     - aur_package_groups[aur_package_group] is defined
+    - ansible_facts.distribution == "Archlinux"
