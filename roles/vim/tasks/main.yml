@@ -61,6 +61,7 @@
 
     - name: Ensure correct Java version to install groovy-language-server-git
       command: "archlinux-java set java-11-openjdk"
+      when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure Neovim language servers are installed (from AUR)
       become_user: aur_builder
@@ -116,7 +117,7 @@
       aur:
         name: neovim-remote
       when:
-        - ansible_facts.distribution != "Debian"
+        - ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure python2 modules are installed on macos
       ansible.builtin.pip:
