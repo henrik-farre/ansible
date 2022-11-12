@@ -32,6 +32,6 @@
     - name: Ensure directory for history exists
       become: false
       ansible.builtin.file:
-        path: "{{ ansible_user_dir }}.local/share/zsh/"
+        path: "{{ ansible_user_dir }}/.local/share/zsh/"
         state: directory
         mode: 0700
