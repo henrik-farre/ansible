@@ -1,6 +1,6 @@
 ---
 - name: Ensure sudo is installed
-  become: yes
+  become: true
   package:
     name: sudo
     state: latest
@@ -8,7 +8,7 @@
 # TODO: ensure users are in wheel/sudo group
 # Using multiline for content is important, sudo needs newline
 - name: Enable sudo access for wheel group
-  become: yes
+  become: true
   copy:
     content: |
       %wheel ALL=(ALL) ALL
@@ -20,7 +20,7 @@
     - sudo
 
 - name: Enable sudo access for sudo group
-  become: yes
+  become: true
   copy:
     content: |
       %wheel ALL=(ALL) ALL
@@ -32,7 +32,7 @@
     - sudo
 
 - name: Use neovim as editor
-  become: yes
+  become: true
   copy:
     content: |
       Defaults editor="/bin/nvim"
@@ -45,7 +45,7 @@
 
 # https://wiki.archlinux.org/index.php/Sudo#Disable_per-terminal_sudo
 - name: Disable pr. tty sudo
-  become: yes
+  become: true
   copy:
     content: |
       Defaults !tty_tickets
@@ -55,7 +55,7 @@
     - sudo
 
 - name: Cmnd Aliases with no password for wheel
-  become: yes
+  become: true
   copy:
     content: |
       Cmnd_Alias  POWER       =   /usr/bin/shutdown -h now, /usr/bin/shutdown -r now, /usr/bin/halt, /usr/bin/poweroff, /usr/bin/reboot

@@ -1,23 +1,22 @@
 ---
-- name: Set timezone to Europe/Copenhagen
-  become: yes
-  timezone:
-    name: Europe/Copenhagen
+- name: Configure timezone
+  become: true
   tags:
     - timezone
+  block:
+    - name: Set timezone to Europe/Copenhagen
+      community.general.timezone:
+        name: Europe/Copenhagen
 
-# https://news.ycombinator.com/item?id=13697555
-# Slack and MS teams do not understand if TZ points to a file prefixed with :
-# man timezone
-- name: Set TZ env
-  become: yes
-  copy:
-    content: |
-              # Managed by Ansible
-              export TZ="Europe/Copenhagen"
-    dest: /etc/profile.d/tz.sh
-    owner: root
-    group: root
-    mode: 0755
-  tags:
-    - timezone
+    # https://news.ycombinator.com/item?id=13697555
+    # Slack and MS teams do not understand if TZ points to a file prefixed with :
+    # man timezone
+    - name: Set TZ env
+      ansible.builtin.copy:
+        content: |
+                  # Managed by Ansible
+                  export TZ="Europe/Copenhagen"
+        dest: /etc/profile.d/tz.sh
+        owner: root
+        group: root
+        mode: 0755

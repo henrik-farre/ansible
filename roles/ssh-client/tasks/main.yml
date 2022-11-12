@@ -1,6 +1,6 @@
 ---
 - name: Ensure ~/.ssh exists
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.ssh"
     owner: "{{ ansible_user_id }}"
     state: directory
@@ -9,16 +9,17 @@
     - ssh-client
 
 - name: Ensure default settings for ssh exists in ~/.ssh/config
-  blockinfile:
+  ansible.builtin.blockinfile:
     dest: "{{ ansible_user_dir }}/.ssh/config"
     create: yes
     block: "{{ lookup('template', 'templates/dot.ssh/config.j2') }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK default_settings"
+    mode: 0600
   tags:
     - ssh-client
 
 - name: Ensure ~/.ssh/config has correct permissions
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.ssh/config"
     owner: "{{ ansible_user_id }}"
     mode: 0600

@@ -1,5 +1,3 @@
 ---
 dependencies:
-  - { role: packages, packages: ['zsh', 'zsh-completions'], when: ansible_facts.distribution == "Archlinux" }
-  - { role: packages, packages: ['zsh'], when: ansible_facts.distribution == "Debian" }
   - role: sudo

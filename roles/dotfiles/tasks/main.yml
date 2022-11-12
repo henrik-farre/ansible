@@ -1,108 +1,112 @@
 ---
-- name: Ensure directories exist
-  file:
-    path: "{{ ansible_user_dir }}/{{ item }}"
-    owner: "{{ ansible_user_id }}"
-    state: directory
-    mode: 0700
-  with_items:
-    - ".config"
-    - ".config/fontconfig"
-    - ".local"
+- name: Ensure dotfiles are deployed
   tags:
     - dotfiles
+  block:
+    - name: Ensure directories exist
+      file:
+        path: "{{ ansible_user_dir }}/{{ item }}"
+        owner: "{{ ansible_user_id }}"
+        state: directory
+        mode: 0700
+      loop:
+        - ".config"
+        - ".config/fontconfig"
+        - ".local"
+      tags:
+        - dotfiles
 
-- name: Remove old symlinks/directories
-  file:
-    path: "{{ ansible_user_dir }}/{{ item }}"
-    state: absent
-  loop:
-    - ".tmux.conf"
-    - ".config/shells"
-    - ".dotfiles"
-    - ".jshintrc"
-    - ".zcompdump"
-    - ".ackrc"
-    - ".ansible"
-    - ".bash_history"
-    - ".bash_profile"
-    - ".bashrc"
-    - ".ctags"
-    - ".gemrc"
-    - ".gitconfig"
-    - ".gitconfig-work"
-    - ".gitignore"
-    - ".git_template"
-    - ".ICEauthority"
-    - ".inputrc"
-    - ".jshintrc"
-    - ".npmrc"
-    - ".nvimlog"
-    - ".pearrc"
-    - ".screenrc"
-    - ".tmuxinator"
-    - ".vagrant.d"
-    - ".viminfo"
-    - ".vimtags"
-    - ".wget-hsts"
-    - ".Xauthority"
-    - ".xinitrc"
-    - ".Xmodmap"
-    - ".Xresources"
-    - ".xsession-errors"
-    - ".zcompdump"
-  tags:
-    - dotfiles
+    - name: Remove old symlinks/directories
+      file:
+        path: "{{ ansible_user_dir }}/{{ item }}"
+        state: absent
+      loop:
+        - ".tmux.conf"
+        - ".config/shells"
+        - ".dotfiles"
+        - ".jshintrc"
+        - ".zcompdump"
+        - ".ackrc"
+        - ".ansible"
+        - ".bash_history"
+        - ".bash_profile"
+        - ".bashrc"
+        - ".ctags"
+        - ".gemrc"
+        - ".gitconfig"
+        - ".gitconfig-work"
+        - ".gitignore"
+        - ".git_template"
+        - ".ICEauthority"
+        - ".inputrc"
+        - ".jshintrc"
+        - ".npmrc"
+        - ".nvimlog"
+        - ".pearrc"
+        - ".screenrc"
+        - ".tmuxinator"
+        - ".vagrant.d"
+        - ".viminfo"
+        - ".vimtags"
+        - ".wget-hsts"
+        - ".Xauthority"
+        - ".xinitrc"
+        - ".Xmodmap"
+        - ".Xresources"
+        - ".xsession-errors"
+        - ".zcompdump"
+      tags:
+        - dotfiles
 
-# As this git repository is cloned using ssh, we need to have ssh-agent forwarded as defined in ansible.cfg
-- name: Clone dot files
-  git:
-    repo: git@github.com:henrik-farre/dotfiles.git
-    dest: "{{ ansible_user_dir }}/.local/dotfiles"
-    version: master
-  tags:
-    - dotfiles
+    # As this git repository is cloned using ssh, we need to have ssh-agent forwarded as defined in ansible.cfg
+    - name: Clone dot files
+      git:
+        repo: git@github.com:henrik-farre/dotfiles.git
+        dest: "{{ ansible_user_dir }}/.local/dotfiles"
+        version: master
+      tags:
+        - dotfiles
 
-- name: Check if skel files exists
-  stat:
-    path: "{{ ansible_user_dir }}/.bashrc"
-  register: bash_skelfile
-  tags:
-    - dotfiles
+    - name: Check if skel files exists
+      stat:
+        path: "{{ ansible_user_dir }}/.bashrc"
+      register: bash_skelfile
+      tags:
+        - dotfiles
 
-- name: Remove existing skel files
-  file:
-    path: "{{ ansible_user_dir }}/{{ item }}"
-    state: absent
-  with_items:
-    - ".bashrc"
-    - ".bash_profile"
-  when: bash_skelfile.stat.islnk is defined and not bash_skelfile.stat.islnk
-  tags:
-    - dotfiles
+    - name: Remove existing skel files
+      file:
+        path: "{{ ansible_user_dir }}/{{ item }}"
+        state: absent
+      with_items:
+        - ".bashrc"
+        - ".bash_profile"
+      when: bash_skelfile.stat.islnk is defined and not bash_skelfile.stat.islnk
+      tags:
+        - dotfiles
 
-- name: Symlink files
-  file:
-    src: "{{ ansible_user_dir }}/.local/dotfiles/{{ item }}"
-    dest: "{{ ansible_user_dir }}/{{ item }}"
-    owner: "{{ ansible_user_id }}"
-    state: link
-  with_items:
-    - ".config/ack"
-    - ".config/ansible-lint.yml"
-    - ".config/flake8"
-    - ".config/fontconfig/fonts.conf"
-    - ".config/shell.d"
-    - ".config/tmux"
-    - ".config/weechat"
-    - ".config/yamllint"
-    - ".config/yay"
-    - ".config/git"
-    - ".config/readline"
-    - ".config/npm"
-    - ".tflint.hcl"
-    - ".ugrep"
-    - ".config/zsh"
-    - "bin"
-  tags:
-    - dotfiles
+    - name: Symlink files
+      file:
+        src: "{{ ansible_user_dir }}/.local/dotfiles/{{ item }}"
+        dest: "{{ ansible_user_dir }}/{{ item }}"
+        owner: "{{ ansible_user_id }}"
+        state: link
+      with_items:
+        - ".config/ack"
+        - ".config/ansible-lint.yml"
+        - ".config/flake8"
+        - ".config/fontconfig/fonts.conf"
+        - ".config/shell.d"
+        - ".config/tmux"
+        - ".config/weechat"
+        - ".config/yamllint"
+        - ".config/yay"
+        - ".config/git"
+        - ".config/readline"
+        - ".config/npm"
+        - ".tflint.hcl"
+        - ".ugrep"
+        - ".config/zsh"
+        - "bin"
+      tags:
+        - dotfiles
