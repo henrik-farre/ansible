@@ -1,6 +1,5 @@
 ---
 - name: Ensure Docker and related packages are installed
-  become: true
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
@@ -9,5 +8,3 @@
       - docker
       - docker-compose
       - python-docker
-  tags:
-    - docker

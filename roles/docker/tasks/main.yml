@@ -2,6 +2,7 @@
 - name: Ensure docker is installed and configured
   tags:
     - docker
+  become: true
   block:
     - name: Install Docker-CE on Debian
       include_tasks: Debian.yml
@@ -12,7 +13,6 @@
       when: ansible_facts.distribution == "Archlinux"
 
     - name: Ensure docker directory exists
-      become: true
       ansible.builtin.file:
         path: /etc/docker
         state: directory
@@ -21,23 +21,20 @@
         mode: 0750
 
     - name: Ensure correct storage driver is configured
-      become: true
       ansible.builtin.copy:
         dest: /etc/docker/daemon.json
-        content: "{{ docker_daemon_options|to_nice_json }}"
+        content: "{{ docker_daemon_options | to_nice_json }}"
         owner: root
         group: docker
         mode: 0640
       notify: Restart docker daemon
 
     - name: Check if devicemapper directory exist
-      become: true
       ansible.builtin.stat:
         path: /var/lib/docker/devicemapper
       register: docker_devicemapper
 
     - name: Ensure docker is stopped before removing devicemapper
-      become: true
       ansible.builtin.systemd:
         name: docker
         state: stopped
@@ -45,7 +42,6 @@
         - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
 
     - name: Ensure devicemapper directory is removed
-      become: true
       ansible.builtin.file:
         path: /var/lib/docker/devicemapper
         state: absent
@@ -53,10 +49,9 @@
         - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
 
     - name: Ensure docker is restarted
-      meta: flush_handlers
+      ansible.builtin.meta: flush_handlers
 
     - name: Ensure docker is started
-      become: true
       ansible.builtin.systemd:
         name: docker
         state: started
@@ -65,7 +60,6 @@
         - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
 
     - name: Remove old cronjob
-      become: true
       ansible.builtin.cron:
         state: absent
         name: "Clean docker"
@@ -75,7 +69,6 @@
         cron_file: "docker_prune"
 
     - name: Prune unused docker images, containers and more | systemd service
-      become: true
       ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/docker-prune.service
         content: |
@@ -90,7 +83,6 @@
         mode: 0644
 
     - name: Prune unused docker images, containers and more | systemd timer
-      become: true
       ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/docker-prune.timer
         content: |
@@ -107,32 +99,27 @@
         mode: 0644
 
     - name: Reload systemd
-      become: true
       ansible.builtin.systemd:
         daemon_reload: yes
 
     - name: Enable docker socket
-      become: true
       ansible.builtin.systemd:
         name: "docker.socket"
         enabled: yes
         state: started
 
     - name: Enable systemd services
-      become: true
       ansible.builtin.systemd:
         name: "docker-prune.service"
         enabled: yes
 
     - name: Enable systemd timers
-      become: true
       ansible.builtin.systemd:
         name: "docker-prune.timer"
         enabled: yes
         state: started
 
     - name: Ensure users are members of docker group
-      become: true
       ansible.builtin.user:
         name: "{{ item }}"
         groups: docker
