@@ -37,11 +37,12 @@ modules_mapping = {
     r'^(\s*)unarchive:$': r'\1ansible.builtin.unarchive:',
     r'^(\s*)uri:$': r'\1ansible.builtin.uri:',
     r'^(\s*)user:$': r'\1ansible.builtin.user:',
+    r'^(\s*)pacman:$': r'\1community.general.pacman:',
 }
 
-#  yaml_files = ["roles/sudo/tasks/main.yml"]
-
 for file_name in yaml_files:
+    if "molecule" in file_name:
+        continue
     try:
         with open(file_name, "r") as in_file:
             data = in_file.read()
