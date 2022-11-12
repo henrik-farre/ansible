@@ -36,8 +36,6 @@ package_groups:
     - pciutils
     - sysfsutils
     - usbutils
-    - zsh-autosuggestions
-    - zsh-syntax-highlighting
   development_utils:
     - ansible
     - ansible-lint
@@ -97,8 +95,9 @@ package_groups:
     # Needed by Remmina
     - freerdp
     - gimp
-    - gpaste
+    - github-cli
     - gnuplot
+    - gpaste
     - gst-plugins-base
     - gst-plugins-base-libs
     - gst-plugins-good
@@ -108,8 +107,6 @@ package_groups:
     - gtk-engines
     - gvfs-mtp
     - hicolor-icon-theme
-    # Github cli
-    - hub
     - hunspell
     - hugo
     - icedtea-web
