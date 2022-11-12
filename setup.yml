@@ -5,20 +5,20 @@
   pre_tasks:
     - name: Update apt cache
       become: yes
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 3600
       when: ansible_facts.distribution == "Debian"
 
     - name: Update pacman cache
       become: yes
-      pacman:
+      community.general.pacman:
         update_cache: yes
       changed_when: false
       when: ansible_facts.distribution == "Archlinux"
 
   roles:
-    - networking
+    # - networking
     - hostname
     - locale
     - timezone
@@ -42,7 +42,8 @@
     - role: package-group
       aur_package_group: "development_utils"
 
-- hosts: archlinux
+- name: ArchLinux setup
+  hosts: archlinux
   gather_facts: no
   roles:
     - bootloader
@@ -63,7 +64,8 @@
     - { role: services, services: "{{ host_services }}" }
     - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
 
-- hosts: desktop
+- name: Desktop setup
+  hosts: desktop
   gather_facts: no
   roles:
     - sound
@@ -95,7 +97,7 @@
     - jid
   tasks:
     - name: Ensure files does not exist
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       with_items:
@@ -106,12 +108,14 @@
         - "{{ ansible_user_dir }}/.config/autostart/xfce4-power-manager.desktop"
         - "{{ ansible_user_dir }}/.yaourtrc"
 
-- hosts: gaming
+- name: Setup gaming
+  hosts: gaming
   gather_facts: no
   roles:
     - gaming
 
-- hosts: htpc
+- name: HTPC setup
+  hosts: htpc
   gather_facts: no
   roles:
     - apparmor
@@ -121,7 +125,8 @@
     - backup-rclone
     - photoprism
 
-- hosts: laptop
+- name: Laptop setup
+  hosts: laptop
   gather_facts: no
   roles:
     - powersave
@@ -129,13 +134,15 @@
     - apparmor
     - secureboot
 
-- hosts: thinkpad
+- name: Setup for ThinkPads
+  hosts: thinkpad
   gather_facts: no
   roles:
     - thinkpad
     - samba-client
 
-- hosts: macbook
+- name: Setup for MacBooks
+  hosts: macbook
   gather_facts: no
 
   pre_tasks:
@@ -147,14 +154,27 @@
   roles:
     - { role: services, services: ['mbpfan'] }
 
-- hosts: raspberrypi
+- name: Raspberry Pi setup
+  hosts: raspberrypi
   gather_facts: no
   roles:
     - raspbian
     - arpwatch
     - docker
 
-- hosts: unifi-controller
+- name: Unifi Controller setup
+  hosts: unifi-controller
   gather_facts: no
   roles:
     - unifi-controller
+
+- name: Home Assistant setup on Raspberry Pi
+  hosts: home-assistant
+  gather_facts: true
+  become: true
+
+  environment:
+    PATH: /usr/local/sbin:/usr/sbin:/sbin:{{ ansible_env.PATH }}
+
+  roles:
+    - home-assistant
