@@ -96,7 +96,6 @@
         - ".config/ansible-lint.yml"
         - ".config/flake8"
         - ".config/fontconfig/fonts.conf"
-        - ".config/shell.d"
         - ".config/tmux"
         - ".config/weechat"
         - ".config/yamllint"
