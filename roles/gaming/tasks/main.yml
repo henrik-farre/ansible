@@ -44,7 +44,7 @@
         dest: /etc/gamemode.ini
 
     - name: Ensure local gamemode.ini exists
-      become: no
+      become: false
       ansible.builtin.copy:
         src: dot.config/gamemode.ini
         dest: "{{ ansible_user_dir }}/.config/gamemode.ini"
