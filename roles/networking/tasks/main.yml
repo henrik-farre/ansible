@@ -1,70 +1,60 @@
 ---
-- name: Ensure package is installed
-  become: true
-  community.general.pacman:
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - networkmanager
+- name: Ensure networking is configured on Arch Linux
   tags:
     - networking
+  become: true
+  when: ansible_facts.distribution == "Archlinux"
+  block:
+    - name: Ensure package is installed
+      community.general.pacman:
+        state: latest
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - networkmanager
 
-- name: Ensure required wireless networking packages are installed
-  become: true
-  community.general.pacman:
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - nm-connection-editor
-      - wireless_tools
-      - wpa_supplicant
-      - crda
-      - wireless-regdb
-  when:
-    - wireless is defined and wireless
-  tags:
-    - networking
-    - networking-wireless
+    - name: Ensure required wireless networking packages are installed
+      community.general.pacman:
+        state: latest
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - nm-connection-editor
+          - wireless_tools
+          - wpa_supplicant
+          - crda
+          - wireless-regdb
+      when:
+        - wireless is defined and wireless
 
-- name: Install network connections
-  become: true
-  ansible.builtin.copy:
-    src: "files/etc/NetworkManager/system-connections/{{ item }}"
-    dest: "/etc/NetworkManager/system-connections/{{ item }}"
-    owner: root
-    group: root
-    mode: 0600
-  no_log: true
-  with_items:
-    - "{{ networks }}"
-  when:
-    - networks is defined
-    - networks|length > 0
-  tags:
-    - networking
+    - name: Install network connections
+      ansible.builtin.copy:
+        src: "files/etc/NetworkManager/system-connections/{{ item }}"
+        dest: "/etc/NetworkManager/system-connections/{{ item }}"
+        owner: root
+        group: root
+        mode: 0600
+      no_log: true
+      with_items:
+        - "{{ networks }}"
+      when:
+        - networks is defined
+        - networks|length > 0
 
-- name: Configure regulatory domain for wireless
-  become: true
-  ansible.builtin.lineinfile:
-    name: /etc/conf.d/wireless-regdom
-    regexp: 'WIRELESS_REGDOM="DK"'
-    line: 'WIRELESS_REGDOM="DK"'
-    state: present
-  when:
-    - wireless is defined and wireless
-  tags:
-    - networking
-    - networking-wireless
+    - name: Configure regulatory domain for wireless
+      ansible.builtin.lineinfile:
+        name: /etc/conf.d/wireless-regdom
+        regexp: 'WIRELESS_REGDOM="DK"'
+        line: 'WIRELESS_REGDOM="DK"'
+        state: present
+      when:
+        - wireless is defined and wireless
 
-- name: Ensure services are enabled
-  become: true
-  ansible.builtin.systemd:
-    name: "{{ item }}"
-    enabled: yes
-  loop:
-    - NetworkManager
-    - NetworkManager-wait-online
-  tags:
-    - networking
+    - name: Ensure services are enabled
+      become: true
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+      loop:
+        - NetworkManager
+        - NetworkManager-wait-online
