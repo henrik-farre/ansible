@@ -5,7 +5,7 @@
   block:
     # https://github.com/rfjakob/earlyoom
     - name: Ensure earlyoom and dependencies is installed
-      become: yes
+      become: true
       community.general.pacman:
         state: latest
         name: "{{ packages }}"
@@ -23,7 +23,7 @@
         state: present
 
     - name: Ensure earlyoom is started and enabled
-      become: yes
+      become: true
       ansible.builtin.systemd:
         name: earlyoom
         state: started
@@ -31,7 +31,7 @@
 
     # https://github.com/cdown/psi-notify/
     - name: Install psi-notify from AUR
-      become: yes
+      become: true
       become_user: aur_builder
       aur:
         name: psi-notify

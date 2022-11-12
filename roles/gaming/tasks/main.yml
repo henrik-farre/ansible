@@ -12,7 +12,7 @@
           - schedtool
 
     - name: Install gamemode from AUR
-      become: yes
+      become: true
       become_user: aur_builder
       aur:
         name: "{{ packages }}"
@@ -87,7 +87,7 @@
         state: absent
 
     - name: Disable freesync for some Steam games
-      become: yes
+      become: true
       ansible.builtin.copy:
         dest: /usr/share/drirc.d/02-steam_games.conf
         content: |
@@ -117,6 +117,6 @@
             </device>
           </driconf>
   # block
-  become: yes
+  become: true
   tags:
     - gaming

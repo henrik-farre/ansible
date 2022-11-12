@@ -1,6 +1,6 @@
 ---
 - name: Ensure photoprism is configured
-  become: yes
+  become: true
   tags:
     - photoprism
   block:

@@ -1,6 +1,6 @@
 ---
 - name: Ensure dedicated user for building AUR packages exists
-  become: yes
+  become: true
   ansible.builtin.user:
     name: aur_builder
     group: wheel
@@ -10,7 +10,7 @@
     shell: /usr/bin/nologin
 
 - name: AUR
-  become: yes
+  become: true
   ansible.builtin.copy:
     content: |
       aur_builder ALL=(ALL) NOPASSWD: /usr/bin/pacman
@@ -19,7 +19,7 @@
     mode: 0600
 
 - name: Ensure GPG key is present
-  become: yes
+  become: true
   become_user: aur_builder
   gpg_import:
     key_id: "{{ aur_pkg_pgp_key }}"
@@ -30,7 +30,7 @@
     - aur_pkg_pgp_key
 
 - name: Install dependencies for "{{ aur_pkg_helper }}"
-  become: yes
+  become: true
   community.general.pacman:
     name: "{{ aur_pkg_deps }}"
 
@@ -63,5 +63,5 @@
       ansible.builtin.file:
         path: "{{ build_dir }}"
         state: absent
-  become: yes
+  become: true
   become_user: aur_builder

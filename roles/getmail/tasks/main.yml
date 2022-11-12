@@ -11,7 +11,7 @@
         - getmail is defined
 
     - name: Ensure backup destination for mails exist
-      become: yes
+      become: true
       ansible.builtin.file:
         path: "{{ item.0.dest_path }}/{{ item.0.username }}/{{ item.1 }}"
         state: directory
@@ -34,7 +34,7 @@
         - getmail is defined
 
     - name: Ensure old cronjob for getmail is removed
-      become: yes
+      become: true
       ansible.builtin.file:
         path: /etc/cron.d/getmail
         state: absent
@@ -42,7 +42,7 @@
         - getmail is defined
 
     - name: Ensure systemd timers exist for getmail
-      become: yes
+      become: true
       ansible.builtin.template:
         src: "etc/systemd/system/getmail.timer.j2"
         dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.timer"
@@ -53,7 +53,7 @@
         - getmail is defined
 
     - name: Ensure systemd services exist for getmail
-      become: yes
+      become: true
       ansible.builtin.template:
         src: "etc/systemd/system/getmail.service.j2"
         dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.service"

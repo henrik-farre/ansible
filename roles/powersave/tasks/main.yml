@@ -1,6 +1,6 @@
 ---
 - name: Ensure power saving is configured
-  become: yes
+  become: true
   tags:
     - powersave
   block:

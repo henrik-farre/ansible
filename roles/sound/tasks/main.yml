@@ -1,5 +1,5 @@
 - name: Configure pipewire system wide
-  become: yes
+  become: true
   tags:
     - sound
   block:

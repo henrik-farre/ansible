@@ -1,6 +1,6 @@
 ---
 - name: Ensure old unit is removed
-  become: yes
+  become: true
   ansible.builtin.file:
     dest: /etc/systemd/system/status-email-enrique@.service
     state: absent

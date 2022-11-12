@@ -1,6 +1,6 @@
 ---
 - name: "Install packages on ArchLinux : {{ packages|join(', ') }}"
-  become: yes
+  become: true
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
@@ -8,7 +8,7 @@
     - ansible_facts.distribution == "Archlinux"
 
 - name: Install packages on Debian
-  become: yes
+  become: true
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: latest

@@ -1,6 +1,6 @@
 ---
 - name: Install and configure AppArmor, audit and dependencies
-  become: yes
+  become: true
   tags:
     - apparmor
   block:

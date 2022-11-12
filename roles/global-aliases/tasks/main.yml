@@ -1,6 +1,6 @@
 ---
 - name: Ensure global bash alises exists
-  become: yes
+  become: true
   ansible.builtin.blockinfile:
     dest: /etc/bash.bashrc
     block: |

@@ -1,5 +1,5 @@
 - name: Become and tag block
-  become: yes
+  become: true
   tags:
     - pacman
   block:

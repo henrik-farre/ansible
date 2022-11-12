@@ -1,6 +1,6 @@
 ---
 - name: Install termite from AUR
-  become: yes
+  become: true
   become_user: aur_builder
   aur:
     name: termite

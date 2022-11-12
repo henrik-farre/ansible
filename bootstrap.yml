@@ -1,6 +1,6 @@
 ---
 - hosts: all
-  become: yes
+  become: true
   roles:
     - sudo
     - facts
@@ -19,6 +19,6 @@
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
 
 - hosts: laptop
-  become: yes
+  become: true
   roles:
     - { role: networking, wireless: true }

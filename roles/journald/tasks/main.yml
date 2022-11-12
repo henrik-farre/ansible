@@ -1,6 +1,6 @@
 ---
 - name: Create journal config directory
-  become: yes
+  become: true
   ansible.builtin.file:
     path: /etc/systemd/journald.conf.d
     state: directory
@@ -10,7 +10,7 @@
     - journald
 
 - name: Ensure max size of journal is configured
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /etc/systemd/journald.conf.d/00-journal-size.conf
     content: |

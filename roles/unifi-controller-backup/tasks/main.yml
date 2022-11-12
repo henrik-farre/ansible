@@ -1,6 +1,6 @@
 ---
 - name: Ensure backup service exists
-  become: yes
+  become: true
   ansible.builtin.copy:
     content: |
       [Unit]
@@ -18,7 +18,7 @@
     - unifi-controller
 
 - name: Ensure backup timer exists
-  become: yes
+  become: true
   ansible.builtin.copy:
     content: |
       [Unit]

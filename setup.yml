@@ -4,14 +4,14 @@
   hosts: all
   pre_tasks:
     - name: Update apt cache
-      become: yes
+      become: true
       ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 3600
       when: ansible_facts.distribution == "Debian"
 
     - name: Update pacman cache
-      become: yes
+      become: true
       community.general.pacman:
         update_cache: yes
       changed_when: false
@@ -147,7 +147,7 @@
 
   pre_tasks:
     - name: Ensure mbpfan is installed
-      become: yes
+      become: true
       become_user: aur_builder
       aur:
         name: mbpfan-git

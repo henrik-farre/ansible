@@ -1,13 +1,13 @@
 ---
 - name: Ensure smartmontools are installed
-  become: yes
+  become: true
   community.general.pacman:
     state: latest
     name: smartmontools
 
 # Based on https://wiki.archlinux.org/index.php/S.M.A.R.T.#Notifying_potential_problems
 - name: Ensure desktop notification script is installed
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /usr/share/smartmontools/smartd_warning.d/smartdnotify
     group: root
@@ -28,7 +28,7 @@
     - system-maintenance
 
 - name: Ensure smartd is configured
-  become: yes
+  become: true
   ansible.builtin.lineinfile:
     name: /etc/smartd.conf
     regexp: '^DEVICESCAN'
@@ -40,7 +40,7 @@
     - molecule-notest
 
 - name: Ensure smartd service is started
-  become: yes
+  become: true
   ansible.builtin.systemd:
     name: smartd
     state: started

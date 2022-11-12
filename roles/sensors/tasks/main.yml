@@ -1,6 +1,6 @@
 ---
 - name: Ensure lm_sensors is installed
-  become: yes
+  become: true
   community.general.pacman:
     name: lm_sensors
     state: latest
@@ -8,7 +8,7 @@
     - sensors
 
 - name: Ensure modules for current motherboard are loaded
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/modules-load.d/"
@@ -18,7 +18,7 @@
     - sensors
 
 - name: Ensure custom sensors config for current motherboard is installed
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/sensors.d/"

@@ -4,7 +4,7 @@
     - firefox
   block:
     - name: Ensure Firefox and dependencies are installed
-      become: yes
+      become: true
       community.general.pacman:
         state: latest
         name: "{{ packages }}"
@@ -48,7 +48,7 @@
         - "open-link.desktop"
 
     - name: Remove hardcoded prefs
-      become: yes
+      become: true
       ansible.builtin.file:
         path: "{{ item }}"
         state: absent

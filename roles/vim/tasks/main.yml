@@ -1,6 +1,6 @@
 ---
 - name: Ensure system tasks are tagged
-  become: yes
+  become: true
   tags:
     - vim
   block:
@@ -111,7 +111,7 @@
 
     # https://github.com/mhinz/neovim-remote
     - name: Install neovim-remote
-      become: yes
+      become: true
       become_user: aur_builder
       aur:
         name: neovim-remote

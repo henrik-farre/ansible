@@ -1,7 +1,7 @@
 ---
 - name: Ensure all tasks are run with become and correct tag
   # Block level
-  become: yes
+  become: true
   tags:
     - unifi-controller
   block:

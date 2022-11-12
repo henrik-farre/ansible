@@ -120,6 +120,6 @@
           Storage=volatile
         mode: 0644
         owner: root
-  become: yes
+  become: true
   tags:
     - raspbian

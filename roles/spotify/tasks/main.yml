@@ -1,6 +1,6 @@
 ---
 - name: Ensure spotify is installed
-  become: yes
+  become: true
   become_user: aur_builder
   aur:
     name: spotify

@@ -25,6 +25,6 @@
         groups: mail
         append: yes
 
-  become: yes
+  become: true
   tags:
     - arpwatch

@@ -1,6 +1,6 @@
 ---
 - name: Set default papersize
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /etc/papersize
     content: |
@@ -10,7 +10,7 @@
 
 # Broken: polkitd: Error compiling script /etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
 #- name: Ensure admin authentication through PolicyKit
-#  become: yes
+#  become: true
 #  copy:
 #    dest: /etc/polkit-1/rules.d/49-allow-passwordless-printer-admin.rules
 #    content: |
@@ -87,7 +87,7 @@
     - cups
 
 - name: Ensure Cups can be started ondemand
-  become: yes
+  become: true
   ansible.builtin.service:
     name: cups.socket
     state: started
@@ -96,7 +96,7 @@
     - cups
 
 - name: Ensure users are members of sys group
-  become: yes
+  become: true
   ansible.builtin.user:
     name: "{{ item }}"
     groups: sys
@@ -109,7 +109,7 @@
     - groups_to_users.sys is defined
 
 - name: Ensure users are members of lp group
-  become: yes
+  become: true
   ansible.builtin.user:
     name: "{{ item }}"
     groups: lp

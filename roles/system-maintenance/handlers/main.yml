@@ -1,6 +1,6 @@
 ---
 - name: Reload smartd
-  become: yes
+  become: true
   ansible.builtin.systemd:
     name: "smartd"
     state: restarted

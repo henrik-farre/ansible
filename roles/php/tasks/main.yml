@@ -31,7 +31,7 @@
     - php
 
 - name: Configure /etc/php/php.ini timezone
-  become: yes
+  become: true
   ansible.builtin.lineinfile:
     name: /etc/php/php.ini
     regexp: 'date.timezone ='
@@ -41,7 +41,7 @@
     - php
 
 - name: Enable php extension
-  become: yes
+  become: true
   ansible.builtin.lineinfile:
     name: /etc/php/php.ini
     regexp: 'extension={{ item }}'

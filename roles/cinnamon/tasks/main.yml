@@ -2,7 +2,7 @@
 - name: Ensure Cinnamon desktop is configured
   block:
     - name: Ensure needed packages for xorg are installed
-      become: yes
+      become: true
       community.general.pacman:
         state: latest
         name: "{{ packages }}"
@@ -39,7 +39,7 @@
       changed_when: false
 
     - name: Disable freesync for Cinnamon desktop
-      become: yes
+      become: true
       ansible.builtin.copy:
         dest: /usr/share/drirc.d/01-cinnamon.conf
         content: |

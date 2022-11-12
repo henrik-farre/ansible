@@ -39,7 +39,7 @@
     - docker
 
 - name: Ensure docker-ce is installed
-  become: yes
+  become: true
   ansible.builtin.apt:
     name: docker-ce
     state: latest

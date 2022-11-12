@@ -9,7 +9,7 @@
       - kodi-shutdown-check
 
   - name: Install scripts
-    become: yes
+    become: true
     ansible.builtin.copy:
       src: "/tmp/kodi-shutdown-check/{{ item }}"
       dest: "/usr/local/bin/{{ item }}"
@@ -23,7 +23,7 @@
       - kodi-shutdown-check
 
   - name: Ensure cronjob exist
-    become: yes
+    become: true
     ansible.builtin.cron:
       name: Kodi shutdown inhibit
       minute: "*/4"

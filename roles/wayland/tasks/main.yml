@@ -33,7 +33,7 @@
           --ozone-platform=wayland
 
     - name: Ensure required packages are installed
-      become: yes
+      become: true
       community.general.pacman:
         name: "{{ packages }}"
         state: latest
@@ -45,7 +45,7 @@
 
     # https://linuxreviews.org/Intel_graphics#Hardware_Video_Decoding_.2F_Encoding
     - name: Install Intel related packages
-      become: yes
+      become: true
       community.general.pacman:
         name: "{{ packages }}"
         state: latest

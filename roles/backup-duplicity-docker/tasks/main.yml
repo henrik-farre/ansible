@@ -1,6 +1,6 @@
 ---
 - name: Ensure duplicity is configured for backup
-  become: yes
+  become: true
   tags:
     - backup
     - duplicity-backup

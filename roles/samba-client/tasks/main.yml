@@ -1,6 +1,6 @@
 ---
 - name: Copy default config
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: etc/samba/smb.conf
     dest: /etc/samba/smb.conf

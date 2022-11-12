@@ -4,7 +4,7 @@
     - yubikey
   block:
     - name: Ensure yubikey related packages are installed
-      become: yes
+      become: true
       community.general.pacman:
         state: latest
         name: "{{ packages }}"
@@ -17,7 +17,7 @@
           - libfido2
 
     - name: Ensure pcscd is enabled and started
-      become: yes
+      become: true
       ansible.builtin.systemd:
         name: pcscd.socket
         state: started
@@ -25,7 +25,7 @@
         daemon_reload: yes
 
     - name: Ensure usbhid is loaded
-      become: yes
+      become: true
       ansible.builtin.copy:
         dest: /etc/modules-load.d/yubikey.conf
         mode: 0644

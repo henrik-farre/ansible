@@ -1,7 +1,7 @@
 ---
 # For detecting hostname in config file
 - name: Ensure devilspie2 dependencies are installed
-  become: yes
+  become: true
   community.general.pacman:
     state: latest
     name: lua-socket
@@ -19,7 +19,7 @@
     state: directory
 
 - name: Ensure devilspie2 is installed
-  become: yes
+  become: true
   become_user: aur_builder
   aur:
     name: devilspie2

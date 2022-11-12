@@ -27,7 +27,7 @@
   ansible.builtin.include_tasks:
     file: setup.yml
     apply:
-      become: yes
+      become: true
   when:
     - non_removable_devices|length > 1
   tags:
@@ -37,7 +37,7 @@
   ansible.builtin.include_tasks:
     file: remove.yml
     apply:
-      become: yes
+      become: true
   when:
     - non_removable_devices|length < 1
   tags:

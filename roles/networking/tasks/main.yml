@@ -1,6 +1,6 @@
 ---
 - name: Ensure package is installed
-  become: yes
+  become: true
   community.general.pacman:
     state: latest
     name: "{{ packages }}"
@@ -11,7 +11,7 @@
     - networking
 
 - name: Ensure required wireless networking packages are installed
-  become: yes
+  become: true
   community.general.pacman:
     state: latest
     name: "{{ packages }}"
@@ -29,7 +29,7 @@
     - networking-wireless
 
 - name: Install network connections
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: "files/etc/NetworkManager/system-connections/{{ item }}"
     dest: "/etc/NetworkManager/system-connections/{{ item }}"
@@ -46,7 +46,7 @@
     - networking
 
 - name: Configure regulatory domain for wireless
-  become: yes
+  become: true
   ansible.builtin.lineinfile:
     name: /etc/conf.d/wireless-regdom
     regexp: 'WIRELESS_REGDOM="DK"'
@@ -59,7 +59,7 @@
     - networking-wireless
 
 - name: Ensure services are enabled
-  become: yes
+  become: true
   ansible.builtin.systemd:
     name: "{{ item }}"
     enabled: yes

@@ -1,6 +1,6 @@
 ---
 - name: Ensure needed packages for xorg are installed
-  become: yes
+  become: true
   community.general.pacman:
     state: latest
     name: "{{ packages }}"
@@ -32,7 +32,7 @@
       - openbox
 
 - name: Ensure unused packages for xorg are removed
-  become: yes
+  become: true
   community.general.pacman:
     state: absent
     name: "{{ packages }}"
@@ -72,7 +72,7 @@
       - xproto
 
 - name: Setup keyboards and mice
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: "etc/X11/xorg.conf.d/{{ item }}"
     dest: "/etc/X11/xorg.conf.d/{{ item }}"
@@ -86,7 +86,7 @@
     - xorg
 
 - name: Setup extra devices
-  become: yes
+  become: true
   ansible.builtin.copy:
     src: "etc/X11/xorg.conf.d/{{ item }}"
     dest: "/etc/X11/xorg.conf.d/{{ item }}"
@@ -100,7 +100,7 @@
     - xorg
 
 - name: Install Intel video driver
-  become: yes
+  become: true
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
@@ -116,7 +116,7 @@
     - xorg
 
 - name: Install Nvidia video driver
-  become: yes
+  become: true
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
@@ -132,7 +132,7 @@
     - xorg
 
 - name: Install AMD video driver
-  become: yes
+  become: true
   community.general.pacman:
     name: "{{ packages }}"
     state: latest
@@ -153,7 +153,7 @@
     - xorg
 
 - name: Ensure AMD video driver is configured
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /etc/X11/xorg.conf.d/30-amdgpu.conf
     src: etc/X11/xorg.conf.d/30-amdgpu.conf

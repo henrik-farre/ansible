@@ -1,6 +1,6 @@
 ---
 - name: Ensure "allow other user" is set in configuration file
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /etc/fuse.conf
     content: |

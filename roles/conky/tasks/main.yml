@@ -40,7 +40,7 @@
     - conky
 
 - name: Ensure font awesome is installed
-  become: yes
+  become: true
   community.general.pacman:
     name: ttf-font-awesome
     state: latest

@@ -1,7 +1,7 @@
 ---
 # libqmi is for wwan support
 - name: Run tasks with become
-  become: yes
+  become: true
   when:
     - ansible_system_vendor == "LENOVO"
   tags:

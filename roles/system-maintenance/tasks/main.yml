@@ -10,7 +10,7 @@
     - system-maintenance
 
 #- name: Ensure RAID is checked monthly
-#  become: yes
+#  become: true
 #  copy:
 #    src: cron.monthly/raid_maintenance
 #    dest: /etc/cron.monthly/raid_maintenance
@@ -40,7 +40,7 @@
   no_log: True
 
 - name: Install nvme utils if system has an nvme
-  become: yes
+  become: true
   community.general.pacman:
     name: nvme-cli
     state: latest
@@ -50,7 +50,7 @@
     - nvme_devices|length > 0
 
 - name: Ensure fstrim timer is started on supported devices
-  become: yes
+  become: true
   ansible.builtin.systemd:
     name: fstrim.timer
     state: started
@@ -59,7 +59,7 @@
     - system-maintenance
 
 - name: Ensure cronjob is configured
-  become: yes
+  become: true
   ansible.builtin.cron:
     cron_file: clean-user-cache
     job: find {{ ansible_user_dir }}/.cache -mtime +7 -type f -delete
@@ -71,7 +71,7 @@
 
 # Lifted from https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler
 - name: Ensure correct scheduler are used for devices
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /etc/udev/rules.d/60-ioschedulers.rules
     content: |

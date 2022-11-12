@@ -1,6 +1,6 @@
 ---
 - name: Configure swappiness
-  become: yes
+  become: true
   sysctl:
     name: "{{ item.name }}"
     value: "{{ item.value }}"

@@ -1,6 +1,6 @@
 ---
 - name: Ensure weechat and dependencies are installed
-  become: yes
+  become: true
   community.general.pacman:
     state: latest
     name: "{{ packages }}"

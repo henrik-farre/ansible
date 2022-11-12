@@ -1,18 +1,18 @@
 ---
 - name: Ensure Zim and dependencies are installed
-  become: yes
+  become: true
   community.general.pacman:
-    name: zim
+    name: "{{ packages }}"
     state: latest
   vars:
-    ansible.builtin.package:
+    packages:
       - zim
       - gtksourceview3
   tags:
     - zim
 
 - name: Ensure pandoc is installed for copy/paste transformation
-  become: yes
+  become: true
   become_user: aur_builder
   aur:
     name: pandoc-bin

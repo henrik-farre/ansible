@@ -1,7 +1,7 @@
 ---
 - name: Cleanup systemd before moving to /usr/local
   hosts: all
-  become: yes
+  become: true
 
   vars:
     to_remove:

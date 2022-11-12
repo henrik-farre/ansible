@@ -44,7 +44,7 @@
 
         # Root can't write to nfs - use a temporary location
         - name: "Compress /var/lib/unifi/ to /var/tmp/unifi_tmp_backup.tar.bz2"
-          become: yes
+          become: true
           archive:
             path: "/var/lib/unifi/"
             dest: "/var/tmp/unifi_tmp_backup.tar.bz2"
@@ -84,7 +84,7 @@
           with_items: "{{ (all_unifi_files.files | sort(attribute='ctime', reverse=True))[7:] }}"
       always:
         - name: Cleanup | Remove tmp unifi backup
-          become: yes
+          become: true
           ansible.builtin.file:
             path: "/var/tmp/unifi_tmp_backup.tar.bz2"
             state: absent

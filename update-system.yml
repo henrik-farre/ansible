@@ -1,7 +1,7 @@
 ---
 - name: Update all hosts
   hosts: debian,archlinux
-  become: yes
+  become: true
 
   tasks:
     - name: Update Debian hosts

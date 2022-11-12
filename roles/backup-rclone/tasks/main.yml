@@ -1,6 +1,6 @@
 ---
 - name: Ensure rclone is configured for backup
-  become: yes
+  become: true
   tags:
     - backup-rclone
     - backup

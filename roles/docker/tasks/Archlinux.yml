@@ -1,6 +1,6 @@
 ---
 - name: Ensure Docker and related packages are installed
-  become: yes
+  become: true
   community.general.pacman:
     name: "{{ packages }}"
     state: latest

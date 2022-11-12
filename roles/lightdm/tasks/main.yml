@@ -1,6 +1,6 @@
 ---
 - name: Ensure lightdm and releated packages are installed
-  become: yes
+  become: true
   community.general.pacman:
     state: latest
     name: "{{ packages }}"
@@ -14,7 +14,7 @@
     - lightdm
 
 - name: Ensure Lightdm background is downloaded
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /usr/share/backgrounds/archlinux/archlinux-logo-light.png
     src: archlinux-logo-light-black-bg.png
@@ -22,7 +22,7 @@
     - lightdm
 
 - name: Ensure lightdm-gtk-greeter is configured
-  become: yes
+  become: true
   ansible.builtin.copy:
     dest: /etc/lightdm/lightdm-gtk-greeter.conf
     src: etc/lightdm/lightdm-gtk-greeter.conf
@@ -30,7 +30,7 @@
     - lightdm
 
 - name: Ensure service is started
-  become: yes
+  become: true
   ansible.builtin.systemd:
     name: lightdm
     state: started

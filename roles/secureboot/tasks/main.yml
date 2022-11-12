@@ -1,6 +1,6 @@
 ---
 - name: Ensure secureboot is configured
-  become: yes
+  become: true
   tags:
     - secureboot
   block:
