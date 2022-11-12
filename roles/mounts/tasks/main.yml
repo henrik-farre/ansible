@@ -2,7 +2,7 @@
 # efivars is chattr +i since linux 4.5
 - name: Ensure efivars are not mounted ro in fstab
   become: yes
-  lineinfile:
+  ansible.builtin.lineinfile:
     path: /etc/fstab
     state: absent
     regexp: '^efivars'

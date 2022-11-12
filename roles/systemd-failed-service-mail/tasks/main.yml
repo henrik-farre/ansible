@@ -1,7 +1,7 @@
 ---
 - name: Ensure old unit is removed
   become: yes
-  file:
+  ansible.builtin.file:
     dest: /etc/systemd/system/status-email-enrique@.service
     state: absent
   tags:
@@ -9,7 +9,7 @@
 
 - name: Ensure failed service email script exists
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       #!/bin/bash
 
@@ -31,7 +31,7 @@
 
 - name: Ensure failed service unit exists
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       [Unit]
       Description=Status email for %i to user

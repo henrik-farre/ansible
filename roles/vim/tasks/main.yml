@@ -29,7 +29,7 @@
         - display_server == 'x11'
 
     - name: Ensure Neovim is installed
-      apt:
+      ansible.builtin.apt:
         name: "{{ packages }}"
         state: latest
       vars:
@@ -80,13 +80,13 @@
     - vim
   block:
     - name: Clone neovim/vim files
-      git:
+      ansible.builtin.git:
         repo: git@github.com:henrik-farre/vimrc.git
         dest: "{{ ansible_user_dir }}/.config/nvim"
         version: master
 
     - name: Create backups and swaps dirs
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.config/nvim/{{ item }}"
         owner: "{{ ansible_user_id }}"
         state: directory
@@ -96,14 +96,14 @@
         - swaps
 
     - name: Ensure .local/share/applications exists
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.local/share/applications"
         owner: "{{ ansible_user_id }}"
         state: directory
         mode: 0755
 
     - name: Install .desktop file
-      copy:
+      ansible.builtin.copy:
         src: neovim.desktop
         dest: "{{ ansible_user_dir }}/.local/share/applications/neovim.desktop"
         owner: "{{ ansible_user_id }}"
@@ -119,7 +119,7 @@
         - ansible_facts.distribution != "Debian"
 
     - name: Ensure python2 modules are installed on macos
-      pip:
+      ansible.builtin.pip:
         name: neovim
         extra_args: --user
         executable: pip
@@ -128,7 +128,7 @@
         - ansible_os_family == "Darwin"
 
     - name: Ensure python3 modules are installed on macos
-      pip:
+      ansible.builtin.pip:
         name: neovim
         extra_args: --user
         executable: pip3
@@ -155,19 +155,19 @@
         # - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
 
     - name: Check if vim is installed
-      stat:
+      ansible.builtin.stat:
         path: /usr/bin/vim
       register: vim_installation
 
     - name: Create .vimrc symlink for vim
-      file:
+      ansible.builtin.file:
         src: "{{ ansible_user_dir }}/.config/nvim/init.vim"
         dest: "{{ ansible_user_dir }}/.vimrc"
         state: link
       when: vim_installation.stat.exists
 
     - name: Create .vim symlink for vim
-      file:
+      ansible.builtin.file:
         src: "{{ ansible_user_dir }}/.config/nvim"
         dest: "{{ ansible_user_dir }}/.vim"
         state: link

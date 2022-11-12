@@ -11,7 +11,7 @@
     - facts
 
 - name: Ensure /etc/ansible/facts.d/ exists
-  file:
+  ansible.builtin.file:
     path: /etc/ansible/facts.d/
     owner: root
     state: directory
@@ -20,7 +20,7 @@
     - facts
 
 - name: Install custom .fact files
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/ansible/facts.d/"
     owner: root

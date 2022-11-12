@@ -6,33 +6,33 @@
     - unifi-controller
   block:
     - name: Ensure needed pgp tools are installed
-      package:
+      ansible.builtin.package:
         name: dirmngr
         state: latest
 
     # https://community.ubnt.com/t5/UniFi-Updates-Blog/UniFi-SDN-Controller-5-9-29-Stable-has-been-released/ba-p/2516852
     - name: Ensure support java version is installed
-      package:
+      ansible.builtin.package:
         name: openjdk-8-jre-headless
         state: latest
 
     - name: Ensure unifi apt key is available
-      apt_key:
+      ansible.builtin.apt_key:
         keyserver: keyserver.ubuntu.com
         id: 06E85760C0A52C50
 
     - name: Ensure unifi repository is available
-      apt_repository:
+      ansible.builtin.apt_repository:
         repo: deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti
         state: present
         filename: 100-ubnt.list
 
     - name: Update apt cache
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
 
     - name: Ensure unifi controller is installed
-      package:
+      ansible.builtin.package:
         name: unifi
         state: latest
 
@@ -40,12 +40,12 @@
     # - https://www.reddit.com/r/Ubiquiti/comments/9aowqx/unifi_v5828_missing_firmware_updates/
     # - WARN system - failed to get firmware update info: java.lang.RuntimeException: Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
     - name: Get stat of java ca certs
-      stat:
+      ansible.builtin.stat:
         path: /etc/ssl/certs/java/cacerts
       register: java_ca
 
     - name: Ensure ca file is removed if mimetype is incorrect
-      file:
+      ansible.builtin.file:
         path: /etc/ssl/certs/java/cacerts
         state: absent
       when:
@@ -59,21 +59,21 @@
         - java_ca.stat.mimetype != 'application/x-java-keystore'
 
     - name: Ensure unsupported lib is removed
-      file:
+      ansible.builtin.file:
         path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
         state: absent
       when:
         - ansible_facts.architecture == "armv6l"
 
     - name: Ensure mongodb is stopped and disabled
-      service:
+      ansible.builtin.service:
         name: mongodb
         state: stopped
         enabled: no
 
     # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
     - name: Ensure custom config.gateway.json is deployed
-      copy:
+      ansible.builtin.copy:
         src: "config.gateway.json"
         dest: /usr/lib/unifi/data/sites/default/config.gateway.json
         owner: unifi
@@ -84,7 +84,7 @@
     # - Disable analytics
     # Note: remember to force provision devices for changes to apply
     - name: Ensure custom config.properties is deployed
-      copy:
+      ansible.builtin.copy:
         content: |
           config.system_cfg.1=system.analytics.anonymous=disabled
         dest: /usr/lib/unifi/data/sites/default/config.properties
@@ -93,7 +93,7 @@
         mode: 0600
 
     - name: Ensure unifi service is started and enabled
-      service:
+      ansible.builtin.service:
         name: unifi
         state: started
         enabled: yes

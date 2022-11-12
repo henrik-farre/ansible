@@ -1,7 +1,7 @@
 ---
 - name: Set default papersize
   become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /etc/papersize
     content: |
       a4
@@ -26,12 +26,12 @@
 #    - cups
 
 - name: Check if driver is installed
-  stat:
+  ansible.builtin.stat:
     path: /opt/brother/Printers/HL1210W/cupswrapper/brcupsconfig4
   register: hl1210w_bin
 
 - name: Brother HL-1210w Driver | Ensure build dir exists
-  file:
+  ansible.builtin.file:
     path: /tmp/brother-hl1210w
     state: directory
   when: not hl1210w_bin.stat.exists
@@ -40,7 +40,7 @@
 
 # Fix buggy PKGBUILD at: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=brother-hl1210w
 - name: Brother HL-1210w Driver | Ensure correct PKGBUILD exists
-  copy:
+  ansible.builtin.copy:
     dest: /tmp/brother-hl1210w/PKGBUILD
     content: |
       pkgname="brother-hl1210w"
@@ -80,7 +80,7 @@
     - cups
 
 - name: Brother HL-1210w Driver | Cleanup
-  file:
+  ansible.builtin.file:
     path: /tmp/brother-hl1210w
     state: absent
   tags:
@@ -88,7 +88,7 @@
 
 - name: Ensure Cups can be started ondemand
   become: yes
-  service:
+  ansible.builtin.service:
     name: cups.socket
     state: started
     enabled: yes
@@ -97,7 +97,7 @@
 
 - name: Ensure users are members of sys group
   become: yes
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
     groups: sys
     append: yes
@@ -110,7 +110,7 @@
 
 - name: Ensure users are members of lp group
   become: yes
-  user:
+  ansible.builtin.user:
     name: "{{ item }}"
     groups: lp
     append: yes

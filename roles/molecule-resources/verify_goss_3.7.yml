@@ -15,14 +15,14 @@
     goss_format: documentation
   tasks:
     - name: Download and install Goss
-      get_url:
+      ansible.builtin.get_url:
         url: "https://github.com/aelsabbahy/goss/releases/download/{{ goss_version }}/goss-linux-{{ goss_arch }}"
         dest: "{{ goss_bin }}"
         sha256sum: "{{ goss_sha256sum }}"
         mode: 0755
 
     - name: Create Molecule directory for test files
-      file:
+      ansible.builtin.file:
         path: "{{ goss_test_directory }}"
         state: directory
 
@@ -41,12 +41,12 @@
       become: false
 
     - name: debug
-      debug:
+      ansible.builtin.debug:
         msg: "{{ test_files.files }}"
         verbosity: 3
 
     - name: Copy Goss tests to remote
-      copy:
+      ansible.builtin.copy:
         src: "{{ item.path }}"
         dest: "{{ goss_test_directory }}/{{ item.path | basename }}"
       with_items:
@@ -63,12 +63,12 @@
       failed_when: false
 
     - name: Display details about the Goss results
-      debug:
+      ansible.builtin.debug:
         msg: "{{ item.stdout_lines }}"
       with_items: "{{ test_results.results }}"
 
     - name: Fail when tests fail
-      fail:
+      ansible.builtin.fail:
         msg: "Goss failed to validate"
       when: item.rc != 0
       with_items: "{{ test_results.results }}"

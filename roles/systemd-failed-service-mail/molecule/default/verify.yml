@@ -16,7 +16,7 @@
     goss_format: documentation
   tasks:
     - name: Download and install Goss
-      get_url:
+      ansible.builtin.get_url:
         url: "{{ goss_url }}"
         dest: "{{ goss_dst }}"
         sha256sum: "{{ goss_sha256sum }}"
@@ -26,7 +26,7 @@
       retries: 3
 
     - name: Copy Goss tests to remote
-      copy:
+      ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ goss_test_directory }}/{{ item | basename }}"
       with_fileglob:
@@ -42,12 +42,12 @@
       with_items: "{{ test_files.stdout_lines }}"
 
     - name: Display details about the Goss results
-      debug:
+      ansible.builtin.debug:
         msg: "{{ item.stdout_lines }}"
       with_items: "{{ test_results.results }}"
 
     - name: Fail when tests fail
-      fail:
+      ansible.builtin.fail:
         msg: "Goss failed to validate"
       when: item.rc != 0
       with_items: "{{ test_results.results }}"

@@ -9,7 +9,7 @@
 
 - name: Ensure modules for current motherboard are loaded
   become: yes
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/modules-load.d/"
   with_fileglob:
@@ -19,7 +19,7 @@
 
 - name: Ensure custom sensors config for current motherboard is installed
   become: yes
-  copy:
+  ansible.builtin.copy:
     src: "{{ item }}"
     dest: "/etc/sensors.d/"
   with_fileglob:

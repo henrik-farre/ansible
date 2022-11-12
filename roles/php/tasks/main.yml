@@ -16,7 +16,7 @@
 # timezone, ldap
 - name: Configure xdebug
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       zend_extension=xdebug.so
       xdebug.remote_enable=on
@@ -32,7 +32,7 @@
 
 - name: Configure /etc/php/php.ini timezone
   become: yes
-  lineinfile:
+  ansible.builtin.lineinfile:
     name: /etc/php/php.ini
     regexp: 'date.timezone ='
     line: 'date.timezone = Europe/Copenhagen'
@@ -42,7 +42,7 @@
 
 - name: Enable php extension
   become: yes
-  lineinfile:
+  ansible.builtin.lineinfile:
     name: /etc/php/php.ini
     regexp: 'extension={{ item }}'
     line: 'extension={{ item }}'

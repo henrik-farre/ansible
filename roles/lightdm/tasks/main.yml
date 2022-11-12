@@ -15,7 +15,7 @@
 
 - name: Ensure Lightdm background is downloaded
   become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /usr/share/backgrounds/archlinux/archlinux-logo-light.png
     src: archlinux-logo-light-black-bg.png
   tags:
@@ -23,7 +23,7 @@
 
 - name: Ensure lightdm-gtk-greeter is configured
   become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /etc/lightdm/lightdm-gtk-greeter.conf
     src: etc/lightdm/lightdm-gtk-greeter.conf
   tags:
@@ -31,7 +31,7 @@
 
 - name: Ensure service is started
   become: yes
-  systemd:
+  ansible.builtin.systemd:
     name: lightdm
     state: started
     enabled: yes

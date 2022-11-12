@@ -1,6 +1,6 @@
 ---
 - name: Ensure that the ~/.config/conky directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/conky"
     owner: "{{ ansible_user_id }}"
     state: directory
@@ -9,7 +9,7 @@
     - conky
 
 - name: Ensure that the ~/.config/autostart directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/autostart"
     owner: "{{ ansible_user_id }}"
     state: directory
@@ -18,7 +18,7 @@
     - conky
 
 - name: Write ~/.config/conky/conkyrc
-  template:
+  ansible.builtin.template:
     src: conkyrc.j2
     dest: "{{ ansible_user_dir }}/.config/conky/conkyrc"
     owner: "{{ ansible_user_id }}"
@@ -27,7 +27,7 @@
     - conky
 
 - name: Ensure conky is autostarted
-  copy:
+  ansible.builtin.copy:
     content: |
       [Desktop Entry]
       Name=Conky

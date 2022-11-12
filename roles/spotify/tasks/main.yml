@@ -9,7 +9,7 @@
   when: ansible_facts.distribution == 'Archlinux'
 
 - name: Ensure directory for spotify preferences exits
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/spotify"
     state: directory
     owner: "{{ ansible_user_id }}"
@@ -18,7 +18,7 @@
     - spotify
 
 - name: Ensure spotify user cache is limited to 512MB
-  lineinfile:
+  ansible.builtin.lineinfile:
     name: "{{ ansible_user_dir }}/.config/spotify/prefs"
     regexp: '^storage.size='
     line: 'storage.size=512'

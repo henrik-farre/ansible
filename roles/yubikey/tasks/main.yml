@@ -18,7 +18,7 @@
 
     - name: Ensure pcscd is enabled and started
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         name: pcscd.socket
         state: started
         enabled: yes
@@ -26,7 +26,7 @@
 
     - name: Ensure usbhid is loaded
       become: yes
-      copy:
+      ansible.builtin.copy:
         dest: /etc/modules-load.d/yubikey.conf
         mode: 0644
         content: |
@@ -35,13 +35,13 @@
           usbhid
 
     - name: Prepare yubikey config
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.config/Yubico"
         state: directory
         mode: 0700
 
     - name: Ensure yubioath-desktop is auto started on login
-      file:
+      ansible.builtin.file:
         state: link
         src: /usr/share/applications/com.yubico.yubioath.desktop
         path: "{{ ansible_user_dir }}/.config/autostart/com.yubico.yubioath.desktop"

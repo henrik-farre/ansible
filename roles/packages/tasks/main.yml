@@ -9,7 +9,7 @@
 
 - name: Install packages on Debian
   become: yes
-  apt:
+  ansible.builtin.apt:
     name: "{{ packages }}"
     state: latest
   when:

@@ -9,7 +9,7 @@
       include_tasks: cleanup.yml
 
     - name: Ensure directory exist
-      file:
+      ansible.builtin.file:
         path: /usr/local/etc/duplicity-docker
         mode: 0750
         owner: root
@@ -17,7 +17,7 @@
         state: directory
 
     - name: Ensure docker compose env file exists for current host
-      template:
+      ansible.builtin.template:
         src: "usr/local/etc/duplicity-docker/settings.env.j2"
         dest: "/usr/local/etc/duplicity-docker/settings.env"
         mode: 0640
@@ -27,7 +27,7 @@
       # Note "cmd" is for running other actions like "list", e.g.:
       # docker-compose -f duplicity-cmd.yml run --rm duplicity list home
     - name: Ensure docker compose files exists for current host
-      template:
+      ansible.builtin.template:
         src: "usr/local/etc/duplicity-docker/duplicity.yml.j2"
         dest: "/usr/local/etc/duplicity-docker/duplicity-{{ item }}.yml"
         mode: 0640
@@ -41,7 +41,7 @@
         - cmd
 
     - name: Install directory excludes
-      copy:
+      ansible.builtin.copy:
         src: "excludes/{{ item.src }}"
         dest: "{{ item.dest }}/.duplicity_exclude"
         owner: root
@@ -58,7 +58,7 @@
       include_tasks: gpg_setup.yml
 
     - name: Install systemd services
-      copy:
+      ansible.builtin.copy:
         content: |
           [Unit]
           Description=Duplicity Backup running in docker: performs %i
@@ -83,7 +83,7 @@
         mode: 0644
 
     - name: Install weekly systemd timers
-      copy:
+      ansible.builtin.copy:
         content: |
           [Unit]
           Description=Duplicity: %i
@@ -103,7 +103,7 @@
         mode: 0644
 
     - name: Install daily systemd timers
-      copy:
+      ansible.builtin.copy:
         content: |
           [Unit]
           Description=Duplicity: %i
@@ -123,7 +123,7 @@
         mode: 0644
 
     - name: Enable systemd services
-      systemd:
+      ansible.builtin.systemd:
         name: "duplicity-docker@{{ item }}.service"
         enabled: yes
         daemon_reload: yes
@@ -134,7 +134,7 @@
         - remove-old-set
 
     - name: Enable systemd timers
-      systemd:
+      ansible.builtin.systemd:
         name: "duplicity-docker-{{ item.schedule }}@{{ item.name }}.timer"
         enabled: yes
         state: started
@@ -156,11 +156,11 @@
         source: pull
 
     - name: Cleanup gpg keys
-      file:
+      ansible.builtin.file:
         path: "/root/.gnupg/private.asc"
         state: absent
 
     - name: Cleanup ownertrust
-      file:
+      ansible.builtin.file:
         path: "/root/.gnupg/ownertrust"
         state: absent

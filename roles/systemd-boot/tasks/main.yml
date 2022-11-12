@@ -1,7 +1,7 @@
 ---
 - name: Ensure directories for bootloader exist
   become: yes
-  file:
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: root
@@ -15,7 +15,7 @@
 
 - name: Ensure loader config exists
   become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /boot/loader/loader.conf
     group: root
     content: |
@@ -33,7 +33,7 @@
 
 - name: Ensure entries for systemd-boot exist
   become: yes
-  template:
+  ansible.builtin.template:
     src: "boot/loader/entries/entry.conf.j2"
     dest: "/boot/loader/entries/{{ item.name }}.conf"
     owner: root

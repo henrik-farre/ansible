@@ -12,7 +12,7 @@
     - weechat
 
 - name: Ensure secure option are copied
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_user_dir }}/.config/weechat/{{ item }}"
     src: "dot.config/weechat/{{ item }}.vault"
     mode: 0400

@@ -7,7 +7,7 @@
       include_tasks: cleanup.yml
 
     - name: Enable multilib repo in pacman - part 1
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/pacman.conf
         regexp: '\[multilib\]'
         line: "[multilib]"
@@ -15,7 +15,7 @@
       register: multilib_update
 
     - name: Enable multilib repo in pacman - part 2
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/pacman.conf
         regexp: 'Include '
         line: "Include = /etc/pacman.d/mirrorlist"
@@ -23,14 +23,14 @@
         state: present
 
     - name: Ensure parallel downloads are enabled
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/pacman.conf
         regexp: '.*ParallelDownloads = .*'
         line: "ParallelDownloads = 5"
         state: present
 
     - name: Ensure color is enabled
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/pacman.conf
         regexp: '.*Color'
         line: "Color"
@@ -52,13 +52,13 @@
           - reflector
 
     - name: Ensure local systemd directory exists
-      file:
+      ansible.builtin.file:
         state: directory
         path: /usr/local/lib/systemd/system
         mode: 0755
 
     - name: Pacman cache | Remove uninstalled and old packages | systemd service
-      copy:
+      ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/pacman-cache-cleanup.service
         content: |
           [Unit]
@@ -72,7 +72,7 @@
         mode: 0644
 
     - name: Pacman cache | Remove uninstalled and old packages | systemd timer
-      copy:
+      ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/pacman-cache-cleanup.timer
         content: |
           [Unit]
@@ -88,22 +88,22 @@
         mode: 0644
 
     - name: Reload systemd
-      systemd:
+      ansible.builtin.systemd:
         daemon_reload: yes
 
     - name: Enable systemd services
-      systemd:
+      ansible.builtin.systemd:
         name: "pacman-cache-cleanup.service"
         enabled: yes
 
     - name: Enable systemd timers
-      systemd:
+      ansible.builtin.systemd:
         name: "pacman-cache-cleanup.timer"
         enabled: yes
         state: started
 
     - name: Ensure pacman hook directory exist
-      file:
+      ansible.builtin.file:
         path: /etc/pacman.d/hooks
         state: directory
         owner: root
@@ -112,26 +112,26 @@
     # No need to update mirrorlist on changes to mirrorlist - just enable timer
     # https://wiki.archlinux.org/index.php/Reflector#pacman_hook
     - name: Ensure pacman mirrorlist hook is absent
-      file:
+      ansible.builtin.file:
         path: /etc/pacman.d/hooks/mirrorupgrade.hook
         state: absent
 
     - name: Reflector config
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/xdg/reflector/reflector.conf
         state: present
         regexp: '--country'
         line: '--country Denmark,Germany,Norway,Sweden,Ireland,Netherlands'
 
     - name: Reflector config
-      lineinfile:
+      ansible.builtin.lineinfile:
         path: /etc/xdg/reflector/reflector.conf
         state: present
         regexp: '--sort'
         line: '--sort rate'
 
     - name: Enable systemd timers
-      systemd:
+      ansible.builtin.systemd:
         name: "reflector.timer"
         enabled: yes
         state: started

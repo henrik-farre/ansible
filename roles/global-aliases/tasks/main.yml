@@ -1,7 +1,7 @@
 ---
 - name: Ensure global bash alises exists
   become: yes
-  blockinfile:
+  ansible.builtin.blockinfile:
     dest: /etc/bash.bashrc
     block: |
       alias l="ls -l"

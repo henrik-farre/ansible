@@ -1,5 +1,5 @@
 - name: Find latest release of go-jira
-  uri:
+  ansible.builtin.uri:
     url: https://api.github.com/repos/go-jira/jira/releases/latest
     return_content: true
   register: json_response
@@ -7,7 +7,7 @@
     - jira
 
 - name: Ensure ~/.local/bin directory exist
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.local/bin"
     state: directory
     mode: 0700
@@ -15,7 +15,7 @@
     - jira
 
 - name: Download latest release of go-jira
-  get_url:
+  ansible.builtin.get_url:
     url: "{{ item.browser_download_url }}"
     dest: "{{ ansible_user_dir }}/.local/bin/jira"
     mode: 0750

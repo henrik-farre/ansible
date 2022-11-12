@@ -5,7 +5,7 @@
 
   tasks:
     - name: Update Debian hosts
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
         name: "*"
         state: latest

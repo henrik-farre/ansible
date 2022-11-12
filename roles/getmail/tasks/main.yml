@@ -2,7 +2,7 @@
 - name: Ensure system mail is configured
   block:
     - name: Ensure configuration directory for getmail exist
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.getmail/"
         state: directory
         mode: 0700
@@ -12,7 +12,7 @@
 
     - name: Ensure backup destination for mails exist
       become: yes
-      file:
+      ansible.builtin.file:
         path: "{{ item.0.dest_path }}/{{ item.0.username }}/{{ item.1 }}"
         state: directory
         mode: 0700
@@ -24,7 +24,7 @@
         - getmail is defined
 
     - name: Ensure configurations for getmail exist
-      template:
+      ansible.builtin.template:
         src: getmailrc.j2
         dest: "{{ ansible_user_dir }}/.getmail/{{ item.username }}.getmailrc"
         mode: 0400
@@ -35,7 +35,7 @@
 
     - name: Ensure old cronjob for getmail is removed
       become: yes
-      file:
+      ansible.builtin.file:
         path: /etc/cron.d/getmail
         state: absent
       when:
@@ -43,7 +43,7 @@
 
     - name: Ensure systemd timers exist for getmail
       become: yes
-      template:
+      ansible.builtin.template:
         src: "etc/systemd/system/getmail.timer.j2"
         dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.timer"
         owner: root
@@ -54,7 +54,7 @@
 
     - name: Ensure systemd services exist for getmail
       become: yes
-      template:
+      ansible.builtin.template:
         src: "etc/systemd/system/getmail.service.j2"
         dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.service"
         owner: root
@@ -65,7 +65,7 @@
 
     - name: Enable systemd services
       become: true
-      systemd:
+      ansible.builtin.systemd:
         name: "getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.service"
         enabled: yes
         daemon_reload: yes
@@ -75,7 +75,7 @@
 
     - name: Enable systemd timers
       become: true
-      systemd:
+      ansible.builtin.systemd:
         name: "getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.timer"
         enabled: yes
         state: started

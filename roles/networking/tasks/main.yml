@@ -30,7 +30,7 @@
 
 - name: Install network connections
   become: yes
-  copy:
+  ansible.builtin.copy:
     src: "files/etc/NetworkManager/system-connections/{{ item }}"
     dest: "/etc/NetworkManager/system-connections/{{ item }}"
     owner: root
@@ -47,7 +47,7 @@
 
 - name: Configure regulatory domain for wireless
   become: yes
-  lineinfile:
+  ansible.builtin.lineinfile:
     name: /etc/conf.d/wireless-regdom
     regexp: 'WIRELESS_REGDOM="DK"'
     line: 'WIRELESS_REGDOM="DK"'
@@ -60,7 +60,7 @@
 
 - name: Ensure services are enabled
   become: yes
-  systemd:
+  ansible.builtin.systemd:
     name: "{{ item }}"
     enabled: yes
   loop:

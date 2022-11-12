@@ -23,7 +23,7 @@
 
   tasks:
     - name: Disable
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: no
         state: stopped
@@ -31,7 +31,7 @@
       ignore_errors: yes
 
     - name: remove
-      file:
+      ansible.builtin.file:
         path: "/etc/systemd/system/{{ item }}"
         state: absent
       loop: "{{ to_remove }}"

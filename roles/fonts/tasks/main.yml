@@ -25,7 +25,7 @@
 
 - name: Ensure Windows fonts are preferred - Requires ttf-ms-win11 package
   become: yes
-  copy:
+  ansible.builtin.copy:
     mode: 0644
     owner: root
     dest: /etc/fonts/conf.d/31-ttf-ms-win11.conf
@@ -56,7 +56,7 @@
     - fonts
 
 - name: Ensure old fontconfig directories are absent
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/{{ item }}"
     state: absent
   loop:
@@ -69,7 +69,7 @@
 
 - name: Enable LCD filter
   become: yes
-  file:
+  ansible.builtin.file:
     src: /usr/share/fontconfig/conf.avail/11-lcdfilter-default.conf
     dest: /etc/fonts/conf.d/11-lcdfilter-default.conf
     state: link
@@ -78,7 +78,7 @@
 
 - name: Enable sub-pixel rendering
   become: yes
-  file:
+  ansible.builtin.file:
     src: /usr/share/fontconfig/conf.avail/10-sub-pixel-rgb.conf
     dest: /etc/fonts/conf.d/10-sub-pixel-rgb.conf
     state: link
@@ -87,7 +87,7 @@
 
 - name: Enable hinting
   become: yes
-  file:
+  ansible.builtin.file:
     src: /usr/share/fontconfig/conf.avail/10-hinting-slight.conf
     dest: /etc/fonts/conf.d/10-hinting-slight.conf
     state: link
@@ -96,7 +96,7 @@
 
 - name: Disable bitmaps
   become: yes
-  file:
+  ansible.builtin.file:
     src: /usr/share/fontconfig/conf.avail/70-no-bitmaps.conf
     dest: /etc/fonts/conf.d/70-no-bitmaps.conf
     state: link
@@ -105,7 +105,7 @@
 
 
 - name: Create fonts directory
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.local/share/fonts"
     owner: "{{ ansible_user_id }}"
     state: directory
@@ -114,14 +114,14 @@
     - fonts
 
 - name: Check if Mononoki is installed
-  stat:
+  ansible.builtin.stat:
     path: "{{ ansible_user_dir }}/.local/share/fonts/mononoki Bold Italic Nerd Font Complete Mono.ttf"
   register: font_stat
   tags:
     - fonts
 
 - name: Find latest release of nerd font patched mononoki
-  uri:
+  ansible.builtin.uri:
     url: https://api.github.com/repos/ryanoasis/nerd-fonts/releases/latest
     return_content: true
   register: json_response
@@ -131,7 +131,7 @@
     - fonts
 
 - name: Download latest release of nerd font patched mononoki
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ item.browser_download_url }}"
     dest: "{{ ansible_user_dir }}/.local/share/fonts/"
     remote_src: yes

@@ -7,14 +7,14 @@
     name: lua-socket
 
 - name: Ensure systemd unit file is removed
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/systemd/user/devilspie2.service"
     state: absent
   tags:
     - devilspie
 
 - name: Ensure autostart directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/autostart"
     state: directory
 
@@ -31,12 +31,12 @@
     mode: 0750
 
 - name: Ensure devilspie configuration exists
-  template:
+  ansible.builtin.template:
     src: dot.config/devilspie2/devilspie2.lua.j2
     dest: "{{ ansible_user_dir }}/.config/devilspie2/devilspie2.lua"
 
 - name: Ensure devilspie is auto started
-  copy:
+  ansible.builtin.copy:
     dest: "{{ ansible_user_dir }}/.config/autostart/devilspie2.desktop"
     content: |
       [Desktop Entry]

@@ -1,5 +1,5 @@
 - name: Find latest release of jid
-  uri:
+  ansible.builtin.uri:
     url: https://api.github.com/repos/simeji/jid/releases/latest
     return_content: true
   register: json_response
@@ -7,7 +7,7 @@
     - jid
 
 - name: Ensure ~/.local/bin directory exist
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.local/bin"
     state: directory
     mode: 0700
@@ -15,7 +15,7 @@
     - jid
 
 - name: Download latest release of jid
-  unarchive:
+  ansible.builtin.unarchive:
     src: "{{ item.browser_download_url }}"
     dest: "{{ ansible_user_dir }}/.local/bin/"
     remote_src: yes

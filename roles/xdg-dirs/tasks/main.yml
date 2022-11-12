@@ -4,7 +4,7 @@
 # - https://wiki.archlinux.org/index.php/XDG_Base_Directory
 - name: Ensure XDG directories are defined in /etc/security/pam_env.conf
   become: yes
-  blockinfile:
+  ansible.builtin.blockinfile:
     dest: /etc/security/pam_env.conf
     block: |
       # Setting variables that reuse your $HOME

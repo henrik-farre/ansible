@@ -15,7 +15,7 @@
           - systembus-notify
 
     - name: Ensure earlyoom is configured correctly
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/default/earlyoom"
         regexp: 'EARLYOOM_ARGS='
         line: "EARLYOOM_ARGS=\"-m 5 -r 3600 -n --avoid '(^|/)(init|systemd|Xorg|sshd)$'\""
@@ -24,7 +24,7 @@
 
     - name: Ensure earlyoom is started and enabled
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         name: earlyoom
         state: started
         enabled: yes
@@ -37,7 +37,7 @@
         name: psi-notify
 
     - name: Install psi-notify config file
-      copy:
+      ansible.builtin.copy:
         dest: "{{ ansible_user_dir }}/.config/psi-notify"
         mode: 0640
         content: |
@@ -49,7 +49,7 @@
           threshold io full avg10 15.00
 
     - name: Ensure psi-notify is started and enabled
-      systemd:
+      ansible.builtin.systemd:
         name: psi-notify
         state: started
         enabled: yes

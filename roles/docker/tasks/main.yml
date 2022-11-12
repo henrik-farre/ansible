@@ -13,7 +13,7 @@
 
     - name: Ensure docker directory exists
       become: yes
-      file:
+      ansible.builtin.file:
         path: /etc/docker
         state: directory
         owner: root
@@ -22,7 +22,7 @@
 
     - name: Ensure correct storage driver is configured
       become: yes
-      copy:
+      ansible.builtin.copy:
         dest: /etc/docker/daemon.json
         content: "{{ docker_daemon_options|to_nice_json }}"
         owner: root
@@ -32,13 +32,13 @@
 
     - name: Check if devicemapper directory exist
       become: yes
-      stat:
+      ansible.builtin.stat:
         path: /var/lib/docker/devicemapper
       register: docker_devicemapper
 
     - name: Ensure docker is stopped before removing devicemapper
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         name: docker
         state: stopped
       when:
@@ -46,7 +46,7 @@
 
     - name: Ensure devicemapper directory is removed
       become: yes
-      file:
+      ansible.builtin.file:
         path: /var/lib/docker/devicemapper
         state: absent
       when:
@@ -57,7 +57,7 @@
 
     - name: Ensure docker is started
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         name: docker
         state: started
         enabled: yes
@@ -66,7 +66,7 @@
 
     - name: Remove old cronjob
       become: yes
-      cron:
+      ansible.builtin.cron:
         state: absent
         name: "Clean docker"
         special_time: weekly
@@ -76,7 +76,7 @@
 
     - name: Prune unused docker images, containers and more | systemd service
       become: yes
-      copy:
+      ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/docker-prune.service
         content: |
           [Unit]
@@ -91,7 +91,7 @@
 
     - name: Prune unused docker images, containers and more | systemd timer
       become: yes
-      copy:
+      ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/docker-prune.timer
         content: |
           [Unit]
@@ -108,32 +108,32 @@
 
     - name: Reload systemd
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         daemon_reload: yes
 
     - name: Enable docker socket
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         name: "docker.socket"
         enabled: yes
         state: started
 
     - name: Enable systemd services
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         name: "docker-prune.service"
         enabled: yes
 
     - name: Enable systemd timers
       become: yes
-      systemd:
+      ansible.builtin.systemd:
         name: "docker-prune.timer"
         enabled: yes
         state: started
 
     - name: Ensure users are members of docker group
       become: yes
-      user:
+      ansible.builtin.user:
         name: "{{ item }}"
         groups: docker
         append: yes

@@ -1,7 +1,7 @@
 ---
 - name: Ensure sudo is installed
   become: true
-  package:
+  ansible.builtin.package:
     name: sudo
     state: latest
 
@@ -9,7 +9,7 @@
 # Using multiline for content is important, sudo needs newline
 - name: Enable sudo access for wheel group
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       %wheel ALL=(ALL) ALL
     dest: /etc/sudoers.d/10-grant-wheel-group
@@ -21,7 +21,7 @@
 
 - name: Enable sudo access for sudo group
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       %wheel ALL=(ALL) ALL
     dest: /etc/sudoers.d/10-grant-sudo-group
@@ -33,7 +33,7 @@
 
 - name: Use neovim as editor
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       Defaults editor="/bin/nvim"
     dest: /etc/sudoers.d/20-neovim-as-editor
@@ -46,7 +46,7 @@
 # https://wiki.archlinux.org/index.php/Sudo#Disable_per-terminal_sudo
 - name: Disable pr. tty sudo
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       Defaults !tty_tickets
     dest: /etc/sudoers.d/30-tty-tickets
@@ -56,7 +56,7 @@
 
 - name: Cmnd Aliases with no password for wheel
   become: true
-  copy:
+  ansible.builtin.copy:
     content: |
       Cmnd_Alias  POWER       =   /usr/bin/shutdown -h now, /usr/bin/shutdown -r now, /usr/bin/halt, /usr/bin/poweroff, /usr/bin/reboot
       Cmnd_Alias  PACMAN      =   /usr/bin/pacman

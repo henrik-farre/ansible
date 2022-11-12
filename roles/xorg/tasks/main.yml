@@ -73,7 +73,7 @@
 
 - name: Setup keyboards and mice
   become: yes
-  copy:
+  ansible.builtin.copy:
     src: "etc/X11/xorg.conf.d/{{ item }}"
     dest: "/etc/X11/xorg.conf.d/{{ item }}"
     owner: root
@@ -87,7 +87,7 @@
 
 - name: Setup extra devices
   become: yes
-  copy:
+  ansible.builtin.copy:
     src: "etc/X11/xorg.conf.d/{{ item }}"
     dest: "/etc/X11/xorg.conf.d/{{ item }}"
     owner: root
@@ -154,7 +154,7 @@
 
 - name: Ensure AMD video driver is configured
   become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /etc/X11/xorg.conf.d/30-amdgpu.conf
     src: etc/X11/xorg.conf.d/30-amdgpu.conf
     group: root

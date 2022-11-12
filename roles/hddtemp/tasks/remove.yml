@@ -1,20 +1,20 @@
 ---
 - name: Ensure custom unit is removed if there are no devices
-  file:
+  ansible.builtin.file:
     path: /etc/systemd/system/hddtemp.service.d/customexec.conf
     state: absent
   tags:
     - hddtemp
 
 - name: Ensure directory for custom unit is removed if there are no devices
-  file:
+  ansible.builtin.file:
     path: /etc/systemd/system/hddtemp.service.d
     state: absent
   tags:
     - hddtemp
 
 - name: Ensure hddtemp service is disabled
-  systemd:
+  ansible.builtin.systemd:
     name: hddtemp
     state: stopped
     enabled: no

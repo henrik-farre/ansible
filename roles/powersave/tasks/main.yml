@@ -5,7 +5,7 @@
     - powersave
   block:
     - name: Copy udev rules for saving power
-      copy:
+      ansible.builtin.copy:
         dest: "/etc/udev/rules.d/{{ item }}"
         src: "etc/udev/rules.d/{{ item }}"
       loop:

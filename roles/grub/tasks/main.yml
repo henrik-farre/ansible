@@ -1,6 +1,6 @@
 ---
 - name: Ensure default configuration for grub exist
-  template:
+  ansible.builtin.template:
     src: etc/default/grub.j2
     dest: /etc/default/grub
     mode: 0644

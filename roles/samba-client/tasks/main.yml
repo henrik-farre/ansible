@@ -1,7 +1,7 @@
 ---
 - name: Copy default config
   become: yes
-  copy:
+  ansible.builtin.copy:
     src: etc/samba/smb.conf
     dest: /etc/samba/smb.conf
     owner: root

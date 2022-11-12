@@ -1,6 +1,6 @@
 ---
 - name: Pacman cache | Remove old cron script 1
-  cron:
+  ansible.builtin.cron:
     state: absent
     name: "Clean pacman cache"
     special_time: weekly
@@ -9,7 +9,7 @@
     cron_file: paccache
 
 - name: Pacman cache | Remove old cron script 2
-  cron:
+  ansible.builtin.cron:
     state: absent
     name: "Clean pacman cache"
     special_time: weekly
@@ -19,7 +19,7 @@
 
 # Removed, does nothing
 - name: Ensure the pacman database is optimized monthly
-  cron:
+  ansible.builtin.cron:
     state: absent
     name: "Optimize pacman database"
     special_time: monthly
@@ -28,7 +28,7 @@
     cron_file: pacman-optimize
 
 - name: Remove old cronjob
-  cron:
+  ansible.builtin.cron:
     state: absent
     cron_file: pacman-mirrors-rank
     job: /usr/local/sbin/pacman-sort-mirrors.sh
@@ -37,6 +37,6 @@
     name: pacman-mirrors-rank
 
 - name: Remove old cronjob script
-  file:
+  ansible.builtin.file:
     path: /usr/local/sbin/pacman-sort-mirrors.sh
     state: absent

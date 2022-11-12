@@ -4,7 +4,7 @@
     - dotfiles
   block:
     - name: Ensure directories exist
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/{{ item }}"
         owner: "{{ ansible_user_id }}"
         state: directory
@@ -17,7 +17,7 @@
         - dotfiles
 
     - name: Remove old symlinks/directories
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/{{ item }}"
         state: absent
       loop:
@@ -60,7 +60,7 @@
 
     # As this git repository is cloned using ssh, we need to have ssh-agent forwarded as defined in ansible.cfg
     - name: Clone dot files
-      git:
+      ansible.builtin.git:
         repo: git@github.com:henrik-farre/dotfiles.git
         dest: "{{ ansible_user_dir }}/.local/dotfiles"
         version: master
@@ -68,14 +68,14 @@
         - dotfiles
 
     - name: Check if skel files exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ ansible_user_dir }}/.bashrc"
       register: bash_skelfile
       tags:
         - dotfiles
 
     - name: Remove existing skel files
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/{{ item }}"
         state: absent
       with_items:
@@ -86,7 +86,7 @@
         - dotfiles
 
     - name: Symlink files
-      file:
+      ansible.builtin.file:
         src: "{{ ansible_user_dir }}/.local/dotfiles/{{ item }}"
         dest: "{{ ansible_user_dir }}/{{ item }}"
         owner: "{{ ansible_user_id }}"

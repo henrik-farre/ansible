@@ -30,14 +30,14 @@
 
     # enable cgroups for memory
     - name: Ensure /boot/firmware/cmdline.txt contains correct options
-      copy:
+      ansible.builtin.copy:
         dest: /boot/firmware/cmdline.txt
         content: |
           dwc_otg.lpm_enable=0 console=tty0 console=ttyS1,115200 root=LABEL=RASPIROOT rootfstype=ext4 elevator=deadline fsck.repair=yes cgroup_enable=memory rootwait
           # console=tty0 console=ttyS1,115200 root=/dev/mmcblk0p2 rw elevator=deadline fsck.repair=yes net.ifnames=0 cma=64M rootwait
 
     - name: Ensure /boot/firmware/config.txt containts correct options
-      lineinfile:
+      ansible.builtin.lineinfile:
         line: '{{ item.key }}={{ item.value }}'
         dest: /boot/firmware/config.txt
         regexp: "^{{ item.key }}="
@@ -57,7 +57,7 @@
         - "dphys-swapfile uninstall"
 
     - name: Disable unneeded services
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item }}"
         state: stopped
         enabled: no
@@ -74,7 +74,7 @@
       failed_when: False
 
     - name: Remove unneeded packages
-      apt:
+      ansible.builtin.apt:
         name: "{{ packages }}"
         state: absent
         purge: yes
@@ -94,7 +94,7 @@
 
     # https://github.com/pi-hole/docker-pi-hole/issues/153
     - name: Ensure pihole-FTL.log is truncated
-      cron:
+      ansible.builtin.cron:
         name: pihole-FTL.log truncate
         minute: 5
         hour: 0
@@ -103,7 +103,7 @@
         cron_file: pihole_truncate
 
     - name: Ensure directory for journald overrides exists
-      file:
+      ansible.builtin.file:
         path: /etc/systemd/journald.conf.d
         state: directory
         owner: root
@@ -111,7 +111,7 @@
         mode: 0755
 
     - name: Ensure journald is configured for volatile storage
-      copy:
+      ansible.builtin.copy:
         dest: /etc/systemd/journald.conf.d/01-journal-storage.conf
         group: root
         content: |

@@ -8,7 +8,7 @@
 # Based on https://wiki.archlinux.org/index.php/S.M.A.R.T.#Notifying_potential_problems
 - name: Ensure desktop notification script is installed
   become: yes
-  copy:
+  ansible.builtin.copy:
     dest: /usr/share/smartmontools/smartd_warning.d/smartdnotify
     group: root
     content: |
@@ -29,7 +29,7 @@
 
 - name: Ensure smartd is configured
   become: yes
-  lineinfile:
+  ansible.builtin.lineinfile:
     name: /etc/smartd.conf
     regexp: '^DEVICESCAN'
     line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }},@smartdnotify -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W {{ smartd.temperatures }}'
@@ -41,7 +41,7 @@
 
 - name: Ensure smartd service is started
   become: yes
-  systemd:
+  ansible.builtin.systemd:
     name: smartd
     state: started
     enabled: yes
