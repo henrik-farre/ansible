@@ -1,0 +1,14 @@
+---
+- name: Validate correct vars are set
+  ansible.builtin.assert:
+    that:
+      - shells is defined
+  tags:
+    - shell
+
+- name: Ensure shell are installed
+  ansible.builtin.include_tasks:
+    file: "{{ item }}.yml"
+  loop: "{{ shells }}"
+  tags:
+    - shell

@@ -1,0 +1,104 @@
+- name: Install
+  ansible.builtin.apt:
+    package: "{{ packages }}"
+  vars:
+    packages:
+      - apparmor
+      - apparmor-utils
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - dbus
+      - gnupg
+      - jq
+      - libglib2.0-bin
+      - lsb-release
+      - network-manager
+      - software-properties-common
+      - systemd-journal-remote
+      - udisks2
+      - wget
+
+- name: Get docker repo apt key
+  ansible.builtin.apt_key:
+    url: https://download.docker.com/linux/debian/gpg
+    keyring: /etc/apt/trusted.gpg.d/docker.gpg
+
+- name: Add docker repository
+  ansible.builtin.apt_repository:
+    repo: deb https://download.docker.com/linux/debian bullseye stable
+    state: present
+
+- name: Install docker
+  ansible.builtin.apt:
+    name: "{{ packages }}"
+    state: latest
+    update_cache: yes
+  vars:
+    packages:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+
+- name: Make sure docker is active
+  ansible.builtin.systemd:
+    name: docker
+    state: started
+    enabled: yes
+
+- name: Add remote user to "docker" group
+  ansible.builtin.user:
+    name: enrique
+    groups: "docker"
+    append: yes
+
+- name: Get stats of a file
+  ansible.builtin.stat:
+    path: /etc/machine-id
+  register: mid
+
+- name: If machine-id is dir
+  ansible.builtin.file:
+    name: /etc/machine-id
+    state: absent
+  when: mid.stat.isdir is defined and mid.stat.isdir
+
+- name: Generate machine-id
+  ansible.builtin.command:
+    cmd: /usr/bin/systemd-machine-id-setup
+    creates: /etc/machine-id
+
+- name: Disable modem manager
+  ansible.builtin.systemd:
+    name: ModemManager
+    state: stopped
+    enabled: false
+
+- name: Remove modem manager
+  ansible.builtin.apt:
+    name: modemmanager
+    state: absent
+    purge: yes
+
+- name: Configure ha supervised arch
+  ansible.builtin.debconf:
+    name: homeassistant-supervised
+    question: ha/machine-type
+    value: 'raspberrypi3-64'
+    vtype: select
+
+- name: Find latest release of ha os agent
+  ansible.builtin.uri:
+    url: https://api.github.com/repos/home-assistant/os-agent/releases/latest
+    return_content: true
+  register: json_response
+
+- name: Download latest release of ha os agent
+  ansible.builtin.apt:
+    deb: "{{ item.browser_download_url }}"
+  loop: "{{ json_response.json.assets }}"
+  when: item.name.find("linux_aarch64.deb") != -1
+
+- name: Download latest release of ha supervised
+  ansible.builtin.apt:
+    deb: "https://github.com/home-assistant/supervised-installer/releases/latest/download/homeassistant-supervised.deb"

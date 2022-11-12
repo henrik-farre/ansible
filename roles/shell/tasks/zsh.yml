@@ -1,0 +1,35 @@
+---
+- name: Ensure zsh is installed
+  become: true
+  ansible.builtin.package:
+    name: "zsh"
+    state: present
+  tags:
+    - shell
+
+- name: Ensure zsh extensions are installed on Archlinux
+  become: true
+  ansible.builtin.package:
+    name: "{{ packages }}"
+    state: present
+  vars:
+    packages:
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+      - zsh-completions
+  when: ansible_facts.distribution == "Archlinux"
+  tags:
+    - shell
+
+- name: Ensure zsh dot files are read from XDG_CONFIG_HOME
+  become: true
+  ansible.builtin.copy:
+    dest: /etc/zsh/zshenv
+    mode: 0644
+    content: |
+      # Managed by Ansible
+      # Ensure zsh dot files are read from XDG_CONFIG_HOME
+      export XDG_CONFIG_HOME="$HOME/.config"
+      export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
+  tags:
+    - shell
