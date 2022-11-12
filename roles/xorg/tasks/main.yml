@@ -1,7 +1,7 @@
 ---
 - name: Ensure needed packages for xorg are installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ packages }}"
   vars:
@@ -33,7 +33,7 @@
 
 - name: Ensure unused packages for xorg are removed
   become: yes
-  pacman:
+  community.general.pacman:
     state: absent
     name: "{{ packages }}"
   vars:
@@ -101,7 +101,7 @@
 
 - name: Install Intel video driver
   become: yes
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: latest
   vars:
@@ -117,7 +117,7 @@
 
 - name: Install Nvidia video driver
   become: yes
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: latest
   vars:
@@ -133,7 +133,7 @@
 
 - name: Install AMD video driver
   become: yes
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: latest
   vars:

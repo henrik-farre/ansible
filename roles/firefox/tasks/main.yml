@@ -5,7 +5,7 @@
   block:
     - name: Ensure Firefox and dependencies are installed
       become: yes
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

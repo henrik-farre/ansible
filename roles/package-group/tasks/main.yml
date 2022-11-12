@@ -1,7 +1,7 @@
 ---
 - name: "Install '{{ package_group }}': {{ package_groups[package_group]|join(', ') }}"
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ package_groups[package_group] }}"
   when:

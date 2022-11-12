@@ -4,7 +4,7 @@
     - sound
   block:
     - name: Ensure pipewire is installed
-      pacman:
+      community.general.pacman:
         name: "{{ packages }}"
         state: latest
       vars:
@@ -28,7 +28,7 @@
         - pulseaudio.service
 
     - name: Ensure pulseaudio related packages are uninstalled
-      pacman:
+      community.general.pacman:
         name: "{{ packages }}"
         state: absent
       vars:

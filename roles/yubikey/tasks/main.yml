@@ -5,7 +5,7 @@
   block:
     - name: Ensure yubikey related packages are installed
       become: yes
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

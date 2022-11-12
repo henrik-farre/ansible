@@ -5,7 +5,7 @@
     - apparmor
   block:
     - name: Install AppArmor, audit and dependencies
-      pacman:
+      community.general.pacman:
         name: "{{ packages }}"
         state: latest
       vars:

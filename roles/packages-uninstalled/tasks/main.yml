@@ -1,7 +1,7 @@
 ---
 - name: Make sure packages does not exit on system
   become: yes
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: absent
     recurse: yes

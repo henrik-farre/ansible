@@ -1,7 +1,7 @@
 ---
 - name: Remove local installed duplicity and dependencies
   become: true
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: absent
   vars:

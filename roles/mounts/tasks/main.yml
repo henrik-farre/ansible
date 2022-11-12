@@ -11,7 +11,7 @@
 
 - name: Ensure nfs support is installed
   become: yes
-  pacman:
+  community.general.pacman:
     name: nfs-utils
     state: latest
   tags:

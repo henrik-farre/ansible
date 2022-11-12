@@ -37,13 +37,13 @@
         state: present
 
     - name: Update pacman cache
-      pacman:
+      community.general.pacman:
         update_cache: yes
       when:
         - multilib_update.changed
 
     - name: Ensure needed pacman contrib utilies are installed
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

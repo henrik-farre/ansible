@@ -1,7 +1,7 @@
 ---
 - name: "Install packages on ArchLinux : {{ packages|join(', ') }}"
   become: yes
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: latest
   when:

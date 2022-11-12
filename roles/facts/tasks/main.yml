@@ -1,6 +1,6 @@
 ---
 - name: Ensure needed packages are installed
-  pacman:
+  community.general.pacman:
     name: "{{ packages }}"
     state: latest
   vars:

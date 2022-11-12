@@ -12,7 +12,7 @@
       when: ansible_facts.distribution == "Debian"
 
     - name: Update ArchLinux hosts
-      pacman:
+      community.general.pacman:
         update_cache: yes
         upgrade: yes
       when: ansible_facts.distribution == "Archlinux"

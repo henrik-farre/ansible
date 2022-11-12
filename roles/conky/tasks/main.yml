@@ -41,7 +41,7 @@
 
 - name: Ensure font awesome is installed
   become: yes
-  pacman:
+  community.general.pacman:
     name: ttf-font-awesome
     state: latest
   notify: Update font cache

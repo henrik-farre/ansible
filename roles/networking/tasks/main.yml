@@ -1,7 +1,7 @@
 ---
 - name: Ensure package is installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ packages }}"
   vars:
@@ -12,7 +12,7 @@
 
 - name: Ensure required wireless networking packages are installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ packages }}"
   vars:

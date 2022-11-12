@@ -1,7 +1,7 @@
 ---
 - name: Ensure fonts and releated packages are installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ packages }}"
   vars:

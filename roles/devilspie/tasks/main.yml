@@ -2,7 +2,7 @@
 # For detecting hostname in config file
 - name: Ensure devilspie2 dependencies are installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: lua-socket
 

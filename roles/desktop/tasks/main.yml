@@ -6,7 +6,7 @@
     # https://github.com/rfjakob/earlyoom
     - name: Ensure earlyoom and dependencies is installed
       become: yes
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

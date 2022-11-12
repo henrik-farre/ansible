@@ -1,7 +1,7 @@
 ---
 - name: Ensure lm_sensors is installed
   become: yes
-  pacman:
+  community.general.pacman:
     name: lm_sensors
     state: latest
   tags:

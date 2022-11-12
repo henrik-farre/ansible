@@ -14,7 +14,7 @@
         - 55-powerprofilectl.rules
 
     - name: Ensure powersave profile daemon is installed
-      pacman:
+      community.general.pacman:
         name: power-profiles-daemon
         state: latest
 
@@ -25,7 +25,7 @@
         enabled: yes
 
     - name: Ensure powersaving related packages are installed
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

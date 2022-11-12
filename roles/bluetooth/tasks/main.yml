@@ -22,7 +22,7 @@
 
 - name: Ensure bluetooth packages are installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ packages }}"
   vars:
@@ -35,7 +35,7 @@
 
 - name: Ensure bluetooth packages are installed in other desktop environments
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ packages }}"
   vars:
@@ -47,7 +47,7 @@
 
 - name: Ensure bluetooth packages are installed in gnome
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "{{ packages }}"
   vars:

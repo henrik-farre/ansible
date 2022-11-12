@@ -8,7 +8,7 @@
     - thinkpad
   block:
     - name: Ensure needed packages are installed
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

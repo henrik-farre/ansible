@@ -1,7 +1,7 @@
 ---
 - name: Ensure Zim and dependencies are installed
   become: yes
-  pacman:
+  community.general.pacman:
     name: zim
     state: latest
   vars:

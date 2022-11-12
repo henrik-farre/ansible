@@ -3,7 +3,7 @@
   block:
     - name: Ensure needed packages for xorg are installed
       become: yes
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

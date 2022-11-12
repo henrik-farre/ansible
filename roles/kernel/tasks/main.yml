@@ -1,18 +1,18 @@
 - name: Ensure correct kernel is installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"
 
 - name: Ensure correct kernel headers are installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}-headers"
 
 - name: Ensure correct CPU microcode is installed for Intel
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "intel-ucode"
   when:
@@ -20,7 +20,7 @@
 
 - name: Ensure correct CPU microcode is installed for AMD
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: "amd-ucode"
   when:

@@ -31,7 +31,7 @@
 
 - name: Install dependencies for "{{ aur_pkg_helper }}"
   become: yes
-  pacman:
+  community.general.pacman:
     name: "{{ aur_pkg_deps }}"
 
 - name: Build package

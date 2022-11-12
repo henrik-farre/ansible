@@ -1,7 +1,7 @@
 ---
 - name: Ensure solaar is installed
   become: yes
-  pacman:
+  community.general.pacman:
     state: latest
     name: solaar
   tags:

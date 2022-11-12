@@ -41,7 +41,7 @@
 
 - name: Install nvme utils if system has an nvme
   become: yes
-  pacman:
+  community.general.pacman:
     name: nvme-cli
     state: latest
   tags:

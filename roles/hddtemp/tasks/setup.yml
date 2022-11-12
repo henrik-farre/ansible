@@ -1,6 +1,6 @@
 ---
 - name: Ensure hddtemp package is installed
-  pacman:
+  community.general.pacman:
     state: latest
     name: hddtemp
   tags:

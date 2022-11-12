@@ -2,7 +2,7 @@
 - name: Become and tag block
   block:
     - name: Ensure packages are installed
-      pacman:
+      community.general.pacman:
         state: "latest"
         name: "{{ packages }}"
       vars:

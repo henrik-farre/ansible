@@ -10,7 +10,7 @@
         file: rclone.yml.vault
 
     - name: Ensure rclone is installed
-      pacman:
+      community.general.pacman:
         name: rclone
         state: latest
 

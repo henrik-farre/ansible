@@ -34,7 +34,7 @@
 
     - name: Ensure required packages are installed
       become: yes
-      pacman:
+      community.general.pacman:
         name: "{{ packages }}"
         state: latest
       vars:
@@ -46,7 +46,7 @@
     # https://linuxreviews.org/Intel_graphics#Hardware_Video_Decoding_.2F_Encoding
     - name: Install Intel related packages
       become: yes
-      pacman:
+      community.general.pacman:
         name: "{{ packages }}"
         state: latest
       vars:
