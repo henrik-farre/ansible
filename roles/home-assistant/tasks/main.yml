@@ -19,39 +19,6 @@
       - udisks2
       - wget
 
-- name: Get docker repo apt key
-  ansible.builtin.apt_key:
-    url: https://download.docker.com/linux/debian/gpg
-    keyring: /etc/apt/trusted.gpg.d/docker.gpg
-
-- name: Add docker repository
-  ansible.builtin.apt_repository:
-    repo: deb https://download.docker.com/linux/debian bullseye stable
-    state: present
-
-- name: Install docker
-  ansible.builtin.apt:
-    name: "{{ packages }}"
-    state: latest
-    update_cache: yes
-  vars:
-    packages:
-      - docker-ce
-      - docker-ce-cli
-      - containerd.io
-
-- name: Make sure docker is active
-  ansible.builtin.systemd:
-    name: docker
-    state: started
-    enabled: yes
-
-- name: Add remote user to "docker" group
-  ansible.builtin.user:
-    name: enrique
-    groups: "docker"
-    append: yes
-
 - name: Get stats of a file
   ansible.builtin.stat:
     path: /etc/machine-id
