@@ -101,9 +101,6 @@ package_groups:
     - wol
   desktop:
     - adwaita-icon-theme
-    - alsa-lib
-    - alsa-tools
-    - alsa-utils
     - aspell
     # aspell-da is in aur
     - aspell-en

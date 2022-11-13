@@ -1,8 +1,31 @@
-- name: Configure pipewire system wide
+- name: Configure alsa+pipewire system wide
   become: true
   tags:
     - sound
   block:
+    - name: Ensure alsa-utils are installed
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - alsa-lib
+          - alsa-tools
+          - alsa-utils
+
+    - name: Ensure asound.state exists
+      ansible.builtin.command: alsactl store
+      args:
+        creates: /var/lib/alsa/asound.state
+      when:
+        - ansible_virtualization_type != 'virtualbox'
+
+    - name: Ensure alsa-restore service is started
+      ansible.builtin.systemd:
+        name: alsa-restore
+        state: started
+        enabled: yes
+
     - name: Ensure pipewire is installed
       community.general.pacman:
         name: "{{ packages }}"

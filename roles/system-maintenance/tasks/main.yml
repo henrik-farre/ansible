@@ -4,24 +4,6 @@
   tags:
     - system-maintenance
 
-- name: Include alsa tasks
-  include_tasks: alsa.yml
-  tags:
-    - system-maintenance
-
-#- name: Ensure RAID is checked monthly
-#  become: true
-#  copy:
-#    src: cron.monthly/raid_maintenance
-#    dest: /etc/cron.monthly/raid_maintenance
-#    owner: root
-#    group: root
-#    mode: 0750
-#  tags:
-#    - system-maintenance
-#  when:
-#    - ansible_hostname == "spookcentral"
-
 # I looks like trim should also be called on nvme drives
 - name: Ensure list of nvme devices is reset
   ansible.builtin.set_fact:
