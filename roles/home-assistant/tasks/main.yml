@@ -35,11 +35,16 @@
     cmd: /usr/bin/systemd-machine-id-setup
     creates: /etc/machine-id
 
+- name: Get the list of services
+  ansible.builtin.service_facts:
+
 - name: Disable modem manager
   ansible.builtin.systemd:
     name: ModemManager
     state: stopped
     enabled: false
+  when:
+    - "'ModemManager' in services"
 
 - name: Remove modem manager
   ansible.builtin.apt:
