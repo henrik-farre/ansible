@@ -18,7 +18,8 @@
       when: ansible_facts.distribution == "Archlinux"
 
   roles:
-    # - networking
+    - systemd
+    - networking
     - hostname
     - locale
     - timezone
@@ -30,6 +31,14 @@
     - ssh-keys
     - dotfiles
     - vim
+    - docker
+
+- name: ArchLinux setup
+  hosts: archlinux
+  gather_facts: no
+  roles:
+    - bootloader
+    - pacman
     - sensors
     - role: package-group
       package_group: "base_utils"
@@ -41,13 +50,6 @@
       package_group: "development_utils"
     - role: package-group
       aur_package_group: "development_utils"
-
-- name: ArchLinux setup
-  hosts: archlinux
-  gather_facts: no
-  roles:
-    - bootloader
-    - pacman
     - hddtemp
     - sysctl
     - journald
@@ -57,7 +59,6 @@
     - global-aliases
     - misc-setup
     - xdg-dirs
-    - docker
     - { role: backup-duplicity-docker, when: duplicity is defined }
     - fuse
     - { role: packages, packages: "{{ host_packages }}" }
@@ -69,17 +70,13 @@
   gather_facts: no
   roles:
     - sound
-    - { role: xorg, when: display_server == 'x11' }
     - { role: wayland, when: display_server == 'wayland', tags: ['wayland'] }
-    - { role: lightdm, when: desktop_environment != 'gnome' }
     - role: package-group
       package_group: "desktop"
     - role: package-group
       aur_package_group: "desktop"
     - fonts
-    - { role: cinnamon, when: desktop_environment == 'cinnamon' }
     - { role: gnome, when: desktop_environment == 'gnome', tags: ['gnome'] }
-    - { role: conky, when: display_server == 'x11' }
     - solaar
     - signal-desktop
     - zim
@@ -89,7 +86,6 @@
     - systemd-user-units
     - terminal
     - cups
-    - { role: devilspie, when: display_server == 'x11' }
     - spotify
     - desktop
     - yubikey
@@ -160,7 +156,13 @@
   roles:
     - raspbian
     - arpwatch
-    - docker
+
+- name: Debian setup
+  hosts: debian
+  gather_facts: no
+  roles:
+    - role: package-group
+      package_group: "base_utils_debian"
 
 - name: Unifi Controller setup
   hosts: unifi-controller
