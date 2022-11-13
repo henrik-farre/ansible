@@ -1,0 +1,7 @@
+---
+- name: Ensure systemd directories exists
+  become: true
+  ansible.builtin.file:
+    path: "/usr/local/lib/systemd/system/"
+    state: directory
+    mode: 0755
