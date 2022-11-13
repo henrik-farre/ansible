@@ -19,13 +19,16 @@
 
   roles:
     - systemd
+    - journald
     - networking
     - hostname
     - locale
     - timezone
     - ntp
+    - xdg-dirs
     - users
     - system-mail
+    - global-aliases
     - sshd
     - ssh-client
     - ssh-keys
@@ -52,13 +55,10 @@
       aur_package_group: "development_utils"
     - hddtemp
     - sysctl
-    - journald
     - firewall
     - makepkg
     - system-maintenance
-    - global-aliases
     - misc-setup
-    - xdg-dirs
     - { role: backup-duplicity-docker, when: duplicity is defined }
     - fuse
     - { role: packages, packages: "{{ host_packages }}" }
@@ -155,7 +155,7 @@
   gather_facts: no
   roles:
     - raspbian
-    - arpwatch
+    # - arpwatch
 
 - name: Debian setup
   hosts: debian
