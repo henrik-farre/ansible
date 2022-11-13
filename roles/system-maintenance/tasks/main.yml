@@ -1,6 +1,6 @@
 ---
 - name: Include smartd tasks
-  include_tasks: smartd.yml
+  ansible.builtin.include_tasks: smartd.yml
   tags:
     - system-maintenance
 
@@ -37,17 +37,6 @@
     name: fstrim.timer
     state: started
     enabled: yes
-  tags:
-    - system-maintenance
-
-- name: Ensure cronjob is configured
-  become: true
-  ansible.builtin.cron:
-    cron_file: clean-user-cache
-    job: find {{ ansible_user_dir }}/.cache -mtime +7 -type f -delete
-    special_time: daily
-    user: root
-    name: "Clean user ~/.cache directory"
   tags:
     - system-maintenance
 
