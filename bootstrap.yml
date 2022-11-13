@@ -1,5 +1,6 @@
 ---
-- hosts: all
+- name: Bootstrap all
+  hosts: all
   become: true
   roles:
     - sudo
@@ -18,7 +19,8 @@
     - { role: services, services: ['sshd'] }
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
 
-- hosts: laptop
+- name: Bootstrap laptops
+  hosts: laptop
   become: true
   roles:
     - { role: networking, wireless: true }
