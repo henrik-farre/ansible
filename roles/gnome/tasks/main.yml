@@ -26,6 +26,8 @@
           - xdg-desktop-portal-gnome
           - nautilus
 
+    # TODO: gdm config: sudo -u gdm dbus-launch gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+
     - name: Ensure integration to extensions.gnome.org is installed
       become_user: aur_builder
       aur:
