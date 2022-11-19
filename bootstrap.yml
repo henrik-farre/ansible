@@ -21,6 +21,7 @@
     - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
 
 - name: Bootstrap laptops
+  gather_facts: false
   hosts: laptop
   remote_user: root
 
@@ -29,7 +30,7 @@
 
 - name: Bootstrap all (step 2/3)
   hosts: all
-  gather_facts: true
+  gather_facts: false
   remote_user: root
   become_user: enrique
   become: true

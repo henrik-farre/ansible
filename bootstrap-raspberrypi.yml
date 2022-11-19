@@ -22,7 +22,7 @@
 
 - name: Bootstrap Raspberry Pi (step 2/3)
   hosts: raspberrypi
-  gather_facts: true
+  gather_facts: false
   remote_user: root
   become_user: enrique
   become: true
