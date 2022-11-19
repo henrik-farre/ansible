@@ -1,0 +1,42 @@
+---
+- name: Bootstrap Raspberry Pi (step 1/3)
+  hosts: raspberrypi
+  remote_user: root
+
+  pre_tasks:
+    - name: Update apt cache
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+  roles:
+    - sudo
+    - systemd
+    - journald
+    - hostname
+    - locale
+    - timezone
+    - ntp
+    - users
+
+- name: Bootstrap Raspberry Pi (step 2/3)
+  hosts: raspberrypi
+  gather_facts: true
+  remote_user: root
+  become_user: enrique
+  become: true
+  become_method: sudo
+
+  roles:
+    - ssh-client
+    - ssh-keys
+
+- name: Bootstrap Raspberry Pi (step 3/3)
+  hosts: raspberrypi
+  gather_facts: false
+  remote_user: root
+
+  roles:
+    - root
+    - sshd
