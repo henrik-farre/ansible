@@ -17,10 +17,6 @@
       when:
         - users is defined
 
-    - name: Ensure sudo is configured
-      ansible.builtin.include_role:
-        name: sudo
-
     - name: Ensure users exists
       become: true
       ansible.builtin.user:
@@ -37,12 +33,15 @@
         - users is defined
       no_log: true
 
-    - name: Set root password
-      become: true
+    - name: Ensure users are members of group that allows sudo
       ansible.builtin.user:
-        name: root
-        password: "{{ root_password_hashed }}"
-      no_log: true
+        name: "{{ item }}"
+        groups: "{%if ansible_facts.distribution == 'Archlinux' %}wheel{% else %}sudo{% endif %}"
+        append: yes
+      loop:
+        - "{{ groups_to_users.sudo }}"
+      when:
+        - groups_to_users.sudo is defined
 
     - name: Clean up users
       become: true

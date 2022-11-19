@@ -1,69 +1,62 @@
 ---
-- name: Ensure sudo is installed
+- name: Ensure sudo is installed and configured
   become: true
-  ansible.builtin.package:
-    name: sudo
-    state: latest
-
-# TODO: ensure users are in wheel/sudo group
-# Using multiline for content is important, sudo needs newline
-- name: Enable sudo access for wheel group
-  become: true
-  ansible.builtin.copy:
-    content: |
-      %wheel ALL=(ALL) ALL
-    dest: /etc/sudoers.d/10-grant-wheel-group
-    validate: 'visudo -cf %s'
-  when:
-    - ansible_facts.distribution != 'Debian'
   tags:
     - sudo
+  block:
+    - name: Ensure sudo is installed
+      ansible.builtin.package:
+        name: sudo
+        state: latest
 
-- name: Enable sudo access for sudo group
-  become: true
-  ansible.builtin.copy:
-    content: |
-      %wheel ALL=(ALL) ALL
-    dest: /etc/sudoers.d/10-grant-sudo-group
-    validate: 'visudo -cf %s'
-  when:
-    - ansible_facts.distribution == 'Debian'
-  tags:
-    - sudo
+    # Using multiline for content is important, sudo needs newline
+    - name: Enable sudo access for wheel group
+      ansible.builtin.copy:
+        content: |
+          %wheel ALL=(ALL) ALL
+        dest: /etc/sudoers.d/10-grant-wheel-group
+        validate: 'visudo -cf %s'
+        mode: 0600
+      when:
+        - ansible_facts.distribution == 'Archlinux'
 
-- name: Use neovim as editor
-  become: true
-  ansible.builtin.copy:
-    content: |
-      Defaults editor="/bin/nvim"
-    dest: /etc/sudoers.d/20-neovim-as-editor
-    validate: 'visudo -cf %s'
-  when:
-    - ansible_facts.distribution != 'Debian'
-  tags:
-    - sudo
+    - name: Enable sudo access for sudo group
+      ansible.builtin.copy:
+        content: |
+          %sudo ALL=(ALL) ALL
+        dest: /etc/sudoers.d/10-grant-sudo-group
+        validate: 'visudo -cf %s'
+        mode: 0600
+      when:
+        - ansible_facts.distribution == 'Debian'
 
-# https://wiki.archlinux.org/index.php/Sudo#Disable_per-terminal_sudo
-- name: Disable pr. tty sudo
-  become: true
-  ansible.builtin.copy:
-    content: |
-      Defaults !tty_tickets
-    dest: /etc/sudoers.d/30-tty-tickets
-    validate: 'visudo -cf %s'
-  tags:
-    - sudo
+    - name: Use neovim as editor
+      ansible.builtin.copy:
+        content: |
+          Defaults editor="/bin/nvim"
+        dest: /etc/sudoers.d/20-neovim-as-editor
+        validate: 'visudo -cf %s'
+        mode: 0600
+      when:
+        - ansible_facts.distribution != 'Debian'
 
-- name: Cmnd Aliases with no password for wheel
-  become: true
-  ansible.builtin.copy:
-    content: |
-      Cmnd_Alias  POWER       =   /usr/bin/shutdown -h now, /usr/bin/shutdown -r now, /usr/bin/halt, /usr/bin/poweroff, /usr/bin/reboot
-      Cmnd_Alias  PACMAN      =   /usr/bin/pacman
-      %wheel      ALL         =   (root)  NOPASSWD: POWER, PACMAN
-    dest: /etc/sudoers.d/40-cmnd-aliases-for-wheel
-    validate: 'visudo -cf %s'
-  when:
-    - ansible_facts.distribution != 'Debian'
-  tags:
-    - sudo
+    # https://wiki.archlinux.org/index.php/Sudo#Disable_per-terminal_sudo
+    - name: Disable pr. tty sudo
+      ansible.builtin.copy:
+        content: |
+          Defaults !tty_tickets
+        dest: /etc/sudoers.d/30-tty-tickets
+        validate: 'visudo -cf %s'
+        mode: 0600
+
+    - name: Cmnd Aliases with no password for wheel
+      ansible.builtin.copy:
+        content: |
+          Cmnd_Alias  POWER       =   /usr/bin/shutdown -h now, /usr/bin/shutdown -r now, /usr/bin/halt, /usr/bin/poweroff, /usr/bin/reboot
+          Cmnd_Alias  PACMAN      =   /usr/bin/pacman
+          %wheel      ALL         =   (root)  NOPASSWD: POWER, PACMAN
+        dest: /etc/sudoers.d/40-cmnd-aliases-for-wheel
+        validate: 'visudo -cf %s'
+        mode: 0600
+      when:
+        - ansible_facts.distribution != 'Debian'

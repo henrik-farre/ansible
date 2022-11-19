@@ -1,0 +1,7 @@
+---
+- name: Set root password
+  become: true
+  ansible.builtin.user:
+    name: root
+    password: "{{ root_password_hashed }}"
+  no_log: true
