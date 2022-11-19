@@ -8,8 +8,8 @@
     - modprobe
 
 - name: Clean modprobe.d, Remove files except specified
-  become: yes
-  file:
+  become: true
+  ansible.builtin.file:
     path: "/etc/modprobe.d/{{ item }}"
     state: absent
   with_items:
@@ -22,8 +22,8 @@
     - modprobe
 
 - name: Ensure modules are configured
-  become: yes
-  copy:
+  become: true
+  ansible.builtin.copy:
     src: "etc/modprobe.d/{{ item }}"
     dest: "/etc/modprobe.d/{{ item }}"
     owner: root
@@ -40,8 +40,8 @@
     - modprobe
 
 - name: Ensure modules are loaded
-  become: yes
-  copy:
+  become: true
+  ansible.builtin.copy:
     src: "etc/modules-load.d/{{ item }}"
     dest: "/etc/modules-load.d/{{ item }}"
     owner: root
@@ -57,8 +57,8 @@
     - modules
 
 - name: Ensure mkinitcpio is configured
-  become: yes
-  template:
+  become: true
+  ansible.builtin.template:
     dest: /etc/mkinitcpio.conf
     src: etc/mkinitcpio.conf.j2
     owner: root

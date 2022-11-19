@@ -4,32 +4,44 @@
   hosts: all
   pre_tasks:
     - name: Update apt cache
-      become: yes
-      apt:
+      become: true
+      ansible.builtin.apt:
         update_cache: yes
         cache_valid_time: 3600
       when: ansible_facts.distribution == "Debian"
 
     - name: Update pacman cache
-      become: yes
-      pacman:
+      become: true
+      community.general.pacman:
         update_cache: yes
       changed_when: false
       when: ansible_facts.distribution == "Archlinux"
 
   roles:
+    - systemd
+    - journald
     - networking
     - hostname
     - locale
     - timezone
     - ntp
+    - xdg-dirs
     - users
     - system-mail
+    - global-aliases
     - sshd
     - ssh-client
     - ssh-keys
     - dotfiles
     - vim
+    - docker
+
+- name: ArchLinux setup
+  hosts: archlinux
+  gather_facts: no
+  roles:
+    - bootloader
+    - pacman
     - sensors
     - role: package-group
       package_group: "base_utils"
@@ -41,43 +53,30 @@
       package_group: "development_utils"
     - role: package-group
       aur_package_group: "development_utils"
-
-- hosts: archlinux
-  gather_facts: no
-  roles:
-    - bootloader
-    - pacman
     - hddtemp
     - sysctl
-    - journald
     - firewall
     - makepkg
     - system-maintenance
-    - global-aliases
     - misc-setup
-    - xdg-dirs
-    - docker
     - { role: backup-duplicity-docker, when: duplicity is defined }
     - fuse
     - { role: packages, packages: "{{ host_packages }}" }
     - { role: services, services: "{{ host_services }}" }
     - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
 
-- hosts: desktop
+- name: Desktop setup
+  hosts: desktop
   gather_facts: no
   roles:
     - sound
-    - { role: xorg, when: display_server == 'x11' }
     - { role: wayland, when: display_server == 'wayland', tags: ['wayland'] }
-    - { role: lightdm, when: desktop_environment != 'gnome' }
     - role: package-group
       package_group: "desktop"
     - role: package-group
       aur_package_group: "desktop"
     - fonts
-    - { role: cinnamon, when: desktop_environment == 'cinnamon' }
     - { role: gnome, when: desktop_environment == 'gnome', tags: ['gnome'] }
-    - { role: conky, when: display_server == 'x11' }
     - solaar
     - signal-desktop
     - zim
@@ -87,14 +86,14 @@
     - systemd-user-units
     - terminal
     - cups
-    - { role: devilspie, when: display_server == 'x11' }
     - spotify
     - desktop
     - yubikey
     - { role: bluetooth, when: has_bluetooth is defined }
+    - jid
   tasks:
     - name: Ensure files does not exist
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       with_items:
@@ -105,12 +104,14 @@
         - "{{ ansible_user_dir }}/.config/autostart/xfce4-power-manager.desktop"
         - "{{ ansible_user_dir }}/.yaourtrc"
 
-- hosts: gaming
+- name: Setup gaming
+  hosts: gaming
   gather_facts: no
   roles:
     - gaming
 
-- hosts: htpc
+- name: HTPC setup
+  hosts: htpc
   gather_facts: no
   roles:
     - apparmor
@@ -120,7 +121,8 @@
     - backup-rclone
     - photoprism
 
-- hosts: laptop
+- name: Laptop setup
+  hosts: laptop
   gather_facts: no
   roles:
     - powersave
@@ -128,32 +130,53 @@
     - apparmor
     - secureboot
 
-- hosts: thinkpad
+- name: Setup for ThinkPads
+  hosts: thinkpad
   gather_facts: no
   roles:
     - thinkpad
     - samba-client
 
-- hosts: macbook
+- name: Setup for MacBooks
+  hosts: macbook
   gather_facts: no
 
   pre_tasks:
     - name: Ensure mbpfan is installed
-      become: yes
+      become: true
       become_user: aur_builder
       aur:
         name: mbpfan-git
   roles:
     - { role: services, services: ['mbpfan'] }
 
-- hosts: raspberrypi
+- name: Raspberry Pi setup
+  hosts: raspberrypi
   gather_facts: no
   roles:
     - raspbian
-    - arpwatch
-    - docker
+    # - arpwatch
 
-- hosts: unifi-controller
+- name: Debian setup
+  hosts: debian
+  gather_facts: no
+  roles:
+    - role: package-group
+      package_group: "base_utils_debian"
+
+- name: Unifi Controller setup
+  hosts: unifi-controller
   gather_facts: no
   roles:
     - unifi-controller
+
+- name: Home Assistant setup on Raspberry Pi
+  hosts: home-assistant
+  gather_facts: true
+  become: true
+
+  environment:
+    PATH: /usr/local/sbin:/usr/sbin:/sbin:{{ ansible_env.PATH }}
+
+  roles:
+    - home-assistant

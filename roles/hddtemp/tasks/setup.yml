@@ -1,13 +1,13 @@
 ---
 - name: Ensure hddtemp package is installed
-  pacman:
+  community.general.pacman:
     state: latest
     name: hddtemp
   tags:
     - hddtemp
 
 - name: Ensure values for SSDs exist in hddtemp.db
-  lineinfile:
+  ansible.builtin.lineinfile:
     name: /etc/hddtemp.db
     regexp: "{{ item }}"
     line: "{{ item }}"
@@ -22,7 +22,7 @@
     - hddtemp
 
 - name: Ensure directory for custom unit exist
-  file:
+  ansible.builtin.file:
     dest: /etc/systemd/system/hddtemp.service.d
     state: directory
     owner: root
@@ -32,7 +32,7 @@
     - hddtemp
 
 - name: Ensure custom unit exist
-  copy:
+  ansible.builtin.copy:
     dest: /etc/systemd/system/hddtemp.service.d/customexec.conf
     content: |
       [Service]
@@ -45,7 +45,7 @@
     - hddtemp
 
 - name: Ensure hddtemp service is started
-  systemd:
+  ansible.builtin.systemd:
     name: hddtemp
     state: started
     enabled: yes

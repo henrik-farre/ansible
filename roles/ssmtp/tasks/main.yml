@@ -1,23 +1,23 @@
 ---
 - name: Ensure mail group exists
-  become: yes
-  group:
+  become: true
+  ansible.builtin.group:
     name: mail
     state: present
   tags:
     - ssmtp
 
 - name: Ensure old ssmtp group is removed
-  become: yes
-  group:
+  become: true
+  ansible.builtin.group:
     name: ssmtp
     state: absent
   tags:
     - ssmtp
 
 - name: Write /etc/ssmtp/ssmtp.conf
-  become: yes
-  template:
+  become: true
+  ansible.builtin.template:
     src: etc/ssmtp/ssmtp.conf.j2
     dest: /etc/ssmtp/ssmtp.conf
     owner: root
@@ -27,8 +27,8 @@
     - ssmtp
 
 - name: Write /etc/ssmtp/revaliases
-  become: yes
-  template:
+  become: true
+  ansible.builtin.template:
     src: etc/ssmtp/revaliases.j2
     dest: /etc/ssmtp/revaliases
     owner: root
@@ -38,8 +38,8 @@
     - ssmtp
 
 - name: Ensure users are members of mail group
-  become: yes
-  user:
+  become: true
+  ansible.builtin.user:
     name: "{{ item }}"
     groups: mail
     append: yes

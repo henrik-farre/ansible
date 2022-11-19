@@ -14,18 +14,18 @@
 
   tasks:
     - name: Ensure data for filename creation is stored
-      set_fact:
+      ansible.builtin.set_fact:
         date_for_filename: "{{ now(fmt='%Y-%m-%d_%H-%M-%S') }}"
 
     - name: Ensure cleanup
       block:
         - name: Ensure current backup directory is empty
-          file:
+          ansible.builtin.file:
             path: "{{ backup_basepath }}/current"
             state: absent
 
         - name: Ensure backup directories exists
-          file:
+          ansible.builtin.file:
             path: "{{ backup_basepath }}/{{ item }}"
             state: directory
           loop:
@@ -44,7 +44,7 @@
 
         # Root can't write to nfs - use a temporary location
         - name: "Compress /var/lib/unifi/ to /var/tmp/unifi_tmp_backup.tar.bz2"
-          become: yes
+          become: true
           archive:
             path: "/var/lib/unifi/"
             dest: "/var/tmp/unifi_tmp_backup.tar.bz2"
@@ -54,7 +54,7 @@
             mode: 0644
 
         - name: "Copy temporary unifi to {{ backup_basepath }}/archive/unifi/backup_{{ date_for_filename }}.tar.bz2 "
-          copy:
+          ansible.builtin.copy:
             src: /var/tmp/unifi_tmp_backup.tar.bz2
             dest: "{{ backup_basepath }}/archived/unifi/backup_{{ date_for_filename }}.tar.bz2"
             remote_src: yes
@@ -66,7 +66,7 @@
           register: all_mongodump_files
 
         - name: Cleanup | Keep 7 newest files, delete rest
-          file:
+          ansible.builtin.file:
             path: "{{ item.path }}"
             state: absent
           with_items: "{{ (all_mongodump_files.files | sort(attribute='ctime', reverse=True))[7:] }}"
@@ -78,13 +78,13 @@
           register: all_unifi_files
 
         - name: Cleanup | Keep 7 newest files, delete rest
-          file:
+          ansible.builtin.file:
             path: "{{ item.path }}"
             state: absent
           with_items: "{{ (all_unifi_files.files | sort(attribute='ctime', reverse=True))[7:] }}"
       always:
         - name: Cleanup | Remove tmp unifi backup
-          become: yes
-          file:
+          become: true
+          ansible.builtin.file:
             path: "/var/tmp/unifi_tmp_backup.tar.bz2"
             state: absent

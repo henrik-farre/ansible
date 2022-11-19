@@ -1,11 +1,11 @@
 ---
 - name: Ensure power saving is configured
-  become: yes
+  become: true
   tags:
     - powersave
   block:
     - name: Copy udev rules for saving power
-      copy:
+      ansible.builtin.copy:
         dest: "/etc/udev/rules.d/{{ item }}"
         src: "etc/udev/rules.d/{{ item }}"
       loop:
@@ -14,7 +14,7 @@
         - 55-powerprofilectl.rules
 
     - name: Ensure powersave profile daemon is installed
-      pacman:
+      community.general.pacman:
         name: power-profiles-daemon
         state: latest
 
@@ -25,7 +25,7 @@
         enabled: yes
 
     - name: Ensure powersaving related packages are installed
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:

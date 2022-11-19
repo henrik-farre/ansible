@@ -5,7 +5,7 @@
 
   tasks:
     - name: Include roles
-      include_role:
+      ansible.builtin.include_role:
         name: "{{ role_item }}"
       loop: "{{ role_name.split(',') }}"
       loop_control:

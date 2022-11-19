@@ -1,7 +1,7 @@
 ---
 - name: Ensure users can only login using keys
-  become: yes
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     line: 'PasswordAuthentication no'
     regexp: 'PasswordAuthentication '
@@ -10,8 +10,8 @@
     - sshd
 
 - name: Ensure root can not login with password
-  become: yes
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     dest: /etc/ssh/sshd_config
     line: '#PermitRootLogin prohibit-password'
     regexp: '^PermitRootLogin *'

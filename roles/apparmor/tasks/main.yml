@@ -1,11 +1,11 @@
 ---
 - name: Install and configure AppArmor, audit and dependencies
-  become: yes
+  become: true
   tags:
     - apparmor
   block:
     - name: Install AppArmor, audit and dependencies
-      pacman:
+      community.general.pacman:
         name: "{{ packages }}"
         state: latest
       vars:
@@ -16,13 +16,13 @@
           - python-notify2
 
     - name: Ensure audit group exist
-      group:
+      ansible.builtin.group:
         name: audit
         state: present
         system: yes
 
     - name: Ensure users are members of audit group
-      user:
+      ansible.builtin.user:
         name: "{{ item }}"
         groups: audit
         append: yes
@@ -32,7 +32,7 @@
         - groups_to_users.audit is defined
 
     - name: Ensure audit log directory has correct permissions
-      file:
+      ansible.builtin.file:
         path: /var/log/audit
         state: directory
         mode: 0750
@@ -40,21 +40,21 @@
         group: audit
 
     - name: Ensure auditd is configured correctly
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/audit/auditd.conf"
         regexp: 'log_group ='
         line: "log_group = audit"
         state: present
 
     - name: Ensure apparmor is configured correctly
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/apparmor/parser.conf"
         regexp: 'write-cache'
         line: "write-cache"
         state: present
 
     - name: Enable services
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item }}"
         state: started
         enabled: yes
@@ -70,7 +70,7 @@
     - display_server is defined
   block:
     - name: Ensure notifications for apparmor denied are enabled
-      copy:
+      ansible.builtin.copy:
         dest: "{{ ansible_user_dir }}/.config/autostart/apparmor-notify.desktop"
         content: |
           [Desktop Entry]

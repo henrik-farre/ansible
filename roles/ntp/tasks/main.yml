@@ -2,8 +2,8 @@
 # Equivalent /usr/bin/timedatectl set-ntp true
 # https://wiki.archlinux.org/index.php/systemd-timesyncd
 - name: Enable ntp service
-  become: yes
-  service:
+  become: true
+  ansible.builtin.service:
     name: systemd-timesyncd.service
     enabled: yes
     state: started

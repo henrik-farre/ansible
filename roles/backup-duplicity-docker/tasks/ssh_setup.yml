@@ -1,6 +1,6 @@
 ---
 - name: Ensure ~root/.ssh exists
-  file:
+  ansible.builtin.file:
     path: /root/.ssh
     group: root
     state: directory
@@ -10,7 +10,7 @@
     - backup
 
 - name: Install ssh keys
-  copy:
+  ansible.builtin.copy:
     src: "root/dot.ssh/{{ item }}"
     dest: "/root/.ssh/{{ item }}"
     owner: root
@@ -23,7 +23,7 @@
     - backup
 
 - name: Ensure ssh config exists for backup host
-  blockinfile:
+  ansible.builtin.blockinfile:
     dest: "/root/.ssh/config"
     create: yes
     block: "{{ ssh_config }}"
@@ -45,7 +45,7 @@
     - backup
 
 - name: Import ssh host key
-  known_hosts:
+  ansible.builtin.known_hosts:
     path: /root/.ssh/known_hosts
     name: "{{ duplicity.remote_host }}"
     key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ duplicity.remote_host }}') }}"

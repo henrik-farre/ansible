@@ -36,7 +36,7 @@
           - slack
 
     - name: Set hostname
-      become: yes
+      become: true
       command: scutil --set HostName "workstation"
 
   roles:

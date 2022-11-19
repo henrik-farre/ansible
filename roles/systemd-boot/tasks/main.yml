@@ -1,7 +1,7 @@
 ---
 - name: Ensure directories for bootloader exist
-  become: yes
-  file:
+  become: true
+  ansible.builtin.file:
     path: "{{ item }}"
     state: directory
     owner: root
@@ -14,8 +14,8 @@
     - systemd-boot
 
 - name: Ensure loader config exists
-  become: yes
-  copy:
+  become: true
+  ansible.builtin.copy:
     dest: /boot/loader/loader.conf
     group: root
     content: |
@@ -32,8 +32,8 @@
     - systemd-boot
 
 - name: Ensure entries for systemd-boot exist
-  become: yes
-  template:
+  become: true
+  ansible.builtin.template:
     src: "boot/loader/entries/entry.conf.j2"
     dest: "/boot/loader/entries/{{ item.name }}.conf"
     owner: root
@@ -46,7 +46,7 @@
     - systemd-boot
 
 - name: Install systemd-boot
-  become: yes
+  become: true
   command: bootctl --path=/boot install
   args:
     creates: /boot/EFI/systemd/systemd-bootx64.efi
@@ -55,7 +55,7 @@
     - systemd-boot
 
 - name: Install systemd-boot-pacman-hook from AUR
-  become: yes
+  become: true
   become_user: aur_builder
   aur:
     name: systemd-boot-pacman-hook

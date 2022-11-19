@@ -1,14 +1,14 @@
 ---
 # libqmi is for wwan support
 - name: Run tasks with become
-  become: yes
+  become: true
   when:
     - ansible_system_vendor == "LENOVO"
   tags:
     - thinkpad
   block:
     - name: Ensure needed packages are installed
-      pacman:
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:
@@ -18,7 +18,7 @@
           - nvme-cli
 
     - name: Ensure fprint pam config is installed
-      copy:
+      ansible.builtin.copy:
         dest: /etc/pam.d/common-fprint
         group: root
         content: |
@@ -30,7 +30,7 @@
         owner: root
 
     - name: Insert new rule for fprintd in sudo
-      lineinfile:
+      ansible.builtin.lineinfile:
         name: /etc/pam.d/sudo
         regex: "^auth.*include.*common-fprint$"
         line: "auth        include     common-fprint"
@@ -38,7 +38,7 @@
         insertbefore: "^auth.*sufficient.*pam_unix.so.*"
 
     - name: Insert new rule for fprintd in polkit
-      lineinfile:
+      ansible.builtin.lineinfile:
         name: /etc/pam.d/polkit-1
         regex: "^auth.*include.*common-fprint$"
         line: "auth       include      common-fprint"
@@ -46,7 +46,7 @@
         insertbefore: "^auth.*include.*system-auth"
 
     - name: Insert new rule for fprintd in cinnamon-screensaver
-      lineinfile:
+      ansible.builtin.lineinfile:
         name: /etc/pam.d/cinnamon-screensaver
         regex: "^auth.*include.*common-fprint$"
         line: "auth       include      common-fprint"

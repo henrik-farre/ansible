@@ -41,6 +41,6 @@
       when:
         - firewall_ports is defined
       changed_when: false
-  become: yes
+  become: true
   tags:
     - firewall

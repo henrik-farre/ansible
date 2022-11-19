@@ -2,7 +2,7 @@
 - name: Become and tag block
   block:
     - name: Ensure packages are installed
-      pacman:
+      community.general.pacman:
         state: "latest"
         name: "{{ packages }}"
       vars:
@@ -12,7 +12,7 @@
           - schedtool
 
     - name: Install gamemode from AUR
-      become: yes
+      become: true
       become_user: aur_builder
       aur:
         name: "{{ packages }}"
@@ -23,13 +23,13 @@
           - protontricks
 
     - name: Ensure gamemode group exists
-      group:
+      ansible.builtin.group:
         name: gamemode
         state: present
         system: yes
 
     - name: Ensure users are members of gamemode group
-      user:
+      ansible.builtin.user:
         name: "{{ item }}"
         groups: gamemode
         append: yes
@@ -39,20 +39,20 @@
         - groups_to_users.gamemode is defined
 
     - name: Ensure global gamemode.ini exists
-      copy:
+      ansible.builtin.copy:
         src: etc/gamemode.ini
         dest: /etc/gamemode.ini
 
     - name: Ensure local gamemode.ini exists
-      become: no
-      copy:
+      become: false
+      ansible.builtin.copy:
         src: dot.config/gamemode.ini
         dest: "{{ ansible_user_dir }}/.config/gamemode.ini"
         mode: 0640
 
     # Sticky group
     - name: Ensure directory for steam library exists with correct permissions
-      file:
+      ansible.builtin.file:
         path: /opt/steam-library
         state: directory
         owner: root
@@ -69,7 +69,7 @@
         state: present
 
     - name: Ensure tmpfile.d to block upload is removed
-      file:
+      ansible.builtin.file:
         path: /etc/tmpfiles.d/block_steam_debug_upload.conf
         state: absent
 
@@ -81,14 +81,14 @@
 
     # https://steamcommunity.com/app/221410/discussions/0/1640915206474070669/
     - name: Remove RADV PERFTEST env var, it is default now
-      lineinfile:
+      ansible.builtin.lineinfile:
         dest: "/etc/environment"
         regexp: '^RADV_PERFTEST='
         state: absent
 
     - name: Disable freesync for some Steam games
-      become: yes
-      copy:
+      become: true
+      ansible.builtin.copy:
         dest: /usr/share/drirc.d/02-steam_games.conf
         content: |
           <?xml version="1.0" standalone="yes"?>
@@ -117,6 +117,6 @@
             </device>
           </driconf>
   # block
-  become: yes
+  become: true
   tags:
     - gaming

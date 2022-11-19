@@ -1,6 +1,6 @@
 ---
 - name: Install systemd boot
-  include_role:
+  ansible.builtin.include_role:
     name: systemd-boot
   when:
     - bootloader is defined
@@ -9,7 +9,7 @@
     - bootloader
 
 - name: Install grub
-  include_role:
+  ansible.builtin.include_role:
     name: grub
   when:
     - bootloader is defined

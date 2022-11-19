@@ -1,14 +1,17 @@
 ---
-- name: Set hostname
-  become: yes
-  hostname:
-    name: "{{ inventory_hostname }}"
+- name: Configure hostname
+  become: true
+  tags:
+    - hostname
+  block:
+    - name: Set hostname
+      ansible.builtin.hostname:
+        name: "{{ inventory_hostname }}"
 
-- name: Add hostname to /etc/hosts
-  become: yes
-  template:
-    src: etc/hosts.j2
-    dest: /etc/hosts
-    owner: root
-    group: root
-    mode: 0644
+    - name: Add hostname to /etc/hosts
+      ansible.builtin.template:
+        src: etc/hosts.j2
+        dest: /etc/hosts
+        owner: root
+        group: root
+        mode: 0644

@@ -1,18 +1,18 @@
 ---
 - name: Update all hosts
   hosts: debian,archlinux
-  become: yes
+  become: true
 
   tasks:
     - name: Update Debian hosts
-      apt:
+      ansible.builtin.apt:
         update_cache: yes
         name: "*"
         state: latest
       when: ansible_facts.distribution == "Debian"
 
     - name: Update ArchLinux hosts
-      pacman:
+      community.general.pacman:
         update_cache: yes
         upgrade: yes
       when: ansible_facts.distribution == "Archlinux"

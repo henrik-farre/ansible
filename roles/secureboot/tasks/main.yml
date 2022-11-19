@@ -1,6 +1,6 @@
 ---
 - name: Ensure secureboot is configured
-  become: yes
+  become: true
   tags:
     - secureboot
   block:
@@ -10,7 +10,7 @@
         name: preloader-signed
 
     - name: Copy PreLoader and HashTool to boot partition
-      copy:
+      ansible.builtin.copy:
         src: "/usr/share/preloader-signed/{{ item }}.efi"
         dest: "/boot/EFI/systemd/{{ item }}.efi"
         remote_src: yes
@@ -22,7 +22,7 @@
         - HashTool
 
     - name: Copy systemd-bootx64 to boot partition as loader.efi
-      copy:
+      ansible.builtin.copy:
         src: "/boot/EFI/systemd/systemd-bootx64.efi"
         dest: "/boot/EFI/systemd/loader.efi"
         remote_src: yes

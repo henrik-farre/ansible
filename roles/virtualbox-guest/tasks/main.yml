@@ -1,6 +1,6 @@
 ---
 - name: Copy modules load file
-  copy:
+  ansible.builtin.copy:
     src: etc/modules-load.d/virtualbox.conf
     dest: /etc/modules-load.d/virtualbox.conf
     owner: root

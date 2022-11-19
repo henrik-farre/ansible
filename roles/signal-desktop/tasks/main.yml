@@ -1,6 +1,6 @@
 ---
 - name: Ensure signal-desktop is installed
-  become: yes
+  become: true
   ansible.builtin.pacman:
     state: latest
     name: signal-desktop
@@ -30,7 +30,7 @@
     - wayland
 
 - name: Ensure signal-desktop is autostarted on login and stayes in tray
-  ansible.builtin.copy:
+  ansible.builtin.file:
     src: "{{ ansible_user_dir }}/.local/share/applications/signal-desktop.desktop"
     dest: "{{ ansible_user_dir }}/.config/autostart/signal-desktop.desktop"
     state: link

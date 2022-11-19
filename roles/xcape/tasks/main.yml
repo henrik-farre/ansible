@@ -1,6 +1,6 @@
 ---
 - name: Ensure systemd user directory exits
-  file:
+  ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/systemd/user/"
     state: directory
     owner: "{{ ansible_user_id }}"
@@ -10,7 +10,7 @@
     - xcape
 
 - name: Ensure needed service files exist
-  copy:
+  ansible.builtin.copy:
     content: |
       # Managed by Ansible
       [Unit]
@@ -32,7 +32,7 @@
     - xcape
 
 - name: Ensure services are enabled
-  systemd:
+  ansible.builtin.systemd:
     name: xcape.service
     enabled: yes
     daemon_reload: yes

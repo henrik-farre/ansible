@@ -1,6 +1,6 @@
 ---
 - name: Restart docker daemon
-  become: yes
-  systemd:
+  become: true
+  ansible.builtin.systemd:
     name: docker
     state: restarted

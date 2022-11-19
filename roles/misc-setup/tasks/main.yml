@@ -1,15 +1,15 @@
 ---
 - name: Ensure /etc/profile.d/no-at-bridge.sh is removed (Cinnamon unsets env)
-  become: yes
-  file:
+  become: true
+  ansible.builtin.file:
     dest: /etc/profile.d/no-at-bridge.sh
     state: absent
   tags:
     - misc-setup
 
 - name: Ensure user has more than 3 changes to type password correctly
-  become: yes
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     path: /etc/security/faillock.conf
     regexp: "deny = "
     line: "deny = 5"

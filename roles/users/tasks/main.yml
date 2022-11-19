@@ -1,60 +1,56 @@
 ---
-# TODO: This overrides the values in the inventory
-- name: Include vaulted vars
-  include_vars:
-    file: users.yml.vault
-  no_log: yes
+- name: Ensure users are provisioned
   tags:
     - users
+  block:
+    # TODO: This overrides the values in the inventory
+    - name: Include vaulted vars
+      ansible.builtin.include_vars:
+        file: users.yml.vault
+      no_log: true
 
-- name: Ensure users shell are installed
-  become: yes
-  package:
-    name: "{{ item.shell|default('bash') }}"
-    state: present
-  loop: "{{ users }}"
-  when:
-    - users is defined
-  no_log: yes
-  tags:
-    - users
+    - name: Ensure users shell are installed
+      ansible.builtin.include_role:
+        name: shell
+      vars:
+        shells: "{{ users | map(attribute='shell') | list | unique }}"
+      when:
+        - users is defined
 
-- name: Ensure users exists
-  become: true
-  user:
-    name: "{{ item.name }}"
-    shell: "/bin/{{ item.shell|default('bash') }}"
-    home: "/{{ users_home_base }}/{{ item.name }}"
-    group: "{{ item.group|default('users') }}"
-    groups: "{{ item.groups }}"
-    comment: "{{ item.comment|default(omit) }}"
-    append: yes
-    password: "{{ item.password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string, rounds=10000) }}"
-  loop: "{{ users }}"
-  when:
-    - users is defined
-  no_log: yes
-  tags:
-    - users
+    - name: Ensure sudo is configured
+      ansible.builtin.include_role:
+        name: sudo
 
-- name: Set root password
-  become: true
-  user:
-    name: root
-    password: "{{ root_password_hashed }}"
-  no_log: yes
-  tags:
-    - users
+    - name: Ensure users exists
+      become: true
+      ansible.builtin.user:
+        name: "{{ item.name }}"
+        shell: "/bin/{{ item.shell | default('bash') }}"
+        home: "/{{ users_home_base }}/{{ item.name }}"
+        group: "{{ item.group | default('users') }}"
+        groups: "{{ item.groups }}"
+        comment: "{{ item.comment | default(omit) }}"
+        append: yes
+        password: "{{ item.password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string, rounds=10000) }}"
+      loop: "{{ users }}"
+      when:
+        - users is defined
+      no_log: true
 
-- name: Clean up users
-  become: true
-  user:
-    name: "{{ item }}"
-    state: absent
-    remove: yes
-  loop:
-    - "cinnamon"
-    - "cinnemon"
-    - "pi"
-  tags:
-    - users
+    - name: Set root password
+      become: true
+      ansible.builtin.user:
+        name: root
+        password: "{{ root_password_hashed }}"
+      no_log: true
+
+    - name: Clean up users
+      become: true
+      ansible.builtin.user:
+        name: "{{ item }}"
+        state: absent
+        remove: yes
+      loop:
+        - "cinnamon"
+        - "cinnemon"
+        - "pi"

@@ -17,6 +17,22 @@ package_groups:
     - xz
     - zip
     - p7zip
+  base_utils_debian:
+    - bash
+    - bzip2
+    - fd-find
+    - fzf
+    - gnupg
+    - gzip
+    - htop
+    - man-db
+    - ncdu
+    - silversearcher-ag
+    - tmux
+    - tree
+    - wget
+    - zip
+    - p7zip
   system_utils:
     - dmidecode
     - dosfstools
@@ -36,8 +52,6 @@ package_groups:
     - pciutils
     - sysfsutils
     - usbutils
-    - zsh-autosuggestions
-    - zsh-syntax-highlighting
   development_utils:
     - ansible
     - ansible-lint
@@ -87,20 +101,16 @@ package_groups:
     - wol
   desktop:
     - adwaita-icon-theme
-    - alsa-lib
-    - alsa-tools
-    - alsa-utils
     - aspell
     # aspell-da is in aur
     - aspell-en
-    - barrier
-    - barrier-headless
     - evince
     # Needed by Remmina
     - freerdp
     - gimp
-    - gpaste
+    - github-cli
     - gnuplot
+    - gpaste
     - gst-plugins-base
     - gst-plugins-base-libs
     - gst-plugins-good
@@ -110,8 +120,6 @@ package_groups:
     - gtk-engines
     - gvfs-mtp
     - hicolor-icon-theme
-    # Github cli
-    - hub
     - hunspell
     - hugo
     - icedtea-web
@@ -145,3 +153,4 @@ aur_package_groups:
     - aws-cli-v2-bin
     - asdf-vm
     - tflint-bin
+    - ugrep

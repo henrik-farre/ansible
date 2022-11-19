@@ -1,40 +1,40 @@
 ---
 - name: Ensure rclone is configured for backup
-  become: yes
+  become: true
   tags:
     - backup-rclone
     - backup
   block:
     - name: Ensure vaulted vars are loaded
-      include_vars:
+      ansible.builtin.include_vars:
         file: rclone.yml.vault
 
     - name: Ensure rclone is installed
-      pacman:
+      community.general.pacman:
         name: rclone
         state: latest
 
     - name: Ensure config directory exists
-      file:
+      ansible.builtin.file:
         state: directory
         path: /root/.config/rclone/
         mode: 0700
 
     - name: Copy config file
-      copy:
+      ansible.builtin.copy:
         dest: /root/.config/rclone/rclone.conf
         src: dot.config/rclone/rclone.conf.vault
         mode: 0500
       no_log: true
 
     - name: Ensure local systemd directory exists
-      file:
+      ansible.builtin.file:
         state: directory
         path: /usr/local/lib/systemd/system
         mode: 0755
 
     - name: Install systemd service template
-      copy:
+      ansible.builtin.copy:
         dest: "/usr/local/lib/systemd/system/backup-rclone@.service"
         content: |
           [Unit]
@@ -49,7 +49,7 @@
         mode: 0644
 
     - name: Install systemd timer template
-      copy:
+      ansible.builtin.copy:
         dest: "/usr/local/lib/systemd/system/backup-rclone@.timer"
         content: |
           [Unit]
@@ -68,17 +68,17 @@
         mode: 0644
 
     - name: Reload systemd
-      systemd:
+      ansible.builtin.systemd:
         daemon_reload: yes
 
     - name: Enable systemd services
-      systemd:
+      ansible.builtin.systemd:
         name: "backup-rclone@{{ item.name }}.service"
         enabled: yes
       loop: "{{ backup_rclone_backups }}"
 
     - name: Enable systemd timers
-      systemd:
+      ansible.builtin.systemd:
         name: "backup-rclone@{{ item.name }}.timer"
         enabled: yes
         state: started

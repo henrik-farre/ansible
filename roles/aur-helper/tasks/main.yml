@@ -1,6 +1,6 @@
 ---
 - name: Check if package "{{ aur_pkg_helper }}" is installed
-  stat:
+  ansible.builtin.stat:
     path: "{{ aur_pkg_helper_path }}"
   register: stat_pkg
   changed_when: false

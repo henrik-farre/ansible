@@ -1,6 +1,6 @@
 ---
 - name: GPG config
-  copy:
+  ansible.builtin.copy:
     content: |
       pinentry-mode loopback
     dest: "/root/.gnupg/gpg.conf"
@@ -11,7 +11,7 @@
     - backup
 
 - name: Import gpg keys, devault
-  copy:
+  ansible.builtin.copy:
     src: "root/gpg/private.asc.vault"
     dest: "/root/.gnupg/private.asc"
     owner: root
@@ -21,7 +21,7 @@
     - backup
 
 - name: Import ownertrust, devault
-  copy:
+  ansible.builtin.copy:
     src: "root/gpg/ownertrust.vault"
     dest: "/root/.gnupg/ownertrust"
     owner: root

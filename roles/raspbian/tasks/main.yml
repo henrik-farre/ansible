@@ -1,80 +1,67 @@
 ---
-# TODO: location of boot files
-- name: Ensure Raspbian is correctly configured
+- name: Ensure Raspberry pi is correctly configured
+  become: true
+  tags:
+    - raspbian
   block:
     - name: Ensure root file system is mounted with correct options
-      mount:
+      ansible.posix.mount:
         path: /
         src: LABEL=RASPIROOT
         fstype: ext4
-        opts: defaults,noatime,commit=60
+        opts: defaults,relatime,commit=60
         passno: 1
         dump: 0
         state: present
 
-    - name: Ensure /tmp is mounted as tmpfs
-      mount:
-        path: /tmp
-        src: tmpfs
-        fstype: tmpfs
-        opts: "nodev,nosuid,size=128m"
-        state: mounted
-
-    - name: Ensure /var/log is mounted as tmpfs
-      mount:
-        path: /var/log
-        src: tmpfs
-        fstype: tmpfs
-        opts: "defaults,noatime,nosuid,mode=0755,size=128m"
-        state: mounted
-
-    # enable cgroups for memory
+    # unified_cgroup_hierarchy = required by home-assistant
+    # elevator = lowest cpu overhead
     - name: Ensure /boot/firmware/cmdline.txt contains correct options
-      copy:
+      ansible.builtin.copy:
         dest: /boot/firmware/cmdline.txt
+        mode: 0755
         content: |
-          dwc_otg.lpm_enable=0 console=tty0 console=ttyS1,115200 root=LABEL=RASPIROOT rootfstype=ext4 elevator=deadline fsck.repair=yes cgroup_enable=memory rootwait
-          # console=tty0 console=ttyS1,115200 root=/dev/mmcblk0p2 rw elevator=deadline fsck.repair=yes net.ifnames=0 cma=64M rootwait
+          console=tty0 console=ttyS1,115200 root=LABEL=RASPIROOT rw fsck.repair=yes net.ifnames=0 cma=64M rootwait systemd.unified_cgroup_hierarchy=false elevator=none
 
     - name: Ensure /boot/firmware/config.txt containts correct options
-      lineinfile:
+      ansible.builtin.lineinfile:
         line: '{{ item.key }}={{ item.value }}'
         dest: /boot/firmware/config.txt
         regexp: "^{{ item.key }}="
-      loop: "{{ config_items|dict2items }}"
+      loop: "{{ config_items | dict2items }}"
       vars:
         config_items:
           gpu_mem: 16
-          "dtparam=i2c_arm": "on"
+          arm_64bit: 1
 
-    - name: Disable swap
-      command: "{{ item }}"
-      args:
-        removes: /sbin/dphys-swapfile
-      loop:
-        - "swapoff -a"
-        - "dphys-swapfile swapoff"
-        - "dphys-swapfile uninstall"
+    # Without this drive will not show trim support
+    # This is for 14b0:0206 StarTech.com Ltd. SSD 860 EVO 250G
+    - name: Ensure trim support is enabled on USB SSD
+      ansible.builtin.copy:
+        dest: /etc/udev/rules.d/10-trim.rules
+        mode: 0644
+        content: |
+          ACTION=="add|change", ATTRS{idVendor}=="14b0", ATTRS{idProduct}=="0206", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"
+
+    - name: Ensure fstrim timer is started on supported devices
+      become: true
+      ansible.builtin.systemd:
+        name: fstrim.timer
+        state: started
+        enabled: yes
 
     - name: Disable unneeded services
-      systemd:
+      ansible.builtin.systemd:
         name: "{{ item }}"
         state: stopped
         enabled: no
       loop:
-        - alsa-restore.service
-        - avahi-daemon
-        - bluetooth
-        - dphys-swapfile.service
         - rsyslog.service
-        - syslog.socket
-        - triggerhappy
-        - triggerhappy.socket
         - wpa_supplicant
       failed_when: False
 
     - name: Remove unneeded packages
-      apt:
+      ansible.builtin.apt:
         name: "{{ packages }}"
         state: absent
         purge: yes
@@ -83,43 +70,13 @@
       vars:
         packages:
           - rsyslog
-          - dphys-swapfile
-          - triggerhappy
-          - bluetooth
-          - wpasupplicant
-          - wireless-tools
-          - wireless-regdb
-          - v4l-utils
-          - pi-bluetooth
 
     # https://github.com/pi-hole/docker-pi-hole/issues/153
-    - name: Ensure pihole-FTL.log is truncated
-      cron:
-        name: pihole-FTL.log truncate
-        minute: 5
-        hour: 0
-        user: root
-        job: "/usr/bin/truncate --size=2M --no-create /var/log/pihole/pihole-FTL.log"
-        cron_file: pihole_truncate
-
-    - name: Ensure directory for journald overrides exists
-      file:
-        path: /etc/systemd/journald.conf.d
-        state: directory
-        owner: root
-        group: root
-        mode: 0755
-
-    - name: Ensure journald is configured for volatile storage
-      copy:
-        dest: /etc/systemd/journald.conf.d/01-journal-storage.conf
-        group: root
-        content: |
-          # Managed by Ansible
-          [Journal]
-          Storage=volatile
-        mode: 0644
-        owner: root
-  become: yes
-  tags:
-    - raspbian
+    # - name: Ensure pihole-FTL.log is truncated
+    #   ansible.builtin.cron:
+    #     name: pihole-FTL.log truncate
+    #     minute: 5
+    #     hour: 0
+    #     user: root
+    #     job: "/usr/bin/truncate --size=2M --no-create /var/log/pihole/pihole-FTL.log"
+    #     cron_file: pihole_truncate

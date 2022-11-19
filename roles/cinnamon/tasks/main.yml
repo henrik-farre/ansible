@@ -2,8 +2,8 @@
 - name: Ensure Cinnamon desktop is configured
   block:
     - name: Ensure needed packages for xorg are installed
-      become: yes
-      pacman:
+      become: true
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:
@@ -21,7 +21,7 @@
       changed_when: false
 
     - name: Copy keybindings
-      copy:
+      ansible.builtin.copy:
         src: keybindings.dconf
         dest: /tmp/keybindings.dconf
       changed_when: false
@@ -33,14 +33,14 @@
       changed_when: false
 
     - name: Ensure configuration directory exists
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.cinnamon/configs/"
         state: directory
       changed_when: false
 
     - name: Disable freesync for Cinnamon desktop
-      become: yes
-      copy:
+      become: true
+      ansible.builtin.copy:
         dest: /usr/share/drirc.d/01-cinnamon.conf
         content: |
           <?xml version="1.0" standalone="yes"?>

@@ -1,36 +1,18 @@
 ---
 - name: Include smartd tasks
-  include_tasks: smartd.yml
+  ansible.builtin.include_tasks: smartd.yml
   tags:
     - system-maintenance
-
-- name: Include alsa tasks
-  include_tasks: alsa.yml
-  tags:
-    - system-maintenance
-
-#- name: Ensure RAID is checked monthly
-#  become: yes
-#  copy:
-#    src: cron.monthly/raid_maintenance
-#    dest: /etc/cron.monthly/raid_maintenance
-#    owner: root
-#    group: root
-#    mode: 0750
-#  tags:
-#    - system-maintenance
-#  when:
-#    - ansible_hostname == "spookcentral"
 
 # I looks like trim should also be called on nvme drives
 - name: Ensure list of nvme devices is reset
-  set_fact:
+  ansible.builtin.set_fact:
     nvme_devices: []
   tags:
     - system-maintenance
 
 - name: Build list of nvme devices
-  set_fact:
+  ansible.builtin.set_fact:
     nvme_devices: "{{ nvme_devices|default([]) + ['/dev/' ~ item.key] }}"
   with_dict: "{{ ansible_devices }}"
   when:
@@ -40,8 +22,8 @@
   no_log: True
 
 - name: Install nvme utils if system has an nvme
-  become: yes
-  pacman:
+  become: true
+  community.general.pacman:
     name: nvme-cli
     state: latest
   tags:
@@ -50,29 +32,18 @@
     - nvme_devices|length > 0
 
 - name: Ensure fstrim timer is started on supported devices
-  become: yes
-  systemd:
+  become: true
+  ansible.builtin.systemd:
     name: fstrim.timer
     state: started
     enabled: yes
   tags:
     - system-maintenance
 
-- name: Ensure cronjob is configured
-  become: yes
-  cron:
-    cron_file: clean-user-cache
-    job: find {{ ansible_user_dir }}/.cache -mtime +7 -type f -delete
-    special_time: daily
-    user: root
-    name: "Clean user ~/.cache directory"
-  tags:
-    - system-maintenance
-
 # Lifted from https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler
 - name: Ensure correct scheduler are used for devices
-  become: yes
-  copy:
+  become: true
+  ansible.builtin.copy:
     dest: /etc/udev/rules.d/60-ioschedulers.rules
     content: |
       # set scheduler for NVMe

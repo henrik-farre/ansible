@@ -4,8 +4,8 @@
     - firefox
   block:
     - name: Ensure Firefox and dependencies are installed
-      become: yes
-      pacman:
+      become: true
+      community.general.pacman:
         state: latest
         name: "{{ packages }}"
       vars:
@@ -13,7 +13,7 @@
           - firefox
 
     - name: Create user Firefox profiles directories
-      file:
+      ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}"
         owner: "{{ ansible_user_id }}"
         state: directory
@@ -23,13 +23,13 @@
         - "Private"
 
     - name: Install profiles.ini
-      copy:
+      ansible.builtin.copy:
         src: "profiles.ini"
         dest: "{{ ansible_user_dir }}/.mozilla/firefox/"
         owner: "{{ ansible_user_id }}"
 
     - name: Install user prefs pr profile
-      template:
+      ansible.builtin.template:
         src: "profile/user.js.j2"
         dest: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}/user.js"
         owner: "{{ ansible_user_id }}"
@@ -38,7 +38,7 @@
         - "Private"
 
     - name: Install .desktop file
-      copy:
+      ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ ansible_user_dir }}/.local/share/applications/{{ item }}"
         owner: "{{ ansible_user_id }}"
@@ -48,8 +48,8 @@
         - "open-link.desktop"
 
     - name: Remove hardcoded prefs
-      become: yes
-      file:
+      become: true
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       with_items:

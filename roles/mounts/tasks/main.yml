@@ -1,8 +1,8 @@
 ---
 # efivars is chattr +i since linux 4.5
 - name: Ensure efivars are not mounted ro in fstab
-  become: yes
-  lineinfile:
+  become: true
+  ansible.builtin.lineinfile:
     path: /etc/fstab
     state: absent
     regexp: '^efivars'
@@ -10,8 +10,8 @@
     - mounts
 
 - name: Ensure nfs support is installed
-  become: yes
-  pacman:
+  become: true
+  community.general.pacman:
     name: nfs-utils
     state: latest
   tags:
@@ -21,7 +21,7 @@
     - ansible_facts.distribution != "Debian"
 
 - name: Ensure NFS share is mounted
-  become: yes
+  become: true
   mount:
     name: /shared
     src: spookcentral.{{ network.local_domain }}:/shared

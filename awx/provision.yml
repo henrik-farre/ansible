@@ -19,7 +19,7 @@
 
   tasks:
     - name: Load vaulted vars
-      include_vars:
+      ansible.builtin.include_vars:
         file: vars/users.yml.vault
 
     - name: Ensure users exists
@@ -43,7 +43,7 @@
 
   tasks:
     - name: Load vaulted vars
-      include_vars:
+      ansible.builtin.include_vars:
         file: vars/credentials.yml.vault
 
     - name: Ensure credentials exist

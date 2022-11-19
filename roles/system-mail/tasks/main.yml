@@ -1,18 +1,21 @@
 ---
 - name: Ensure system mail is configured
+  become: true
+  tags:
+    - system-mail
   block:
     - name: Load vaulted files
-      include_vars:
+      ansible.builtin.include_vars:
         file: mail.yml.vault
       no_log: true
 
     - name: Ensure old ssmtp package is removed
-      package:
+      ansible.builtin.package:
         name: ssmtp
         state: absent
 
     - name: Ensure old ssmtp config files are removed
-      file:
+      ansible.builtin.file:
         path: "{{ item }}"
         state: absent
       loop:
@@ -21,7 +24,7 @@
         - /etc/ssmtp
 
     - name: Ensure msmtp is installed
-      package:
+      ansible.builtin.package:
         name: "{{ packages }}"
         state: latest
       vars:
@@ -29,20 +32,20 @@
           - msmtp
           - msmtp-mta
 
-    - name: Ensure mail command exists
-      package:
+    - name: Ensure mail command exists on Arch Linux
+      ansible.builtin.package:
         name: s-nail
         state: latest
       when: ansible_facts.distribution == "Archlinux"
 
-    - name: Ensure mail command exists
-      package:
+    - name: Ensure mail command exists on Debian
+      ansible.builtin.package:
         name: bsd-mailx
         state: latest
       when: ansible_facts.distribution == "Debian"
 
     - name: Ensure msmtprc exists
-      template:
+      ansible.builtin.template:
         src: etc/msmtprc.j2
         dest: /etc/msmtprc
         mode: 0640
@@ -50,7 +53,7 @@
         group: mail
 
     - name: Ensure aliases exists
-      template:
+      ansible.builtin.template:
         src: etc/aliases.j2
         dest: /etc/aliases
         mode: 0640
@@ -58,7 +61,7 @@
         group: mail
 
     - name: Ensure users are members of mail group
-      user:
+      ansible.builtin.user:
         name: "{{ item }}"
         groups: mail
         append: yes
@@ -66,7 +69,3 @@
       when:
         - groups_to_users is defined
         - groups_to_users.mail is defined
-
-  become: yes
-  tags:
-    - system-mail

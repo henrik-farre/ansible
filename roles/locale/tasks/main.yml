@@ -1,54 +1,46 @@
 ---
-- name: Ensure locales are installed
-  become: yes
-  apt:
-    name: locales
-    state: latest
-  when:
-    - ansible_facts.distribution == 'Debian'
+- name: Debian locale setup
   tags:
     - locale
+  become: true
+  when: ansible_facts.distribution == "Debian"
+  block:
+    - name: Ensure locales are installed
+      become: true
+      ansible.builtin.apt:
+        name: locales
+        state: latest
 
 - name: Generate locales
-  become: yes
-  locale_gen:
+  tags:
+    - locale
+  become: true
+  community.general.locale_gen:
     name: da_DK.UTF-8
     state: present
+
+- name: Arch Linux locale setup
   tags:
     - locale
-
-- name: Copy locale setting files
-  become: yes
-  copy:
-    src: "etc/{{ item }}"
-    dest: "/etc/{{ item }}"
-    owner: root
-    group: root
-    mode: 0644
-  with_items:
-    - "locale.conf"
-  when:
-    - ansible_facts.distribution != 'Debian'
-  tags:
-    - locale
-
-- name: Ensure terminus font is installed
-  become: yes
-  pacman:
-    name: terminus-font
-    state: latest
+  become: true
   when: ansible_facts.distribution == "Archlinux"
-  tags:
-    - locale
+  block:
+    - name: Copy locale setting files
+      ansible.builtin.copy:
+        src: "etc/locale.conf"
+        dest: "/etc/locale.conf"
+        owner: root
+        group: root
+        mode: 0644
 
-- name: Configure console font
-  become: yes
-  template:
-    src: etc/vconsole.conf.j2
-    dest: /etc/vconsole.conf
-    owner: root
-    mode: 0644
-  when:
-    - ansible_facts.distribution != 'Debian'
-  tags:
-    - locale
+    - name: Ensure terminus font is installed
+      community.general.pacman:
+        name: terminus-font
+        state: latest
+
+    - name: Configure console font
+      ansible.builtin.template:
+        src: etc/vconsole.conf.j2
+        dest: /etc/vconsole.conf
+        owner: root
+        mode: 0644

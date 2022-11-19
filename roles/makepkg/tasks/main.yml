@@ -1,7 +1,7 @@
 ---
 - name: Ensure makepkg.conf is correctly configured
-  become: yes
-  template:
+  become: true
+  ansible.builtin.template:
     src: etc/makepkg.conf.j2
     dest: /etc/makepkg.conf
     owner: root
@@ -11,8 +11,8 @@
     - makepkg
 
 - name: Ensure makepkg.pacnew does not exist
-  become: yes
-  file:
+  become: true
+  ansible.builtin.file:
     path: /etc/makepkg.conf.pacnew
     state: absent
   tags:
