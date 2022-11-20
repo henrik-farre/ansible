@@ -1,0 +1,15 @@
+---
+version: '2.1'
+services:
+  homeassistant:
+    image: ghcr.io/home-assistant/home-assistant:stable
+    container_name: home-assistant
+    network_mode: host
+    privileged: true
+    environment:
+      - TZ=Europe/Copenhagen
+    volumes:
+      - /srv/home-assistant/data/config:/config
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    restart: unless-stopped
