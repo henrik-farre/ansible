@@ -4,12 +4,12 @@
     - docker
   become: true
   block:
-    - name: Install Docker-CE on Debian
-      include_tasks: Debian.yml
+    - name: Install Docker on Debian
+      ansible.builtin.include_tasks: Debian.yml
       when: ansible_facts.distribution == "Debian"
 
-    - name: Install Docker-CE on Archlinux
-      include_tasks: Archlinux.yml
+    - name: Install Docker on Archlinux
+      ansible.builtin.include_tasks: Archlinux.yml
       when: ansible_facts.distribution == "Archlinux"
 
     - name: Ensure docker directory exists
@@ -58,15 +58,6 @@
         enabled: yes
       when:
         - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
-
-    - name: Remove old cronjob
-      ansible.builtin.cron:
-        state: absent
-        name: "Clean docker"
-        special_time: weekly
-        job: "docker system prune -f"
-        user: root
-        cron_file: "docker_prune"
 
     - name: Prune unused docker images, containers and more | systemd service
       ansible.builtin.copy:
