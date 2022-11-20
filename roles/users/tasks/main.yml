@@ -38,8 +38,7 @@
         name: "{{ item }}"
         groups: "{%if ansible_facts.distribution == 'Archlinux' %}wheel{% else %}sudo{% endif %}"
         append: yes
-      loop:
-        - "{{ groups_to_users.sudo }}"
+      loop: "{{ groups_to_users.sudo }}"
       when:
         - groups_to_users.sudo is defined
 
