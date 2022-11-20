@@ -14,25 +14,38 @@
         dump: 0
         state: present
 
-    # unified_cgroup_hierarchy = required by home-assistant
-    # elevator = lowest cpu overhead
     - name: Ensure /boot/firmware/cmdline.txt contains correct options
       ansible.builtin.copy:
-        dest: /boot/firmware/cmdline.txt
-        mode: 0755
+        dest: /etc/default/raspi-extra-cmdline
+        mode: 0644
         content: |
-          console=tty0 console=ttyS1,115200 root=LABEL=RASPIROOT rw fsck.repair=yes net.ifnames=0 cma=64M rootwait systemd.unified_cgroup_hierarchy=false elevator=none
+           rootfstype=ext4
+      notify:
+        - Rebuild initramfs
 
     - name: Ensure /boot/firmware/config.txt containts correct options
       ansible.builtin.lineinfile:
         line: '{{ item.key }}={{ item.value }}'
-        dest: /boot/firmware/config.txt
+        dest: /etc/default/raspi-firmware-custom
         regexp: "^{{ item.key }}="
       loop: "{{ config_items | dict2items }}"
       vars:
         config_items:
           gpu_mem: 16
-          arm_64bit: 1
+      notify:
+        - Rebuild initramfs
+
+    - name: Ensure /boot/firmware/config.txt containts correct options
+      ansible.builtin.lineinfile:
+        line: '{{ item.key }}="{{ item.value }}"'
+        dest: /etc/default/raspi-firmware
+        regexp: "^{{ item.key }}="
+      loop: "{{ config_items | dict2items }}"
+      vars:
+        config_items:
+          KERNEL_ARCH: "arm64"
+      notify:
+        - Rebuild initramfs
 
     # Without this drive will not show trim support
     # This is for 14b0:0206 StarTech.com Ltd. SSD 860 EVO 250G
@@ -50,6 +63,7 @@
         state: started
         enabled: yes
 
+    # TODO:wpa_supplicant is disabled everytime
     - name: Disable unneeded services
       ansible.builtin.systemd:
         name: "{{ item }}"
@@ -57,7 +71,7 @@
         enabled: no
       loop:
         - rsyslog.service
-        - wpa_supplicant
+        # - wpa_supplicant
       failed_when: False
 
     - name: Remove unneeded packages
