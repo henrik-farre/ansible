@@ -1,4 +1,6 @@
 ---
 docker_daemon_options:
   log-driver: journald
+  log-opts:
+    tag: "{% raw %}{{.ImageName}}/{{.Name}}/{{.ID}}{% endraw %}"
   storage-driver: overlay2
