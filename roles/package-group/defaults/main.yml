@@ -16,6 +16,7 @@ package_groups:
     - wget
     - xz
     - zip
+    - unzip
     - p7zip
   base_utils_debian:
     - bash
@@ -32,6 +33,7 @@ package_groups:
     - tree
     - wget
     - zip
+    - unzip
     - p7zip
   system_utils:
     - dmidecode
@@ -83,7 +85,8 @@ package_groups:
     - python-pre-commit
     - python-debugpy
   net_utils:
-    - bind-tools
+    # for dig
+    - bind
     - bridge-utils
     - curl
     - fping
@@ -92,13 +95,26 @@ package_groups:
     - iproute2
     - iptables
     - iputils
+    # for drill
+    - ldns
     - net-tools
     - nfs-utils
     - nmap
     - traceroute
-    - unzip
     - whois
     - wol
+  net_utils_debian:
+    - bridge-utils
+    - curl
+    - fping
+    - iptables
+    # for drill
+    - ldnsutils
+    - net-tools
+    - nmap
+    - traceroute
+    - wakeonlan
+    - whois
   desktop:
     - adwaita-icon-theme
     - aspell
