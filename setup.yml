@@ -155,6 +155,7 @@
   gather_facts: no
   roles:
     - raspbian
+    - sensors
     # - arpwatch
 
 - name: Debian setup
