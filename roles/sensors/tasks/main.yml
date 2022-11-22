@@ -1,9 +1,9 @@
 ---
-- name: Ensure lm_sensors are installed and configured
+- name: Ensure lm sensors are installed and configured on Arch Linux
   become: true
   when: ansible_facts.distribution == "Archlinux"
   tags:
-    - senors
+    - sensors
   block:
     - name: Ensure lm_sensors package is installed
       community.general.pacman:
@@ -25,3 +25,14 @@
         mode: 0640
       with_fileglob:
         - "etc/sensors.d/{{ ansible_facts.facter_dmi.board.product | replace(' ', '_') }}.conf"
+
+- name: Ensure lm sensors are installed and configured on Debian
+  become: true
+  when: ansible_facts.distribution == "Debian"
+  tags:
+    - sensors
+  block:
+    - name: Ensure lm_sensors package is installed
+      ansible.builtin.apt:
+        name: lm-sensors
+        state: latest
