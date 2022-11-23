@@ -1,0 +1,47 @@
+---
+- name: Ensure traefik is installed and configured
+  become: true
+  tags:
+    - traefik
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/traefik/{{ item }}"
+        state: directory
+        mode: 0775
+        owner: root
+        group: docker
+      loop:
+        - data/static
+        - data/dynamic
+        - deploy
+
+    - name: Ensure docker-compose.yml exists for traefik
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/traefik/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Ensure traefik.yml exists
+      ansible.builtin.copy:
+        src: traefik.yml
+        dest: /srv/traefik/data/static/
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Create traefik network
+      community.docker.docker_network:
+        name: traefik
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_name: traefik
+        project_src: /srv/traefik/deploy
+      register: output
+
+    - name: Debug
+      ansible.builtin.debug:
+        var: output
