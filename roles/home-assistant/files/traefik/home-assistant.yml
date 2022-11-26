@@ -1,0 +1,14 @@
+---
+http:
+  routers:
+    home-assistant:
+      entryPoints:
+        - http
+      rule: 'Host(`ha.testpi.home.lan`)'
+      service: home-assistant
+
+  services:
+    home-assistant:
+      loadBalancer:
+        servers:
+          - url: http://192.168.0.193:8123/

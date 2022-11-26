@@ -182,4 +182,5 @@
     PATH: /usr/local/sbin:/usr/sbin:/sbin:{{ ansible_env.PATH }}
 
   roles:
+    - traefik
     - home-assistant

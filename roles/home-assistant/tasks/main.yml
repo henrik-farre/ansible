@@ -12,7 +12,7 @@
         owner: root
         group: docker
       loop:
-        - data
+        - data/home-assistant/config
         - deploy
 
     - name: Ensure docker-compose.yml exists for home assistant
@@ -23,14 +23,51 @@
         owner: root
         group: docker
 
+# install:
+# dbus-broker
+# bluetooth
+    # systemctl enable dbus-broker.service
+    # add bluetooth: to configuration.yml
+
     - name: Deploy Docker Compose stack
       community.docker.docker_compose:
+        project_name: home-assistant
         project_src: /srv/home-assistant/deploy
       register: output
 
     - name: Debug
       ansible.builtin.debug:
         var: output
+
+    - name: Custom traefik config
+      ansible.builtin.copy:
+        src: traefik/home-assistant.yml
+        dest: /srv/traefik/data/dynamic/home-assistant.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+# wait until up
+# /srv/home-assistant/data/home-assistant/config/configuration.yaml
+# blockinfile
+# recorder:
+#  db_url: mysql://homeassistant:password@mariadb/homeassistant?charset=utf8mb4
+#  db_url: !secret mariadb
+#  purge_keep_days: 10   # default
+
+# blockinfile:
+#http:
+#  ip_ban_enabled: true
+#  login_attempts_threshold: 5
+#  use_x_forwarded_for: true
+#  trusted_proxies:
+#     - 192.168.0.0/24
+#     - 172.17.0.0/24
+#     - 127.0.0.1
+#     - ::1
+#     - fe80::/64
+#     - fe00::/64
+#     - fd00::/64
 
 # hacs install
 # run inside data/config folder
