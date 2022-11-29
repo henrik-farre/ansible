@@ -28,6 +28,7 @@
     - xdg-dirs
     - users
     - system-mail
+    - systemd-failed-service-mail
     - global-aliases
     - sshd
     - ssh-client
@@ -183,4 +184,5 @@
 
   roles:
     - traefik
+    - pihole
     - home-assistant

@@ -1,0 +1,5 @@
+---
+pihole:
+  hostname: "pihole.testpi.{{ network.local_domain }}"
+  local_ipv4: 192.168.0.193
+  webpassword: "{{ vaulted_pihole.webpassword }}"

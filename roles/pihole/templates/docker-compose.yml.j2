@@ -1,0 +1,61 @@
+version: "3"
+
+# More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
+services:
+  pihole:
+    container_name: pihole
+    hostname: {{ pihole.hostname }}
+    image: pihole/pihole:2022.11.2
+    ports:
+      - "53:53/tcp"
+      - "53:53/udp"
+    dns:
+      - 127.0.0.1
+      - 208.67.222.222
+      - 208.67.222.220
+    environment:
+      TZ: Europe/Copenhagen
+      # Set to your server's LAN IP, used by web block modes and lighttpd bind address.
+      FTLCONF_LOCAL_IPV4: {{ pihole.local_ipv4 }}
+      # How long should queries be stored in the database?
+      FTLCONF_MAXDBDAYS: 60
+      # What your web server 'virtual host' is, accessing admin through this Hostname/IP allows you to make changes to the whitelist / blacklists in addition to the default 'http://pi.hole/admin/' address
+      VIRTUAL_HOST: {{ pihole.hostname }}
+      WEBPASSWORD: '{{ pihole.webpassword }}'
+      # local listens on all local subnets, all permits listening on internet origin subnets in addition to local, single listens only on the interface specified.
+      DNSMASQ_LISTENING: all
+      WEBTHEME: default-darker
+      # Upstream DNS server(s) for Pi-hole to forward queries to, separated by a semicolon
+      PIHOLE_DNS_: 208.67.222.222;208.67.220.220;2620:119:35::35;2620:119:53::53
+      # Gives "BOGUS (DNSKEY missing)" by opendns
+      DNSSEC: "false"
+      # Never forward reverse lookups for private ranges
+      DNS_BOGUS_PRIV: "true"
+      # Never forward non-FQDNs
+      DNS_FQDN_REQUIRED: "true"
+      # Enable DNS conditional forwarding for device name resolution
+      REV_SERVER: "true"
+      # If conditional forwarding is enabled, set the domain of the local network router
+      REV_SERVER_DOMAIN: {{ network.local_domain }}
+      # If conditional forwarding is enabled, set the IP of the local network router
+      REV_SERVER_TARGET: 192.168.0.1
+      # If conditional forwarding is enabled, set the reverse DNS zone (e.g. 192.168.0.0/24)
+      REV_SERVER_CIDR: 192.168.0.0/24
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/pihole/data/etc/pihole:/etc/pihole
+      - /srv/pihole/data/etc/dnsmasq.d:/etc/dnsmasq.d
+      - /srv/pihole/data/var/log:/var/log
+    restart: unless-stopped
+    networks:
+      - "traefik"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`{{ pihole.hostname }}`)"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+      - "traefik.http.routers.pihole.entrypoints=http"
+
+networks:
+  traefik:
+    external: true
