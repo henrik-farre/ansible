@@ -36,10 +36,10 @@ services:
     container_name: home-assistant-mariadb
     environment:
       TZ: Europe/Copenhagen
-      MARIADB_ROOT_PASSWORD: password
-      MARIADB_DATABASE: homeassistant #optional
-      MARIADB_USER: homeassistant #optional
-      MARIADB_PASSWORD: password #optional
+      MARIADB_ROOT_PASSWORD: "{{ homeassistant.db.root_password }}"
+      MARIADB_DATABASE: "{{ homeassistant.db.database }}"
+      MARIADB_USER: "{{ homeassistant.db.user }}"
+      MARIADB_PASSWORD: "{{ homeassistant.db.password }}"
     volumes:
       - /srv/home-assistant/data/mariadb/mysql:/var/lib/mysql
       - /srv/home-assistant/data/mariadb/entrypoint:/docker-entrypoint-initdb.d

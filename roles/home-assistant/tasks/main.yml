@@ -4,6 +4,26 @@
   tags:
     - home-assistant
   block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: homeassistant.yml.vault
+
+    - name: Ensure needed packages for bluetooth support are installed
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - dbus-broker
+          - bluetooth
+
+    # TODO: needs reboot
+    - name: Ensure dbus-broker is enabled
+      ansible.builtin.systemd:
+        name: dbus-broker
+        state: started
+        enabled: true
+
     - name: Ensure needed directories exist
       ansible.builtin.file:
         path: "/srv/home-assistant/{{ item }}"
@@ -23,12 +43,6 @@
         owner: root
         group: docker
 
-# install:
-# dbus-broker
-# bluetooth
-    # systemctl enable dbus-broker.service
-    # add bluetooth: to configuration.yml
-
     - name: Deploy Docker Compose stack
       community.docker.docker_compose:
         project_name: home-assistant
@@ -40,34 +54,50 @@
         var: output
 
     - name: Custom traefik config
-      ansible.builtin.copy:
-        src: traefik/home-assistant.yml
+      ansible.builtin.template:
+        src: traefik/home-assistant.yml.j2
         dest: /srv/traefik/data/dynamic/home-assistant.yml
         mode: 0664
         owner: root
         group: docker
 
-# wait until up
-# /srv/home-assistant/data/home-assistant/config/configuration.yaml
-# blockinfile
-# recorder:
-#  db_url: mysql://homeassistant:password@mariadb/homeassistant?charset=utf8mb4
-#  db_url: !secret mariadb
-#  purge_keep_days: 10   # default
+    - name: Ensure external db is used for recorder
+      ansible.builtin.blockinfile:
+        path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK recorder"
+        block: |
+          recorder:
+            # https://www.home-assistant.io/integrations/recorder/
+            # Connecting using shared socket in volume
+            db_url: mysql://{{ homeassistant.db.user }}:{{ homeassistant.db.password }}@localhost/{{ homeassistant.db.database }}?unix_socket=/var/run/mysqld/mysqld.sock&charset=utf8mb4
 
-# blockinfile:
-#http:
-#  ip_ban_enabled: true
-#  login_attempts_threshold: 5
-#  use_x_forwarded_for: true
-#  trusted_proxies:
-#     - 192.168.0.0/24
-#     - 172.17.0.0/24
-#     - 127.0.0.1
-#     - ::1
-#     - fe80::/64
-#     - fe00::/64
-#     - fd00::/64
+    - name: Ensure http is configured
+      ansible.builtin.blockinfile:
+        path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK http"
+        block: |
+          # https://www.home-assistant.io/integrations/http/
+          http:
+            ip_ban_enabled: true
+            login_attempts_threshold: 5
+            use_x_forwarded_for: true
+            trusted_proxies:
+              - 192.168.0.0/24
+              - 172.17.0.0/24
+              - 127.0.0.1
+              - ::1
+              - fe80::/64
+              - fe00::/64
+              - fd00::/64
+
+    - name: Ensure bluetooth is enabled
+      ansible.builtin.blockinfile:
+        path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK bluetooth"
+        block: |
+          # https://www.home-assistant.io/integrations/bluetooth/
+          bluetooth:
+
 
 # hacs install
 # run inside data/config folder

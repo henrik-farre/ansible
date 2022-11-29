@@ -4,11 +4,11 @@ http:
     home-assistant:
       entryPoints:
         - http
-      rule: 'Host(`ha.testpi.home.lan`)'
+      rule: 'Host(`{{ homeassistant.hostname }}`)'
       service: home-assistant
 
   services:
     home-assistant:
       loadBalancer:
         servers:
-          - url: http://192.168.0.193:8123/
+          - url: http://{{ homeassistant.ip }}:8123/
