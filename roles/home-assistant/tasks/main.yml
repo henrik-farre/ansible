@@ -71,6 +71,11 @@
             # Connecting using shared socket in volume
             db_url: mysql://{{ homeassistant.db.user }}:{{ homeassistant.db.password }}@localhost/{{ homeassistant.db.database }}?unix_socket=/var/run/mysqld/mysqld.sock&charset=utf8mb4
 
+    - name: Get infos on network
+      community.docker.docker_network_info:
+        name: traefik
+      register: traefik_network
+
     - name: Ensure http is configured
       ansible.builtin.blockinfile:
         path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
@@ -84,6 +89,7 @@
             trusted_proxies:
               - 192.168.0.0/24
               - 172.17.0.0/24
+              - {{ traefik_network.network.IPAM.Config[0].Subnet }}
               - 127.0.0.1
               - ::1
               - fe80::/64
