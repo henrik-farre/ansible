@@ -1,0 +1,144 @@
+---
+- name: Ensure pihole is installed and configured
+  become: true
+  tags:
+    - pihole
+  block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: pihole.yml.vault
+
+    # Needed for piholes "installLogrotate" as it uses group to create logrotate config
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/pihole/{{ item.path }}"
+        state: directory
+        mode: 0775
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data/etc/pihole
+          owner: 999
+          group: 999
+        - path: data/etc/dnsmasq.d
+          owner: root
+          group: root
+        - path: data/var/log
+          owner: root
+          group: root
+        - path: data/var/log/lighttpd
+          owner: 33
+          group: 33
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yml exists for pihole
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/pihole/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    # Remember to restore backup after startup
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_name: pihole
+        project_src: /srv/pihole/deploy
+
+    - name: Configure host to use pihole for DNS
+      community.general.nmcli:
+        conn_name: Kablet forbindelse 1
+        type: ethernet
+        ifname: eth0
+        method4: manual
+        method6: disabled
+        ip4: "{{ pihole.local_ipv4 }}/24"
+        gw4: 192.168.0.1
+        dns4_search:
+          - home.lan
+        dns4:
+          - 127.0.0.1
+        state: present
+
+    - name: Pihole | Update gravity | systemd service
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/pihole-updategravity.service
+        content: |
+          [Unit]
+          Description=Pi-hole: Update the ad sources
+          OnFailure=status-email@%n.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/docker exec pihole pihole updateGravity > /dev/null
+        owner: root
+        mode: 0644
+
+    - name: Pihole | Update gravity | systemd timer
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/pihole-updategravity.timer
+        content: |
+          [Unit]
+          Description=Pi-hole: Update the ad sources | Weekly job
+
+          [Timer]
+          OnCalendar=Sun 23:59:00
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Pihole | Flush log | systemd service
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/pihole-flushlog.service
+        content: |
+          [Unit]
+          Description=Pi-hole: Flush the log
+          OnFailure=status-email@%n.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/docker exec pihole pihole flush once > /dev/null
+        owner: root
+        mode: 0644
+
+    - name: Pihole | Flush log | systemd timer
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/pihole-flushlog.timer
+        content: |
+          [Unit]
+          Description=Pi-hole: Flush the log | Daily job
+
+          [Timer]
+          OnCalendar=23:00:00
+          Persistent=true
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Enable systemd services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+      loop:
+        - pihole-updategravity.service
+        - pihole-flushlog.service
+
+    - name: Enable systemd timers
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        enabled: yes
+        state: started
+      loop:
+        - pihole-updategravity.timer
+        - pihole-flushlog.timer

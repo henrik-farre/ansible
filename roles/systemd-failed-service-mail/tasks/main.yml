@@ -1,49 +1,47 @@
 ---
-- name: Ensure old unit is removed
+- name: Ensure pihole is installed and configured
   become: true
-  ansible.builtin.file:
-    dest: /etc/systemd/system/status-email-enrique@.service
-    state: absent
   tags:
     - systemd-failed-service-mail
+  block:
+    - name: Ensure old units are removed
+      ansible.builtin.file:
+        dest: "{{ item }}"
+        state: absent
+      loop:
+        - /etc/systemd/system/status-email@.service
+        - /etc/systemd/system/status-email-enrique@.service
 
-- name: Ensure failed service email script exists
-  become: true
-  ansible.builtin.copy:
-    content: |
-      #!/bin/bash
+    - name: Ensure failed service email script exists
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
 
-      /usr/bin/sendmail -t <<ERRMAIL
-      To: $1
-      From: systemd on $HOSTNAME <root@$HOSTNAME>
-      Subject: $2
-      Content-Transfer-Encoding: 8bit
-      Content-Type: text/plain; charset=UTF-8
+          /usr/bin/sendmail -t <<ERRMAIL
+          To: $1
+          From: systemd on $HOSTNAME <root@$HOSTNAME>
+          Subject: $2
+          Content-Transfer-Encoding: 8bit
+          Content-Type: text/plain; charset=UTF-8
 
-      $(systemctl status --full "$2")
-      ERRMAIL
-    dest: /usr/local/bin/systemd-email
-    mode: 0750
-    owner: root
-    group: mail
-  tags:
-    - systemd-failed-service-mail
+          $(systemctl status --full "$2")
+          ERRMAIL
+        dest: /usr/local/bin/systemd-email
+        mode: 0750
+        owner: root
+        group: mail
 
-- name: Ensure failed service unit exists
-  become: true
-  ansible.builtin.copy:
-    content: |
-      [Unit]
-      Description=Status email for %i to user
-      After=network.target
+    - name: Ensure failed service unit exists
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          Description=Status email for %i to user
+          After=network.target
 
-      [Service]
-      Type=oneshot
-      ExecStart=/usr/local/bin/systemd-email {{ email_addresses.internal }} %i
-      User=root
-      Group=systemd-journal
-    dest: /etc/systemd/system/status-email@.service
-    mode: 0644
-    owner: root
-  tags:
-    - systemd-failed-service-mail
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/local/bin/systemd-email {{ email_addresses.internal }} %i
+          User=root
+        dest: /usr/local/lib/systemd/system/status-email@.service
+        mode: 0644
+        owner: root

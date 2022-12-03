@@ -1,0 +1,9 @@
+---
+homeassistant:
+  hostname: "ha.testpi.{{ network.local_domain }}"
+  ip: 192.168.0.193
+  db:
+    root_password: "{{ vaulted_ha.db.root_password }}"
+    database: "{{ vaulted_ha.db.database }}"
+    user: "{{ vaulted_ha.db.user }}"
+    password: "{{ vaulted_ha.db.password }}"

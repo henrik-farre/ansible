@@ -28,6 +28,7 @@
     - xdg-dirs
     - users
     - system-mail
+    - systemd-failed-service-mail
     - global-aliases
     - sshd
     - ssh-client
@@ -182,4 +183,6 @@
     PATH: /usr/local/sbin:/usr/sbin:/sbin:{{ ansible_env.PATH }}
 
   roles:
+    - traefik
+    - pihole
     - home-assistant

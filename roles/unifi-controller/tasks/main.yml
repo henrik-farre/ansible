@@ -1,152 +1,107 @@
 ---
-- name: Ensure all tasks are run with become and correct tag
-  # Block level
+- name: Ensure unifi controller is installed and configured
   become: true
   tags:
     - unifi-controller
   block:
-    - name: Ensure needed pgp tools are installed
-      ansible.builtin.package:
-        name: dirmngr
-        state: latest
-
-    # https://community.ubnt.com/t5/UniFi-Updates-Blog/UniFi-SDN-Controller-5-9-29-Stable-has-been-released/ba-p/2516852
-    - name: Ensure support java version is installed
-      ansible.builtin.package:
-        name: openjdk-8-jre-headless
-        state: latest
-
-    - name: Ensure unifi apt key is available
-      ansible.builtin.apt_key:
-        keyserver: keyserver.ubuntu.com
-        id: 06E85760C0A52C50
-
-    - name: Ensure unifi repository is available
-      ansible.builtin.apt_repository:
-        repo: deb http://www.ubnt.com/downloads/unifi/debian stable ubiquiti
-        state: present
-        filename: 100-ubnt.list
-
-    - name: Update apt cache
-      ansible.builtin.apt:
-        update_cache: yes
-
-    - name: Ensure unifi controller is installed
-      ansible.builtin.package:
-        name: unifi
-        state: latest
-
-    # This should fix the controller not being able to fetch firmware updates
-    # - https://www.reddit.com/r/Ubiquiti/comments/9aowqx/unifi_v5828_missing_firmware_updates/
-    # - WARN system - failed to get firmware update info: java.lang.RuntimeException: Unexpected error: java.security.InvalidAlgorithmParameterException: the trustAnchors parameter must be non-empty
-    - name: Get stat of java ca certs
-      ansible.builtin.stat:
-        path: /etc/ssl/certs/java/cacerts
-      register: java_ca
-
-    - name: Ensure ca file is removed if mimetype is incorrect
+    - name: Ensure needed directories exist
       ansible.builtin.file:
-        path: /etc/ssl/certs/java/cacerts
-        state: absent
-      when:
-        - java_ca.stat.mimetype != 'application/x-java-keystore'
-
-    - name: Ensure ca file is recreated correctly
-      command: /usr/sbin/update-ca-certificates --fresh
-      args:
-        creates: /etc/ssl/certs/java/cacerts
-      when:
-        - java_ca.stat.mimetype != 'application/x-java-keystore'
-
-    - name: Ensure unsupported lib is removed
-      ansible.builtin.file:
-        path: /usr/lib/unifi/lib/native/Linux/armhf/libubnt_webrtc_jni.so
-        state: absent
-      when:
-        - ansible_facts.architecture == "armv6l"
-
-    - name: Ensure mongodb is stopped and disabled
-      ansible.builtin.service:
-        name: mongodb
-        state: stopped
-        enabled: no
-
-    # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
-    - name: Ensure custom config.gateway.json is deployed
-      ansible.builtin.copy:
-        src: "config.gateway.json"
-        dest: /usr/lib/unifi/data/sites/default/config.gateway.json
-        owner: unifi
-        group: unifi
-        mode: 0600
-
-    # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
-    # - Disable analytics
-    # Note: remember to force provision devices for changes to apply
-    - name: Ensure custom config.properties is deployed
-      ansible.builtin.copy:
-        content: |
-          config.system_cfg.1=system.analytics.anonymous=disabled
-        dest: /usr/lib/unifi/data/sites/default/config.properties
-        owner: unifi
-        group: unifi
-        mode: 0600
-
-    - name: Ensure unifi service is started and enabled
-      ansible.builtin.service:
-        name: unifi
-        state: started
-        enabled: yes
-
-    - name: MongoDB maintenance script
-      ansible.builtin.copy:
-        dest: /usr/local/sbin/mongodb_maintenance.sh
-        content: |
-          #!/bin/bash
-          /usr/bin/mongo --port 27117 < /root/mongo_prune_js.js
+        path: "/srv/unifi-controller/{{ item }}"
+        state: directory
+        mode: 0775
         owner: root
-        mode: 0750
+        group: docker
+      loop:
+        - data
+        - deploy
 
-    - name: MongoDB maintenance service
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/mongodb_maintenance.service
-        content: |
-          [Unit]
-          Description=MongoDB maintenance
-          OnFailure=status-email@%n.service
-
-          [Service]
-          Type=oneshot
-          ExecStart=/usr/local/sbin/mongodb_maintenance.sh
+    - name: Ensure docker-compose.yml exists for unifi
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/unifi-controller/deploy/docker-compose.yml
+        mode: 0664
         owner: root
-        mode: 0644
+        group: docker
 
-    # From https://help.ui.com/hc/en-us/articles/204911424-UniFi-How-to-remove-prune-older-data-and-adjust-mongo-database-size
-    - name: MongoDB maintenance prune script
-      ansible.builtin.copy:
-        dest: /root/mongo_prune_js.js
-        src: root/mongo_prune_js.js
-        owner: root
-        mode: 0644
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_src: /srv/unifi-controller/deploy
+      register: output
 
-    - name: MongoDB maintenance timer
-      ansible.builtin.copy:
-        dest: /etc/systemd/system/mongodb_maintenance.timer
-        content: |
-          [Unit]
-          Description=MongoDB maintenance
+    - name: Debug
+      ansible.builtin.debug:
+        var: output
 
-          [Timer]
-          OnCalendar=monthly
-          Persistent=True
-
-          [Install]
-          WantedBy=timers.target
-        owner: root
-        mode: 0644
-
-    - name: Enable timer unit for MongoDB maintenance
-      ansible.builtin.systemd:
-        name: mongodb_maintenance.timer
-        state: started
-        enabled: yes
+#>    # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
+#>    - name: Ensure custom config.gateway.json is deployed
+#>      ansible.builtin.copy:
+#>        src: "config.gateway.json"
+#>        dest: /usr/lib/unifi/data/sites/default/config.gateway.json
+#>        owner: unifi
+#>        group: unifi
+#>        mode: 0600
+#>
+#>    # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
+#>    # - Disable analytics
+#>    # Note: remember to force provision devices for changes to apply
+#>    - name: Ensure custom config.properties is deployed
+#>      ansible.builtin.copy:
+#>        content: |
+#>          config.system_cfg.1=system.analytics.anonymous=disabled
+#>        dest: /usr/lib/unifi/data/sites/default/config.properties
+#>        owner: unifi
+#>        group: unifi
+#>        mode: 0600
+#>
+#>    - name: MongoDB maintenance script
+#>      ansible.builtin.copy:
+#>        dest: /usr/local/sbin/mongodb_maintenance.sh
+#>        content: |
+#>          #!/bin/bash
+#>          /usr/bin/mongo --port 27117 < /root/mongo_prune_js.js
+#>        owner: root
+#>        mode: 0750
+#>
+#>    - name: MongoDB maintenance service
+#>      ansible.builtin.copy:
+#>        dest: /etc/systemd/system/mongodb_maintenance.service
+#>        content: |
+#>          [Unit]
+#>          Description=MongoDB maintenance
+#>          OnFailure=status-email@%n.service
+#>
+#>          [Service]
+#>          Type=oneshot
+#>          ExecStart=/usr/local/sbin/mongodb_maintenance.sh
+#>        owner: root
+#>        mode: 0644
+#>
+#>    # From https://help.ui.com/hc/en-us/articles/204911424-UniFi-How-to-remove-prune-older-data-and-adjust-mongo-database-size
+#>    - name: MongoDB maintenance prune script
+#>      ansible.builtin.copy:
+#>        dest: /root/mongo_prune_js.js
+#>        src: root/mongo_prune_js.js
+#>        owner: root
+#>        mode: 0644
+#>
+#>    - name: MongoDB maintenance timer
+#>      ansible.builtin.copy:
+#>        dest: /etc/systemd/system/mongodb_maintenance.timer
+#>        content: |
+#>          [Unit]
+#>          Description=MongoDB maintenance
+#>
+#>          [Timer]
+#>          OnCalendar=monthly
+#>          Persistent=True
+#>
+#>          [Install]
+#>          WantedBy=timers.target
+#>        owner: root
+#>        mode: 0644
+#>
+#>    - name: Enable timer unit for MongoDB maintenance
+#>      ansible.builtin.systemd:
+#>        name: mongodb_maintenance.timer
+#>        state: started
+#>        enabled: yes

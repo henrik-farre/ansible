@@ -11,7 +11,11 @@ services:
       - 80:80
       - 8080:8080
       - 443:443
+    environment:
+      TZ: 'Europe/Copenhagen'
     volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
       - /run/docker.sock:/run/docker.sock:ro
       - /srv/traefik/data/static:/etc/traefik:ro
       - /srv/traefik/data/dynamic:/etc/traefik-dynamic/:ro

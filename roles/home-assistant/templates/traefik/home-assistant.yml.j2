@@ -1,0 +1,14 @@
+---
+http:
+  routers:
+    home-assistant:
+      entryPoints:
+        - http
+      rule: 'Host(`{{ homeassistant.hostname }}`)'
+      service: home-assistant
+
+  services:
+    home-assistant:
+      loadBalancer:
+        servers:
+          - url: http://{{ homeassistant.ip }}:8123/
