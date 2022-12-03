@@ -46,11 +46,6 @@
       community.docker.docker_compose:
         project_name: pihole
         project_src: /srv/pihole/deploy
-      register: output
-
-    - name: Debug
-      ansible.builtin.debug:
-        var: output
 
     - name: Configure host to use pihole for DNS
       community.general.nmcli:

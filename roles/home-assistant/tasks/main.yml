@@ -47,11 +47,6 @@
       community.docker.docker_compose:
         project_name: home-assistant
         project_src: /srv/home-assistant/deploy
-      register: output
-
-    - name: Debug
-      ansible.builtin.debug:
-        var: output
 
     - name: Custom traefik config
       ansible.builtin.template:

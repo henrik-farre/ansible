@@ -40,8 +40,3 @@
       community.docker.docker_compose:
         project_name: traefik
         project_src: /srv/traefik/deploy
-      register: output
-
-    - name: Debug
-      ansible.builtin.debug:
-        var: output
