@@ -167,6 +167,8 @@
       package_group: "base_utils_debian"
     - role: package-group
       package_group: "net_utils_debian"
+    - role: package-group
+      package_group: "system_utils_debian"
 
 - name: Unifi Controller setup
   hosts: unifi-controller

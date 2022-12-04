@@ -54,6 +54,8 @@ package_groups:
     - pciutils
     - sysfsutils
     - usbutils
+  system_utils_debian:
+    - usbutils
   development_utils:
     - ansible
     - ansible-lint
