@@ -170,7 +170,7 @@
     - role: package-group
       package_group: "system_utils_debian"
 
-- name: Unifi Controller setup
+- name: Unifi Controller setup on Raspberry Pi
   hosts: unifi-controller
   gather_facts: no
   roles:
@@ -185,6 +185,11 @@
     PATH: /usr/local/sbin:/usr/sbin:/sbin:{{ ansible_env.PATH }}
 
   roles:
+    - home-assistant
+
+- name: Pi-Hole setup on Raspberry Pi
+  hosts: pi-hole
+  gather_facts: no
+  roles:
     - traefik
     - pihole
-    - home-assistant
