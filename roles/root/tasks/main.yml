@@ -1,7 +1,15 @@
 ---
+- name: Ensure vaulted vars are loaded
+  ansible.builtin.include_vars:
+    file: root.yml.vault
+  tags:
+    - root
+
 - name: Set root password
   become: true
   ansible.builtin.user:
     name: root
     password: "{{ root_password_hashed }}"
   no_log: true
+  tags:
+    - root
