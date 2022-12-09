@@ -1,0 +1,51 @@
+---
+version: "3"
+
+services:
+  unifi-controller:
+    container_name: unifi-controller
+    hostname: {{ unifi.hostname }}
+    image: quay.io/linuxserver.io/unifi-controller:7.3.76
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/unifi-controller/data/config:/config
+    ports:
+      - 8443:8443
+      - 3478:3478/udp
+      - 10001:10001/udp
+      - 8080:8080
+      - 1900:1900/udp #optional
+      - 8843:8843 #optional
+      - 8880:8880 #optional
+      - 6789:6789 #optional
+      - 5514:5514/udp #optional
+    environment:
+      TZ: Europe/Copenhagen
+    networks:
+      - "traefik"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`{{ pihole.hostname }}`)"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+      - "traefik.http.routers.pihole.entrypoints=http"
+
+# /var/lib/unifi - Configuration data
+# /var/log/unifi - Log files
+# /var/run/unifi - Run information
+# /var/run/data - Application data
+# 8443 – Unifi web admin port
+# 3478/udp – Unifi STUN port
+# 10001/udp – Required for AP discovery
+# 8843 – Unifi guest portal HTTPS redirect port
+# 8880 – Unifi guest portal HTTP redirect port
+# 8080 – Required for device communication
+# 1900/udp – Required to Make controller discoverable on L2 network option
+# 6789 – For mobile throughput test
+# 5514/udp – Remote Syslog port
+
+
+networks:
+  traefik:
+    external: true
