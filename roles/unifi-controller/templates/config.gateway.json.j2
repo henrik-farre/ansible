@@ -9,11 +9,11 @@
           },
           "inbound-interface": "eth1",
           "inside-address": {
-            "address": "192.168.0.7",
+            "address": "{{ unifi.dns_ip }}",
             "port": "53"
           },
           "source": {
-            "address": "!192.168.0.7"
+            "address": "!{{ unifi.dns_ip }}"
           },
           "log": "disable",
           "protocol": "tcp_udp",
@@ -22,7 +22,7 @@
         "6000": {
           "description": "MASQ DNS requests to Pi-Hole",
           "destination": {
-            "address": "192.168.0.7",
+            "address": "{{ unifi.dns_ip }}",
             "port": "53"
           },
           "log": "disable",
