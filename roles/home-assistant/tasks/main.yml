@@ -33,7 +33,62 @@
         group: docker
       loop:
         - data/home-assistant/config
+        - data/mariadb/mysql
+        - data/mariadb/entrypoint
+        - data/mosquitto/config
+        - data/mosquitto/data
+        - data/mosquitto/log
+        - data/zigbee2mqtt
         - deploy
+
+    - name: Ensure mosquitto is configured
+      ansible.builtin.copy:
+        dest: /srv/home-assistant/data/mosquitto/config/mosquitto.conf
+        content: |
+          listener 1883
+          persistence true
+          persistence_location /mosquitto/data/
+
+          log_dest file /mosquitto/log/mosquitto.log
+
+          ## Authentication ##
+          allow_anonymous false
+          password_file /mosquitto/config/password_file
+        mode: 0664
+        owner: 1883
+        group: docker
+
+    - name: Ensure mosquitto has password_file
+      ansible.builtin.template:
+        dest: /srv/home-assistant/data/mosquitto/config/password_file
+        src: mosquitto_password_file.j2
+        mode: 0400
+        owner: 1883
+        group: docker
+
+
+    - name: Ensure zigbee2mqtt is configured
+      ansible.builtin.blockinfile:
+        path: /srv/home-assistant/data/zigbee2mqtt/configuration.yaml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK zigbee2mqtt-base-config"
+        content: |
+          ---
+          permit_join: true
+          mqtt:
+            base_topic: zigbee2mqtt
+            server: mqtt://mosquitto
+            user: {{ homeassistant.mosquitto.user }}
+            password: {{ homeassistant.mosquitto.password }}
+          serial:
+            adapter: ezsp
+            port: >-
+              /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20220811181030-if00
+          frontend:
+            port: 8080
+          homeassistant: true
+        mode: 0664
+        owner: 1883
+        group: docker
 
     - name: Ensure docker-compose.yml exists for home assistant
       ansible.builtin.template:
@@ -99,6 +154,15 @@
           # https://www.home-assistant.io/integrations/bluetooth/
           bluetooth:
 
+    - name: Ensure mqtt is enabled
+      ansible.builtin.blockinfile:
+        path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK mqtt"
+        block: |
+          # https://www.home-assistant.io/integrations/mqtt/
+          mqtt:
+            broker: mosquitto
+            discovery: true
 
 # hacs install
 # run inside data/config folder
