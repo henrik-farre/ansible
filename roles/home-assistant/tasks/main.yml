@@ -17,29 +17,45 @@
           - dbus-broker
           - bluetooth
 
-    # TODO: needs reboot
     - name: Ensure dbus-broker is enabled
       ansible.builtin.systemd:
         name: dbus-broker
         state: started
         enabled: true
+      notify: Reboot host
 
     - name: Ensure needed directories exist
       ansible.builtin.file:
-        path: "/srv/home-assistant/{{ item }}"
+        path: "/srv/home-assistant/{{ item.path }}"
         state: directory
         mode: 0775
-        owner: root
-        group: docker
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
       loop:
-        - data/home-assistant/config
-        - data/mariadb/mysql
-        - data/mariadb/entrypoint
-        - data/mosquitto/config
-        - data/mosquitto/data
-        - data/mosquitto/log
-        - data/zigbee2mqtt
-        - deploy
+        - path: data/home-assistant/config
+          owner: root
+          group: docker
+        - path: data/mariadb/mysql
+          owner: 999
+          group: 999
+        - path: data/mariadb/entrypoint
+          owner: root
+          group: docker
+        - path: data/mosquitto/config
+          owner: 1883
+          group: 1883
+        - path: data/mosquitto/data
+          owner: 1883
+          group: 1883
+        - path: data/mosquitto/log
+          owner: 1883
+          group: 1883
+        - path: data/zigbee2mqtt
+          owner: root
+          group: docker
+        - path: deploy
+          owner: root
+          group: docker
 
     - name: Ensure mosquitto is configured
       ansible.builtin.copy:
@@ -47,16 +63,16 @@
         content: |
           listener 1883
           persistence true
-          persistence_location /mosquitto/data/
+          persistence_location /mosquitto/data
 
-          log_dest file /mosquitto/log/mosquitto.log
+          log_dest stdout
 
           ## Authentication ##
           allow_anonymous false
           password_file /mosquitto/config/password_file
         mode: 0664
         owner: 1883
-        group: docker
+        group: 1883
 
     - name: Ensure mosquitto has password_file
       ansible.builtin.template:
@@ -64,13 +80,13 @@
         src: mosquitto_password_file.j2
         mode: 0400
         owner: 1883
-        group: docker
-
+        group: 1883
 
     - name: Ensure zigbee2mqtt is configured
       ansible.builtin.blockinfile:
         path: /srv/home-assistant/data/zigbee2mqtt/configuration.yaml
         marker: "# {mark} ANSIBLE MANAGED BLOCK zigbee2mqtt-base-config"
+        create: true
         content: |
           ---
           permit_join: true
@@ -111,15 +127,23 @@
         owner: root
         group: docker
 
+    - name: Wait until the file /tmp/foo is present before continuing
+      ansible.builtin.wait_for:
+        path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
+
     - name: Ensure external db is used for recorder
       ansible.builtin.blockinfile:
         path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
         marker: "# {mark} ANSIBLE MANAGED BLOCK recorder"
+        owner: root
+        group: docker
+        mode: 0660
         block: |
           recorder:
             # https://www.home-assistant.io/integrations/recorder/
             # Connecting using shared socket in volume
             db_url: mysql://{{ homeassistant.db.user }}:{{ homeassistant.db.password }}@localhost/{{ homeassistant.db.database }}?unix_socket=/var/run/mysqld/mysqld.sock&charset=utf8mb4
+      notify: Restart home-assistant container
 
     - name: Get infos on network
       community.docker.docker_network_info:
@@ -145,6 +169,7 @@
               - fe80::/64
               - fe00::/64
               - fd00::/64
+      notify: Restart home-assistant container
 
     - name: Ensure bluetooth is enabled
       ansible.builtin.blockinfile:
@@ -153,16 +178,7 @@
         block: |
           # https://www.home-assistant.io/integrations/bluetooth/
           bluetooth:
-
-    - name: Ensure mqtt is enabled
-      ansible.builtin.blockinfile:
-        path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
-        marker: "# {mark} ANSIBLE MANAGED BLOCK mqtt"
-        block: |
-          # https://www.home-assistant.io/integrations/mqtt/
-          mqtt:
-            broker: mosquitto
-            discovery: true
+      notify: Restart home-assistant container
 
 # hacs install
 # run inside data/config folder
