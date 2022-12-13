@@ -63,7 +63,6 @@
         state: started
         enabled: yes
 
-    # TODO:wpa_supplicant is disabled everytime
     - name: Disable unneeded services
       ansible.builtin.systemd:
         name: "{{ item }}"
@@ -71,7 +70,6 @@
         enabled: no
       loop:
         - rsyslog.service
-        # - wpa_supplicant
       failed_when: False
 
     - name: Remove unneeded packages
@@ -85,12 +83,20 @@
         packages:
           - rsyslog
 
-    # https://github.com/pi-hole/docker-pi-hole/issues/153
-    # - name: Ensure pihole-FTL.log is truncated
-    #   ansible.builtin.cron:
-    #     name: pihole-FTL.log truncate
-    #     minute: 5
-    #     hour: 0
-    #     user: root
-    #     job: "/usr/bin/truncate --size=2M --no-create /var/log/pihole/pihole-FTL.log"
-    #     cron_file: pihole_truncate
+    - name: Reduce number of VTs (step 1/2)
+      ansible.builtin.file:
+        state: directory
+        path: /etc/systemd/logind.conf.d
+        owner: root
+        group: root
+        mode: 0755
+
+    - name: Reduce number of VTs (step 2/2)
+      ansible.builtin.copy:
+        dest: /etc/systemd/logind.conf.d/disable-vt.conf
+        content: |
+          [Login]
+          NAutoVTs=1
+        owner: root
+        group: root
+        mode: 0644
