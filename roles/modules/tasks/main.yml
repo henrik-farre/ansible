@@ -1,6 +1,6 @@
 ---
 - name: Clean modprobe.d, Capture files in path and register
-  command: ls -1 /etc/modprobe.d
+  ansible.builtin.command: ls -1 /etc/modprobe.d
   register: modprobe_d_files
   changed_when: False
   tags:
@@ -34,7 +34,7 @@
   when:
     - modules_modprobe_d is defined
   notify:
-    - Rebuild mkinitcpio
+    - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
   tags:
     - modules
     - modprobe
@@ -52,7 +52,7 @@
   when:
     - modules_load_d is defined
   notify:
-    - Rebuild mkinitcpio
+    - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
   tags:
     - modules
 
@@ -65,6 +65,7 @@
     group: root
     mode: 0644
   notify:
-    - Rebuild mkinitcpio
+    - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
   tags:
     - modules
+  when: ansible_facts.distribution == "Archlinux"
