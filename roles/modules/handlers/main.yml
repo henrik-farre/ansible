@@ -1,4 +1,8 @@
 ---
-- name: Rebuild mkinitcpio
+- name: Rebuild initial ram disk on Archlinux
   become: true
-  command: "mkinitcpio -p linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"
+  ansible.builtin.command: "mkinitcpio -p linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"
+
+- name: Rebuild initial ram disk on Debian
+  become: true
+  ansible.builtin.command: "update-initramfs -u -k all"
