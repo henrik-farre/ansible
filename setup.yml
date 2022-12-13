@@ -20,6 +20,7 @@
   roles:
     - systemd
     - journald
+    - modules
     - networking
     - hostname
     - locale
