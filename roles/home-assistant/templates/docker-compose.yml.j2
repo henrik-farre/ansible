@@ -5,31 +5,30 @@ services:
     image: ghcr.io/home-assistant/home-assistant:stable
     container_name: home-assistant
     network_mode: host
+    extra_hosts:
+      - mosquitto:172.16.238.10
     privileged: true
     environment:
       TZ: Europe/Copenhagen
     volumes:
-      - /srv/home-assistant/data/home-assistant/config:/config
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - /srv/home-assistant/data/home-assistant/config:/config
       - mariadb-socket:/var/run/mysqld
       - /run/dbus:/run/dbus:ro
-    # - /sys/class/hwmon/hwmon1/temp1_input:/sys/class/thermal/thermal_zone0/temp:ro
     restart: unless-stopped
     depends_on:
       - mariadb
-    # healthcheck:
-    #   test: ["CMD", "curl", "-f", "http://127.0.0.1:8123"]
-    #   test: 'curl -m 90 -sLf http://localhost:8123 || date >> /config/healthcheck' #| pkill -9 python3'
-    #   interval: 90s
-    #   timeout: 60s
-    #   retries: 2
-    # devices:
-    #   - /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_5150127D-if00-port0:/dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_5150127D-if00-port0
-    #   - /dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_5150127D-if01-port0:/dev/serial/by-id/usb-Silicon_Labs_HubZ_Smart_Home_Controller_5150127D-if01-port0
-    #   - /dev/ttyUSB1:/dev/ttyUSB1
-    #   - /dev/ttyACM0:/dev/ttyACM0:rwm
-    # command: [ "python", "-m", "homeassistant", "--config", "/config", "--log-rotate-days", '3' ]
+      - mosquitto
+      - zigbee2mqtt
+    healthcheck:
+      # fail: Fail silently (no output at all) on server errors
+      # location: redirect if location header is set
+      # silent: don't output anything
+      test: ["CMD", "curl", "--fail", "--location", "--silent", "http://127.0.0.1:8123"]
+      interval: 90s
+      timeout: 60s
+      retries: 2
 
   mariadb:
     image: mariadb:10.10.2
@@ -41,12 +40,68 @@ services:
       MARIADB_USER: "{{ homeassistant.db.user }}"
       MARIADB_PASSWORD: "{{ homeassistant.db.password }}"
     volumes:
-      - /srv/home-assistant/data/mariadb/mysql:/var/lib/mysql
-      - /srv/home-assistant/data/mariadb/entrypoint:/docker-entrypoint-initdb.d
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
+      - /srv/home-assistant/data/mariadb/mysql:/var/lib/mysql
+      - /srv/home-assistant/data/mariadb/entrypoint:/docker-entrypoint-initdb.d
       - mariadb-socket:/var/run/mysqld
     restart: unless-stopped
 
+  mosquitto:
+    image: eclipse-mosquitto:2.0.15
+    container_name: home-assistant-mosquitto
+    environment:
+      TZ: Europe/Copenhagen
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/home-assistant/data/mosquitto/config:/mosquitto/config
+      - /srv/home-assistant/data/mosquitto/data:/mosquitto/data
+      - /srv/home-assistant/data/mosquitto/log:/mosquitto/log
+    # ports:
+    #   - "1883:1883"
+    #   # This port is for Webhooks
+    #   - "9001:9001"
+    networks:
+      home-assistant-internal:
+        ipv4_address: 172.16.238.10
+    restart: unless-stopped
+
+  zigbee2mqtt:
+    image: koenkk/zigbee2mqtt:1.28.4
+    container_name: home-assistant-zigbee2mqtt
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/home-assistant/data/zigbee2mqtt:/app/data
+      - /run/udev:/run/udev:ro
+    environment:
+      TZ: Europe/Copenhagen
+    devices:
+      - /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20220811181030-if00:/dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20220811181030-if00
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    extra_hosts:
+      - mosquitto:172.16.238.10
+    networks:
+      traefik:
+      home-assistant-internal:
+        ipv4_address: 172.16.238.20
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.rule=Host(`{{ homeassistant.zigbee2mqtt.hostname }}`)"
+      - "traefik.http.services.pihole.loadbalancer.server.port=8080"
+      - "traefik.http.routers.pihole.entrypoints=http"
+
 volumes:
   mariadb-socket:
+
+networks:
+  traefik:
+    external: true
+  home-assistant-internal:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"

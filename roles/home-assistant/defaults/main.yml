@@ -1,9 +1,15 @@
 ---
 homeassistant:
-  hostname: "ha.testpi.{{ network.local_domain }}"
-  ip: 192.168.0.193
+  hostname: "ha.{{ inventory_hostname }}.{{ network.local_domain }}"
+  ip: "{{ ansible_facts.default_ipv4.address }}"
   db:
     root_password: "{{ vaulted_ha.db.root_password }}"
     database: "{{ vaulted_ha.db.database }}"
     user: "{{ vaulted_ha.db.user }}"
     password: "{{ vaulted_ha.db.password }}"
+  zigbee2mqtt:
+    hostname: "zigbee2mqtt.{{ inventory_hostname }}.{{ network.local_domain }}"
+  mosquitto:
+    user: "{{ vaulted_ha.mosquitto.user }}"
+    password: "{{ vaulted_ha.mosquitto.password }}"
+    salt: "{{ vaulted_ha.mosquitto.salt }}"
