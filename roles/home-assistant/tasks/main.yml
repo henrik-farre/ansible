@@ -8,6 +8,15 @@
       ansible.builtin.include_vars:
         file: homeassistant.yml.vault
 
+    - name: Ensure correct bluetooth firmware is installed
+      ansible.builtin.get_url:
+        url: https://github.com/RPi-Distro/bluez-firmware/blob/master/broadcom/BCM4345C0.hcd?raw=true
+        dest: /lib/firmware/brcm/BCM4345C0.hcd
+        checksum: sha256:8b3ef20cc40f4cad64f7acd98f9e9d4e5401252836f190388aa5c9c0b7e30648
+        owner: root
+        group: root
+        mode: 0644
+
     - name: Ensure needed packages for bluetooth support are installed
       ansible.builtin.apt:
         name: "{{ packages }}"
