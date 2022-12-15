@@ -195,3 +195,4 @@
   roles:
     - traefik
     - pihole
+    - smokeping

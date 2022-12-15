@@ -1,0 +1,3 @@
+---
+smokeping:
+  hostname: "smokeping.{{ inventory_hostname }}.{{ network.local_domain }}"
