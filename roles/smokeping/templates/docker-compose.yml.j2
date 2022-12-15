@@ -1,0 +1,28 @@
+---
+version: "3"
+services:
+  smokeping:
+    container_name: smokeping
+    hostname: {{ smokeping.hostname }}
+    image: quay.io/linuxserver.io/smokeping:2.7.3
+    environment:
+      TZ: Europe/Copenhagen
+      PUID: 1000
+      PGID: 112
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/smokeping/data/config:/config
+      - /srv/smokeping/data/data:/data
+    restart: unless-stopped
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.smokeping.rule=Host(`{{ smokeping.hostname }}`)"
+      - "traefik.http.services.smokeping.loadbalancer.server.port=80"
+      - "traefik.http.routers.smokeping.entrypoints=http"
+
+networks:
+  traefik:
+    external: true

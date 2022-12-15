@@ -1,0 +1,36 @@
+---
+- name: Ensure smokeping is installed and configured
+  become: true
+  tags:
+    - smokeping
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/smokeping/{{ item.path }}"
+        state: directory
+        mode: 0775
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data/data
+          owner: root
+          group: docker
+        - path: data/config
+          owner: root
+          group: docker
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yml exists for smokeping
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/smokeping/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_name: smokeping
+        project_src: /srv/smokeping/deploy
