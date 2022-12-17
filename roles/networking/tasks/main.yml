@@ -29,7 +29,7 @@
 
     - name: Install network connections
       ansible.builtin.copy:
-        src: "files/etc/NetworkManager/system-connections/{{ item }}"
+        src: "files/etc/NetworkManager/system-connections/{{ item }}.vault"
         dest: "/etc/NetworkManager/system-connections/{{ item }}"
         owner: root
         group: root
