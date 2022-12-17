@@ -107,11 +107,16 @@
         owner: 1883
         group: 1883
 
-    - name: Ensure zigbee2mqtt is configured
-      ansible.builtin.blockinfile:
+    - name: Check if zigbee2mqtt config exists
+      ansible.builtin.stat:
         path: /srv/home-assistant/data/zigbee2mqtt/configuration.yaml
-        marker: "# {mark} ANSIBLE MANAGED BLOCK zigbee2mqtt-base-config"
-        create: true
+        get_checksum: no
+      register: zigbee2mqtt_config
+
+    # Zigbee2mqtt writes to its own config file and removes the ansible block markers
+    - name: Ensure zigbee2mqtt is configured
+      ansible.builtin.copy:
+        dest: /srv/home-assistant/data/zigbee2mqtt/configuration.yaml
         content: |
           ---
           permit_join: true
@@ -133,6 +138,8 @@
         mode: 0664
         owner: 1883
         group: docker
+      when:
+        - zigbee2mqtt_config.stat.exists is defined and not zigbee2mqtt_config.stat.exists
 
     - name: Ensure docker-compose.yml exists for home assistant
       ansible.builtin.template:
