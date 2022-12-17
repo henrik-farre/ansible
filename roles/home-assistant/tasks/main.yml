@@ -8,6 +8,19 @@
       ansible.builtin.include_vars:
         file: homeassistant.yml.vault
 
+    - name: Merge override settings if they exists
+      ansible.builtin.set_fact:
+        homeassistant: "{{ homeassistant | combine(homeassistant_overrides, recursive=True) }}"
+      when: homeassistant_overrides is defined
+
+    - name: Ensure directory for bluetooth firmware exists
+      ansible.builtin.file:
+        path: /lib/firmware/brcm/
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+
     - name: Ensure correct bluetooth firmware is installed
       ansible.builtin.get_url:
         url: https://github.com/RPi-Distro/bluez-firmware/blob/master/broadcom/BCM4345C0.hcd?raw=true
@@ -42,6 +55,9 @@
         group: "{{ item.group }}"
       loop:
         - path: data/home-assistant/config
+          owner: root
+          group: docker
+        - path: data/home-assistant/config/custom_components/hacs
           owner: root
           group: docker
         - path: data/mariadb/mysql
@@ -104,10 +120,13 @@
             server: mqtt://mosquitto
             user: {{ homeassistant.mosquitto.user }}
             password: {{ homeassistant.mosquitto.password }}
+          {# Current hardcoded to first device #}
+          {% if homeassistant.zigbee2mqtt.devices %}
           serial:
             adapter: ezsp
             port: >-
-              /dev/serial/by-id/usb-ITEAD_SONOFF_Zigbee_3.0_USB_Dongle_Plus_V2_20220811181030-if00
+              {{ homeassistant.zigbee2mqtt.devices[0] }}
+          {% endif %}
           frontend:
             port: 8080
           homeassistant: true
@@ -189,6 +208,9 @@
           bluetooth:
       notify: Restart home-assistant container
 
-# hacs install
-# run inside data/config folder
-# https://raw.githubusercontent.com/hacs/get/main/get
+    - name: Ensure HACS is installed and enabled
+      ansible.builtin.unarchive:
+        src: https://github.com/hacs/integration/releases/download/1.28.4/hacs.zip
+        dest: /srv/home-assistant/data/home-assistant/config/custom_components/hacs
+        remote_src: yes
+      notify: Restart home-assistant container
