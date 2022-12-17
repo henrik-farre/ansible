@@ -135,6 +135,8 @@
           frontend:
             port: 8080
           homeassistant: true
+          advanced:
+            log_level: warn
         mode: 0664
         owner: 1883
         group: docker
