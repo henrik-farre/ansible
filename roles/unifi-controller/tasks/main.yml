@@ -55,55 +55,57 @@
         group: 911
         mode: 0600
 
-#>    - name: MongoDB maintenance script
-#>      ansible.builtin.copy:
-#>        dest: /usr/local/sbin/mongodb_maintenance.sh
-#>        content: |
-#>          #!/bin/bash
-#>          /usr/bin/mongo --port 27117 < /root/mongo_prune_js.js
-#>        owner: root
-#>        mode: 0750
-#>
-#>    - name: MongoDB maintenance service
-#>      ansible.builtin.copy:
-#>        dest: /etc/systemd/system/mongodb_maintenance.service
-#>        content: |
-#>          [Unit]
-#>          Description=MongoDB maintenance
-#>          OnFailure=status-email@%n.service
-#>
-#>          [Service]
-#>          Type=oneshot
-#>          ExecStart=/usr/local/sbin/mongodb_maintenance.sh
-#>        owner: root
-#>        mode: 0644
-#>
-#>    # From https://help.ui.com/hc/en-us/articles/204911424-UniFi-How-to-remove-prune-older-data-and-adjust-mongo-database-size
-#>    - name: MongoDB maintenance prune script
-#>      ansible.builtin.copy:
-#>        dest: /root/mongo_prune_js.js
-#>        src: root/mongo_prune_js.js
-#>        owner: root
-#>        mode: 0644
-#>
-#>    - name: MongoDB maintenance timer
-#>      ansible.builtin.copy:
-#>        dest: /etc/systemd/system/mongodb_maintenance.timer
-#>        content: |
-#>          [Unit]
-#>          Description=MongoDB maintenance
-#>
-#>          [Timer]
-#>          OnCalendar=monthly
-#>          Persistent=True
-#>
-#>          [Install]
-#>          WantedBy=timers.target
-#>        owner: root
-#>        mode: 0644
-#>
-#>    - name: Enable timer unit for MongoDB maintenance
-#>      ansible.builtin.systemd:
-#>        name: mongodb_maintenance.timer
-#>        state: started
-#>        enabled: yes
+    # From https://help.ui.com/hc/en-us/articles/204911424-UniFi-How-to-remove-prune-older-data-and-adjust-mongo-database-size
+    # looks like it has moved to https://help.ui.com/hc/en-us/articles/360006634094-UniFi-Repairing-Database-Issues-on-the-UniFi-Network-Application#3
+    # and script is now called https://help.ui.com/hc/en-us/article_attachments/360008640574/CK_repair.js
+    - name: MongoDB maintenance prune script
+      ansible.builtin.copy:
+        dest: /srv/unifi-controller/data/config/mongo_prune_js.js
+        src: root/mongo_prune_js.js
+        owner: root
+        mode: 0644
+
+    - name: MongoDB maintenance script
+      ansible.builtin.copy:
+        dest: /srv/unifi-controller/data/config/mongodb_maintenance.sh
+        content: |
+          #!/bin/bash
+          /usr/bin/mongo --host /usr/lib/unifi/run/mongodb-27117.sock < /config/mongo_prune_js.js
+        owner: root
+        mode: 0750
+
+    - name: MongoDB maintenance service
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/mongodb_maintenance.service
+        content: |
+          [Unit]
+          Description=MongoDB maintenance
+          OnFailure=status-email@%n.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/docker exec unifi-controller /config/mongodb_maintenance.sh
+        owner: root
+        mode: 0644
+
+    - name: MongoDB maintenance timer
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/mongodb_maintenance.timer
+        content: |
+          [Unit]
+          Description=MongoDB maintenance
+
+          [Timer]
+          OnCalendar=monthly
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Enable timer unit for MongoDB maintenance
+      ansible.builtin.systemd:
+        name: mongodb_maintenance.timer
+        state: started
+        enabled: yes
