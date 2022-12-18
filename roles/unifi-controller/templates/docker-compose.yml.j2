@@ -27,9 +27,9 @@ services:
       - "traefik"
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`{{ pihole.hostname }}`)"
-      - "traefik.http.services.pihole.loadbalancer.server.port=80"
-      - "traefik.http.routers.pihole.entrypoints=http"
+      - "traefik.http.routers.unifi.rule=Host(`{{ unifi.hostname }}`)"
+      - "traefik.http.services.unifi.loadbalancer.server.port=8443"
+      - "traefik.http.routers.unifi.entrypoints=http"
 
 # /var/lib/unifi - Configuration data
 # /var/log/unifi - Log files
