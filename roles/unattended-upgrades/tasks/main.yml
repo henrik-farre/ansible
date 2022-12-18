@@ -1,0 +1,13 @@
+---
+- name: Ensure unattended-upgrades are installed and configured
+  become: true
+  tags:
+    - unattended-upgrades
+  block:
+    - name: Ensure need packages are installed
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - unattended-upgrades
+          - apt-listchanges
