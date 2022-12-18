@@ -25,83 +25,87 @@
 
     - name: Deploy Docker Compose stack
       community.docker.docker_compose:
+        project_name: unifi-controller
         project_src: /srv/unifi-controller/deploy
-      register: output
 
-    - name: Debug
-      ansible.builtin.debug:
-        var: output
+    # Requires manual restore of backup
+    - name: Wait until the file default site is present before continuing
+      ansible.builtin.wait_for:
+        path: /srv/unifi-controller/data/config/data/sites/default
 
-#>    # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
-#>    - name: Ensure custom config.gateway.json is deployed
-#>      ansible.builtin.copy:
-#>        src: "config.gateway.json"
-#>        dest: /usr/lib/unifi/data/sites/default/config.gateway.json
-#>        owner: unifi
-#>        group: unifi
-#>        mode: 0600
-#>
-#>    # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
-#>    # - Disable analytics
-#>    # Note: remember to force provision devices for changes to apply
-#>    - name: Ensure custom config.properties is deployed
-#>      ansible.builtin.copy:
-#>        content: |
-#>          config.system_cfg.1=system.analytics.anonymous=disabled
-#>        dest: /usr/lib/unifi/data/sites/default/config.properties
-#>        owner: unifi
-#>        group: unifi
-#>        mode: 0600
-#>
-#>    - name: MongoDB maintenance script
-#>      ansible.builtin.copy:
-#>        dest: /usr/local/sbin/mongodb_maintenance.sh
-#>        content: |
-#>          #!/bin/bash
-#>          /usr/bin/mongo --port 27117 < /root/mongo_prune_js.js
-#>        owner: root
-#>        mode: 0750
-#>
-#>    - name: MongoDB maintenance service
-#>      ansible.builtin.copy:
-#>        dest: /etc/systemd/system/mongodb_maintenance.service
-#>        content: |
-#>          [Unit]
-#>          Description=MongoDB maintenance
-#>          OnFailure=status-email@%n.service
-#>
-#>          [Service]
-#>          Type=oneshot
-#>          ExecStart=/usr/local/sbin/mongodb_maintenance.sh
-#>        owner: root
-#>        mode: 0644
-#>
-#>    # From https://help.ui.com/hc/en-us/articles/204911424-UniFi-How-to-remove-prune-older-data-and-adjust-mongo-database-size
-#>    - name: MongoDB maintenance prune script
-#>      ansible.builtin.copy:
-#>        dest: /root/mongo_prune_js.js
-#>        src: root/mongo_prune_js.js
-#>        owner: root
-#>        mode: 0644
-#>
-#>    - name: MongoDB maintenance timer
-#>      ansible.builtin.copy:
-#>        dest: /etc/systemd/system/mongodb_maintenance.timer
-#>        content: |
-#>          [Unit]
-#>          Description=MongoDB maintenance
-#>
-#>          [Timer]
-#>          OnCalendar=monthly
-#>          Persistent=True
-#>
-#>          [Install]
-#>          WantedBy=timers.target
-#>        owner: root
-#>        mode: 0644
-#>
-#>    - name: Enable timer unit for MongoDB maintenance
-#>      ansible.builtin.systemd:
-#>        name: mongodb_maintenance.timer
-#>        state: started
-#>        enabled: yes
+    # TODO: owner/group
+    # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
+    - name: Ensure custom config.gateway.json is deployed
+      ansible.builtin.template:
+        src: "config.gateway.json.j2"
+        dest: /srv/unifi-controller/data/config/data/sites/default/config.gateway.json
+        owner: 911
+        group: 911
+        mode: 0600
+
+    # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
+    # - Disable analytics
+    # Note: remember to force provision devices for changes to apply
+    - name: Ensure custom config.properties is deployed
+      ansible.builtin.copy:
+        content: |
+          config.system_cfg.1=system.analytics.anonymous=disabled
+        dest: /srv/unifi-controller/data/config/data/sites/default/config.properties
+        owner: 911
+        group: 911
+        mode: 0600
+
+    # From https://help.ui.com/hc/en-us/articles/204911424-UniFi-How-to-remove-prune-older-data-and-adjust-mongo-database-size
+    # looks like it has moved to https://help.ui.com/hc/en-us/articles/360006634094-UniFi-Repairing-Database-Issues-on-the-UniFi-Network-Application#3
+    # and script is now called https://help.ui.com/hc/en-us/article_attachments/360008640574/CK_repair.js
+    - name: MongoDB maintenance prune script
+      ansible.builtin.copy:
+        dest: /srv/unifi-controller/data/config/mongo_prune_js.js
+        src: root/mongo_prune_js.js
+        owner: root
+        mode: 0644
+
+    - name: MongoDB maintenance script
+      ansible.builtin.copy:
+        dest: /srv/unifi-controller/data/config/mongodb_maintenance.sh
+        content: |
+          #!/bin/bash
+          /usr/bin/mongo --host /usr/lib/unifi/run/mongodb-27117.sock < /config/mongo_prune_js.js
+        owner: root
+        mode: 0750
+
+    - name: MongoDB maintenance service
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/mongodb_maintenance.service
+        content: |
+          [Unit]
+          Description=MongoDB maintenance
+          OnFailure=status-email@%n.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=/usr/bin/docker exec unifi-controller /config/mongodb_maintenance.sh
+        owner: root
+        mode: 0644
+
+    - name: MongoDB maintenance timer
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/mongodb_maintenance.timer
+        content: |
+          [Unit]
+          Description=MongoDB maintenance
+
+          [Timer]
+          OnCalendar=monthly
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Enable timer unit for MongoDB maintenance
+      ansible.builtin.systemd:
+        name: mongodb_maintenance.timer
+        state: started
+        enabled: yes

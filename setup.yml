@@ -176,6 +176,7 @@
   hosts: unifi-controller
   gather_facts: no
   roles:
+    - traefik
     - unifi-controller
 
 - name: Home Assistant setup on Raspberry Pi
