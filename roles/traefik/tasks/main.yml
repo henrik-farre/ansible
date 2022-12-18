@@ -31,6 +31,7 @@
         mode: 0664
         owner: root
         group: docker
+      notify: Restart traefik container
 
     - name: Create traefik network
       community.docker.docker_network:

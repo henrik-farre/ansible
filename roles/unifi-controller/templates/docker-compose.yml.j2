@@ -12,7 +12,6 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /srv/unifi-controller/data/config:/config
     ports:
-      - 8443:8443
       - 3478:3478/udp
       - 10001:10001/udp
       - 8080:8080
@@ -29,7 +28,9 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.unifi.rule=Host(`{{ unifi.hostname }}`)"
       - "traefik.http.services.unifi.loadbalancer.server.port=8443"
-      - "traefik.http.routers.unifi.entrypoints=http"
+      - traefik.http.services.unifi.loadbalancer.server.scheme=https
+      - "traefik.http.routers.unifi.entrypoints=https"
+      - "traefik.http.routers.unifi.tls=true"
 
 # /var/lib/unifi - Configuration data
 # /var/log/unifi - Log files

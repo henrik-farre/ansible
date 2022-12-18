@@ -19,3 +19,9 @@ log:
 entryPoints:
   http:
     address: :80
+  https:
+    address: :443
+
+# Support for unifi selfsigned cert
+serversTransport:
+  insecureSkipVerify: true
