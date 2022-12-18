@@ -28,14 +28,19 @@
         project_name: unifi-controller
         project_src: /srv/unifi-controller/deploy
 
+    # Requires manual restore of backup
+    - name: Wait until the file default site is present before continuing
+      ansible.builtin.wait_for:
+        path: /srv/unifi-controller/data/config/data/sites/default
+
     # TODO: owner/group
     # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
     - name: Ensure custom config.gateway.json is deployed
       ansible.builtin.template:
         src: "config.gateway.json.j2"
         dest: /srv/unifi-controller/data/config/data/sites/default/config.gateway.json
-        owner: unifi
-        group: unifi
+        owner: 911
+        group: 911
         mode: 0600
 
     # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
@@ -46,8 +51,8 @@
         content: |
           config.system_cfg.1=system.analytics.anonymous=disabled
         dest: /srv/unifi-controller/data/config/data/sites/default/config.properties
-        owner: unifi
-        group: unifi
+        owner: 911
+        group: 911
         mode: 0600
 
 #>    - name: MongoDB maintenance script
