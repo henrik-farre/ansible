@@ -170,6 +170,7 @@
       package_group: "net_utils_debian"
     - role: package-group
       package_group: "system_utils_debian"
+    - unattended-upgrades
 
 - name: Unifi Controller setup on Raspberry Pi
   hosts: unifi-controller
