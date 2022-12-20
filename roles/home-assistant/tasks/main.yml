@@ -59,7 +59,7 @@
           group: docker
         - path: data/home-assistant/config/custom_components/hacs
           owner: root
-          group: docker
+          group: root
         - path: data/mariadb/mysql
           owner: 999
           group: 999
@@ -164,7 +164,7 @@
         owner: root
         group: docker
 
-    - name: Wait until the file /tmp/foo is present before continuing
+    - name: Wait until the file home assistant config exists is present before continuing
       ansible.builtin.wait_for:
         path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
 
@@ -217,9 +217,26 @@
           bluetooth:
       notify: Restart home-assistant container
 
+    - name: Check existing HACS installation
+      ansible.builtin.stat:
+        path: /srv/home-assistant/data/home-assistant/config/custom_components/hacs/manifest.json
+      register: hacs_install
+
+    - name: Find latest release of HACS
+      ansible.builtin.uri:
+        url: https://api.github.com/repos/hacs/integration/releases/latest
+        return_content: true
+      register: json_response
+      when:
+        - hacs_install.stat.exists is defined and not hacs_install.stat.exists
+
     - name: Ensure HACS is installed and enabled
       ansible.builtin.unarchive:
-        src: https://github.com/hacs/integration/releases/download/1.28.4/hacs.zip
+        src: "{{ item.browser_download_url }}"
         dest: /srv/home-assistant/data/home-assistant/config/custom_components/hacs
         remote_src: yes
       notify: Restart home-assistant container
+      loop: "{{ json_response.json.assets }}"
+      when:
+        - hacs_install.stat.exists is defined and not hacs_install.stat.exists
+        - item.name == 'hacs.zip'
