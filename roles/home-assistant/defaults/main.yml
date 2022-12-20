@@ -1,6 +1,8 @@
 ---
 homeassistant:
-  hostname: "ha.{{ inventory_hostname }}.{{ network.local_domain }}"
+  hostnames:
+    - "ha.{{ inventory_hostname }}.{{ network.local_domain }}"
+    - "{{ vaulted_ha.hostname }}"
   ip: "{{ ansible_facts.default_ipv4.address }}"
   db:
     root_password: "{{ vaulted_ha.db.root_password }}"
@@ -15,3 +17,5 @@ homeassistant:
     user: "{{ vaulted_ha.mosquitto.user }}"
     password: "{{ vaulted_ha.mosquitto.password }}"
     salt: "{{ vaulted_ha.mosquitto.salt }}"
+  cloudflared:
+    token: "{{ vaulted_ha.cloudflared.token }}"

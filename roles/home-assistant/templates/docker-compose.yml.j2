@@ -98,6 +98,19 @@ services:
       - "traefik.http.services.pihole.loadbalancer.server.port=8080"
       - "traefik.http.routers.pihole.entrypoints=http"
 
+  cloudflared:
+    image: cloudflare/cloudflared:2022.12.1
+    container_name: home-assistant-cloudflared
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    environment:
+      TZ: Europe/Copenhagen
+    networks:
+      - traefik
+    command: tunnel --no-autoupdate run --token {{ homeassistant.cloudflared.token }}
+
 volumes:
   mariadb-socket:
 
