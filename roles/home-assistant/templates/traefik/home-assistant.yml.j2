@@ -3,9 +3,11 @@ http:
   routers:
     home-assistant:
       entryPoints:
-        - http
+        - https
       rule: 'Host({% for hostname in homeassistant.hostnames %}`{{ hostname }}`{% if not loop.last %},{% endif %}{% endfor %})'
       service: home-assistant
+      tls:
+        certResolver: letsEncrypt
 
   services:
     home-assistant:
