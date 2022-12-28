@@ -12,12 +12,15 @@ services:
       - 443:443
     environment:
       TZ: 'Europe/Copenhagen'
+      CLOUDFLARE_EMAIL: {{ email_addresses.external }}
+      CLOUDFLARE_DNS_API_TOKEN: {{ traefik.acme.cloudflare.token }}
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /run/docker.sock:/run/docker.sock:ro
       - /srv/traefik/data/static:/etc/traefik:ro
       - /srv/traefik/data/dynamic:/etc/traefik-dynamic/:ro
+      - /srv/traefik/data/acme:/etc/traefik-acme/
     restart: unless-stopped
     labels:
       - "traefik.enable=true"
