@@ -21,6 +21,15 @@
         - data/acme
         - deploy
 
+    - name: Create traefik network
+      community.docker.docker_network:
+        name: traefik
+
+    - name: Get infos on network
+      community.docker.docker_network_info:
+        name: traefik
+      register: traefik_network
+
     - name: Ensure docker-compose.yml exists for traefik
       ansible.builtin.template:
         src: docker-compose.yml.j2
@@ -37,10 +46,6 @@
         owner: root
         group: docker
       notify: Restart traefik container
-
-    - name: Create traefik network
-      community.docker.docker_network:
-        name: traefik
 
     - name: Deploy Docker Compose stack
       community.docker.docker_compose:
