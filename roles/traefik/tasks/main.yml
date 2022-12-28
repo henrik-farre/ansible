@@ -4,6 +4,10 @@
   tags:
     - traefik
   block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: traefik.yml.vault
+
     - name: Ensure needed directories exist
       ansible.builtin.file:
         path: "/srv/traefik/{{ item }}"
@@ -14,6 +18,7 @@
       loop:
         - data/static
         - data/dynamic
+        - data/acme
         - deploy
 
     - name: Ensure docker-compose.yml exists for traefik
@@ -27,7 +32,7 @@
     - name: Ensure traefik.yml exists
       ansible.builtin.template:
         src: traefik.yml.j2
-        dest: /srv/traefik/data/static/
+        dest: /srv/traefik/data/static/traefik.yml
         mode: 0664
         owner: root
         group: docker
