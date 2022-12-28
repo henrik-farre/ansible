@@ -16,6 +16,8 @@ api:
 log:
   level: ERROR
 
+accessLog: {}
+
 entryPoints:
   http:
     address: :80
@@ -25,3 +27,11 @@ entryPoints:
 # Support for unifi selfsigned cert
 serversTransport:
   insecureSkipVerify: true
+
+certificatesResolvers:
+  letsEncrypt:
+    acme:
+      email: {{ email_addresses.external }}
+      storage: /etc/traefik-acme/acme.json
+      dnsChallenge:
+        provider: cloudflare
