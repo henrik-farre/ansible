@@ -21,8 +21,20 @@ accessLog: {}
 entryPoints:
   http:
     address: :80
+    forwardedHeaders:
+      trustedIPs:
+        - 127.0.0.1/32
+        - 192.168.0.0/24
+        - 172.17.0.0/24
+        - {{ traefik_network.network.IPAM.Config[0].Subnet }}
   https:
     address: :443
+    forwardedHeaders:
+      trustedIPs:
+        - 127.0.0.1/32
+        - 192.168.0.0/24
+        - 172.17.0.0/24
+        - {{ traefik_network.network.IPAM.Config[0].Subnet }}
 
 # Support for unifi selfsigned cert
 serversTransport:
