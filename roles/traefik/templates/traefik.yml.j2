@@ -16,7 +16,11 @@ api:
 log:
   level: ERROR
 
-accessLog: {}
+accessLog:
+  fields:
+    defaultMode: keep
+    headers:
+      defaultMode: keep
 
 entryPoints:
   http:
