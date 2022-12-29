@@ -1,7 +1,19 @@
 ---
 http:
+  middlewares:
+    https-redirect:
+      redirectScheme:
+        scheme: https
+        permanent: true
   routers:
-    home-assistant:
+    home-assistant-http:
+      entryPoints:
+        - http
+      middlewares:
+        - https-redirect
+      rule: 'Host({% for hostname in homeassistant.hostnames %}`{{ hostname }}`{% if not loop.last %},{% endif %}{% endfor %})'
+      service: home-assistant
+    home-assistant-https:
       entryPoints:
         - https
       rule: 'Host({% for hostname in homeassistant.hostnames %}`{{ hostname }}`{% if not loop.last %},{% endif %}{% endfor %})'
