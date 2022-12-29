@@ -94,9 +94,9 @@ services:
         ipv4_address: 172.16.238.20
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.pihole.rule=Host(`{{ homeassistant.zigbee2mqtt.hostname }}`)"
-      - "traefik.http.services.pihole.loadbalancer.server.port=8080"
-      - "traefik.http.routers.pihole.entrypoints=http"
+      - "traefik.http.routers.zigbee2mqtt.rule=Host(`{{ homeassistant.zigbee2mqtt.hostname }}`)"
+      - "traefik.http.services.zigbee2mqtt.loadbalancer.server.port=8080"
+      - "traefik.http.routers.zigbee2mqtt.entrypoints=http"
 
   cloudflared:
     image: cloudflare/cloudflared:2022.12.1
