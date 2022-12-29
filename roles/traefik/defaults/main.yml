@@ -1,3 +1,6 @@
 ---
 traefik:
   hostname: "traefik.{{ inventory_hostname }}.{{ network.local_domain }}"
+  acme:
+    cloudflare:
+      token: "{{ vaulted_traefik.acme.cloudflare.token }}"

@@ -4,6 +4,10 @@
   tags:
     - traefik
   block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: traefik.yml.vault
+
     - name: Ensure needed directories exist
       ansible.builtin.file:
         path: "/srv/traefik/{{ item }}"
@@ -14,7 +18,17 @@
       loop:
         - data/static
         - data/dynamic
+        - data/acme
         - deploy
+
+    - name: Create traefik network
+      community.docker.docker_network:
+        name: traefik
+
+    - name: Get infos on network
+      community.docker.docker_network_info:
+        name: traefik
+      register: traefik_network
 
     - name: Ensure docker-compose.yml exists for traefik
       ansible.builtin.template:
@@ -25,17 +39,13 @@
         group: docker
 
     - name: Ensure traefik.yml exists
-      ansible.builtin.copy:
-        src: traefik.yml
-        dest: /srv/traefik/data/static/
+      ansible.builtin.template:
+        src: traefik.yml.j2
+        dest: /srv/traefik/data/static/traefik.yml
         mode: 0664
         owner: root
         group: docker
       notify: Restart traefik container
-
-    - name: Create traefik network
-      community.docker.docker_network:
-        name: traefik
 
     - name: Deploy Docker Compose stack
       community.docker.docker_compose:

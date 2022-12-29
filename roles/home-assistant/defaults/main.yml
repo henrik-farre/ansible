@@ -1,8 +1,6 @@
 ---
 homeassistant:
-  hostnames:
-    - "ha.{{ inventory_hostname }}.{{ network.local_domain }}"
-    - "{{ vaulted_ha.hostname }}"
+  hostnames: "{{ vaulted_ha.hostnames }}"
   ip: "{{ ansible_facts.default_ipv4.address }}"
   db:
     root_password: "{{ vaulted_ha.db.root_password }}"
