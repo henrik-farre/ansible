@@ -48,19 +48,14 @@
         project_src: /srv/pihole/deploy
 
     - name: Configure host to use pihole for DNS
-      community.general.nmcli:
-        conn_name: Kablet forbindelse 1
-        type: ethernet
-        ifname: eth0
-        method4: manual
-        method6: disabled
-        ip4: "{{ pihole.local_ipv4 }}/24"
-        gw4: 192.168.0.1
-        dns4_search:
-          - home.lan
-        dns4:
-          - 127.0.0.1
-        state: present
+      ansible.builtin.copy:
+        dest: /etc/resolv.conf
+        content: |
+          search {{ network.local_domain }}
+          nameserver 127.0.0.1
+        mode: 0644
+        owner: root
+        group: root
 
     - name: Pihole | Update gravity | systemd service
       ansible.builtin.copy:
