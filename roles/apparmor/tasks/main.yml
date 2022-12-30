@@ -4,7 +4,7 @@
   tags:
     - apparmor
   block:
-    - name: Install AppArmor, audit and dependencies
+    - name: Install AppArmor, audit and dependencies on ArchLinux
       community.general.pacman:
         name: "{{ packages }}"
         state: latest
@@ -12,8 +12,39 @@
         packages:
           - apparmor
           - audit
-          - python-psutil
-          - python-notify2
+      when: ansible_facts.distribution == 'Archlinux'
+
+    - name: Install AppArmor, audit and dependencies on Debian
+      ansible.builtin.apt:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - apparmor
+          - apparmor-utils
+          - apparmor-profiles
+          - auditd
+      when: ansible_facts.distribution == 'Debian'
+
+    - name: Ensure profiles are enabled on Debian
+      ansible.builtin.file:
+        src: "/usr/share/apparmor/extra-profiles/{{ item }}"
+        dest: "/etc/apparmor.d/{{ item }}"
+        state: link
+      loop:
+        - usr.sbin.sshd
+        - usr.sbin.useradd
+        - usr.sbin.userdel
+      when: ansible_facts.distribution == 'Debian'
+
+    - name: Ensure profiles are set to enforce on Debian
+      ansible.builtin.command:
+        cmd: "/usr/sbin/aa-enforce {{ item }}"
+      loop:
+        - usr.sbin.sshd
+        - usr.sbin.useradd
+        - usr.sbin.userdel
+      when: ansible_facts.distribution == 'Debian'
 
     - name: Ensure audit group exist
       ansible.builtin.group:
@@ -69,6 +100,15 @@
   when:
     - display_server is defined
   block:
+    - name: Install dependencies
+      ansible.builtin.package:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - python-psutil
+          - python-notify2
+
     - name: Ensure notifications for apparmor denied are enabled
       ansible.builtin.copy:
         dest: "{{ ansible_user_dir }}/.config/autostart/apparmor-notify.desktop"
