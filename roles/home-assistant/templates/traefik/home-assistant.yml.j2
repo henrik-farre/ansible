@@ -5,6 +5,10 @@ http:
       redirectScheme:
         scheme: https
         permanent: true
+    ratelimit:
+      rateLimit:
+        average: 50
+        burst: 70
   routers:
     home-assistant-http:
       entryPoints:
@@ -16,6 +20,8 @@ http:
     home-assistant-https:
       entryPoints:
         - https
+      middlewares:
+        - ratelimit
       rule: 'Host({% for hostname in homeassistant.hostnames %}`{{ hostname }}`{% if not loop.last %},{% endif %}{% endfor %})'
       service: home-assistant
       tls:
