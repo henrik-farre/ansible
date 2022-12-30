@@ -164,6 +164,7 @@
   hosts: debian
   gather_facts: no
   roles:
+    - apparmor
     - role: package-group
       package_group: "base_utils_debian"
     - role: package-group
