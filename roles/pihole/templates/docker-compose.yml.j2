@@ -5,7 +5,7 @@ services:
   pihole:
     container_name: pihole
     hostname: {{ pihole.hostname }}
-    image: pihole/pihole:2022.11.2
+    image: pihole/pihole:2022.12
     ports:
       - "53:53/tcp"
       - "53:53/udp"
