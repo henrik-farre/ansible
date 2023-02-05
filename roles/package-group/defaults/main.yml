@@ -61,6 +61,7 @@ package_groups:
     - ansible-lint
     - autoconf
     - automake
+    - aws-cli-v2
     # needed for installing Vim-YouCompleteMe
     - cmake
     - dkms
@@ -168,7 +169,6 @@ aur_package_groups:
     - 1password
   development_utils:
     - shellcheck-bin
-    - aws-cli-v2-bin
     - asdf-vm
     - tflint-bin
     - ugrep
