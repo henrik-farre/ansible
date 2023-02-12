@@ -4,3 +4,5 @@ docker_daemon_options:
   log-opts:
     tag: "{% raw %}{{.ImageName}}/{{.Name}}/{{.ID}}{% endraw %}"
   storage-driver: overlay2
+  features:
+    buildkit: true

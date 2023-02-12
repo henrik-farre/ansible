@@ -8,3 +8,15 @@
       - docker
       - docker-compose
       - python-docker
+
+# https://mikeshade.com/posts/docker-native-overlay-diff/
+# https://wiki.archlinux.org/title/Docker#Enable_native_overlay_diff_engine
+- name: Ensure overlay is configured correctly
+  ansible.builtin.copy:
+    dest: /etc/modprobe.d/75-disable-overlay-redirect-dir.conf
+    content: |
+      # Managed by Ansible
+      options overlay metacopy=off redirect_dir=off
+    owner: root
+    group: root
+    mode: 0640
