@@ -1,4 +1,12 @@
 ---
+- name: Ensure ntp service is installed
+  become: true
+  ansible.builtin.package:
+    name: systemd-timesyncd
+    state: latest
+  tags:
+    - ntp
+
 # Equivalent /usr/bin/timedatectl set-ntp true
 # https://wiki.archlinux.org/index.php/systemd-timesyncd
 - name: Enable ntp service
