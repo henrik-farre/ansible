@@ -54,8 +54,15 @@
     - bootloader
     - systemd-boot
 
-- name: Install systemd-boot-pacman-hook from AUR
+- name: Uninstall systemd-boot-pacman-hook
   become: true
-  become_user: aur_builder
-  aur:
+  community.general.pacman:
     name: systemd-boot-pacman-hook
+    state: removed
+
+- name: Enable systemd-boot-update.service
+  become: true
+  ansible.builtin.systemd:
+    name: systemd-boot-update.service
+    enabled: true
+    state: started
