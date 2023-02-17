@@ -6,3 +6,4 @@ aur_pkg_deps:
   - git
   - base-devel
   - binutils
+  - fakeroot
