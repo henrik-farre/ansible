@@ -1,68 +1,56 @@
 ---
-- name: Ensure directories for bootloader exist
+- name: Ensure systemd-boot is installed and configured
   become: true
-  ansible.builtin.file:
-    path: "{{ item }}"
-    state: directory
-    owner: root
-    mode: 0755
-  loop:
-    - "/boot/loader"
-    - "/boot/loader/entries"
   tags:
     - bootloader
     - systemd-boot
+  block:
+    - name: Ensure directories for bootloader exist
+      ansible.builtin.file:
+        path: "{{ item }}"
+        state: directory
+        owner: root
+        mode: 0755
+      loop:
+        - "/boot/loader"
+        - "/boot/loader/entries"
 
-- name: Ensure loader config exists
-  become: true
-  ansible.builtin.copy:
-    dest: /boot/loader/loader.conf
-    group: root
-    content: |
-      # Managed by Ansible
-      default {{ systemd_boot.entries[0].name }}
-      timeout 3
-      console-mode max
-    mode: 0644
-    owner: root
-  when:
-    - systemd_boot.entries
-  tags:
-    - bootloader
-    - systemd-boot
+    - name: Ensure loader config exists
+      ansible.builtin.copy:
+        dest: /boot/loader/loader.conf
+        group: root
+        content: |
+          # Managed by Ansible
+          default {{ systemd_boot.entries[0].name }}
+          timeout 3
+          console-mode max
+        mode: 0644
+        owner: root
+      when:
+        - systemd_boot.entries
 
-- name: Ensure entries for systemd-boot exist
-  become: true
-  ansible.builtin.template:
-    src: "boot/loader/entries/entry.conf.j2"
-    dest: "/boot/loader/entries/{{ item.name }}.conf"
-    owner: root
-    mode: 0644
-  loop: "{{ systemd_boot.entries }}"
-  when:
-    - systemd_boot.entries
-  tags:
-    - bootloader
-    - systemd-boot
+    - name: Ensure entries for systemd-boot exist
+      ansible.builtin.template:
+        src: "boot/loader/entries/entry.conf.j2"
+        dest: "/boot/loader/entries/{{ item.name }}.conf"
+        owner: root
+        mode: 0644
+      loop: "{{ systemd_boot.entries }}"
+      when:
+        - systemd_boot.entries
 
-- name: Install systemd-boot
-  become: true
-  command: bootctl --path=/boot install
-  args:
-    creates: /boot/EFI/systemd/systemd-bootx64.efi
-  tags:
-    - bootloader
-    - systemd-boot
+    - name: Install systemd-boot
+      ansible.builtin.command: bootctl --path=/boot install
+      args:
+        creates: /boot/EFI/systemd/systemd-bootx64.efi
 
-- name: Uninstall systemd-boot-pacman-hook
-  become: true
-  community.general.pacman:
-    name: systemd-boot-pacman-hook
-    state: removed
+    - name: Uninstall systemd-boot-pacman-hook
+      community.general.pacman:
+        name: systemd-boot-pacman-hook
+        state: removed
 
-- name: Enable systemd-boot-update.service
-  become: true
-  ansible.builtin.systemd:
-    name: systemd-boot-update.service
-    enabled: true
-    state: started
+    - name: Enable systemd-boot-update.service
+      ansible.builtin.systemd:
+        name: systemd-boot-update.service
+        enabled: true
+        state: started
