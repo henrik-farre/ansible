@@ -74,6 +74,8 @@
           - terraform-ls
           - vim-language-server
           - groovy-language-server-git
+      environment:
+        JAVA_HOME: /usr/lib/jvm/java-11-openjdk
       when: ansible_facts.distribution == 'Archlinux'
 
 - name: Ensure user tasks are tagged
