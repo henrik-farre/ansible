@@ -60,7 +60,7 @@
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure correct Java version to install groovy-language-server-git
-      command: "archlinux-java set java-11-openjdk"
+      ansible.builtin.command: "archlinux-java set java-11-openjdk"
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure Neovim language servers are installed (from AUR)
@@ -74,6 +74,8 @@
           - terraform-ls
           - vim-language-server
           - groovy-language-server-git
+      environment:
+        JAVA_HOME: /usr/lib/jvm/java-11-openjdk
       when: ansible_facts.distribution == 'Archlinux'
 
 - name: Ensure user tasks are tagged

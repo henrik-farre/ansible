@@ -63,9 +63,15 @@
     - misc-setup
     - { role: backup-duplicity-docker, when: duplicity is defined }
     - fuse
-    - { role: packages, packages: "{{ host_packages }}" }
-    - { role: services, services: "{{ host_services }}" }
-    - { role: packages-uninstalled, packages: "{{ host_uninstalled_packages }}" }
+    - role: packages
+      packages: "{{ host_packages }}"
+      when: host_packages is defined
+    - role: services
+      services: "{{ host_services }}"
+      when: host_services is defined
+    - role: packages-uninstalled
+      packages: "{{ host_uninstalled_packages }}"
+      when: host_uninstalled_packages is defined
 
 - name: Desktop setup
   hosts: desktop
