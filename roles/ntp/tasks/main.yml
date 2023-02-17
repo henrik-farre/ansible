@@ -6,6 +6,7 @@
     state: latest
   tags:
     - ntp
+  when: ansible_facts.distribution == "Debian"
 
 # Equivalent /usr/bin/timedatectl set-ntp true
 # https://wiki.archlinux.org/index.php/systemd-timesyncd
