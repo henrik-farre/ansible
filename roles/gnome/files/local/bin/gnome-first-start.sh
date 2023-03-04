@@ -46,6 +46,7 @@ gsettings set org.gnome.shell.app-switcher current-workspace-only true
 # Desktop settings
 gsettings set org.gnome.desktop.calendar show-weekdate true
 gsettings set org.gnome.desktop.interface clock-show-weekday true
+gsettings set org.gnome.desktop.interface clock-show-seconds false
 
 # Shell extensions
 gsettings set org.gnome.shell.extensions.window-list display-all-workspaces false
