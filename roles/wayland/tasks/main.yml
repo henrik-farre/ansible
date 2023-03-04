@@ -57,4 +57,30 @@
           - libva-utils
           - intel-media-driver # Replaces libva-intel-driver for newer cpus
       when:
-        - "'Intel Corporation' in {{ ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list }}"
+        - "'Intel Corporation' in {{ ansible_facts.ansible_local.hardware.video | map(attribute='vendor') | list }}"
+
+    - name: Install Nvidia related packages
+      become: true
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - egl-wayland
+          - libvdpau
+          - libxnvctrl
+          - nvidia-dkms
+          - nvidia-settings
+          - nvidia-utils
+      when:
+        - "'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video | map(attribute='vendor') | list }}"
+
+    - name: Enable Nvidia required services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - nvidia-suspend
+        - nvidia-hibernate
+        - nvidia-persistenced
