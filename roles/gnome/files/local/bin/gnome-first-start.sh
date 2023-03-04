@@ -6,12 +6,6 @@ fi
 
 # Extensions to manual download from web:
 # hidetopbar@mathieu.bidon.ca
-# workspace-switch-wraparound@theychx.org
-# Move_Clock@rmy.pobox.com
-#
-# Maybe settings:
-#     org.gnome.desktop.interface font-hinting 'full'
-#     org.gnome.desktop.interface font-antialiasing 'rgba'
 
 gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
 gnome-extensions enable GPaste@gnome-shell-extensions.gnome.org
@@ -75,6 +69,7 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 
 # Font settings
 gsettings set org.gnome.desktop.interface font-antialiasing 'rgba'
+gsettings set org.gnome.desktop.interface font-hinting 'slight'
 
 # Theme settings
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
