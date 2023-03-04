@@ -15,6 +15,7 @@
           - systembus-notify
 
     - name: Ensure earlyoom is configured correctly
+      become: true
       ansible.builtin.lineinfile:
         dest: "/etc/default/earlyoom"
         regexp: 'EARLYOOM_ARGS='
