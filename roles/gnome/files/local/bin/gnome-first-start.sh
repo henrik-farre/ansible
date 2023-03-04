@@ -66,7 +66,7 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 # Clear existing keybinding
 gsettings set org.gnome.shell.keybindings focus-active-notification "@as []"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ name "Neovim"
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ command "~/bin/xneovim"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ command "/home/enrique/bin/xneovim"
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom1/ binding "<Super>n"
 
 gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom2/ name "1Password quickaccess"
@@ -78,6 +78,23 @@ gsettings set org.gnome.desktop.interface font-antialiasing 'rgba'
 
 # Theme settings
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+
+EXPERIMENTAL_FEATURES=$(zenity --list --checklist --width 500 --height 200 \
+  --title 'Select Mutter experimental features' \
+  --text 'Select features to enable' \
+  --column 'enable' \
+  --column 'Key' \
+  --column 'Comment' \
+  FALSE 'kms-modifiers' 'Nvidia Mutter support' \
+  FALSE 'scale-monitor-framebuffer' 'Fractional scaling')
+
+if [[ $EXPERIMENTAL_FEATURES == "kms-modifiers|scale-monitor-framebuffer" ]]; then
+  gsettings set org.gnome.mutter experimental-features "['kms-modifiers','scale-monitor-framebuffer']"
+elif [[ $EXPERIMENTAL_FEATURES == "kms-modifiers" ]]; then
+  gsettings set org.gnome.mutter experimental-features "['kms-modifiers']"
+elif [[ $EXPERIMENTAL_FEATURES == "scale-monitor-framebuffer" ]]; then
+  gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+fi
 
 touch ~/.local/bin/gnome-first-start.sh.done
 
