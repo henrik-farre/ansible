@@ -28,10 +28,23 @@
 
     # TODO: gdm config: sudo -u gdm dbus-launch gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
-    - name: Ensure integration to extensions.gnome.org is installed
-      become_user: aur_builder
-      aur:
-        name: chrome-gnome-shell-git
+    - name: Ensure ~/.local/bin exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/.local/bin/"
+        mode: 0750
+
+    - name: Ensure ~/.config/autostart/ exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/.config/autostart/"
+        mode: 0750
+
+    - name: Ensure ~/.config/autostart/ exists
+      ansible.builtin.file:
+        state: directory
+        path: "{{ ansible_user_dir }}/.config/gtk-4.0/"
+        mode: 0750
 
     - name: Ensure gnome first startup script is installed
       ansible.builtin.copy:
