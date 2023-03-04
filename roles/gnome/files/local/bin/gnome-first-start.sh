@@ -76,6 +76,9 @@ gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/or
 # Font settings
 gsettings set org.gnome.desktop.interface font-antialiasing 'rgba'
 
+# Theme settings
+gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
+
 touch ~/.local/bin/gnome-first-start.sh.done
 
 notify-send "Gnome first start was run"
