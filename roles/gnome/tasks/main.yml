@@ -22,6 +22,7 @@
           - gnome-shell-extension-appindicator
           - gnome-calculator
           - gnome-keyring
+          - xdg-desktop-portal
           - xdg-desktop-portal-gnome
           - nautilus
 
