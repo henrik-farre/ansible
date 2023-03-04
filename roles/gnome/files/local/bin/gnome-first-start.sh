@@ -15,7 +15,6 @@ fi
 
 gnome-extensions enable appindicatorsupport@rgcjonas.gmail.com
 gnome-extensions enable GPaste@gnome-shell-extensions.gnome.org
-gnome-extensions enable gTile@vibou
 gnome-extensions enable workspace-indicator@gnome-shell-extensions.gcampax.github.com
 gnome-extensions enable user-theme@gnome-shell-extensions.gcampax.github.com
 
