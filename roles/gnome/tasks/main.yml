@@ -26,7 +26,10 @@
           - xdg-desktop-portal-gnome
           - nautilus
 
-    # TODO: gdm config: sudo -u gdm dbus-launch gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
+    - name: Disable auto-suspend on AC
+      become: true
+      become_user: gdm
+      ansible.builtin.command: dbus-launch gsettings set org.gnome.settings-daemon.plugins.power sleep-inactive-ac-type 'nothing'
 
     - name: Ensure ~/.local/bin exists
       ansible.builtin.file:
