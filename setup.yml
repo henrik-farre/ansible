@@ -134,9 +134,10 @@
   gather_facts: no
   roles:
     - powersave
+    - { role: networking, wireless: true }
     - bluetooth
     - apparmor
-    - secureboot
+    # - secureboot
 
 - name: Setup for ThinkPads
   hosts: thinkpad
