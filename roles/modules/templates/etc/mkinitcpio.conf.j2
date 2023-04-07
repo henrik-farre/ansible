@@ -2,13 +2,16 @@
 # Managed by Ansible
 # - https://wiki.archlinux.org/index.php/Mkinitcpio
 # - https://bbs.archlinux.org/viewtopic.php?id=231393
+# Lenovo ThinkPad P15 Gen 2i with thunderbolt 4 dock requires both intel and nvidia drives
 
 MODULES=()
 {% if 'Intel Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 MODULES+=(i915)
-{% elif 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
+{% endif %}
+{% if 'NVIDIA Corporation' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 MODULES+=(nvidia nvidia_modeset nvidia_uvm nvidia_drm)
-{% elif 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
+{% endif %}
+{% if 'Advanced Micro Devices, Inc. [AMD/ATI]' in ansible_facts.ansible_local.hardware.video|map(attribute='vendor')|list %}
 MODULES+=(amdgpu)
 {% endif %}
 {% if mkinitcpio_modules is defined %}
@@ -21,14 +24,14 @@ BINARIES=()
 FILES=()
 
 # Hooks are referred to by their name, and executed in the order they exist in the HOOKS array of the configuration file.
-HOOKS=(base udev autodetect modconf keyboard keymap)
+HOOKS=(base udev autodetect modconf kms keyboard keymap)
 {% if ansible_facts.form_factor in ['Laptop', 'Notebook'] %}
 HOOKS+=(consolefont)
 {% endif %}
 {% if ansible_facts.cmdline.cryptdevice is defined %}
 HOOKS+=(encrypt)
 {% endif %}
-HOOKS+=(modconf block filesystems)
+HOOKS+=(block filesystems)
 {% if ansible_facts.cmdline.resume is defined %}
 HOOKS+=(resume)
 {% endif %}
