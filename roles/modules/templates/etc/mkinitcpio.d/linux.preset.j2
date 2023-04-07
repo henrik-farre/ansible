@@ -1,0 +1,15 @@
+# Ansible managed
+# https://wiki.archlinux.org/title/Unified_kernel_image#.preset_file
+# mkinitcpio preset file for the 'linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}' package
+
+ALL_config="/etc/mkinitcpio.conf"
+ALL_kver="/boot/vmlinuz-linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"
+ALL_microcode=(/boot/*-ucode.img)
+
+PRESETS=('default' 'fallback')
+
+default_uki="/boot/EFI/Linux/archlinux-linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}.efi"
+default_options="--splash=/usr/share/systemd/bootctl/splash-arch.bmp"
+
+fallback_uki="/boot/EFI/Linux/archlinux-linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}-fallback.efi"
+fallback_options="-S autodetect"
