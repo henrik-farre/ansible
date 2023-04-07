@@ -101,6 +101,7 @@
     - display_server is defined
   block:
     - name: Install dependencies
+      become: true
       ansible.builtin.package:
         name: "{{ packages }}"
         state: latest

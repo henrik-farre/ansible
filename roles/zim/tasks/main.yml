@@ -47,15 +47,6 @@
   tags:
     - zim
 
-- name: Ensure custom .desktop with light theme exists
-  ansible.builtin.copy:
-    dest: "{{ ansible_user_dir }}/.local/share/applications/zim.desktop"
-    src: dot.local/share/applications/zim.desktop
-    owner: "{{ ansible_user_id }}"
-    mode: 0600
-  tags:
-    - zim
-
 - name: Ensure notebook config exists
   ansible.builtin.copy:
     content: |
@@ -83,3 +74,13 @@
   tags:
     - zim
     - zim-notebook
+
+- name: Ensure link tags use the correct color for dark mode
+  ansible.builtin.blockinfile:
+    path: "{{ ansible_user_dir }}/.config/zim/style.conf"
+    create: true
+    block: |
+      [Tag link]
+      foreground=#3371ff
+    owner: "{{ ansible_user_id }}"
+    mode: 0644

@@ -1,13 +1,13 @@
 ---
 - name: Ensure signal-desktop is installed
   become: true
-  ansible.builtin.pacman:
+  community.general.pacman:
     state: latest
     name: signal-desktop
   tags:
     - signal-desktop
 
-- name: Ensure signal-desktop desktop entry is configured to use wayland
+- name: Ensure signal-desktop desktop entry is configured
   ansible.builtin.copy:
     dest: "{{ ansible_user_dir }}/.local/share/applications/signal-desktop.desktop"
     mode: 0640
@@ -16,7 +16,27 @@
       Type=Application
       Name=Signal
       Comment=Signal - Private Messenger
-      Comment[de]=Signal - Sicherer Messenger
+      Icon=signal-desktop
+      Exec=signal-desktop --start-in-tray -- %u
+      Terminal=false
+      Categories=Network;InstantMessaging;
+      StartupWMClass=Signal
+      MimeType=x-scheme-handler/sgnl;
+      Keywords=sgnl;chat;im;messaging;messenger;sms;security;privat;
+      X-GNOME-UsesNotifications=true
+  tags:
+    - signal-desktop
+
+# Wayland enabled signal crashes when reopening from tray
+- name: Ensure signal-desktop desktop entry is configured to use wayland
+  ansible.builtin.copy:
+    dest: "{{ ansible_user_dir }}/.local/share/applications/signal-desktop-wayland.desktop"
+    mode: 0640
+    content: |
+      [Desktop Entry]
+      Type=Application
+      Name=Signal
+      Comment=Signal (Wayland) - Private Messenger
       Icon=signal-desktop
       Exec=signal-desktop --start-in-tray --enable-features=UseOzonePlatform,WaylandWindowDecorations --ozone-platform=wayland -- %u
       Terminal=false

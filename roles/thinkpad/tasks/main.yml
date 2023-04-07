@@ -45,10 +45,10 @@
         state: present
         insertbefore: "^auth.*include.*system-auth"
 
-    - name: Insert new rule for fprintd in cinnamon-screensaver
-      ansible.builtin.lineinfile:
-        name: /etc/pam.d/cinnamon-screensaver
-        regex: "^auth.*include.*common-fprint$"
-        line: "auth       include      common-fprint"
-        state: present
-        insertbefore: "^-auth.*sufficient.*pam_selinux_permit.so"
+    # - name: Insert new rule for fprintd in cinnamon-screensaver
+    #   ansible.builtin.lineinfile:
+    #     name: /etc/pam.d/cinnamon-screensaver
+    #     regex: "^auth.*include.*common-fprint$"
+    #     line: "auth       include      common-fprint"
+    #     state: present
+    #     insertbefore: "^-auth.*sufficient.*pam_selinux_permit.so"

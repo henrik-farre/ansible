@@ -4,13 +4,16 @@
   tags:
     - powersave
   block:
+    # USB powersave rules are to general, makes keyboard and other devices laggy/broken
+    # PCI powermanagement breaks thinkpad p15 gen2
     - name: Copy udev rules for saving power
       ansible.builtin.copy:
         dest: "/etc/udev/rules.d/{{ item }}"
         src: "etc/udev/rules.d/{{ item }}"
+        mode: 0640
       loop:
-        - 50-usb_power_save.rules
-        - 51-pci_powermanagement.rules
+        # - 50-usb_power_save.rules
+        # - 51-pci_powermanagement.rules
         - 55-powerprofilectl.rules
 
     - name: Ensure powersave profile daemon is installed

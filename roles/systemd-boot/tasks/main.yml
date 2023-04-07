@@ -15,6 +15,13 @@
         - "/boot/loader"
         - "/boot/loader/entries"
 
+- name: Ensure system is configured
+  become: true
+  tags:
+    - bootloader
+    - systemd-boot
+  when: bootloader == "systemd-boot"
+  block:
     - name: Ensure loader config exists
       ansible.builtin.copy:
         dest: /boot/loader/loader.conf
@@ -39,6 +46,33 @@
       when:
         - systemd_boot.entries
 
+- name: Ensure system is configured for Unified Kernel Image
+  become: true
+  tags:
+    - bootloader
+    - systemd-boot
+    - systemd-boot-uki
+  when: bootloader == "systemd-boot-uki"
+  block:
+    - name: Ensure loader config exists
+      ansible.builtin.copy:
+        dest: /boot/loader/loader.conf
+        group: root
+        content: |
+          # Managed by Ansible
+          # No default for UKI
+          timeout 3
+          console-mode max
+        mode: 0644
+        owner: root
+
+- name: Install bootloader
+  become: true
+  tags:
+    - bootloader
+    - systemd-boot
+    - systemd-boot-uki
+  block:
     - name: Install systemd-boot
       ansible.builtin.command: bootctl --path=/boot install
       args:

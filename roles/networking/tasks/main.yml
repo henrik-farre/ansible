@@ -27,9 +27,19 @@
       when:
         - wireless is defined and wireless
 
+    - name: Ensure script to run wifi or wired exclusive is installed
+      ansible.builtin.copy:
+        src: etc/NetworkManager/dispatcher.d/70-wifi-wired-exclusive.sh
+        dest: /etc/NetworkManager/dispatcher.d/70-wifi-wired-exclusive.sh
+        owner: root
+        group: root
+        mode: 0750
+      when:
+        - wireless is defined and wireless
+
     - name: Install network connections
       ansible.builtin.copy:
-        src: "files/etc/NetworkManager/system-connections/{{ item }}.vault"
+        src: "etc/NetworkManager/system-connections/{{ item }}.vault"
         dest: "/etc/NetworkManager/system-connections/{{ item }}"
         owner: root
         group: root

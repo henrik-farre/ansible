@@ -33,6 +33,7 @@
         - users is defined
       no_log: true
 
+    # TODO: missing in inventory?
     - name: Ensure users are members of group that allows sudo
       ansible.builtin.user:
         name: "{{ item }}"

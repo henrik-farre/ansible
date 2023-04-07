@@ -12,6 +12,7 @@
           - alsa-lib
           - alsa-tools
           - alsa-utils
+          - alsa-firmware
 
     - name: Ensure asound.state exists
       ansible.builtin.command: alsactl store
@@ -60,6 +61,13 @@
           - pulseaudio
           - pulseaudio-modules-bt-git
           - pulseaudio-bluetooth
+
+    - name: Ensure Sound Open Firmware is installed on thinkpads
+      community.general.pacman:
+        name: sof-firmware
+        state: latest
+      when: "'thinkpad' in group_names"
+
 
 - name: Ensure wireplumber config directory exists
   ansible.builtin.file:

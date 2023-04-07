@@ -65,13 +65,13 @@
     - fuse
     - role: packages
       packages: "{{ host_packages }}"
-      when: host_packages is defined
+      when: host_packages is defined and host_packages
     - role: services
       services: "{{ host_services }}"
-      when: host_services is defined
+      when: host_services is defined and host_services
     - role: packages-uninstalled
       packages: "{{ host_uninstalled_packages }}"
-      when: host_uninstalled_packages is defined
+      when: host_uninstalled_packages is defined and host_uninstalled_packages
 
 - name: Desktop setup
   hosts: desktop
@@ -89,7 +89,7 @@
     - signal-desktop
     - zim
     - weechat
-    - node
+    # - node
     - firefox
     - systemd-user-units
     - terminal
@@ -134,9 +134,10 @@
   gather_facts: no
   roles:
     - powersave
+    - { role: networking, wireless: true }
     - bluetooth
     - apparmor
-    - secureboot
+    # - secureboot
 
 - name: Setup for ThinkPads
   hosts: thinkpad

@@ -27,7 +27,6 @@
         - ".jshintrc"
         - ".zcompdump"
         - ".ackrc"
-        - ".ansible"
         - ".bash_history"
         - ".bash_profile"
         - ".bashrc"

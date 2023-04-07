@@ -21,31 +21,37 @@
       with_items:
         - "Work"
         - "Private"
+      when: firefox_profiles
 
     - name: Install profiles.ini
       ansible.builtin.copy:
         src: "profiles.ini"
         dest: "{{ ansible_user_dir }}/.mozilla/firefox/"
         owner: "{{ ansible_user_id }}"
+        mode: 0640
 
     - name: Install user prefs pr profile
       ansible.builtin.template:
         src: "profile/user.js.j2"
         dest: "{{ ansible_user_dir }}/.mozilla/firefox/{{ item }}/user.js"
         owner: "{{ ansible_user_id }}"
+        mode: 0640
       with_items:
         - "Work"
         - "Private"
+      when: firefox_profiles
 
     - name: Install .desktop file
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "{{ ansible_user_dir }}/.local/share/applications/{{ item }}"
         owner: "{{ ansible_user_id }}"
+        mode: 0640
       with_items:
         - "firefox-private.desktop"
         - "firefox-work.desktop"
         - "open-link.desktop"
+      when: firefox_profiles
 
     - name: Remove hardcoded prefs
       become: true
