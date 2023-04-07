@@ -7,6 +7,7 @@
     - modules
     - modprobe
 
+# FIXME: this removes files install by other roles like docker
 - name: Clean modprobe.d, Remove files except specified
   become: true
   ansible.builtin.file:
@@ -55,6 +56,55 @@
     - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
   tags:
     - modules
+
+- name: Ensure support for Unified Kernel Image
+  become: true
+  tags:
+    - modules
+  when: bootloader == "systemd-boot-uki"
+  block:
+    - name: Ensure /etc/kernel exists
+      ansible.builtin.file:
+        path: /etc/kernel/
+        state: directory
+        mode: 0755
+        owner: root
+        group: root
+
+    - name: Ensure /boot/EFI/Linux exists
+      ansible.builtin.file:
+        path: /boot/EFI/Linux
+        state: directory
+        mode: 0755
+        owner: root
+        group: root
+
+    # NOTE: this only works with one entry
+    - name: Ensure cmdline is configured
+      ansible.builtin.template:
+        dest: /etc/kernel/cmdline
+        src: etc/kernel/cmdline.j2
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
+      loop: "{{ systemd_boot.entries }}"
+      when:
+        - systemd_boot.entries
+        - ansible_facts.distribution == "Archlinux"
+
+    - name: Ensure preset settings for kernel exists
+      ansible.builtin.template:
+        dest: "/etc/mkinitcpio.d/linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}.preset"
+        src: etc/mkinitcpio.d/linux.preset.j2
+        owner: root
+        group: root
+        mode: 0644
+      notify:
+        - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
+      when:
+        - ansible_facts.distribution == "Archlinux"
 
 - name: Ensure mkinitcpio is configured
   become: true
