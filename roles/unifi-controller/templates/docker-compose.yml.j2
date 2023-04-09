@@ -5,7 +5,7 @@ services:
   unifi-controller:
     container_name: unifi-controller
     hostname: {{ unifi.hostname }}
-    image: quay.io/linuxserver.io/unifi-controller:7.3.76
+    image: quay.io/linuxserver.io/unifi-controller:7.3.83
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
