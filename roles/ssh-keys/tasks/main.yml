@@ -16,6 +16,7 @@
         dest: "{{ ansible_user_dir }}/.ssh/authorized_keys"
         mode: 0600
 
+    # Prevents Ansible from complaining when pulling from git repos
     - name: Add hosts as known hosts
       ansible.builtin.known_hosts:
         path: "{{ ansible_user_dir }}/.ssh/known_hosts"
