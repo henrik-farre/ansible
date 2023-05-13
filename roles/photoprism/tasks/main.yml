@@ -4,35 +4,73 @@
   tags:
     - photoprism
   block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: photoprism.yml.vault
+
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/photoprism/{{ item.path }}"
+        state: directory
+        mode: 0775
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data/photoprism/storage
+          owner: root
+          group: docker
+        - path: data/mariadb/mysql
+          owner: 999
+          group: root
+        - path: scripts
+          owner: root
+          group: docker
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yml exists for photoprism
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/photoprism/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_name: photoprism
+        project_src: /srv/photoprism/deploy
+
     - name: Install photoprism backup script
       ansible.builtin.copy:
-        dest: /usr/local/bin/backup-photoprism.sh
+        dest: /srv/photoprism/scripts/backup-photoprism.sh
         content: |
           #!/bin/bash
           /usr/bin/docker-compose exec --no-TTY photoprism photoprism backup --index - | gzip > /shared/backup/photoprism/$(date +"%Y-%m-%d").sql.gz
           /usr/bin/docker-compose exec --no-TTY photoprism photoprism backup --albums --albums-path /photoprism/storage/albums-backup/
-          /usr/bin/tar Jcvf /shared/backup/photoprism/$(date +"%Y-%m-%d")-albums-backup.xz /shared/docker-volumes/photoprism/storage/albums-backup
+          /usr/bin/tar Jcvf /shared/backup/photoprism/$(date +"%Y-%m-%d")-albums-backup.xz /srv/photoprism/data/photoprism/storage/albums-backup
         mode: 0750
 
     - name: Install systemd services for backup
       ansible.builtin.copy:
-        dest: /etc/systemd/system/backup-photoprism.service
+        dest: /usr/local/lib/systemd/system/backup-photoprism.service
         content: |
           [Unit]
           Description=Backup Photoprism database
           OnFailure=status-email@%n.service
 
           [Service]
-          WorkingDirectory=/usr/local/etc/photoprism
+          WorkingDirectory=/srv/photoprism/deploy
 
           Type=oneshot
-          ExecStart=/usr/local/bin/backup-photoprism.sh
+          ExecStart=/srv/photoprism/scripts/backup-photoprism.sh
         owner: root
         mode: 0644
 
     - name: Install systemd timers
       ansible.builtin.copy:
-        dest: "/etc/systemd/system/backup-photoprism.timer"
+        dest: /usr/local/lib/systemd/system/backup-photoprism.timer
         content: |
           [Unit]
           Description=Backup photoprism
@@ -48,17 +86,17 @@
         owner: root
         mode: 0644
 
-    - name: Reload systemd
-      ansible.builtin.systemd:
-        daemon_reload: yes
+    # - name: Reload systemd
+    #   ansible.builtin.systemd:
+    #     daemon_reload: yes
 
-    - name: Enable systemd services
-      ansible.builtin.systemd:
-        name: "backup-photoprism.service"
-        enabled: yes
+    # - name: Enable systemd services
+    #   ansible.builtin.systemd:
+    #     name: "backup-photoprism.service"
+    #     enabled: yes
 
-    - name: Enable systemd timers
-      ansible.builtin.systemd:
-        name: "backup-photoprism.timer"
-        enabled: yes
-        state: started
+    # - name: Enable systemd timers
+    #   ansible.builtin.systemd:
+    #     name: "backup-photoprism.timer"
+    #     enabled: yes
+    #     state: started
