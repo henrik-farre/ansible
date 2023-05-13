@@ -37,6 +37,7 @@
     - dotfiles
     - vim
     - docker
+    - virtual_machines_guest
 
 - name: ArchLinux setup
   hosts: archlinux
