@@ -58,7 +58,7 @@
           gateway4: 192.168.0.1
           nameservers:
             search: [{{ network.local_domain }}]
-            addresses: [192.168.0.5]
+            addresses: [{{ vm.network.enp1s0.dns | default(network.dns) }}]
         enp2s0:
           dhcp4: false
           addresses:
