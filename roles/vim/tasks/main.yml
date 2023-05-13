@@ -26,7 +26,7 @@
           - xsel
       when:
         - ansible_facts.distribution == 'Archlinux'
-        - display_server == 'x11'
+        - display_server is defined and display_server == 'x11'
 
     - name: Ensure Neovim is installed
       ansible.builtin.apt:
