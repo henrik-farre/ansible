@@ -1,0 +1,73 @@
+---
+- name: Provision virtual machines
+  tags: virtual_machines
+  become: true
+  block:
+    - name: Packages
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - virt-install
+          - qemu-base
+          - dnsmasq
+          - cloud-utils
+          - libvirt-python
+          - python-lxml
+
+    - name: Services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: True
+      loop:
+        - libvirtd
+
+    - name: Ensure module is loaded
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/br_netfilter.conf
+        owner: root
+        group: root
+        mode: 0664
+        content: |
+          # Managed by Ansible
+          # Needs to be loaded else sysctl can't change settings
+          br_netfilter
+
+    - name: Disabling netfilter for the bridge
+      ansible.builtin.copy:
+        dest: /etc/sysctl.d/99-netfilter-bridge.conf
+        owner: root
+        group: root
+        mode: 0664
+        content: |
+          # Managed by Ansible
+          # Used by libvirt - disable firewall on bridge
+          # https://linuxconfig.org/how-to-use-bridged-networking-with-libvirt-and-kvm
+          # Disabling netfilter for the bridge
+          net.bridge.bridge-nf-call-ip6tables = 0
+          net.bridge.bridge-nf-call-iptables = 0
+          net.bridge.bridge-nf-call-arptables = 0
+
+    - name: List all VMs
+      community.libvirt.virt:
+        command: list_vms
+      register: all_vms
+
+    - name: List all running VMs
+      community.libvirt.virt:
+        command: list_vms
+        state: running
+      register: all_running_vms
+
+    # TODO:
+    # - https://wiki.archlinux.org/title/Libvirt#Access_virtual_machines_using_their_hostnames
+    # - Huge pages: https://ubuntu.com/server/docs/virtualization-libvirt
+
+    - name: Provision tasks
+      ansible.builtin.include_tasks: provision.yml
+      loop: "{{ groups['virtual_machines'] }}"
+      loop_control:
+        loop_var: virtual_machine_name
+      when: hostvars[virtual_machine_name]['virtual_machine'] is defined
