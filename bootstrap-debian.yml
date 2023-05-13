@@ -1,0 +1,43 @@
+---
+# gather_facts are important for each play to ensure ansible_user_* vars are updated
+- name: Bootstrap Debian (step 1/3)
+  hosts: debian
+  gather_facts: true
+  remote_user: root
+
+  pre_tasks:
+    - name: Update apt cache
+      become: true
+      ansible.builtin.apt:
+        update_cache: yes
+
+  roles:
+    - sudo
+    - systemd
+    - journald
+    - hostname
+    - locale
+    - timezone
+    - ntp
+    - users
+
+- name: Bootstrap Debian (step 2/3)
+  hosts: debian
+  gather_facts: true
+  remote_user: root
+  become_user: enrique
+  become: true
+  become_method: sudo
+
+  roles:
+    - ssh-client
+    - ssh-keys
+
+- name: Bootstrap Debian (step 3/3)
+  hosts: debian
+  gather_facts: true
+  remote_user: root
+
+  roles:
+    - root
+    - sshd
