@@ -21,6 +21,8 @@
     owner: root
     group: root
     mode: 0644
+  tags:
+    - skip_no_dns
 
 - name: Set image name without compression extension
   ansible.builtin.set_fact:

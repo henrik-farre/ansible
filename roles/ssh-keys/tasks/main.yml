@@ -25,3 +25,5 @@
       loop:
         - "github.com"
         - "bitbucket.com"
+      tags:
+        - skip_no_dns
