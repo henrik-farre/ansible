@@ -23,9 +23,9 @@
 
     - name: Ensure correct bluetooth firmware is installed
       ansible.builtin.get_url:
-        url: https://github.com/RPi-Distro/bluez-firmware/blob/master/broadcom/BCM4345C0.hcd?raw=true
-        dest: /lib/firmware/brcm/BCM4345C0.hcd
-        checksum: sha256:51c45e77ddad91a19e96dc8fb75295b2087c279940df2634b23baf71b6dea42c
+        url: https://github.com/winterheart/broadcom-bt-firmware/raw/master/brcm/BCM20702A1-0b05-17cb.hcd
+        dest: /lib/firmware/brcm/BCM20702A1-0b05-17cb.hcd
+        checksum: sha256:02204ae0958e7af3ffa6193713f5b3847d4ad37b9b9b5064b56cd96f2fdd18d1
         owner: root
         group: root
         mode: 0644
