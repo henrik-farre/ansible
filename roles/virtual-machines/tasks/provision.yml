@@ -155,7 +155,7 @@
     --os-variant {{ vm.os_variant }} \
     --network network=macvtap-net,model=virtio \
     --network network=isolated,model=virtio \
-    {% if vm.devices is defined %}{% for device in vm.devices %}--hostdev {{ device.id}} {% endfor %}\{% endif %}
+    {% if vm.devices is defined %}{% for device in vm.devices %}--hostdev {{ device.id }} {% endfor %}\{% endif %}
     --virt-type kvm \
     --graphics none \
     --noautoconsole \
