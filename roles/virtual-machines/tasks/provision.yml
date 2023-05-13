@@ -122,7 +122,7 @@
   community.libvirt.virt_net:
     command: define
     name: macvtap-net
-    xml: '{{ lookup("template", "./macvtap-network.xml.j2") }}'
+    xml: '{{ lookup("template", "macvtap-network.xml.j2") }}'
 
 - name: Start
   community.libvirt.virt_net:
@@ -135,7 +135,7 @@
   community.libvirt.virt_net:
     command: define
     name: isolated
-    xml: '{{ lookup("template", "./isolated-network.xml.j2") }}'
+    xml: '{{ lookup("template", "isolated-network.xml.j2") }}'
 
 - name: Start
   community.libvirt.virt_net:
