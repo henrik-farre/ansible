@@ -6,3 +6,5 @@ docker_daemon_options:
   storage-driver: overlay2
   features:
     buildkit: true
+
+docker_compose_version: 2
