@@ -124,6 +124,7 @@
   gather_facts: no
   roles:
     - apparmor
+    - nfs-server
     - traefik
     - virtual-machines
     - photoprism
