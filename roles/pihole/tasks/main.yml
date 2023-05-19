@@ -29,7 +29,13 @@
         - path: data/var/log/lighttpd
           owner: 33
           group: 33
+        - path: data/backup
+          owner: 33
+          group: 33
         - path: deploy
+          owner: root
+          group: docker
+        - path: scripts
           owner: root
           group: docker
 
@@ -117,6 +123,58 @@
         owner: root
         mode: 0644
 
+    - name: Install pihole backup script
+      ansible.builtin.copy:
+        dest: /srv/pihole/scripts/backup-pihole.sh
+        content: |
+          #!/bin/bash
+          set -o nounset
+          set -o errexit
+          set -o pipefail
+
+          BACKUP_LOCATION=/shared/backup/pihole/$(date +"%Y-%m-%d")
+
+          mkdir -p "$BACKUP_LOCATION"
+
+          /usr/bin/docker exec pihole pihole -a -t /backup/teleporter.tar.gz
+
+          mv /srv/pihole/data/backup/teleporter.tar.gz "${BACKUP_LOCATION}"
+        mode: 0750
+
+    - name: Install systemd services for backup
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-pihole.service
+        content: |
+          [Unit]
+          Description=Backup pihole
+          OnFailure=status-email@%n.service
+
+          [Service]
+          WorkingDirectory=/srv/pihole/deploy
+
+          Type=oneshot
+          ExecStart=/srv/pihole/scripts/backup-pihole.sh
+        owner: root
+        mode: 0644
+
+    - name: Install systemd timers
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-pihole.timer
+        content: |
+          [Unit]
+          Description=Backup pihole
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          OnCalendar=daily
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
     - name: Reload systemd
       ansible.builtin.systemd:
         daemon_reload: yes
@@ -128,6 +186,7 @@
       loop:
         - pihole-updategravity.service
         - pihole-flushlog.service
+        - backup-pihole.service
 
     - name: Enable systemd timers
       ansible.builtin.systemd:
@@ -137,3 +196,4 @@
       loop:
         - pihole-updategravity.timer
         - pihole-flushlog.timer
+        - backup-pihole.timer
