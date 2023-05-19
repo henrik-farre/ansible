@@ -101,7 +101,6 @@ package_groups:
     # for drill
     - ldns
     - net-tools
-    - nfs-utils
     - nmap
     - traceroute
     - whois
