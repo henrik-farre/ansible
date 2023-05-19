@@ -8,27 +8,3 @@
     regexp: '^efivars'
   tags:
     - mounts
-
-- name: Ensure nfs support is installed
-  become: true
-  community.general.pacman:
-    name: nfs-utils
-    state: latest
-  tags:
-    - mounts
-  when:
-    - has_nfs_mount is defined and has_nfs_mount
-    - ansible_facts.distribution != "Debian"
-
-- name: Ensure NFS share is mounted
-  become: true
-  mount:
-    name: /shared
-    src: spookcentral.{{ network.local_domain }}:/shared
-    fstype: nfs4
-    opts: _netdev,noatime,noauto,retrans=5,rsize=32768,soft,timeo=14,timeo=900,wsize=32768,x-systemd.automount,x-systemd.idle-timeout=1min,x-systemd.mount-timeout=10
-    state: present
-  tags:
-    - mounts
-  when:
-    - has_nfs_mount is defined and has_nfs_mount
