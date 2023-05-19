@@ -86,17 +86,17 @@
         owner: root
         mode: 0644
 
-    # - name: Reload systemd
-    #   ansible.builtin.systemd:
-    #     daemon_reload: yes
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
 
-    # - name: Enable systemd services
-    #   ansible.builtin.systemd:
-    #     name: "backup-photoprism.service"
-    #     enabled: yes
+    - name: Enable systemd services
+      ansible.builtin.systemd:
+        name: "backup-photoprism.service"
+        enabled: yes
 
-    # - name: Enable systemd timers
-    #   ansible.builtin.systemd:
-    #     name: "backup-photoprism.timer"
-    #     enabled: yes
-    #     state: started
+    - name: Enable systemd timers
+      ansible.builtin.systemd:
+        name: "backup-photoprism.timer"
+        enabled: yes
+        state: started
