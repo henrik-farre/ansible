@@ -303,7 +303,7 @@
           Wants=network-online.target
 
           [Timer]
-          OnCalendar=monthly
+          OnCalendar=daily
           Persistent=True
 
           [Install]
