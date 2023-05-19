@@ -81,6 +81,9 @@
         - path: deploy
           owner: root
           group: docker
+        - path: scripts
+          owner: root
+          group: docker
 
     - name: Ensure mosquitto is configured
       ansible.builtin.copy:
@@ -240,3 +243,69 @@
       when:
         - hacs_install.stat.exists is defined and not hacs_install.stat.exists
         - item.name == 'hacs.zip'
+
+    - name: Install home-assistant backup script
+      ansible.builtin.copy:
+        dest: /srv/home-assistant/scripts/backup-home-assistant.sh
+        content: |
+          #!/bin/bash
+          docker run --rm --name ha-mariadb-backup -ti --user mysql \
+            -v /shared/backup/home-assistant/mariadb:/backup \
+            -v /srv/home-assistant/data/mariadb/mysql/:/var/lib/mysql \
+            -v home-assistant_mariadb-socket:/var/run/mysqld \
+            mariadb:10.10.2 \
+            mariabackup --backup --target-dir=/backup -u root -p "{{ homeassistant.db.root_password }}"
+
+          for service in home-assistant mosquitto zigbee2mqtt; do
+            /usr/bin/tar Jcvf /shared/backup/home-assistant/$(date +"%Y-%m-%d")-${service}.xz /srv/home-assistant/data/${service}
+          done
+        mode: 0750
+
+    - name: Install systemd services for backup
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-home-assistant.service
+        content: |
+          [Unit]
+          Description=Backup home-assistant
+          OnFailure=status-email@%n.service
+
+          [Service]
+          WorkingDirectory=/srv/home-assistant/deploy
+
+          Type=oneshot
+          ExecStart=/srv/home-assistant/scripts/backup-home-assistant.sh
+        owner: root
+        mode: 0644
+
+    - name: Install systemd timers
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-home-assistant.timer
+        content: |
+          [Unit]
+          Description=Backup home-assistant
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          OnCalendar=monthly
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Enable systemd services
+      ansible.builtin.systemd:
+        name: "backup-home-assistant.service"
+        enabled: yes
+
+    - name: Enable systemd timers
+      ansible.builtin.systemd:
+        name: "backup-home-assistant.timer"
+        enabled: yes
+        state: started
