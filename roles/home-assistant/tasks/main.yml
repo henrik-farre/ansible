@@ -249,15 +249,31 @@
         dest: /srv/home-assistant/scripts/backup-home-assistant.sh
         content: |
           #!/bin/bash
+          set -o nounset
+          set -o errexit
+          set -o pipefail
+
+          BACKUP_LOCATION=/shared/backup/home-assistant/$(date +"%Y-%m-%d")
+          BACKUP_MARIADB_LOCATION="$BACKUP_LOCATION/mariadb"
+
+          mkdir -p "$BACKUP_LOCATION"
+          mkdir -p "$BACKUP_MARIADB_LOCATION"
+
+          chown 999:adm "$BACKUP_MARIADB_LOCATION"
+
           docker run --rm --name ha-mariadb-backup -ti --user mysql \
-            -v /shared/backup/home-assistant/mariadb:/backup \
+            -v "${BACKUP_MARIADB_LOCATION}":/backup \
             -v /srv/home-assistant/data/mariadb/mysql/:/var/lib/mysql \
             -v home-assistant_mariadb-socket:/var/run/mysqld \
             mariadb:10.10.2 \
             mariabackup --backup --target-dir=/backup -u root -p "{{ homeassistant.db.root_password }}"
 
+          /usr/bin/tar Jcvf ${BACKUP_LOCATION}/mariadb.tar.xz "${BACKUP_MARIADB_LOCATION}"
+
+          rm -rvf --preserve-root=all "${BACKUP_MARIADB_LOCATION}"
+
           for service in home-assistant mosquitto zigbee2mqtt; do
-            /usr/bin/tar Jcvf /shared/backup/home-assistant/$(date +"%Y-%m-%d")-${service}.xz /srv/home-assistant/data/${service}
+            /usr/bin/tar Jcvf ${BACKUP_LOCATION}/${service}.tar.xz /srv/home-assistant/data/${service}
           done
         mode: 0750
 
