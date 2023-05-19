@@ -39,6 +39,8 @@
         mode: 0755
         owner: root
         group: root
+      notify:
+        - Reexport NFS
 
     # https://wiki.archlinux.org/title/NFS#Starting_the_server
     - name: Ensure unneeded services are masked
