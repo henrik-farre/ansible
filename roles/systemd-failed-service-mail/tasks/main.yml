@@ -17,7 +17,7 @@
         content: |
           #!/bin/bash
 
-          /usr/bin/sendmail -t <<ERRMAIL
+          /usr/sbin/sendmail -t <<ERRMAIL
           To: $1
           From: systemd on $HOSTNAME <root@$HOSTNAME>
           Subject: $2
