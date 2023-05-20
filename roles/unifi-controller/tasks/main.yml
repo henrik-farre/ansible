@@ -14,6 +14,8 @@
       loop:
         - data
         - deploy
+        - scripts
+        - data/backup
 
     - name: Ensure docker-compose.yml exists for unifi
       ansible.builtin.template:
@@ -65,12 +67,13 @@
         owner: root
         mode: 0644
 
+    # Script is run inside Docker
     - name: MongoDB maintenance script
       ansible.builtin.copy:
         dest: /srv/unifi-controller/data/config/mongodb_maintenance.sh
         content: |
           #!/bin/bash
-          /usr/bin/mongo --host /usr/lib/unifi/run/mongodb-27117.sock < /config/mongo_prune_js.js
+          /usr/bin/mongo --port 27117 < /config/mongo_prune_js.js
         owner: root
         mode: 0750
 
@@ -104,8 +107,81 @@
         owner: root
         mode: 0644
 
-    - name: Enable timer unit for MongoDB maintenance
+    # Script is run inside Docker
+    - name: MongoDB dump script
+      ansible.builtin.copy:
+        dest: /srv/unifi-controller/data/config/mongodb_dump.sh
+        content: |
+          #!/bin/bash
+          /usr/bin/mongodump --port 27117 --out=/backup/mongodump/
+        owner: root
+        mode: 0750
+
+    - name: Install unifi-controller backup script
+      ansible.builtin.copy:
+        dest: /srv/unifi-controller/scripts/backup-unifi-controller.sh
+        content: |
+          #!/bin/bash
+          set -o nounset
+          set -o errexit
+          set -o pipefail
+
+          BACKUP_LOCATION=/shared/backup/unifi-controller/$(date +"%Y-%m-%d")
+
+          mkdir -p "$BACKUP_LOCATION"
+
+          rm -rvf --preserve-root=all "/srv/unifi-controller/data/backup/mongodump"
+          mkdir -p "/srv/unifi-controller/data/backup/mongodump"
+          /usr/bin/docker exec unifi-controller /config/mongodb_dump.sh
+
+          /usr/bin/tar Jcvf ${BACKUP_LOCATION}/mongodump.tar.xz /srv/unifi-controller/data/backup/mongodump
+          # DB files might change while backup is running and cause tar to return an error
+          /usr/bin/tar Jcvf ${BACKUP_LOCATION}/config.tar.xz /srv/unifi-controller/data/config || true
+        mode: 0750
+
+    - name: Install systemd services for backup
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-unifi-controller.service
+        content: |
+          [Unit]
+          Description=Backup unifi-controller
+          OnFailure=status-email@%n.service
+
+          [Service]
+          WorkingDirectory=/srv/unifi-controller/deploy
+
+          Type=oneshot
+          ExecStart=/srv/unifi-controller/scripts/backup-unifi-controller.sh
+        owner: root
+        mode: 0644
+
+    - name: Install systemd timers
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-unifi-controller.timer
+        content: |
+          [Unit]
+          Description=Backup unifi-controller
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          OnCalendar=daily
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Reload systemd
       ansible.builtin.systemd:
-        name: mongodb_maintenance.timer
-        state: started
+        daemon_reload: yes
+
+    - name: Enable systemd timers
+      ansible.builtin.systemd:
+        name: "{{ item }}"
         enabled: yes
+        state: started
+      loop:
+        - mongodb_maintenance.timer
+        - backup-unifi-controller.timer

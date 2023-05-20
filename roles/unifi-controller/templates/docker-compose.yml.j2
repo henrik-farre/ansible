@@ -11,6 +11,7 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /srv/unifi-controller/data/config:/config
+      - /srv/unifi-controller/data/backup:/backup
     ports:
       - 3478:3478/udp
       - 10001:10001/udp
