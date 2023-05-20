@@ -130,7 +130,6 @@
     - virtual-machines
     - photoprism
     # - kodi-shutdown-check
-    # - unifi-controller-backup
     # - getmail
     # - backup-rclone
 
