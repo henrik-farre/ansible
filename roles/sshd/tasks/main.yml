@@ -24,3 +24,9 @@
         line: 'UsePAM yes'
         regexp: '^UsePAM *'
         state: present
+
+    # Directory only exist on Debian, and file only when creating VMs
+    - name: Ensure bootstrap file does not exist
+      ansible.builtin.file:
+        path: /etc/ssh/sshd_config.d/bootstrap.conf
+        state: absent

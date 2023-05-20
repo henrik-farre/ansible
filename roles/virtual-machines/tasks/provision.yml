@@ -85,7 +85,7 @@
           root:linux
         expire: False
       write_files:
-        - path: /etc/ssh/sshd_config.d/ssh.conf
+        - path: /etc/ssh/sshd_config.d/bootstrap.conf
           content: |
             PermitRootLogin yes
             UsePAM no
