@@ -12,6 +12,7 @@ services:
       - /etc/timezone:/etc/timezone:ro
       - /srv/unifi-controller/data/config:/config
       - /srv/unifi-controller/data/backup:/backup
+      - /srv/unifi-controller/deploy/custom-cont-init.d:/custom-cont-init.d:ro
     ports:
       - 3478:3478/udp
       - 10001:10001/udp
