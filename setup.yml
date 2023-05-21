@@ -129,6 +129,7 @@
     - traefik
     - virtual-machines
     - photoprism
+    - syncthing
     # - kodi-shutdown-check
     # - getmail
     # - backup-rclone
