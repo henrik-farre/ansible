@@ -34,9 +34,11 @@
     - sshd
     - ssh-client
     - ssh-keys
+    - nfs-client
     - dotfiles
     - vim
     - docker
+    - virtual_machines_guest
 
 - name: ArchLinux setup
   hosts: archlinux
@@ -118,16 +120,19 @@
   roles:
     - gaming
 
-- name: HTPC setup
-  hosts: htpc
+- name: Server setup
+  hosts: server
   gather_facts: no
   roles:
     - apparmor
-    - kodi-shutdown-check
-    - unifi-controller-backup
-    - getmail
-    - backup-rclone
+    - nfs-server
+    - traefik
+    - virtual-machines
     - photoprism
+    - syncthing
+    # - kodi-shutdown-check
+    # - getmail
+    # - backup-rclone
 
 - name: Laptop setup
   hosts: laptop
@@ -159,19 +164,12 @@
   roles:
     - { role: services, services: ['mbpfan'] }
 
-- name: Raspberry Pi setup
-  hosts: raspberrypi
-  gather_facts: no
-  roles:
-    - raspbian
-    - sensors
-    # - arpwatch
-
 - name: Debian setup
   hosts: debian
-  gather_facts: no
+  gather_facts: yes
   roles:
     - apparmor
+    - resolvconf
     - role: package-group
       package_group: "base_utils_debian"
     - role: package-group
@@ -180,29 +178,26 @@
       package_group: "system_utils_debian"
     - unattended-upgrades
 
-- name: Unifi Controller setup on Raspberry Pi
-  hosts: unifi-controller
-  gather_facts: no
-  roles:
-    - traefik
-    - unifi-controller
-
-- name: Home Assistant setup on Raspberry Pi
-  hosts: home-assistant
-  gather_facts: true
-  become: true
-
-  environment:
-    PATH: /usr/local/sbin:/usr/sbin:/sbin:{{ ansible_env.PATH }}
-
-  roles:
-    - traefik
-    - home-assistant
-
-- name: Pi-Hole setup on Raspberry Pi
-  hosts: pi-hole
-  gather_facts: no
+- name: Zuul setup
+  hosts: zuul
+  gather_facts: yes
   roles:
     - traefik
     - pihole
     - smokeping
+  # - arpwatch
+
+- name: Gozer setup
+  hosts: gozer
+  gather_facts: yes
+  roles:
+    - traefik
+    - unifi-controller
+
+- name: Home Assistant
+  hosts: staypuft
+  gather_facts: yes
+
+  roles:
+    - traefik
+    - home-assistant

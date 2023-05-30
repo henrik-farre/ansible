@@ -1,0 +1,31 @@
+---
+- name: Ensure NFS server is configured
+  become: true
+  tags:
+    - nfs-client
+    - mounts
+  when: nfs_mounts is defined
+  block:
+
+    - name: Ensure NFS support is installed on ArchLinux
+      community.general.pacman:
+        name: nfs-utils
+        state: latest
+      when:
+        - ansible_facts.distribution == "Archlinux"
+
+    - name: Ensure NFS support is installed on Debian
+      ansible.builtin.apt:
+        name: nfs-common
+        state: latest
+      when:
+        - ansible_facts.distribution == "Debian"
+
+    - name: Ensure NFS share(s) are mounted
+      ansible.posix.mount:
+        name: "{{ item.mount_point }}"
+        src: "{{ item.server }}:{{ item.share }}"
+        fstype: "{{ item.fstype | default('nfs4') }}"
+        opts: "{{ item.opts | default(omit) }}"
+        state: mounted
+      loop: "{{ nfs_mounts }}"

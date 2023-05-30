@@ -1,0 +1,32 @@
+---
+version: "3"
+
+services:
+  syncthing:
+    container_name: syncthing
+    hostname: {{ syncthing.hostname }}
+    image: syncthing/syncthing:1.23.4
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/syncthing/data:/var/syncthing
+      - /shared/backup/incomming-pictures:/shared/backup/incomming-pictures
+    ports:
+      - 22000:22000/tcp # TCP file transfers
+      - 22000:22000/udp # QUIC file transfers
+      - 21027:21027/udp # Receive local discovery broadcasts
+    environment:
+      TZ: Europe/Copenhagen
+      PUID: 1000
+      PGID: 1000
+    networks:
+      - "traefik"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.syncthing.rule=Host(`{{ syncthing.hostname }}`)"
+      - "traefik.http.services.syncthing.loadbalancer.server.port=8384"
+      - "traefik.http.routers.syncthing.entrypoints=http"
+
+networks:
+  traefik:
+    external: true

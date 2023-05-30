@@ -3,7 +3,6 @@
   tags:
     - users
   block:
-    # TODO: This overrides the values in the inventory
     - name: Include vaulted vars
       ansible.builtin.include_vars:
         file: users.yml.vault
@@ -33,7 +32,6 @@
         - users is defined
       no_log: true
 
-    # TODO: missing in inventory?
     - name: Ensure users are members of group that allows sudo
       ansible.builtin.user:
         name: "{{ item }}"

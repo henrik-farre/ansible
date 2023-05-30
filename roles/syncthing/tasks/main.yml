@@ -1,0 +1,33 @@
+---
+- name: Ensure syncthing is configured
+  become: true
+  tags:
+    - syncthing
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/syncthing/{{ item.path }}"
+        state: directory
+        mode: 0775
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data
+          owner: 1001
+          group: 984
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yml exists for syncthing
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/syncthing/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    # - name: Deploy Docker Compose stack
+    #   community.docker.docker_compose:
+    #     project_name: syncthing
+    #     project_src: /srv/syncthing/deploy

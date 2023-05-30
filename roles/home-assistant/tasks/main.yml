@@ -23,9 +23,9 @@
 
     - name: Ensure correct bluetooth firmware is installed
       ansible.builtin.get_url:
-        url: https://github.com/RPi-Distro/bluez-firmware/blob/master/broadcom/BCM4345C0.hcd?raw=true
-        dest: /lib/firmware/brcm/BCM4345C0.hcd
-        checksum: sha256:51c45e77ddad91a19e96dc8fb75295b2087c279940df2634b23baf71b6dea42c
+        url: https://github.com/winterheart/broadcom-bt-firmware/raw/master/brcm/BCM20702A1-0b05-17cb.hcd
+        dest: /lib/firmware/brcm/BCM20702A1-0b05-17cb.hcd
+        checksum: sha256:02204ae0958e7af3ffa6193713f5b3847d4ad37b9b9b5064b56cd96f2fdd18d1
         owner: root
         group: root
         mode: 0644
@@ -79,6 +79,9 @@
           owner: root
           group: docker
         - path: deploy
+          owner: root
+          group: docker
+        - path: scripts
           owner: root
           group: docker
 
@@ -240,3 +243,85 @@
       when:
         - hacs_install.stat.exists is defined and not hacs_install.stat.exists
         - item.name == 'hacs.zip'
+
+    - name: Install home-assistant backup script
+      ansible.builtin.copy:
+        dest: /srv/home-assistant/scripts/backup-home-assistant.sh
+        content: |
+          #!/bin/bash
+          set -o nounset
+          set -o errexit
+          set -o pipefail
+
+          BACKUP_LOCATION=/shared/backup/home-assistant/$(date +"%Y-%m-%d")
+          BACKUP_MARIADB_LOCATION="$BACKUP_LOCATION/mariadb"
+
+          mkdir -p "$BACKUP_LOCATION"
+          mkdir -p "$BACKUP_MARIADB_LOCATION"
+
+          chown 999:adm "$BACKUP_MARIADB_LOCATION"
+
+          docker run --rm --name ha-mariadb-backup --user mysql \
+            -v "${BACKUP_MARIADB_LOCATION}":/backup \
+            -v /srv/home-assistant/data/mariadb/mysql/:/var/lib/mysql \
+            -v home-assistant_mariadb-socket:/var/run/mysqld \
+            mariadb:10.10.2 \
+            mariabackup --backup --target-dir=/backup -u root -p "{{ homeassistant.db.root_password }}"
+
+          /usr/bin/tar Jcvf ${BACKUP_LOCATION}/mariadb.tar.xz "${BACKUP_MARIADB_LOCATION}"
+
+          rm -rvf --preserve-root=all "${BACKUP_MARIADB_LOCATION}"
+
+          for service in home-assistant mosquitto zigbee2mqtt; do
+            /usr/bin/tar Jcvf ${BACKUP_LOCATION}/${service}.tar.xz /srv/home-assistant/data/${service}
+          done
+        mode: 0750
+
+    - name: Install systemd services for backup
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-home-assistant.service
+        content: |
+          [Unit]
+          Description=Backup home-assistant
+          OnFailure=status-email@%n.service
+
+          [Service]
+          WorkingDirectory=/srv/home-assistant/deploy
+
+          Type=oneshot
+          ExecStart=/srv/home-assistant/scripts/backup-home-assistant.sh
+        owner: root
+        mode: 0644
+
+    - name: Install systemd timers
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-home-assistant.timer
+        content: |
+          [Unit]
+          Description=Backup home-assistant
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          OnCalendar=daily
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: 0644
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: yes
+
+    - name: Enable systemd services
+      ansible.builtin.systemd:
+        name: "backup-home-assistant.service"
+        enabled: yes
+
+    - name: Enable systemd timers
+      ansible.builtin.systemd:
+        name: "backup-home-assistant.timer"
+        enabled: yes
+        state: started

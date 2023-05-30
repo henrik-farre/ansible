@@ -1,0 +1,180 @@
+---
+- name: Debugging
+  ansible.builtin.set_fact:
+    vm: "{{ hostvars[virtual_machine_name]['virtual_machine'] }}"
+
+- name: Ensure needed directories exist
+  ansible.builtin.file:
+    path: "/var/lib/libvirt/images/{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0775
+  loop:
+    - "templates/{{ vm.os_variant }}"
+    - "virtual_machines/{{ virtual_machine_name }}"
+
+- name: Download disk image to use as template
+  ansible.builtin.get_url:
+    url: "{{ vm.template.base_url }}/{{ vm.template.image }}"
+    dest: /var/lib/libvirt/images/templates/{{ vm.os_variant }}/{{ vm.template.image }}
+    owner: root
+    group: root
+    mode: 0644
+  tags:
+    - skip_no_dns
+
+- name: Set image name without compression extension
+  ansible.builtin.set_fact:
+    vm_template_image_name: "{{ vm.template.image.split('.')[0:-1] | join('.') }}"
+  when:
+    - vm.template.is_compressed is defined
+    - vm.template.is_compressed
+
+- name: Set image name without compression extension
+  ansible.builtin.set_fact:
+    vm_template_image_name: "{{ vm.template.image }}"
+  when: ( vm.template.is_compressed is not defined ) or ( not vm.template.is_compressed )
+
+- name: Decompress xz image
+  ansible.builtin.command:
+    cmd: "unxz -k /var/lib/libvirt/images/templates/{{ vm.os_variant }}/{{ vm.template.image }}"
+    creates: /var/lib/libvirt/images/templates/{{ vm.os_variant }}/{{ vm_template_image_name }}
+  when:
+    - vm.template.is_compressed is defined
+    - vm.template.is_compressed
+    - vm.template.image.split('.')[-1] == 'xz'
+
+- name: Networking
+  ansible.builtin.copy:
+    dest: "/var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/networking.cfg"
+    content: |
+      version: 2
+      ethernets:
+        enp1s0:
+          dhcp4: false
+          addresses:
+            - {{ vm.networks.enp1s0.ip }}/24
+          gateway4: 192.168.0.1
+          nameservers:
+            search: [{{ network.local_domain }}]
+            addresses: [{{ vm.network.enp1s0.dns | default(network.dns) }}]
+        enp2s0:
+          dhcp4: false
+          addresses:
+            - {{ vm.networks.enp2s0.ip }}/24
+    owner: root
+    group: root
+    mode: 0775
+  when: ( vm.cloud_init is not defined ) or ( vm.cloud_init )
+
+- name: Cloud init
+  ansible.builtin.copy:
+    dest: "/var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/cloud-init.cfg"
+    content: |
+      #cloud-config
+      hostname: {{ virtual_machine_name }}
+      package_update: true
+      packages:
+        - python3
+      manage_etc_hosts: false
+      disable_root: false
+      ssh_pwauth: true
+      chpasswd:
+        list: |
+          root:linux
+        expire: False
+      write_files:
+        - path: /etc/ssh/sshd_config.d/bootstrap.conf
+          content: |
+            PermitRootLogin yes
+            UsePAM no
+            PasswordAuthentication yes
+      runcmd:
+        - systemctl restart sshd
+    owner: root
+    group: root
+    mode: 0775
+  when: ( vm.cloud_init is not defined ) or ( vm.cloud_init )
+
+- name: Prepare vm
+  ansible.builtin.copy:
+    src: /var/lib/libvirt/images/templates/{{ vm.os_variant }}/{{ vm_template_image_name }}
+    dest: "/var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/{{ vm_template_image_name }}"
+    remote_src: True
+    owner: root
+    group: root
+    mode: 0644
+
+# https://man.archlinux.org/man/community/cloud-image-utils/cloud-localds.1.en
+# - name: Create cloud img
+#   ansible.builtin.command: "/usr/bin/cloud-localds /var/lib/libvirt/images/vms/{{ virtual_machine_name }}/cloud-init.iso /var/lib/libvirt/images/vms/{{ virtual_machine_name }}/cloud-init.yml"
+
+- name: Resize Virtual Machine disk
+  ansible.builtin.command: "qemu-img resize /var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/{{ vm_template_image_name }} {{ vm.disk.size }}"
+  when:
+    - virtual_machine_name not in all_vms.list_vms
+    - vm.disk is defined
+
+# Got macvtap-net working from:
+# https://blog.scottlowe.org/2016/02/09/using-kvm-libvirt-macvtap-interfaces/
+- name: Define a new network
+  community.libvirt.virt_net:
+    command: define
+    name: macvtap-net
+    xml: '{{ lookup("template", "macvtap-network.xml.j2") }}'
+
+- name: Start
+  community.libvirt.virt_net:
+    autostart: true
+    state: active
+    name: macvtap-net
+
+# https://wiki.libvirt.org/TroubleshootMacvtapHostFail.html
+- name: Define a new network
+  community.libvirt.virt_net:
+    command: define
+    name: isolated
+    xml: '{{ lookup("template", "isolated-network.xml.j2") }}'
+
+- name: Start
+  community.libvirt.virt_net:
+    autostart: true
+    state: active
+    name: isolated
+
+# cloud-init bug for debian: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=992119
+- name: Import
+  ansible.builtin.command: |
+    virt-install \
+    --memory {{ vm.memory }} \
+    {% if ((vm.cloud_init is not defined) or (vm.cloud_init)) %}--cloud-init network-config=/var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/networking.cfg,user-data=/var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/cloud-init.cfg \{% endif %}
+    --vcpus {{ vm.vcpus }} \
+    --name {{ virtual_machine_name }} \
+    --disk /var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/{{ vm_template_image_name }},device=disk,bus=virtio,format=qcow2,discard=unmap \
+    --os-variant {{ vm.os_variant }} \
+    --network network=macvtap-net,model=virtio \
+    --network network=isolated,model=virtio \
+    {% if vm.devices is defined %}{% for device in vm.devices %}--hostdev {{ device.id }} {% endfor %}\{% endif %}
+    --virt-type kvm \
+    --graphics none \
+    --noautoconsole \
+    --boot uefi \
+    --import
+  when: virtual_machine_name not in all_vms.list_vms
+
+- name: "Start with host startup"
+  community.libvirt.virt:
+    name: "{{ virtual_machine_name }}"
+    autostart: true
+
+- name: Start VM
+  community.libvirt.virt:
+    name: "{{ virtual_machine_name }}"
+    state: running
+  when: virtual_machine_name not in all_running_vms.list_vms
+
+# TODO: reboot and start
+
+# Wait until running example:
+# https://github.com/Kubeinit/kubeinit/blob/bea4adf6908b01d61305adc2816e35f6c2c3146e/kubeinit/roles/kubeinit_libvirt/tasks/deploy_debian_guest.yml#L103

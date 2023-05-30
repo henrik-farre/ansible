@@ -47,6 +47,7 @@ services:
       - /srv/pihole/data/etc/pihole:/etc/pihole
       - /srv/pihole/data/etc/dnsmasq.d:/etc/dnsmasq.d
       - /srv/pihole/data/var/log:/var/log
+      - /srv/pihole/data/backup:/backup
     restart: unless-stopped
     networks:
       - "traefik"

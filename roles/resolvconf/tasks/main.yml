@@ -1,0 +1,30 @@
+---
+- name: Configure resolvconf
+  become: true
+  tags:
+    - resolvconf
+  when: ansible_facts.distribution == "Debian"
+  block:
+    - name: Disable resolvconf
+      ansible.builtin.systemd:
+        name: resolvconf
+        state: stopped
+        enabled: no
+
+    - name: Remove package
+      ansible.builtin.apt:
+        name: resolvconf
+        state: absent
+
+    - name: Stat current resolv.conf
+      ansible.builtin.stat:
+        path: /etc/resolv.conf
+      register: resolve_conf_file
+
+    - name: Remove symlink
+      ansible.builtin.file:
+        path: /etc/resolv.conf
+        state: absent
+      when:
+        - resolve_conf_file.stat.islnk is defined
+        - resolve_conf_file.stat.islnk

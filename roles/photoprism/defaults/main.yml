@@ -1,0 +1,8 @@
+---
+photoprism:
+  hostname: "photos.{{ network.local_domain }}"
+  admin_password: "{{ vaulted_photoprism.admin_password }}"
+  db_user: "{{ vaulted_photoprism.db_user }}"
+  db_name: "{{ vaulted_photoprism.db_name }}"
+  db_password: "{{ vaulted_photoprism.db_password }}"
+  db_root_password: "{{ vaulted_photoprism.db_root_password }}"

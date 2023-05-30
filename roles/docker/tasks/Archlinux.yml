@@ -6,8 +6,19 @@
   vars:
     packages:
       - docker
-      - docker-compose
       - python-docker
+
+# Needed for Ansible compatibility
+- name: Ensure docker compose v1 is installed
+  ansible.builtin.pip:
+    name: docker-compose==1.29.2
+  when: docker_compose_version == 1
+
+- name: Ensure docker compose v2 is installed
+  community.general.pacman:
+    name: docker-compose
+    state: latest
+  when: docker_compose_version == 2
 
 # https://mikeshade.com/posts/docker-native-overlay-diff/
 # https://wiki.archlinux.org/title/Docker#Enable_native_overlay_diff_engine

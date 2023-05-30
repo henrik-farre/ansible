@@ -1,0 +1,59 @@
+---
+- name: Ensure NFS server is configured
+  become: true
+  tags:
+    - nfs-server
+  when: nfs_exports is defined
+  block:
+
+    - name: Ensure required packages are installed
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - nfs-utils
+
+    - name: Ensure directories in NFS root exists
+      ansible.builtin.file:
+        path: /srv/nfs/{{ item.name }}
+        state: directory
+        owner: root
+        group: root
+        mode: 0777
+      loop: "{{ nfs_exports }}"
+
+    - name: Ensure bind mount exists for exports
+      ansible.posix.mount:
+        path: "/srv/nfs/{{ item.name }}"
+        src: "{{ item.path }}"
+        opts: bind
+        state: mounted
+        fstype: none
+      loop: "{{ nfs_exports }}"
+
+    - name: Ensure /etc/exports is configured
+      ansible.builtin.template:
+        dest: /etc/exports
+        src: etc/exports.j2
+        mode: 0755
+        owner: root
+        group: root
+      notify:
+        - Reexport NFS
+
+    # https://wiki.archlinux.org/title/NFS#Starting_the_server
+    - name: Ensure unneeded services are masked
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        masked: true
+      loop:
+        - rpcbind.service
+        - rpcbind.socket
+        - nfs-server.service
+
+    - name: Ensure NFS v4 service is enabled and started
+      ansible.builtin.systemd:
+        name: nfsv4-server
+        state: started
+        enabled: true

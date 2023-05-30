@@ -1,0 +1,3 @@
+---
+syncthing:
+  hostname: "syncthing.{{ network.local_domain }}"

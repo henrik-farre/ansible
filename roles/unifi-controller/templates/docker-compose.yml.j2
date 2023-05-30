@@ -11,6 +11,8 @@ services:
       - /etc/localtime:/etc/localtime:ro
       - /etc/timezone:/etc/timezone:ro
       - /srv/unifi-controller/data/config:/config
+      - /srv/unifi-controller/data/backup:/backup
+      - /srv/unifi-controller/deploy/custom-cont-init.d:/custom-cont-init.d:ro
     ports:
       - 3478:3478/udp
       - 10001:10001/udp
@@ -28,7 +30,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.unifi.rule=Host(`{{ unifi.hostname }}`)"
       - "traefik.http.services.unifi.loadbalancer.server.port=8443"
-      - traefik.http.services.unifi.loadbalancer.server.scheme=https
+      - "traefik.http.services.unifi.loadbalancer.server.scheme=https"
       - "traefik.http.routers.unifi.entrypoints=https"
       - "traefik.http.routers.unifi.tls=true"
 
@@ -45,7 +47,6 @@ services:
 # 1900/udp – Required to Make controller discoverable on L2 network option
 # 6789 – For mobile throughput test
 # 5514/udp – Remote Syslog port
-
 
 networks:
   traefik:

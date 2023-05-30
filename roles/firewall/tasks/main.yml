@@ -1,28 +1,52 @@
 ---
 - name: Ensure firewall is configured
+  become: true
+  tags:
+    - firewall
   block:
+    - name: Ensure need packages are installed
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - ufw
+          - ufw-extras
+
+    - name: Ensure GUI client is installed
+      community.general.pacman:
+        name: "gufw"
+        state: latest
+      when: display_server is defined
+
+    - name: Ensure service is started
+      ansible.builtin.systemd:
+        name: ufw
+        state: started
+        enabled: true
+
     - name: Reset all rules
-      ufw:
+      community.general.ufw:
         state: reset
       changed_when: false
 
     # Reject instead of deny
     - name: Enable ufw
-      ufw:
+      community.general.ufw:
         state: enabled
         policy: reject
         logging: on
       changed_when: false
 
     - name: Allow OpenSSH
-      ufw:
+      community.general.ufw:
         rule: allow
         name: SSH
       changed_when: false
 
     - name: Ensure custom services are configured
-      ufw:
-        rule: "{{ item.rule|default('allow') }}"
+      community.general.ufw:
+        rule: "{{ item.rule | default('allow') }}"
         name: "{{ item.name }}"
       with_items:
         - "{{ firewall_services }}"
@@ -31,16 +55,13 @@
       changed_when: false
 
     - name: Ensure custom ports are configured
-      ufw:
-        rule: "{{ item.rule|default('allow') }}"
+      community.general.ufw:
+        rule: "{{ item.rule | default('allow') }}"
         port: "{{ item.port }}"
         proto: "{{ item.proto }}"
-        comment: "{{ item.comment|default(omit) }}"
+        comment: "{{ item.comment | default(omit) }}"
       with_items:
         - "{{ firewall_ports }}"
       when:
         - firewall_ports is defined
       changed_when: false
-  become: true
-  tags:
-    - firewall

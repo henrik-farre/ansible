@@ -1,0 +1,42 @@
+---
+- name: Install support for virtualbox guest
+  become: yes
+  when: ansible_virtualization_type == 'virtualbox'
+  tags:
+    - virtualbox-guest
+  block:
+    - name: Copy modules load file
+      ansible.builtin.copy:
+        src: etc/modules-load.d/virtualbox.conf
+        dest: /etc/modules-load.d/virtualbox.conf
+        owner: root
+        group: root
+        mode: 0640
+
+    - name: Install utils
+      ansible.builtin.package:
+        name: virtualbox-guest-utils-nox
+        state: present
+
+    - name: Enable services
+      ansible.builtin.systemd:
+        name: vboxservice
+        enabled: true
+        state: started
+
+- name: Install support for libvirt/kvm/qemu guest
+  become: yes
+  when: ansible_virtualization_type == 'kvm'
+  tags:
+    - libvirt-guest
+  block:
+    - name: Install agent
+      ansible.builtin.package:
+        name: qemu-guest-agent
+        state: present
+
+    # NOTE: does not like enabled: true
+    - name: Enable services
+      ansible.builtin.systemd:
+        name: qemu-guest-agent
+        state: started

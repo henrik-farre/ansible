@@ -1,5 +1,6 @@
 ---
 - name: Restart traefik container
+  become: true
   community.docker.docker_container:
     name: traefik
     state: started

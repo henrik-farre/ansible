@@ -1,0 +1,4 @@
+---
+- name: Reexport NFS
+  become: true
+  ansible.builtin.command: exportfs -ra
