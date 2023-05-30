@@ -261,7 +261,7 @@
 
           chown 999:adm "$BACKUP_MARIADB_LOCATION"
 
-          docker run --rm --name ha-mariadb-backup -ti --user mysql \
+          docker run --rm --name ha-mariadb-backup --user mysql \
             -v "${BACKUP_MARIADB_LOCATION}":/backup \
             -v /srv/home-assistant/data/mariadb/mysql/:/var/lib/mysql \
             -v home-assistant_mariadb-socket:/var/run/mysqld \
