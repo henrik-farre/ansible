@@ -1,0 +1,13 @@
+---
+- name: Ensure support for yoga laptop
+  become: true
+  tags:
+    - yoga
+  block:
+    - name: Ensure packages are installed
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - iio-sensor-proxy
