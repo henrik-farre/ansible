@@ -149,7 +149,12 @@
   gather_facts: no
   roles:
     - thinkpad
-    - samba-client
+
+- name: Setup for yogas
+  hosts: yoga
+  gather_facts: no
+  roles:
+    - yoga
 
 - name: Setup for MacBooks
   hosts: macbook

@@ -1,7 +1,9 @@
 ---
 - name: Install support for virtualbox guest
   become: yes
-  when: ansible_virtualization_type == 'virtualbox'
+  when:
+    - ansible_virtualization_role == 'guest'
+    - ansible_virtualization_type == 'virtualbox'
   tags:
     - virtualbox-guest
   block:
@@ -26,7 +28,9 @@
 
 - name: Install support for libvirt/kvm/qemu guest
   become: yes
-  when: ansible_virtualization_type == 'kvm'
+  when:
+    - ansible_virtualization_role == 'guest'
+    - ansible_virtualization_type == 'kvm'
   tags:
     - libvirt-guest
   block:

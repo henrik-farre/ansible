@@ -84,3 +84,5 @@
         - nvidia-suspend
         - nvidia-hibernate
         - nvidia-persistenced
+      when:
+        - "'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video | map(attribute='vendor') | list }}"

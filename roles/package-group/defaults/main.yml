@@ -42,6 +42,7 @@ package_groups:
     - efitools
     - efivar
     - ethtool
+    - udisks2
     - fwupd
     - glances
     - hdparm

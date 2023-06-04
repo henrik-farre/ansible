@@ -5,8 +5,12 @@
   remote_user: root
 
   roles:
+    - hostname
     - sudo
+    - timezone
     - facts
+    - systemd
+    - journald
     - kernel
     - modules
     - locale
@@ -17,11 +21,10 @@
     - users
     - cron
     - pacman
-    - { role: packages, packages: ['git', 'openssh', 'inetutils'] }
-    - { role: services, services: ['sshd'] }
-    - { role: virtualbox-guest, when: ansible_virtualization_type == 'virtualbox' }
+    - ntp
+    - users
 
-- name: Bootstrap laptops
+- name: Bootstrap laptops (2/4)
   gather_facts: true
   hosts: laptop
   remote_user: root
@@ -29,7 +32,7 @@
   roles:
     - { role: networking, wireless: true }
 
-- name: Bootstrap all (step 2/3)
+- name: Bootstrap all (step 3/4)
   hosts: all
   gather_facts: true
   remote_user: root
@@ -41,7 +44,7 @@
     - ssh-client
     - ssh-keys
 
-- name: Bootstrap all (step 3/3)
+- name: Bootstrap all (step 4/4)
   hosts: all
   gather_facts: true
   remote_user: root
