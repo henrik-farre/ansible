@@ -9,7 +9,7 @@ Host *
   ControlPath ~/.ssh/master-%r@%h:%p
   ControlPersist 300
 {% endif %}
-  IdentityFile ~/.ssh/id_{{ ssh.key_file|default('id_ed25519') }}
+  IdentityFile ~/.ssh/{{ ssh.key_file|default('id_ed25519') }}
 {% if ansible_os_family == 'Darwin' %}
   UseKeychain yes
   AddKeysToAgent yes
