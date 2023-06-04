@@ -2,27 +2,48 @@
 - name: Ensure spotify is installed
   become: true
   become_user: aur_builder
-  aur:
-    name: spotify
-  tags:
-    - spotify
   when: ansible_facts.distribution == 'Archlinux'
-
-- name: Ensure directory for spotify preferences exits
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.config/spotify"
-    state: directory
-    owner: "{{ ansible_user_id }}"
-    mode: 0700
   tags:
     - spotify
+  block:
+    - name: Download spotify gpg key
+      ansible.builtin.get_url:
+        url: https://download.spotify.com/debian/pubkey_7A3A762FAFD4A51F.gpg
+        dest: /tmp/spotify_key.gpg
+        mode: 0400
 
-- name: Ensure spotify user cache is limited to 512MB
-  ansible.builtin.lineinfile:
-    name: "{{ ansible_user_dir }}/.config/spotify/prefs"
-    regexp: '^storage.size='
-    line: 'storage.size=512'
-    state: present
-    create: yes
+    - name: Ensure GPG key is present
+      gpg_import:
+        key_file: /tmp/spotify_key.gpg
+        state: present
+      changed_when: false
+
+    - name: Ensure spotify is installed
+      aur:
+        name: spotify
+  always:
+    - name: Ensure files are cleaned up
+      ansible.builtin.file:
+        path: /tmp/spotify_key.gpg
+        state: absent
+
+- name: Ensure spotify is configured
+  when: ansible_facts.distribution == 'Archlinux'
   tags:
     - spotify
+  block:
+    - name: Ensure directory for spotify preferences exits
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/.config/spotify"
+        state: directory
+        owner: "{{ ansible_user_id }}"
+        mode: 0700
+
+    - name: Ensure spotify user cache is limited to 512MB
+      ansible.builtin.lineinfile:
+        name: "{{ ansible_user_dir }}/.config/spotify/prefs"
+        regexp: '^storage.size='
+        line: 'storage.size=512'
+        state: present
+        create: yes
+        mode: 0640
