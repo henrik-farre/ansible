@@ -166,7 +166,6 @@ package_groups:
 aur_package_groups:
   desktop:
     - aspell-da
-    - 1password
   development_utils:
     - shellcheck-bin
     - asdf-vm
