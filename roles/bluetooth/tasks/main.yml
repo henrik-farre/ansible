@@ -33,18 +33,6 @@
   tags:
     - bluetooth
 
-- name: Ensure bluetooth packages are installed in other desktop environments
-  become: true
-  community.general.pacman:
-    state: latest
-    name: "{{ packages }}"
-  vars:
-    packages:
-      - blueman
-  tags:
-    - bluetooth
-  when: desktop_environment != 'gnome'
-
 - name: Ensure bluetooth packages are installed in gnome
   become: true
   community.general.pacman:
@@ -108,25 +96,5 @@
   loop:
     - /etc/dbus-1/system.d/bluetooth.conf.pacnew
     - /etc/dbus-1/system.d/bluetooth.conf.pacsave
-  tags:
-    - bluetooth
-
-# https://wiki.archlinux.org/index.php/Blueman#Permissions
-- name: Allow useers in the wheel group to access blueman funtionality
-  become: true
-  ansible.builtin.copy:
-    dest: /etc/polkit-1/rules.d/99-blueman.rules
-    content: |
-      /* Managed by Ansible */
-      /* Allow users in wheel group to use blueman feature requiring root without authentication */
-      polkit.addRule(function(action, subject) {
-          if ((action.id == "org.blueman.network.setup" ||
-              action.id == "org.blueman.dhcp.client" ||
-              action.id == "org.blueman.rfkill.setstate" ||
-              action.id == "org.blueman.pppd.pppconnect") &&
-              subject.isInGroup("wheel")) {
-              return polkit.Result.YES;
-          }
-      });
   tags:
     - bluetooth
