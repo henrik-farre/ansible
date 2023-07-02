@@ -1,0 +1,40 @@
+---
+- name: Ensure Samba server is configured
+  become: true
+  tags:
+    - samba-server
+  block:
+    - name: Ensure required packages are installed
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - samba
+          - avahi
+
+    - name: Ensure samba is configured
+      ansible.builtin.copy:
+        src: etc/samba/smb.conf.vault
+        dest: /etc/samba/smb.conf
+        owner: root
+        group: root
+        mode: 0644
+
+    - name: Ensure samba users are configured
+      ansible.builtin.shell: "printf '{{ item.password }}\n{{ item.password }}\n' | smbpasswd -a {{ item.name }}"
+      loop: "{{ users }}"
+      when:
+        - users is defined
+        - item.samba is defined and item.samba
+      no_log: true
+
+    - name: Ensure needed services are enabled and startet
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: yes
+      loop:
+        - avahi-daemon
+        - smb
+        - nmb
