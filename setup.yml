@@ -115,6 +115,7 @@
   roles:
     - apparmor
     - nfs-server
+    - samba-server
     - traefik
     - virtual-machines
     - photoprism

@@ -1,5 +1,6 @@
 ---
 - name: Ensure users are provisioned
+  become: true
   tags:
     - users
   block:
@@ -16,17 +17,25 @@
       when:
         - users is defined
 
+    - name: Ensure groups exists
+      ansible.builtin.group:
+        name: "{{ item.group | default(item.name) }}"
+        state: present
+      loop: "{{ users }}"
+      when:
+        - users is defined
+
     - name: Ensure users exists
-      become: true
       ansible.builtin.user:
         name: "{{ item.name }}"
-        shell: "/bin/{{ item.shell | default('bash') }}"
-        home: "/{{ users_home_base }}/{{ item.name }}"
-        group: "{{ item.group | default('users') }}"
+        shell: "{{ '/bin/' + item.shell | default('/bin/bash') }}"
+        home: "{{ item.home | default('/' + users_home_base +'/'+ item.name ) }}"
+        group: "{{ item.group | default(item.name) }}"
         groups: "{{ item.groups }}"
         comment: "{{ item.comment | default(omit) }}"
         append: yes
         password: "{{ item.password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string, rounds=10000) }}"
+        password_lock: "{{ item.password_lock | default(false) }}"
       loop: "{{ users }}"
       when:
         - users is defined
@@ -42,7 +51,6 @@
         - groups_to_users.sudo is defined
 
     - name: Clean up users
-      become: true
       ansible.builtin.user:
         name: "{{ item }}"
         state: absent

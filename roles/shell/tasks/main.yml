@@ -10,5 +10,7 @@
   ansible.builtin.include_tasks:
     file: "{{ item }}.yml"
   loop: "{{ shells }}"
+  when:
+    - item != 'nologin'
   tags:
     - shell
