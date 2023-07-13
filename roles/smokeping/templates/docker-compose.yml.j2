@@ -4,7 +4,7 @@ services:
   smokeping:
     container_name: smokeping
     hostname: {{ smokeping.hostname }}
-    image: quay.io/linuxserver.io/smokeping:2.7.3
+    image: {{ containers.smokeping.repo }}:{{ containers.smokeping.tag }}
     environment:
       TZ: Europe/Copenhagen
       PUID: 1000

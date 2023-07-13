@@ -2,7 +2,7 @@
 version: '3'
 services:
   homeassistant:
-    image: ghcr.io/home-assistant/home-assistant:2023.4.2
+    image: {{ containers.homeassistant.repo }}:{{ containers.homeassistant.tag }}
     container_name: home-assistant
     network_mode: host
     extra_hosts:
@@ -31,7 +31,7 @@ services:
       retries: 2
 
   mariadb:
-    image: mariadb:10.10.2
+    image: {{ containers.ha_mariadb.repo }}:{{ containers.ha_mariadb.tag }}
     container_name: home-assistant-mariadb
     environment:
       TZ: Europe/Copenhagen
@@ -48,7 +48,7 @@ services:
     restart: unless-stopped
 
   mosquitto:
-    image: eclipse-mosquitto:2.0.15
+    image: {{ containers.mosquitto.repo }}:{{ containers.mosquitto.tag }}
     container_name: home-assistant-mosquitto
     environment:
       TZ: Europe/Copenhagen
@@ -68,7 +68,7 @@ services:
     restart: unless-stopped
 
   zigbee2mqtt:
-    image: koenkk/zigbee2mqtt:1.30.3
+    image: {{ containers.zigbee2mqtt.repo }}:{{ containers.zigbee2mqtt.tag }}
     container_name: home-assistant-zigbee2mqtt
     volumes:
       - /etc/localtime:/etc/localtime:ro
@@ -99,7 +99,7 @@ services:
       - "traefik.http.routers.zigbee2mqtt.entrypoints=http"
 
   cloudflared:
-    image: cloudflare/cloudflared:2023.5.0
+    image: {{ containers.cloudflared.repo }}:{{ containers.cloudflared.tag }}
     container_name: home-assistant-cloudflared
     restart: unless-stopped
     volumes:

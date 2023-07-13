@@ -47,9 +47,11 @@
         dest: /srv/photoprism/scripts/backup-photoprism.sh
         content: |
           #!/bin/bash
-          /usr/bin/docker-compose exec --no-TTY photoprism photoprism backup --index - | gzip > /shared/backup/photoprism/$(date +"%Y-%m-%d").sql.gz
-          /usr/bin/docker-compose exec --no-TTY photoprism photoprism backup --albums --albums-path /photoprism/storage/albums-backup/
-          /usr/bin/tar Jcvf /shared/backup/photoprism/$(date +"%Y-%m-%d")-albums-backup.xz /srv/photoprism/data/photoprism/storage/albums-backup
+          set -o errexit
+
+          /usr/bin/docker-compose -p photoprism exec -T photoprism photoprism backup --index - | gzip > /shared/backup/photoprism/$(date +"%Y-%m-%d").sql.gz
+          /usr/bin/docker-compose -p photoprism exec -T photoprism photoprism backup --albums --albums-path /photoprism/storage/albums-backup/
+          /usr/bin/tar zcvf /shared/backup/photoprism/$(date +"%Y-%m-%d")-albums-backup.tar.gz /srv/photoprism/data/photoprism/storage/albums-backup
         mode: 0750
 
     - name: Install systemd services for backup
