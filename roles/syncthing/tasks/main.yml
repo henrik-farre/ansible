@@ -27,7 +27,7 @@
         owner: root
         group: docker
 
-    # - name: Deploy Docker Compose stack
-    #   community.docker.docker_compose:
-    #     project_name: syncthing
-    #     project_src: /srv/syncthing/deploy
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_name: syncthing
+        project_src: /srv/syncthing/deploy
