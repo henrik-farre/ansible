@@ -265,15 +265,15 @@
             -v "${BACKUP_MARIADB_LOCATION}":/backup \
             -v /srv/home-assistant/data/mariadb/mysql/:/var/lib/mysql \
             -v home-assistant_mariadb-socket:/var/run/mysqld \
-            mariadb:10.10.2 \
+            {{ containers.ha_mariadb.repo }}:{{ containers.ha_mariadb.tag }} \
             mariabackup --backup --target-dir=/backup -u root -p "{{ homeassistant.db.root_password }}"
 
-          /usr/bin/tar Jcvf ${BACKUP_LOCATION}/mariadb.tar.xz "${BACKUP_MARIADB_LOCATION}"
+          /usr/bin/tar zcvf ${BACKUP_LOCATION}/mariadb.tar.gz "${BACKUP_MARIADB_LOCATION}"
 
           rm -rvf --preserve-root=all "${BACKUP_MARIADB_LOCATION}"
 
           for service in home-assistant mosquitto zigbee2mqtt; do
-            /usr/bin/tar Jcvf ${BACKUP_LOCATION}/${service}.tar.xz /srv/home-assistant/data/${service}
+            /usr/bin/tar zcvf ${BACKUP_LOCATION}/${service}.tar.gz /srv/home-assistant/data/${service}
           done
         mode: 0750
 
