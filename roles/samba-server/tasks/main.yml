@@ -32,6 +32,14 @@
         - item.samba is defined and item.samba
       no_log: true
 
+    - name: Ensure paths are allowed in AppArmor
+      ansible.builtin.copy:
+        src: etc/apparmor.d/local/usr.sbin.smbd.vault
+        dest: etc/apparmor.d/local/usr.sbin.smbd
+        owner: root
+        group: root
+        mode: 0644
+
     - name: Ensure needed services are enabled and startet
       ansible.builtin.systemd:
         name: "{{ item }}"
