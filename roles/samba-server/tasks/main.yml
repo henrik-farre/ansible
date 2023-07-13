@@ -22,8 +22,11 @@
         mode: 0644
 
     - name: Ensure samba users are configured
-      ansible.builtin.shell: "printf '{{ item.password }}\n{{ item.password }}\n' | smbpasswd -a {{ item.name }}"
+      ansible.builtin.shell: |
+        set -o pipefail
+        printf '{{ item.password }}\n{{ item.password }}\n' | smbpasswd -a "{{ item.name }}"
       loop: "{{ users }}"
+      changed_when: false
       when:
         - users is defined
         - item.samba is defined and item.samba
