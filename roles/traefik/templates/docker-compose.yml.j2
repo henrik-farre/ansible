@@ -3,7 +3,7 @@ version: '3'
 
 services:
   traefik:
-    image: traefik:2.10.1
+    image: {{ containers.traefik.repo }}:{{ containers.traefik.tag }}
     container_name: traefik
     networks:
       - traefik
@@ -14,9 +14,13 @@ services:
       TZ: 'Europe/Copenhagen'
       CLOUDFLARE_EMAIL: {{ email_addresses.external }}
       CLOUDFLARE_DNS_API_TOKEN: {{ traefik.acme.cloudflare.token }}
+      CLOUDFLARE_POLLING_INTERVAL: 60
+      CLOUDFLARE_PROPAGATION_TIMEOUT: 360
     volumes:
       - /etc/localtime:/etc/localtime:ro
+{% if ansible_facts.distribution == 'Debian' %}
       - /etc/timezone:/etc/timezone:ro
+{% endif %}
       - /run/docker.sock:/run/docker.sock:ro
       - /srv/traefik/data/static:/etc/traefik:ro
       - /srv/traefik/data/dynamic:/etc/traefik-dynamic/:ro
