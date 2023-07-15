@@ -11,3 +11,4 @@
       vars:
         packages:
           - iio-sensor-proxy
+          - ibus-typing-booster
