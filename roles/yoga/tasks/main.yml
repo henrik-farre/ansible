@@ -12,3 +12,10 @@
         packages:
           - iio-sensor-proxy
           - ibus-typing-booster
+          - hunspell-en_gb
+
+    - name: Ensure danish hunspell is installed
+      become: true
+      become_user: aur_builder
+      aur:
+        name: hunspell-da
