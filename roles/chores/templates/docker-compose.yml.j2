@@ -1,0 +1,24 @@
+version: "3"
+
+services:
+  chores:
+    container_name: chores
+    hostname: {{ chores.hostname }}
+    image: local/chores
+    build: /srv/chores/deploy/code/
+
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/chores/data/:/data
+    restart: unless-stopped
+    networks:
+      - "traefik"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.chores.rule=Host(`{{ chores.hostname }}`)"
+      - "traefik.http.services.chores.loadbalancer.server.port=5000"
+      - "traefik.http.routers.chores.entrypoints=http"
+
+networks:
+  traefik:
+    external: true

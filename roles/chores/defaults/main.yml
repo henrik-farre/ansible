@@ -1,0 +1,3 @@
+---
+chores:
+  hostname: "lommepenge.{{ network.local_domain }}"

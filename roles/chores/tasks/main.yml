@@ -1,0 +1,42 @@
+---
+- name: Ensure chores is installed and configured
+  become: true
+  tags:
+    - chores
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/chores/{{ item.path }}"
+        state: directory
+        mode: 0775
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data
+          owner: 999
+          group: docker
+        - path: deploy
+          owner: root
+          group: docker
+        - path: deploy/code
+          owner: enrique
+          group: docker
+
+    - name: Read-write git checkout from github
+      become: false
+      ansible.builtin.git:
+        repo: git@github.com:henrik-farre/chores.git
+        dest: /srv/chores/deploy/code/
+
+    - name: Ensure docker-compose.yml exists for chores
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/chores/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_name: chores
+        project_src: /srv/chores/deploy
