@@ -1,0 +1,36 @@
+---
+- name: Ensure jellyfin is installed and configured
+  become: true
+  tags:
+    - jellyfin
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/jellyfin/{{ item.path }}"
+        state: directory
+        mode: 0775
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data/config
+          owner: "{{ jellyfin.uid }}"
+          group: "{{ jellyfin.gid }}"
+        - path: data/config
+          owner: "{{ jellyfin.uid }}"
+          group: "{{ jellyfin.gid }}"
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yml exists for jellyfin
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/jellyfin/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose:
+        project_name: jellyfin
+        project_src: /srv/jellyfin/deploy

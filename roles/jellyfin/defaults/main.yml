@@ -1,0 +1,5 @@
+---
+jellyfin:
+  hostname: "jellyfin.{{ network.local_domain }}"
+  uid: 1001
+  gid: 984

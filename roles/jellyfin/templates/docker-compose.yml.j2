@@ -1,0 +1,41 @@
+---
+version: '3.9'
+
+services:
+  jellyfin:
+    image: jellyfin/jellyfin:10.8.10
+    hostname: {{ jellyfin.hostname }}
+    container_name: jellyfin
+    user: {{ jellyfin.uid }}:{{ jellyfin.gid }}
+    devices:
+      - /dev/dri/card0:/dev/dri/renderD128
+    volumes:
+      - /srv/jellyfin/data/config:/config
+      - /srv/jellyfin/data/cache:/cache
+      - /shared/pictures:/media/pictures:ro
+      - /shared/clips:/media/clips:ro
+      - /shared/movies:/media/movies:ro
+      - /shared/series:/media/series:ro
+    environment:
+      TZ: Europe/Copenhagen
+    restart: unless-stopped
+    networks:
+      traefik: {}
+      macvlan:
+        ipv4_address: 192.168.0.66
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.jellyfin.rule=Host(`{{ jellyfin.hostname }}`)"
+      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
+      - "traefik.http.routers.jellyfin.entrypoints=http"
+
+networks:
+  traefik:
+    external: true
+  macvlan:
+    driver: macvlan
+    driver_opts:
+      parent: enp86s0
+    ipam:
+      config:
+        - subnet: 192.168.0.0/24
