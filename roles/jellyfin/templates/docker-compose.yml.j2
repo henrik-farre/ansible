@@ -8,7 +8,7 @@ services:
     container_name: jellyfin
     user: {{ jellyfin.uid }}:{{ jellyfin.gid }}
     devices:
-      - /dev/dri/card0:/dev/dri/renderD128
+      - /dev/dri/renderD128:/dev/dri/renderD128
     volumes:
       - /srv/jellyfin/data/config:/config
       - /srv/jellyfin/data/cache:/cache
