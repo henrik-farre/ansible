@@ -86,6 +86,9 @@ package_groups:
     - jq
     - go-yq
     - packer
+    # for hashing passwords in ansible
+    - python-passlib
+    - python-pbkdf2
     - python-pre-commit
     - python-debugpy
   net_utils:

@@ -111,6 +111,36 @@ services:
       - traefik
     command: tunnel --no-autoupdate run --token {{ homeassistant.cloudflared.token }}
 
+  whisper:
+    image: {{ containers.whisper.repo }}:{{ containers.whisper.tag }}
+    container_name: home-assistant-whisper
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Copenhagen
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/home-assistant/data/whisper:/data
+    command: [ "--model", "medium-int8", "--language", "da" ]
+    networks:
+      home-assistant-internal:
+        ipv4_address: 172.16.238.40
+
+  piper:
+    image: {{ containers.piper.repo }}:{{ containers.piper.tag }}
+    container_name: home-assistant-piper
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Copenhagen
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/home-assistant/data/piper:/data
+    command: [ "--voice", "da_DK-talesyntese-medium" ]
+    networks:
+      home-assistant-internal:
+        ipv4_address: 172.16.238.30
+
 volumes:
   mariadb-socket:
 
