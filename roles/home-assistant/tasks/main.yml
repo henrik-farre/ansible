@@ -78,6 +78,12 @@
         - path: data/zigbee2mqtt
           owner: root
           group: docker
+        - path: data/whisper
+          owner: root
+          group: docker
+        - path: data/piper
+          owner: root
+          group: docker
         - path: deploy
           owner: root
           group: docker
