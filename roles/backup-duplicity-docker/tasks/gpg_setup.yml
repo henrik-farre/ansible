@@ -31,7 +31,7 @@
     - backup
 
 - name: Import gpg keys
-  shell: echo "{{ duplicity.passphrase }}" | gpg --passphrase-fd 0 --import private.asc # noqa 306
+  shell: echo "{{ duplicity_config.gpg.passphrase }}" | gpg --passphrase-fd 0 --import private.asc # noqa 306
   args:
     chdir: "/root/.gnupg"
   tags:

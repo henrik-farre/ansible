@@ -36,6 +36,7 @@
 - **/.local/share/gvfs-metadata
 - **/.local/share/recently-used.xbel*
 - **/.macromedia
+- **/.minecraft
 - **/.mozilla/firefox/*/.parentlock
 - **/.mozilla/firefox/*/Cache
 - **/.mozilla/firefox/*/XPC.mfasl
@@ -68,6 +69,7 @@
 - **/Downloads
 - **/Emulation
 - **/FiraxisLive
+- **/Hentet
 - **/Hentninger
 - **/Media/
 - **/StarCraft II

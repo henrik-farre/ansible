@@ -1,0 +1,9 @@
+---
+duplicity_config:
+  ssh_config: "{{ vaulted_duplicity.ssh_config }}"
+  gpg:
+    encrypt_key: "{{ vaulted_duplicity.gpg.encrypt_key }}"
+    passphrase: "{{ vaulted_duplicity.gpg.passphrase }}"
+  remote:
+    dir_base: "{{ vaulted_duplicity.remote.dir_base }}"
+    host: "{{ vaulted_duplicity.remote.host }}"
