@@ -1,8 +1,4 @@
 ---
-- name: Ensure vaulted vars are loaded
-  ansible.builtin.include_vars:
-    file: backup_duplicity.yml.vault
-
 - name: Ensure ~root/.ssh exists
   ansible.builtin.file:
     path: /root/.ssh
@@ -34,14 +30,14 @@
     marker: "# {mark} ANSIBLE MANAGED BLOCK backup_host"
     mode: 0400
   vars:
-    ssh_config: "{{ vaulted_backup_duplicity_ssh_config }}"
+    ssh_config: "{{ duplicity_config.ssh_config }}"
   tags:
     - backup
 
 - name: Import ssh host key
   ansible.builtin.known_hosts:
     path: /root/.ssh/known_hosts
-    name: "{{ duplicity.remote_host }}"
-    key: "{{ lookup('pipe', 'ssh-keyscan -t rsa {{ duplicity.remote_host }}') }}"
+    name: "{{ duplicity_config.remote.host }}"
+    key: "{{ lookup('pipe', 'ssh-keyscan {{ duplicity_config.remote.host }}') }}"
   tags:
     - backup

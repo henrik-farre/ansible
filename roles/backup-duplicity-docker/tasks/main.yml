@@ -5,8 +5,12 @@
     - backup
     - duplicity-backup
   block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: backup_duplicity.yml.vault
+
     - name: Include cleanup tasks
-      include_tasks: cleanup.yml
+      ansible.builtin.include_tasks: cleanup.yml
 
     - name: Ensure directory exist
       ansible.builtin.file:
@@ -52,10 +56,10 @@
         - duplicity.excludes is defined
 
     - name: Include ssh setup tasks
-      include_tasks: ssh_setup.yml
+      ansible.builtin.include_tasks: ssh_setup.yml
 
     - name: Include gpg setup tasks
-      include_tasks: gpg_setup.yml
+      ansible.builtin.include_tasks: gpg_setup.yml
 
     - name: Install systemd services
       ansible.builtin.copy:
@@ -151,7 +155,7 @@
 
   always:
     - name: Ensure latest docker image is pulled
-      docker_image:
+      community.docker.docker_image:
         name: rockhopperdk/duplicity-docker:latest
         source: pull
 
