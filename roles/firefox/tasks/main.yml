@@ -29,6 +29,7 @@
         dest: "{{ ansible_user_dir }}/.mozilla/firefox/"
         owner: "{{ ansible_user_id }}"
         mode: 0640
+      when: firefox_profiles
 
     - name: Install user prefs pr profile
       ansible.builtin.template:
