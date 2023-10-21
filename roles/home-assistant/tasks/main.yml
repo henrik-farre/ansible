@@ -84,6 +84,12 @@
         - path: data/piper
           owner: root
           group: docker
+        - path: data/victoriametrics/storage
+          owner: root
+          group: docker
+        - path: data/victoriametrics/prometheus
+          owner: root
+          group: docker
         - path: deploy
           owner: root
           group: docker
@@ -151,6 +157,14 @@
         group: docker
       when:
         - zigbee2mqtt_config.stat.exists is defined and not zigbee2mqtt_config.stat.exists
+
+    - name: Ensure prometheus.yml exists for victoriametrics
+      ansible.builtin.template:
+        src: prometheus.yml.j2
+        dest: /srv/home-assistant/data/victoriametrics/prometheus/prometheus.yml
+        mode: 0664
+        owner: root
+        group: docker
 
     - name: Ensure docker-compose.yml exists for home assistant
       ansible.builtin.template:
@@ -224,6 +238,15 @@
         block: |
           # https://www.home-assistant.io/integrations/bluetooth/
           bluetooth:
+      notify: Restart home-assistant container
+
+    - name: Ensure prometheus is enabled
+      ansible.builtin.blockinfile:
+        path: /srv/home-assistant/data/home-assistant/config/configuration.yaml
+        marker: "# {mark} ANSIBLE MANAGED BLOCK prometheus"
+        block: |
+          # https://www.home-assistant.io/integrations/prometheus
+          prometheus:
       notify: Restart home-assistant container
 
     - name: Check existing HACS installation

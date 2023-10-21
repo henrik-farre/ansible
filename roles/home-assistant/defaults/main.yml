@@ -17,3 +17,6 @@ homeassistant:
     salt: "{{ vaulted_ha.mosquitto.salt }}"
   cloudflared:
     token: "{{ vaulted_ha.cloudflared.token }}"
+  victoriametrics:
+    hostname: "victoriametrics.{{ inventory_hostname }}.{{ network.local_domain }}"
+    token: "{{ vaulted_ha.victoriametrics.token }}"
