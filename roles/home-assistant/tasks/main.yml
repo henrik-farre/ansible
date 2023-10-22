@@ -76,7 +76,7 @@
           owner: 1883
           group: 1883
         - path: data/zigbee2mqtt
-          owner: root
+          owner: 472
           group: docker
         - path: data/whisper
           owner: root
@@ -88,6 +88,9 @@
           owner: root
           group: docker
         - path: data/victoriametrics/prometheus
+          owner: root
+          group: docker
+        - path: data/grafana/storage
           owner: root
           group: docker
         - path: deploy

@@ -20,3 +20,5 @@ homeassistant:
   victoriametrics:
     hostname: "victoriametrics.{{ inventory_hostname }}.{{ network.local_domain }}"
     token: "{{ vaulted_ha.victoriametrics.token }}"
+  grafana:
+    hostname: "grafana.{{ inventory_hostname }}.{{ network.local_domain }}"

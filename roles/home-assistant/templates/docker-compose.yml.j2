@@ -165,6 +165,26 @@ services:
     networks:
       traefik:
 
+  grafana:
+    container_name: home-assistant-grafana
+    image: {{ containers.grafana.repo }}:{{ containers.grafana.tag }}
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Copenhagen
+    depends_on:
+      - "victoriametrics"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - /srv/home-assistant/data/grafana/storage:/var/lib/grafana
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`{{ homeassistant.grafana.hostname }}`)"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana.entrypoints=http"
+    networks:
+      traefik:
+
 volumes:
   mariadb-socket:
 
