@@ -157,6 +157,7 @@ services:
       - "-httpListenAddr=:8428"
       - "-retentionPeriod=5y"
       - "-promscrape.config=/etc/prometheus/prometheus.yml"
+      - "-selfScrapeInterval=30s"
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.victoriametrics.rule=Host(`{{ homeassistant.victoriametrics.hostname }}`)"
