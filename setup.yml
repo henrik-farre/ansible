@@ -123,6 +123,8 @@
     # - kodi-shutdown-check
     # - getmail
     - backup-rclone
+    - chores
+    - jellyfin
 
 - name: Laptop setup
   hosts: laptop

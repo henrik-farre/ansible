@@ -28,6 +28,8 @@
         group: docker
 
     - name: Deploy Docker Compose stack
-      community.docker.docker_compose:
-        project_name: syncthing
+      ansible.builtin.include_role:
+        name: docker_compose_shim
+      vars:
+        project_name: syncthing # noqa: var-naming
         project_src: /srv/syncthing/deploy

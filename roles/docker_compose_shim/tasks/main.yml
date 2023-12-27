@@ -1,0 +1,7 @@
+---
+# Wrapper to run docker compose v2
+- name: Run docker compose v2 # noqa: no-changed-when
+  ansible.builtin.command:
+    cmd: /usr/bin/docker compose --project-name "{{ project_name }}" "{{ action | default('up') }}" --wait
+  args:
+    chdir: "{{ project_src }}"
