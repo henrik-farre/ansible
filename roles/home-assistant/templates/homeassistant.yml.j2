@@ -1,0 +1,11 @@
+- job_name: 'homeassistant'
+  scrape_interval: 60s
+  metrics_path: /api/prometheus
+
+  # Long-Lived Access Token
+  authorization:
+    credentials: "{{ homeassistant.victoriametrics.token }}"
+
+  scheme: https
+  static_configs:
+    - targets: ['{{ homeassistant.hostnames[0] }}']
