@@ -1,27 +1,4 @@
 ---
-# - name: Ensure dependencies are installed
-#   ansible.builtin.apt:
-#     name: "{{ packages }}"
-#     state: latest
-#   vars:
-#     packages:
-#       - apt-transport-https
-#       - ca-certificates
-#       - curl
-#       - gnupg2
-#       - software-properties-common
-
-# - name: Get docker repo apt key
-#   ansible.builtin.apt_key:
-#     url: https://download.docker.com/linux/debian/gpg
-#     keyring: /etc/apt/trusted.gpg.d/docker.gpg
-
-# - name: Add docker repository
-#   ansible.builtin.apt_repository:
-#     repo: deb https://download.docker.com/linux/debian {{ ansible_facts.distribution_release }} stable
-#     state: present
-#     filename: 'docker-ce'
-
 - name: Install docker
   ansible.builtin.apt:
     name: "{{ packages }}"
