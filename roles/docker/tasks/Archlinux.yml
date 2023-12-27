@@ -1,5 +1,5 @@
 ---
-# Currently Ansible is not compatiable with docker compose v2, use docker_compose_shim role instead
+# Currently Ansible is not compatible with docker compose v2, use docker_compose_shim role instead
 - name: Ensure Docker and related packages are installed
   community.general.pacman:
     name: "{{ packages }}"
