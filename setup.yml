@@ -123,6 +123,7 @@
     # - kodi-shutdown-check
     # - getmail
     - backup-rclone
+    - chores
 
 - name: Laptop setup
   hosts: laptop
