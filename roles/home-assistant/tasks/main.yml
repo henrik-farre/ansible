@@ -90,6 +90,9 @@
         - path: data/victoriametrics/prometheus
           owner: root
           group: docker
+        - path: data/victoriametrics/prometheus/conf.d
+          owner: root
+          group: docker
         - path: data/grafana/storage
           owner: 472
           group: docker
@@ -165,6 +168,14 @@
       ansible.builtin.template:
         src: prometheus.yml.j2
         dest: /srv/home-assistant/data/victoriametrics/prometheus/prometheus.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Ensure scrape config for Home Assistant exists
+      ansible.builtin.template:
+        src: homeassistant.yml.j2
+        dest: /srv/home-assistant/data/victoriametrics/prometheus/conf.d/homeassistant.yml
         mode: 0664
         owner: root
         group: docker
