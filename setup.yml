@@ -90,7 +90,7 @@
     - solaar
     - signal-desktop
     - zim
-    - weechat
+    # - weechat
     # - node
     - firefox
     - systemd-user-units
