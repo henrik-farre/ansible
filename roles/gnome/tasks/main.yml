@@ -35,32 +35,32 @@
       ansible.builtin.file:
         state: directory
         path: "{{ ansible_user_dir }}/.local/bin/"
-        mode: 0750
+        mode: 0700
 
     - name: Ensure ~/.config/autostart/ exists
       ansible.builtin.file:
         state: directory
         path: "{{ ansible_user_dir }}/.config/autostart/"
-        mode: 0750
+        mode: 0700
 
     - name: Ensure ~/.config/autostart/ exists
       ansible.builtin.file:
         state: directory
         path: "{{ ansible_user_dir }}/.config/gtk-4.0/"
-        mode: 0750
+        mode: 0700
 
     - name: Ensure gnome first startup script is installed
       ansible.builtin.copy:
         dest: "{{ ansible_user_dir }}/.local/bin/gnome-first-start.sh"
         src: "local/bin/gnome-first-start.sh"
-        mode: 0750
+        mode: 0700
       notify: Remove gnome first start done file
 
     - name: Ensure desktop file for first start is installed
       ansible.builtin.template:
         dest: "{{ ansible_user_dir }}/.config/autostart/gnome-first-start.desktop"
         src: gnome-first-start.desktop.j2
-        mode: 0640
+        mode: 0600
 
     - name: Check if gtk4 settings exists
       ansible.builtin.stat:
@@ -81,5 +81,14 @@
         content: |
           [Settings]
           gtk-hint-font-metrics=1
-        mode: 0640
+        mode: 0600
       when: not gtk4_settings.stat.exists
+
+    - name: Ensure SSH_AUTH_SOCK is defined in /etc/security/pam_env.conf
+      become: true
+      ansible.builtin.blockinfile:
+        dest: /etc/security/pam_env.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK gcr"
+        block: |
+          # https://wiki.archlinux.org/title/GNOME/Keyring#SSH_keys
+          SSH_AUTH_SOCK    DEFAULT=${XDG_RUNTIME_DIR}/gcr/ssh
