@@ -165,6 +165,7 @@ services:
       - "traefik.http.routers.victoriametrics.entrypoints=http"
     networks:
       traefik:
+      metrics-internal:
 
   grafana:
     container_name: home-assistant-grafana
@@ -186,6 +187,18 @@ services:
     networks:
       traefik:
 
+  speedtest:
+    container_name: home-assistant-speedtest
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Copenhagen
+    image: {{ containers.speedtest.repo }}:{{ containers.speedtest.tag }}
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+    networks:
+      metrics-internal:
+
 volumes:
   mariadb-socket:
 
@@ -197,3 +210,4 @@ networks:
       driver: default
       config:
         - subnet: "172.16.238.0/24"
+  metrics-internal:
