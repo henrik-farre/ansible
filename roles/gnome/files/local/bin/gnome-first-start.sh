@@ -75,21 +75,31 @@ gsettings set org.gnome.desktop.interface font-hinting 'slight'
 # Theme settings
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 
-EXPERIMENTAL_FEATURES=$(zenity --list --checklist --width 500 --height 200 \
+EXPERIMENTAL_FEATURES=$(zenity --list --checklist --width 500 --height 400 \
   --title 'Select Mutter experimental features' \
   --text 'Select features to enable' \
-  --column 'enable' \
+  --column 'Enable' \
   --column 'Key' \
   --column 'Comment' \
   FALSE 'kms-modifiers' 'Nvidia Mutter support' \
-  FALSE 'scale-monitor-framebuffer' 'Fractional scaling')
+  FALSE 'scale-monitor-framebuffer' 'Fractional scaling' \
+  FALSE 'variable-refresh-rate' 'Variable refresh rate')
 
-if [[ $EXPERIMENTAL_FEATURES == "kms-modifiers|scale-monitor-framebuffer" ]]; then
-  gsettings set org.gnome.mutter experimental-features "['kms-modifiers','scale-monitor-framebuffer']"
-elif [[ $EXPERIMENTAL_FEATURES == "kms-modifiers" ]]; then
-  gsettings set org.gnome.mutter experimental-features "['kms-modifiers']"
-elif [[ $EXPERIMENTAL_FEATURES == "scale-monitor-framebuffer" ]]; then
-  gsettings set org.gnome.mutter experimental-features "['scale-monitor-framebuffer']"
+if [[ "x$EXPERIMENTAL_FEATURES" != 'x' ]]; then
+  SELECTED_EXPERIMENTAL_FEATURES=()
+
+  OLD_IFS=$IFS
+
+  IFS="|" ; for FEAT in $EXPERIMENTAL_FEATURES ; do
+    SELECTED_EXPERIMENTAL_FEATURES+=("'$FEAT'")
+  done
+
+  IFS=$OLD_IFS
+
+  FORMATTED=$(printf ",%s" "${SELECTED_EXPERIMENTAL_FEATURES[@]}")
+  FORMATTED=${FORMATTED:1}
+
+  gsettings set org.gnome.mutter experimental-features "[$FORMATTED]"
 fi
 
 touch ~/.local/bin/gnome-first-start.sh.done
