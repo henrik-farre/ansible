@@ -24,8 +24,8 @@ BINARIES=()
 FILES=()
 
 # Hooks are referred to by their name, and executed in the order they exist in the HOOKS array of the configuration file.
-HOOKS=(base udev autodetect modconf kms keyboard keymap)
-{% if ansible_facts.form_factor in ['Laptop', 'Notebook'] %}
+HOOKS=(base udev autodetect microcode modconf kms keyboard keymap)
+{% if ansible_facts.form_factor in ['Laptop', 'Notebook', 'Convertible'] %}
 HOOKS+=(consolefont)
 {% endif %}
 {% if ansible_facts.cmdline.cryptdevice is defined %}

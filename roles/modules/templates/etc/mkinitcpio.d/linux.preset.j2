@@ -4,7 +4,6 @@
 
 ALL_config="/etc/mkinitcpio.conf"
 ALL_kver="/boot/vmlinuz-linux{% if linux_kernel_variant is defined %}-{{ linux_kernel_variant }}{% endif %}"
-ALL_microcode=(/boot/*-ucode.img)
 
 PRESETS=('default' 'fallback')
 
