@@ -174,7 +174,7 @@
 
     - name: Ensure scrape config for Home Assistant exists
       ansible.builtin.template:
-        src: homeassistant.yml.j2
+        src: prometheus/homeassistant.yml.j2
         dest: /srv/home-assistant/data/victoriametrics/prometheus/conf.d/homeassistant.yml
         mode: 0664
         owner: root
@@ -182,7 +182,7 @@
 
     - name: Ensure scrape config for speedtest exists
       ansible.builtin.template:
-        src: speedtest.yml.j2
+        src: prometheus/speedtest.yml.j2
         dest: /srv/home-assistant/data/victoriametrics/prometheus/conf.d/speedtest.yml
         mode: 0664
         owner: root
