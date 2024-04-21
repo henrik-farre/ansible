@@ -2,6 +2,7 @@
 package_groups:
   base_utils:
     - bash
+    - bat
     - bzip2
     - fd
     - fzf
@@ -10,14 +11,15 @@ package_groups:
     - htop
     - man-db
     - ncdu
+    - p7zip
+    - ranger
     - the_silver_searcher
     - tmux
     - tree
+    - unzip
     - wget
     - xz
     - zip
-    - unzip
-    - p7zip
   base_utils_debian:
     - bash
     - bzip2
