@@ -16,6 +16,19 @@
           - libvirt-python
           - python-lxml
 
+    - name: Ensure libvirt-guest service is configured
+      ansible.builtin.copy:
+        dest: /etc/conf.d/libvirt-guests
+        owner: root
+        group: root
+        mode: 0664
+        content: |
+          # Managed by Ansible
+          # Only start those VMs that are configured to autostart
+          ON_BOOT=ignore
+          # Perform shutdown on guests for kernel upgrades and more
+          ON_SHUTDOWN=shutdown
+
     - name: Services
       ansible.builtin.systemd:
         name: "{{ item }}"
@@ -23,6 +36,7 @@
         enabled: True
       loop:
         - libvirtd
+        - libvirt-guests
 
     - name: Ensure module is loaded
       ansible.builtin.copy:
@@ -49,6 +63,44 @@
           net.bridge.bridge-nf-call-ip6tables = 0
           net.bridge.bridge-nf-call-iptables = 0
           net.bridge.bridge-nf-call-arptables = 0
+
+    - name: Ensure delayed start systemd units exits
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/virsh-vm@.service
+        mode: 0644
+        content: |
+          [Unit]
+          Description=Start and Stop Virtual Machine %i using virsh
+          After=network.target
+
+          [Service]
+          Type=forking
+          ExecStart=/usr/bin/virsh start %i
+          ExecStop=/usr/bin/virsh shutdown %i
+          ExecReload=/usr/bin/virsh reboot %i
+          Restart=on-failure
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Ensure delayed start systemd timer exits
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/virsh-vm@.timer
+        mode: 0644
+        content: |
+          [Unit]
+          Description=Timer to start Virtual Machine %i using virsh after 1 minute
+
+          [Timer]
+          OnBootSec=1min
+          Unit=virsh-vm@%i.service
+
+          [Install]
+          WantedBy=timers.target
+
+    - name: Ensure systemd is reloaded
+      ansible.builtin.systemd_service:
+        daemon_reload: true
 
     - name: List all VMs
       community.libvirt.virt:

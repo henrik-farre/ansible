@@ -167,12 +167,20 @@
   community.libvirt.virt:
     name: "{{ virtual_machine_name }}"
     autostart: true
+  when: vm.autostart != "delayed"
 
 - name: Start VM
   community.libvirt.virt:
     name: "{{ virtual_machine_name }}"
     state: running
   when: virtual_machine_name not in all_running_vms.list_vms
+
+- name: Enable a timer unit for {{ virtual_machine_name }}
+  ansible.builtin.systemd_service:
+    name: "virsh-vm@{{ virtual_machine_name }}.timer"
+    state: started
+    enabled: true
+  when: vm.autostart == "delayed"
 
 # TODO: reboot and start
 
