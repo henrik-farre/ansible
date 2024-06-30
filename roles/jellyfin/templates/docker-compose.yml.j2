@@ -1,9 +1,7 @@
 ---
-version: '3.9'
-
 services:
   jellyfin:
-    image: jellyfin/jellyfin:10.8.10
+    image: {{ containers.jellyfin.repo }}:{{ containers.jellyfin.tag }}
     hostname: {{ jellyfin.hostname }}
     container_name: jellyfin
     user: {{ jellyfin.uid }}:{{ jellyfin.gid }}
