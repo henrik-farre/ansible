@@ -1,0 +1,118 @@
+#!/bin/bash
+
+set -o nounset
+set -o errexit
+set -o pipefail
+
+ACTION=${1:-help}
+
+# Set using systemd-creds encrypt --name=restic clear.txt encrypted
+# shellcheck disable=SC2034
+RESTIC_PASSWORD=$(cat "$CREDENTIALS_DIRECTORY/restic")
+XDG_CACHE_HOME=/root/.cache
+
+export RESTIC_PASSWORD XDG_CACHE_HOME
+
+function backup {
+  args=(
+    backup
+    -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
+    --read-concurrency=8  # Increase the overall performance when reading from NVME, default 2
+    --pack-size=64        # Use larger pack sizes to reduce the number of files in the repository and improve upload performance
+    --skip-if-unchanged   # Omit the creation of a new snapshot if nothing has changed compared to the parent snapshot
+    --no-scan             # Do not read number of files for estimate
+    --one-file-system
+    --cleanup-cache       # Auto remove old cache directories
+    --exclude-caches
+    # --dry-run
+    --verbose=1
+    --exclude-larger-than 5G
+    --exclude-if-present .no-backup
+    --exclude-file="/usr/local/etc/restic/excludes"
+    {% for dir in backup_config.directories %}
+    {{- dir }}
+    {% endfor -%}
+  )
+
+  echo "Running command with args:"
+  echo "${args[@]}"
+
+  restic "${args[@]}"
+}
+
+function forget {
+  # Use --keep-within-* for irregular backups
+  args=(
+    forget
+    -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
+    --prune                   # cleanup unreferenced data
+    {% if backup_config.forget_strategy == 'within' -%}
+    --keep-within-daily 7d    # keep daily snapshots for the last week
+    --keep-within-weekly 1m   # weekly for the last month
+    --keep-within-monthly 2y  # monthly for the last 2 years
+    --keep-within-yearly 5y   # yearly for the last 5 years
+    {% else -%}
+    --keep-daily 7
+    --keep-weekly 4
+    --keep-monthly 12
+    --keep-yearly 5
+    {% endif -%}
+  )
+
+  echo "Running command with args:"
+  echo "${args[@]}"
+
+  restic "${args[@]}"
+}
+
+function verify {
+  args=(
+    check
+    -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
+    --with-cache
+    --read-data-subset=5G
+  )
+
+  echo "Running command with args:"
+  echo "${args[@]}"
+
+  restic "${args[@]}"
+}
+
+function status {
+  args=(
+    snapshots
+    -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
+    --host {{ inventory_hostname }}
+  )
+
+  echo "Running command with args:"
+  echo "${args[@]}"
+
+  OUTPUT=$(restic "${args[@]}")
+  echo "$OUTPUT"
+  # Send status as html with fixed width font
+  echo "<pre>$OUTPUT</pre>" | mailx -M "text/html" -s "[BACKUP] Status for {{ inventory_hostname }}" {{ email_addresses.internal }}
+}
+
+case "$ACTION" in
+  backup)
+    backup
+    ;;
+  forget)
+    forget
+    ;;
+  verify)
+    verify
+    ;;
+  status)
+    status
+    ;;
+  help|*)
+    echo "Unknown or missing argument"
+    ;;
+esac
+
+unset RESTIC_PASSWORD
+
+exit 0

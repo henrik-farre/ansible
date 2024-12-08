@@ -1,0 +1,10 @@
+---
+backup_config:
+  forget_strategy: within
+  ssh_config: "{{ vaulted_backup_config.ssh_config }}"
+  encrypted_creds_path: "{{ vaulted_backup_config.encrypted_creds_path }}"
+  remote:
+    protocol: "{{ vaulted_backup_config.remote.protocol }}"
+    host: "{{ vaulted_backup_config.remote.host }}"
+    host_alias: "{{ vaulted_backup_config.remote.host_alias }}"
+    path: "{{ vaulted_backup_config.remote.path }}"

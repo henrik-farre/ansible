@@ -1,0 +1,147 @@
+---
+- name: Ensure backup is installed
+  become: true
+  tags:
+    - restic
+    - backup
+  block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: config.yml.vault
+
+    - name: Include cleanup tasks
+      ansible.builtin.include_tasks: cleanup.yml
+
+    - name: Include ssh tasks
+      ansible.builtin.include_tasks: ssh_config.yml
+
+    - name: Ensure restic is installed
+      community.general.pacman:
+        name: restic
+
+    - name: Ensure directories exists
+      ansible.builtin.file:
+        path: /usr/local/etc/restic
+        state: directory
+        mode: 0750
+
+    - name: Ensure backup script is templated
+      ansible.builtin.template:
+        src: backup.sh.j2
+        dest: /usr/local/bin/backup.sh
+        mode: 0750
+
+    - name: Ensure excludes file is templated
+      ansible.builtin.template:
+        src: excludes
+        dest: /usr/local/etc/restic/excludes
+        mode: 0640
+
+    - name: Install systemd services
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          Description=Backup: performs %i
+          After=network-online.target
+          Wants=network-online.target
+          OnFailure=status-email@%n.service
+
+          [Service]
+          Type=oneshot
+          Nice=19
+          IOSchedulingClass=best-effort
+          # Lowest
+          IOSchedulingPriority=7
+          LoadCredentialEncrypted={{ backup_config.encrypted_creds_path }}
+          # Prevent shutdown when backup is running
+          ExecStart=systemd-inhibit /usr/local/bin/backup.sh %i
+        dest: "/usr/local/lib/systemd/system/backup@.service"
+        owner: root
+        mode: 0644
+
+    - name: Install monthly systemd timers
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          Description=Backup monthly: %i
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          Unit=backup@%i.service
+          OnCalendar=monthly
+          Persistent=True
+          RandomizedDelaySec=600
+
+          [Install]
+          WantedBy=timers.target
+        dest: "/usr/local/lib/systemd/system/backup-monthly@.timer"
+        owner: root
+        mode: 0644
+
+    - name: Install weekly systemd timers
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          Description=Backup weekly: %i
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          Unit=backup@%i.service
+          OnCalendar=weekly
+          Persistent=True
+          RandomizedDelaySec=600
+
+          [Install]
+          WantedBy=timers.target
+        dest: "/usr/local/lib/systemd/system/backup-weekly@.timer"
+        owner: root
+        mode: 0644
+
+    - name: Install daily systemd timers
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          Description=Backup daily: %i
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          Unit=backup@%i.service
+          OnCalendar=daily
+          Persistent=True
+          RandomizedDelaySec=600
+
+          [Install]
+          WantedBy=timers.target
+        dest: "/usr/local/lib/systemd/system/backup-daily@.timer"
+        owner: root
+        mode: 0644
+
+    - name: Enable systemd services
+      ansible.builtin.systemd_service:
+        name: "backup@{{ item }}.service"
+        enabled: yes
+        daemon_reload: yes
+      with_items:
+        - backup
+        - forget
+        - verify
+        - status
+
+    - name: Enable systemd timers
+      ansible.builtin.systemd_service:
+        name: "backup-{{ item.schedule }}@{{ item.name }}.timer"
+        enabled: yes
+        state: started
+        daemon_reload: yes
+      loop:
+        - name: backup
+          schedule: daily
+        - name: forget
+          schedule: weekly
+        - name: verify
+          schedule: weekly
+        - name: status
+          schedule: monthly
