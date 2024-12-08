@@ -33,7 +33,7 @@
 
     - name: Ensure excludes file is templated
       ansible.builtin.template:
-        src: excludes
+        src: excludes.j2
         dest: /usr/local/etc/restic/excludes
         mode: 0640
 
