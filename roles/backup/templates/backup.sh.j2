@@ -41,22 +41,28 @@ function backup {
 }
 
 function forget {
+  # Should only be run on one host - includes all hosts that has a backup schedule
   # Use --keep-within-* for irregular backups
   args=(
     forget
     -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
     --prune                   # cleanup unreferenced data
-    {% if backup_config.forget_strategy == 'within' -%}
+{% for host in ansible_play_hosts %}
+{% if hostvars[host].backup_config.schedules is defined %}
+    --host={{ host }}
+{% endif %}
+{% endfor %}
+{% if backup_config.forget_strategy == 'within' %}
     --keep-within-daily 7d    # keep daily snapshots for the last week
     --keep-within-weekly 1m   # weekly for the last month
     --keep-within-monthly 2y  # monthly for the last 2 years
     --keep-within-yearly 5y   # yearly for the last 5 years
-    {% else -%}
+{% else %}
     --keep-daily 7
     --keep-weekly 4
     --keep-monthly 12
     --keep-yearly 5
-    {% endif -%}
+{% endif %}
   )
 
   echo "Running command with args:"
