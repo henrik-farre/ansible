@@ -38,3 +38,23 @@
     - /usr/local/lib/systemd/system/duplicity-docker-weekly@.timer
     - /usr/local/lib/systemd/system/duplicity-docker@.service
     - /usr/local/lib/systemd/system/duplicity-docker-daily@.timer
+    - /usr/local/lib/systemd/system/backup-daily@.timer
+    - /usr/local/lib/systemd/system/backup-weekly@.timer
+    - /usr/local/lib/systemd/system/backup-monthly@.timer
+
+- name: Disable systemd timers
+  ansible.builtin.systemd_service:
+    name: "backup-{{ item.schedule }}@{{ item.name }}.timer"
+    enabled: false
+    state: stopped
+    daemon_reload: yes
+  ignore_errors: true
+  loop:
+    - name: backup
+      schedule: daily
+    - name: forget
+      schedule: weekly
+    - name: verify
+      schedule: weekly
+    - name: status
+      schedule: monthly
