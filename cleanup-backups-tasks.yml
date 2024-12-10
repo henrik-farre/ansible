@@ -1,0 +1,13 @@
+---
+- name: Find files
+  ansible.builtin.find:
+    paths: "{{ task.path }}"
+    recurse: no
+    file_type: "{{ task.file_type }}"
+  register: files_found
+
+- name: Delete files
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: absent
+  loop: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] }}"

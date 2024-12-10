@@ -1,0 +1,13 @@
+---
+- name: Cleanup backups
+  hosts: all
+  become: yes
+
+  tasks:
+    - name: Include cleanup task
+      ansible.builtin.include_tasks: cleanup-backups-tasks.yml
+      loop: "{{ cleanup_tasks }}"
+      loop_control:
+        loop_var: task
+      when:
+        - cleanup_tasks is defined
