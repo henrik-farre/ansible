@@ -8,3 +8,12 @@ backup_config:
     host: "{{ vaulted_backup_config.remote.host }}"
     host_alias: "{{ vaulted_backup_config.remote.host_alias }}"
     path: "{{ vaulted_backup_config.remote.path }}"
+  schedules:
+    - name: backup
+      schedule: daily
+    - name: forget
+      schedule: weekly
+    - name: verify
+      schedule: weekly
+    - name: status
+      schedule: monthly
