@@ -59,89 +59,33 @@
         owner: root
         mode: 0644
 
-    - name: Install monthly systemd timers
+    - name: Install systemd timers
       ansible.builtin.copy:
         content: |
           [Unit]
-          Description=Backup monthly: %i
+          Description=Backup scheduled action: {{ item.name }}
           After=network-online.target
           Wants=network-online.target
 
           [Timer]
-          Unit=backup@%i.service
-          OnCalendar=monthly
+          Unit=backup@{{ item.name }}.service
+          OnCalendar={{ item.schedule }}
           Persistent=True
-          RandomizedDelaySec=600
+          RandomizedDelaySec=1200
 
           [Install]
           WantedBy=timers.target
-        dest: "/usr/local/lib/systemd/system/backup-monthly@.timer"
+        dest: "/usr/local/lib/systemd/system/backup-{{ item.name }}.timer"
         owner: root
         mode: 0644
+      loop: "{{ backup_config.schedules }}"
 
-    - name: Install weekly systemd timers
-      ansible.builtin.copy:
-        content: |
-          [Unit]
-          Description=Backup weekly: %i
-          After=network-online.target
-          Wants=network-online.target
-
-          [Timer]
-          Unit=backup@%i.service
-          OnCalendar=weekly
-          Persistent=True
-          RandomizedDelaySec=600
-
-          [Install]
-          WantedBy=timers.target
-        dest: "/usr/local/lib/systemd/system/backup-weekly@.timer"
-        owner: root
-        mode: 0644
-
-    - name: Install daily systemd timers
-      ansible.builtin.copy:
-        content: |
-          [Unit]
-          Description=Backup daily: %i
-          After=network-online.target
-          Wants=network-online.target
-
-          [Timer]
-          Unit=backup@%i.service
-          OnCalendar=daily
-          Persistent=True
-          RandomizedDelaySec=600
-
-          [Install]
-          WantedBy=timers.target
-        dest: "/usr/local/lib/systemd/system/backup-daily@.timer"
-        owner: root
-        mode: 0644
-
-    - name: Enable systemd services
+    - name: Reload systemd
       ansible.builtin.systemd_service:
-        name: "backup@{{ item }}.service"
-        enabled: yes
         daemon_reload: yes
-      with_items:
-        - backup
-        - forget
-        - verify
-        - status
 
     - name: Enable systemd timers
       ansible.builtin.systemd_service:
-        name: "backup-{{ item.schedule }}@{{ item.name }}.timer"
+        name: "backup-{{ item.name }}.timer"
         enabled: yes
-        state: started
-        daemon_reload: yes
-      loop:
-        - name: backup
-          schedule: daily
-        - name: forget
-          schedule: weekly
-        - name: verify
-          schedule: weekly
-        - name: status
-          schedule: monthly
+      loop: "{{ backup_config.schedules }}"
