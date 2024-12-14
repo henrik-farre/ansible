@@ -15,37 +15,6 @@
         - "/boot/loader"
         - "/boot/loader/entries"
 
-- name: Ensure system is configured
-  become: true
-  tags:
-    - bootloader
-    - systemd-boot
-  when: bootloader == "systemd-boot"
-  block:
-    - name: Ensure loader config exists
-      ansible.builtin.copy:
-        dest: /boot/loader/loader.conf
-        group: root
-        content: |
-          # Managed by Ansible
-          default {{ systemd_boot.entries[0].name }}
-          timeout 3
-          console-mode max
-        mode: 0644
-        owner: root
-      when:
-        - systemd_boot.entries
-
-    - name: Ensure entries for systemd-boot exist
-      ansible.builtin.template:
-        src: "boot/loader/entries/entry.conf.j2"
-        dest: "/boot/loader/entries/{{ item.name }}.conf"
-        owner: root
-        mode: 0644
-      loop: "{{ systemd_boot.entries }}"
-      when:
-        - systemd_boot.entries
-
 - name: Ensure system is configured for Unified Kernel Image
   become: true
   tags:
