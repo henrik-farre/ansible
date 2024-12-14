@@ -43,6 +43,10 @@
           - qt5-wayland
           - xorg-xlsclients
 
+    - name: Set video hardware vendor list
+      ansible.builtin.set_fact:
+        video_hardware_vendors: "{{ ansible_facts.ansible_local.hardware.video | map(attribute='vendor') | list }}"
+
     # https://linuxreviews.org/Intel_graphics#Hardware_Video_Decoding_.2F_Encoding
     - name: Install Intel related packages
       become: true
@@ -51,13 +55,12 @@
         state: latest
       vars:
         packages:
-          - libva-vdpau-driver
           - libvdpau-va-gl
           - vulkan-intel
           - libva-utils
+          - intel-gpu-tools
           - intel-media-driver # Replaces libva-intel-driver for newer cpus
-      when:
-        - "'Intel Corporation' in {{ ansible_facts.ansible_local.hardware.video | map(attribute='vendor') | list }}"
+      when: "'Intel Corporation' in video_hardware_vendors"
 
     - name: Install Nvidia related packages
       become: true
@@ -72,8 +75,7 @@
           - nvidia-dkms
           - nvidia-settings
           - nvidia-utils
-      when:
-        - "'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video | map(attribute='vendor') | list }}"
+      when: "'NVIDIA Corporation' in video_hardware_vendors"
 
     - name: Enable Nvidia required services
       ansible.builtin.systemd:
@@ -84,5 +86,4 @@
         - nvidia-suspend
         - nvidia-hibernate
         - nvidia-persistenced
-      when:
-        - "'NVIDIA Corporation' in {{ ansible_facts.ansible_local.hardware.video | map(attribute='vendor') | list }}"
+      when: "'NVIDIA Corporation' in video_hardware_vendors"
