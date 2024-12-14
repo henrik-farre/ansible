@@ -19,3 +19,30 @@
       become_user: aur_builder
       aur:
         name: hunspell-da
+
+    - name: Enable battery conservation mode
+      ansible.builtin.copy:
+        dest: /etc/tmpfiles.d/battery-conservation-mode.conf
+        content: |
+          # Managed by Ansible
+          #    Path                                                                     Mode UID  GID  Age Argument
+          w    /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode     -    -    -    -   1
+        mode: "0640"
+
+    - name: Create swap file
+      ansible.builtin.command:
+        cmd: mkswap --uuid clear --size 8G --file /swapfile
+        creates: /swapfile
+
+    - name: Format swap
+      community.general.filesystem:
+        fstype: swap
+        dev: "/swapfile"
+        state: present
+
+    - name: Mount swap file
+      ansible.posix.mount:
+        path: none
+        src: /swapfile
+        fstype: swap
+        state: present
