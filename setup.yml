@@ -101,7 +101,6 @@
     - yubikey
     - 1password
     - { role: bluetooth, when: has_bluetooth is defined }
-    - jid
 
 - name: Setup gaming
   hosts: gaming
