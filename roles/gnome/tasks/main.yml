@@ -16,7 +16,6 @@
           - gnome-settings-daemon
           - gnome-session
           - gnome-control-center
-          - gnome-icon-theme-extras
           - gnome-tweaks
           - gnome-shell-extensions
           - gnome-shell-extension-appindicator
@@ -25,6 +24,15 @@
           - xdg-desktop-portal
           - xdg-desktop-portal-gnome
           - nautilus
+
+    - name: Install extension-manager from AUR
+      become: true
+      become_user: aur_builder
+      aur:
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - extension-manager
 
     - name: Disable auto-suspend on AC
       become: true
@@ -92,3 +100,9 @@
         block: |
           # https://wiki.archlinux.org/title/GNOME/Keyring#SSH_keys
           SSH_AUTH_SOCK    DEFAULT=${XDG_RUNTIME_DIR}/gcr/ssh
+
+    - name: Ensure gdm is enabled
+      become: true
+      ansible.builtin.systemd_service:
+        name: gdm
+        enabled: true
