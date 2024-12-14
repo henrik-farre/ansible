@@ -3,9 +3,6 @@
   tags:
     - pacman
   block:
-    - name: Include tasks to cleanup old ansible
-      include_tasks: cleanup.yml
-
     - name: Enable multilib repo in pacman - part 1
       ansible.builtin.lineinfile:
         path: /etc/pacman.conf
