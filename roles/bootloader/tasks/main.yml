@@ -1,27 +1,9 @@
 ---
-- name: Install systemd boot
-  ansible.builtin.include_role:
-    name: systemd-boot
-  when:
-    - bootloader is defined
-    - bootloader == "systemd-boot"
-  tags:
-    - bootloader
-
 - name: Install systemd boot with Unified Kernel Image
   ansible.builtin.include_role:
     name: systemd-boot
   when:
     - bootloader is defined
     - bootloader == "systemd-boot-uki"
-  tags:
-    - bootloader
-
-- name: Install grub
-  ansible.builtin.include_role:
-    name: grub
-  when:
-    - bootloader is defined
-    - bootloader == "grub"
   tags:
     - bootloader
