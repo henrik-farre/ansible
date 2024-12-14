@@ -16,6 +16,11 @@
         # - 51-pci_powermanagement.rules
         - 55-powerprofilectl.rules
 
+    - name: Ensure gnome-power-manager is installed
+      community.general.pacman:
+        name: gnome-power-manager
+      when: desktop_environment == 'gnome'
+
     - name: Ensure powersave profile daemon is installed
       community.general.pacman:
         name: power-profiles-daemon
