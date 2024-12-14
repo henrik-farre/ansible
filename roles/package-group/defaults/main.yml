@@ -64,35 +64,34 @@ package_groups:
     - ansible-lint
     - autoconf
     - automake
-    - aws-cli-v2
-    # needed for installing Vim-YouCompleteMe
-    - cmake
     - dkms
     - fakeroot
     - gcc
+    - github-cli
     - pkg-config
     # adb and friends
     - android-tools
     - android-udev
-    - argocd-cli
     - eslint
     - flake8
-    - helm
-    - kubectl
-    - kubectx
-    - awxkit
-    - k9s
     - molecule
-    - terraform
     - yamllint
     - jq
     - go-yq
-    - packer
     # for hashing passwords in ansible
     - python-passlib
     - python-pbkdf2
     - python-pre-commit
     - python-debugpy
+  development_utils_extra:
+    - aws-cli-v2
+    - awxkit
+    - helm
+    - k9s
+    - kubectl
+    - kubectx
+    - packer
+    - terraform
   net_utils:
     # for dig
     - bind
@@ -129,10 +128,7 @@ package_groups:
     # aspell-da is in aur
     - aspell-en
     - evince
-    # Needed by Remmina
-    - freerdp
     - gimp
-    - github-cli
     - gnuplot
     - gpaste
     - gst-plugins-base
@@ -145,7 +141,6 @@ package_groups:
     - gvfs-mtp
     - hicolor-icon-theme
     - hunspell
-    - hugo
     - icedtea-web
     - imagemagick
     - libreoffice-fresh
@@ -153,9 +148,6 @@ package_groups:
     - pinentry
     - powerline-common
     - python-pip
-    - pwgen
-    # Better RDP client
-    - remmina
     - ruby
     - seahorse
     - sshpass
@@ -173,6 +165,6 @@ aur_package_groups:
     - aspell-da
   development_utils:
     - shellcheck-bin
-    - asdf-vm
-    - tflint-bin
-    - ugrep
+    # - asdf-vm
+    # - tflint-bin
+    # - ugrep
