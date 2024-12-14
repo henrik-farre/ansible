@@ -63,7 +63,7 @@
     - makepkg
     - system-maintenance
     - misc-setup
-    - { role: backup-duplicity-docker, when: duplicity is defined }
+    - backup
     - fuse
     - role: packages
       packages: "{{ host_packages }}"
@@ -80,13 +80,13 @@
   gather_facts: no
   roles:
     - sound
-    - { role: wayland, when: display_server == 'wayland', tags: ['wayland'] }
+    - wayland
     - role: package-group
       package_group: "desktop"
     - role: package-group
       aur_package_group: "desktop"
     - fonts
-    - { role: gnome, when: desktop_environment == 'gnome', tags: ['gnome'] }
+    - gnome
     - solaar
     - signal-desktop
     - zim
