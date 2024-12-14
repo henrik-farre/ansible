@@ -19,7 +19,6 @@
     - mounts
     - networking
     - users
-    - cron
     - pacman
     - ntp
     - users
