@@ -63,14 +63,6 @@
     - modules
   when: bootloader == "systemd-boot-uki"
   block:
-    - name: Ensure /etc/kernel exists
-      ansible.builtin.file:
-        path: /etc/kernel/
-        state: directory
-        mode: 0755
-        owner: root
-        group: root
-
     - name: Ensure /boot/EFI/Linux exists
       ansible.builtin.file:
         path: /boot/EFI/Linux
@@ -82,16 +74,16 @@
     # NOTE: this only works with one entry
     - name: Ensure cmdline is configured
       ansible.builtin.template:
-        dest: /etc/kernel/cmdline
-        src: etc/kernel/cmdline.j2
+        dest: /etc/cmdline.d/{{ item.name }}.conf
+        src: etc/cmdline.d/cmdline.j2
         owner: root
         group: root
         mode: 0644
       notify:
         - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
-      loop: "{{ systemd_boot.entries }}"
+      loop: "{{ systemd_boot.cmdline }}"
       when:
-        - systemd_boot.entries
+        - systemd_boot.cmdline
         - ansible_facts.distribution == "Archlinux"
 
     - name: Ensure preset settings for kernel exists
