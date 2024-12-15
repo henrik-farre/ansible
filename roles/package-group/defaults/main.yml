@@ -83,6 +83,7 @@ package_groups:
     - python-pbkdf2
     - python-pre-commit
     - python-debugpy
+    - python-poetry
   development_utils_extra:
     - aws-cli-v2
     - awxkit
