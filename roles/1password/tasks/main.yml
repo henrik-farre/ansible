@@ -60,3 +60,12 @@
         remote_src: yes
         exclude:
           - op.sig
+
+    - name: Ensure ansible vault integration is configured
+      ansible.builtin.copy:
+        dest: "{{ ansible_user_dir }}/.local/bin/ansible-op-vault"
+        content: |
+          #!/bin/bash
+
+          op item get "{{ ansible_vault_one_password_name }}" --fields label=password --reveal
+        mode: 0750
