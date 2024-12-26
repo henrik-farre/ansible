@@ -24,6 +24,8 @@
           - xdg-desktop-portal
           - xdg-desktop-portal-gnome
           - nautilus
+          # for ssh-agent
+          - gcr-4
 
     - name: Install extension-manager from AUR
       become: true
@@ -92,14 +94,12 @@
         mode: 0600
       when: not gtk4_settings.stat.exists
 
-    - name: Ensure SSH_AUTH_SOCK is defined in /etc/security/pam_env.conf
-      become: true
-      ansible.builtin.blockinfile:
-        dest: /etc/security/pam_env.conf
-        marker: "# {mark} ANSIBLE MANAGED BLOCK gcr"
-        block: |
-          # https://wiki.archlinux.org/title/GNOME/Keyring#SSH_keys
-          SSH_AUTH_SOCK    DEFAULT=${XDG_RUNTIME_DIR}/gcr/ssh
+    - name: Ensure gcr-4 for ssh-agent is enabled
+      ansible.builtin.systemd_service:
+        name: gcr-ssh-agent.socket
+        state: started
+        enabled: true
+        scope: user
 
     - name: Ensure gdm is enabled
       become: true
