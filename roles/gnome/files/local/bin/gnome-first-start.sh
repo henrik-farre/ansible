@@ -75,6 +75,9 @@ gsettings set org.gnome.desktop.interface font-hinting 'slight'
 # Theme settings
 gsettings set org.gnome.desktop.interface gtk-theme 'Adwaita-dark'
 
+# Notification settings
+gsettings set org.gnome.desktop.notifications show-in-lock-screen false
+
 EXPERIMENTAL_FEATURES=$(zenity --list --checklist --width 500 --height 400 \
   --title 'Select Mutter experimental features' \
   --text 'Select features to enable' \
