@@ -42,6 +42,7 @@
         content: |
           [Unit]
           Description=Backup: performs %i
+          # Can't use nss-lookup.target as nothing targets it (i.e. systemd-resolved is not used)
           After=network-online.target
           Wants=network-online.target
           OnFailure=status-email@%n.service
@@ -53,7 +54,9 @@
           # Lowest
           IOSchedulingPriority=7
           LoadCredentialEncrypted={{ backup_config.encrypted_creds_path }}
-          # Prevent shutdown when backup is running
+          # Ensure DNS can be resolved before running
+          ExecStartPre=/bin/sh -c 'until host {{ backup_config.remote.host }}; do sleep 1; done'
+          # systemd-inhibit prevent shutdown when backup is running
           ExecStart=systemd-inhibit /usr/local/bin/backup.sh %i
         dest: "/usr/local/lib/systemd/system/backup@.service"
         owner: root
@@ -64,8 +67,6 @@
         content: |
           [Unit]
           Description=Backup scheduled action: {{ item.name }}
-          After=network-online.target
-          Wants=network-online.target
 
           [Timer]
           Unit=backup@{{ item.name }}.service
