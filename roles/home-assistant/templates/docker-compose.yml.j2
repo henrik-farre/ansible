@@ -1,18 +1,15 @@
 ---
-version: '3'
 services:
   homeassistant:
     image: {{ containers.homeassistant.repo }}:{{ containers.homeassistant.tag }}
     container_name: home-assistant
-    network_mode: host
+    network_mode: "host"
     extra_hosts:
       - mosquitto:172.16.238.10
-    privileged: true
     environment:
       TZ: Europe/Copenhagen
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/home-assistant/config:/config
       - mariadb-socket:/var/run/mysqld
       - /run/dbus:/run/dbus:ro
@@ -41,7 +38,6 @@ services:
       MARIADB_PASSWORD: "{{ homeassistant.db.password }}"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/mariadb/mysql:/var/lib/mysql
       - /srv/home-assistant/data/mariadb/entrypoint:/docker-entrypoint-initdb.d
       - mariadb-socket:/var/run/mysqld
@@ -54,7 +50,6 @@ services:
       TZ: Europe/Copenhagen
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/mosquitto/config:/mosquitto/config
       - /srv/home-assistant/data/mosquitto/data:/mosquitto/data
       - /srv/home-assistant/data/mosquitto/log:/mosquitto/log
@@ -72,7 +67,6 @@ services:
     container_name: home-assistant-zigbee2mqtt
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/zigbee2mqtt:/app/data
       - /run/udev:/run/udev:ro
     environment:
@@ -89,7 +83,7 @@ services:
     extra_hosts:
       - mosquitto:172.16.238.10
     networks:
-      traefik:
+      traefik: {}
       home-assistant-internal:
         ipv4_address: 172.16.238.20
     labels:
@@ -104,11 +98,10 @@ services:
     restart: unless-stopped
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     environment:
       TZ: Europe/Copenhagen
     networks:
-      - traefik
+      traefik: {}
     command: tunnel --no-autoupdate run --token {{ homeassistant.cloudflared.token }}
 
   whisper:
@@ -119,7 +112,6 @@ services:
       TZ: Europe/Copenhagen
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/whisper:/data
     command: [ "--model", "medium-int8", "--language", "da" ]
     networks:
@@ -134,7 +126,6 @@ services:
       TZ: Europe/Copenhagen
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/piper:/data
     command: [ "--voice", "da_DK-talesyntese-medium" ]
     networks:
@@ -149,7 +140,6 @@ services:
       TZ: Europe/Copenhagen
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/victoriametrics/storage:/storage
       - /srv/home-assistant/data/victoriametrics/prometheus:/etc/prometheus:ro
     command:
@@ -164,7 +154,7 @@ services:
       - "traefik.http.services.victoriametrics.loadbalancer.server.port=8428"
       - "traefik.http.routers.victoriametrics.entrypoints=http"
     networks:
-      traefik:
+      traefik: {}
       metrics-internal:
 
   grafana:
@@ -177,7 +167,6 @@ services:
       - "victoriametrics"
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/home-assistant/data/grafana/storage:/var/lib/grafana
     labels:
       - "traefik.enable=true"
@@ -185,7 +174,7 @@ services:
       - "traefik.http.services.grafana.loadbalancer.server.port=3000"
       - "traefik.http.routers.grafana.entrypoints=http"
     networks:
-      traefik:
+      traefik: {}
 
   speedtest:
     container_name: home-assistant-speedtest
@@ -195,7 +184,6 @@ services:
     image: {{ containers.speedtest.repo }}:{{ containers.speedtest.tag }}
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
     networks:
       metrics-internal:
 
@@ -210,4 +198,4 @@ networks:
       driver: default
       config:
         - subnet: "172.16.238.0/24"
-  metrics-internal:
+  metrics-internal: {}
