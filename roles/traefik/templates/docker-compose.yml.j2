@@ -1,6 +1,4 @@
 ---
-version: '3'
-
 services:
   traefik:
     image: {{ containers.traefik.repo }}:{{ containers.traefik.tag }}
@@ -11,7 +9,7 @@ services:
       - 80:80
       - 443:443
     environment:
-      TZ: 'Europe/Copenhagen'
+      TZ: "Europe/Copenhagen"
       CLOUDFLARE_EMAIL: {{ email_addresses.external }}
       CLOUDFLARE_DNS_API_TOKEN: {{ traefik.acme.cloudflare.token }}
       CLOUDFLARE_POLLING_INTERVAL: 60
