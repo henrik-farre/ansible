@@ -21,6 +21,12 @@
         - data/acme
         - deploy
 
+    - name: Ensure custom services are configured
+      community.general.ufw:
+        rule: "allow"
+        name: "WWW Full"
+        comment: "Traefik"
+
     - name: Create traefik network
       community.docker.docker_network:
         name: traefik
