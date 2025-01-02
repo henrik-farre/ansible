@@ -1,3 +1,4 @@
+## TODO: ufw
 ---
 - name: Ensure home assistant is installed and configured
   become: true
@@ -13,38 +14,16 @@
         homeassistant: "{{ homeassistant | combine(homeassistant_overrides, recursive=True) }}"
       when: homeassistant_overrides is defined
 
-    - name: Ensure directory for bluetooth firmware exists
-      ansible.builtin.file:
-        path: /lib/firmware/brcm/
-        state: directory
-        owner: root
-        group: root
-        mode: 0755
+    - name: Ensure bluetooth is configured
+      ansible.builtin.include_role:
+        name: bluetooth
 
-    - name: Ensure correct bluetooth firmware is installed
-      ansible.builtin.get_url:
-        url: https://github.com/winterheart/broadcom-bt-firmware/raw/master/brcm/BCM20702A1-0b05-17cb.hcd
-        dest: /lib/firmware/brcm/BCM20702A1-0b05-17cb.hcd
-        checksum: sha256:02204ae0958e7af3ffa6193713f5b3847d4ad37b9b9b5064b56cd96f2fdd18d1
-        owner: root
-        group: root
-        mode: 0644
-
-    - name: Ensure needed packages for bluetooth support are installed
-      ansible.builtin.apt:
-        name: "{{ packages }}"
-        state: latest
-      vars:
-        packages:
-          - dbus-broker
-          - bluetooth
-
-    - name: Ensure dbus-broker is enabled
-      ansible.builtin.systemd:
-        name: dbus-broker
-        state: started
-        enabled: true
-      notify: Reboot host
+    - name: Ensure custom ports are configured
+      community.general.ufw:
+        rule: "allow"
+        port: "8123"
+        proto: "tcp"
+        comment: "Home Assistant"
 
     - name: Ensure needed directories exist
       ansible.builtin.file:
@@ -197,7 +176,7 @@
         group: docker
 
     - name: Deploy Docker Compose stack
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_name: home-assistant
         project_src: /srv/home-assistant/deploy
 
