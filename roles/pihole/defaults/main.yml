@@ -1,5 +1,5 @@
 ---
 pihole:
   hostname: "pihole.{{ inventory_hostname }}.{{ network.local_domain }}"
-  local_ipv4: "{{ ansible_facts.default_ipv4.address }}"
+  local_ipv4: "{{ vaulted_pihole.local_ipv4 }}"
   webpassword: "{{ vaulted_pihole.webpassword }}"

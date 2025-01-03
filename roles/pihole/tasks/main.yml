@@ -39,6 +39,42 @@
           owner: root
           group: docker
 
+    - name: Ensure macvlan docker network exists
+      community.docker.docker_network:
+        name: macvlan
+        driver: macvlan
+        driver_options:
+          parent: "{{ ansible_facts.default_ipv4.interface }}"
+        ipam_driver: "default"
+        ipam_config:
+          - subnet: "{{ ansible_facts.default_ipv4.network }}/{{ ansible_facts.default_ipv4.prefix }}"
+            gateway: "{{ ansible_facts.default_ipv4.gateway }}"
+        state: "present"
+
+    - name: Ensure systemd unit to configure routing exists
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/macvlan-configure.service
+        mode: 0664
+        content: |
+          [Unit]
+          Description=Configure Macvlan routing
+          OnFailure=status-email@%n.service
+
+          [Service]
+          Type=oneshot
+          ExecStart=ip link add macvlan link {{ ansible_facts.default_ipv4.interface }} type macvlan mode bridge
+          ExecStart=ip address add 192.168.0.100/32 dev macvlan
+          ExecStart=ip link set macvlan up
+          ExecStart=ip route add {{ pihole.local_ipv4 }}/32 dev macvlan
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Ensure macvlan-configure is enabled
+      ansible.builtin.systemd_service:
+        name: macvlan-configure
+        enabled: true
+
     - name: Ensure docker-compose.yml exists for pihole
       ansible.builtin.template:
         src: docker-compose.yml.j2
@@ -49,7 +85,7 @@
 
     # Remember to restore backup after startup
     - name: Deploy Docker Compose stack
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_name: pihole
         project_src: /srv/pihole/deploy
 
@@ -58,7 +94,7 @@
         dest: /etc/resolv.conf
         content: |
           search {{ network.local_domain }}
-          nameserver 127.0.0.1
+          nameserver {{ pihole.local_ipv4 }}
         mode: 0644
         owner: root
         group: root

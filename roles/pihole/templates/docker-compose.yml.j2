@@ -1,5 +1,4 @@
-version: "3"
-
+---
 # More info at https://github.com/pi-hole/docker-pi-hole/ and https://docs.pi-hole.net/
 services:
   pihole:
@@ -43,14 +42,15 @@ services:
       REV_SERVER_CIDR: 192.168.0.0/24
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
       - /srv/pihole/data/etc/pihole:/etc/pihole
       - /srv/pihole/data/etc/dnsmasq.d:/etc/dnsmasq.d
       - /srv/pihole/data/var/log:/var/log
       - /srv/pihole/data/backup:/backup
     restart: unless-stopped
     networks:
-      - "traefik"
+      traefik: {}
+      macvlan:
+        ipv4_address: {{ pihole.local_ipv4 }}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.pihole.rule=Host(`{{ pihole.hostname }}`)"
@@ -59,4 +59,6 @@ services:
 
 networks:
   traefik:
+    external: true
+  macvlan:
     external: true
