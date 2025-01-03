@@ -116,7 +116,6 @@
     - nfs-server
     - samba-server
     - traefik
-    - virtual-machines
     - photoprism
     - syncthing
     # - kodi-shutdown-check
@@ -124,6 +123,8 @@
     - backup-rclone
     - chores
     - jellyfin
+    - home-assistant
+    - pihole
 
 - name: Laptop setup
   hosts: laptop
@@ -178,22 +179,13 @@
   hosts: zuul
   gather_facts: yes
   roles:
-    - traefik
-    - pihole
-    - smokeping
-  # - arpwatch
+    # - traefik
+    # - smokeping
+    # - arpwatch
 
 - name: Gozer setup
   hosts: gozer
   gather_facts: yes
   roles:
-    - traefik
-    - unifi-controller
-
-- name: Home Assistant
-  hosts: staypuft
-  gather_facts: yes
-
-  roles:
-    - traefik
-    - home-assistant
+    # - traefik
+    # - unifi-controller
