@@ -10,11 +10,19 @@
         name: "{{ packages }}"
       vars:
         packages:
-          - yubikey-manager-qt
           - yubikey-personalization-gui
-          - yubioath-desktop
           - pam-u2f
           - libfido2
+
+    - name: Ensure deprecated or broken packages are removed
+      become: true
+      community.general.pacman:
+        state: removed
+        name: "{{ packages }}"
+      vars:
+        packages:
+          - yubioath-desktop
+          - yubikey-manager-qt
 
     - name: Ensure pcscd is enabled and started
       become: true
@@ -40,11 +48,19 @@
         state: directory
         mode: 0700
 
-    - name: Ensure yubioath-desktop is auto started on login
+    - name: Ensure yubioath-desktop is disabled
       ansible.builtin.file:
-        state: link
-        src: /usr/share/applications/com.yubico.yubioath.desktop
+        state: absent
         path: "{{ ansible_user_dir }}/.config/autostart/com.yubico.yubioath.desktop"
 
 # pamu2fcfg -o pam://$(hostname) -i pam://$(hostname) > ~/.config/Yubico/u2f_keys
 # pamu2fcfg -o pam://$(hostname) -i pam://$(hostname) -n >> ~/.config/Yubico/u2f_keys
+
+    - name: Ensure pam is prepared
+      become: true
+      ansible.builtin.copy:
+        dest: /etc/pam.d/common-u2f
+        content: |
+          # Managed by Ansible
+          auth            sufficient      pam_u2f.so origin=pam://{{ inventory_hostname }} appid=pam://{{ inventory_hostname }} cue
+        mode: 0640
