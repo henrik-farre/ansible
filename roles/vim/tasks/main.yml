@@ -17,7 +17,7 @@
           - bash-language-server
       when: ansible_facts.distribution == 'Archlinux'
 
-    - name: Ensure Neovim and dependencies are installed
+    - name: Ensure Neovim and dependencies are installed for X11
       community.general.pacman:
         name: "{{ packages }}"
         state: latest
@@ -27,6 +27,18 @@
       when:
         - ansible_facts.distribution == 'Archlinux'
         - display_server is defined and display_server == 'x11'
+
+    - name: Ensure Neovim and dependencies are installed for wayland
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - neovim-qt
+          - qt6-wayland
+      when:
+        - ansible_facts.distribution == 'Archlinux'
+        - display_server is defined and display_server == 'wayland'
 
     - name: Ensure Neovim Appimage dependencies are installed on Debian
       ansible.builtin.apt:
@@ -46,6 +58,7 @@
       when: ansible_facts.distribution == 'Debian'
 
     - name: Ensure dependencies for linter plugins are installed
+      become: true
       become_user: aur_builder
       aur:
         name: hadolint-bin
@@ -70,8 +83,10 @@
     - name: Ensure correct Java version to install groovy-language-server-git
       ansible.builtin.command: "archlinux-java set java-11-openjdk"
       when: ansible_facts.distribution == 'Archlinux'
+      changed_when: false
 
     - name: Ensure Neovim language servers are installed (from AUR)
+      become: true
       become_user: aur_builder
       aur:
         name: "{{ packages }}"
