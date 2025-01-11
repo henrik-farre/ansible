@@ -14,7 +14,6 @@
           - python-neovim
           - python-psutil
           - python-pip
-          - bash-language-server
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure Neovim and dependencies are installed for X11
@@ -71,6 +70,7 @@
         state: latest
       vars:
         packages:
+          - lua-language-server
           - bash-language-server
           - pyright
           - jdk11-openjdk
@@ -78,6 +78,7 @@
           - vscode-html-languageserver
           - vscode-json-languageserver
           - yaml-language-server
+          - trivy # used via null-ls for security scanning
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure correct Java version to install groovy-language-server-git
