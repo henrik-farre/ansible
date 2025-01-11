@@ -8,7 +8,7 @@ homeassistant:
     user: "{{ vaulted_ha.db.user }}"
     password: "{{ vaulted_ha.db.password }}"
   zigbee2mqtt:
-    hostname: "zigbee2mqtt.{{ inventory_hostname }}.{{ network.local_domain }}"
+    hostname: "zigbee2mqtt.{{ network.local_domain }}"
     devices:
       - /dev/ttyACM0
   mosquitto:
@@ -18,7 +18,7 @@ homeassistant:
   cloudflared:
     token: "{{ vaulted_ha.cloudflared.token }}"
   victoriametrics:
-    hostname: "victoriametrics.{{ inventory_hostname }}.{{ network.local_domain }}"
+    hostname: "victoriametrics.{{ network.local_domain }}"
     token: "{{ vaulted_ha.victoriametrics.token }}"
   grafana:
-    hostname: "grafana.{{ inventory_hostname }}.{{ network.local_domain }}"
+    hostname: "grafana.{{ network.local_domain }}"
