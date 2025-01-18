@@ -125,6 +125,7 @@
     - jellyfin
     - home-assistant
     - pihole
+    - minecraft
 
 - name: Laptop setup
   hosts: laptop
