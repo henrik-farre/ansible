@@ -126,6 +126,7 @@
     - home-assistant
     - pihole
     - minecraft
+    - unifi-network-application
 
 - name: Laptop setup
   hosts: laptop
@@ -175,18 +176,3 @@
     - role: package-group
       package_group: "system_utils_debian"
     - unattended-upgrades
-
-- name: Zuul setup
-  hosts: zuul
-  gather_facts: yes
-  roles:
-    # - traefik
-    # - smokeping
-    # - arpwatch
-
-- name: Gozer setup
-  hosts: gozer
-  gather_facts: yes
-  roles:
-    # - traefik
-    # - unifi-controller
