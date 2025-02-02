@@ -2,3 +2,5 @@
 unifi:
   hostname: "unifi.{{ network.local_domain }}"
   dns_ip: "{{ network.dns }}"
+  mongo_db_user: "{{ vaulted_unifi.mongo_db_user }}"
+  mongo_db_password: "{{ vaulted_unifi.mongo_db_password }}"

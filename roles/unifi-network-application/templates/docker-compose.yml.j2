@@ -3,7 +3,7 @@ services:
   unifi-network-application:
     container_name: unifi-network-application
     hostname: {{ unifi.hostname }}
-    image: lscr.io/linuxserver/unifi-network-application:9.0.108
+    image: {{ containers.unifi.repo }}:{{ containers.unifi.tag }}
     restart: unless-stopped
     depends_on:
       - unifi-network-application-db
@@ -24,8 +24,8 @@ services:
     environment:
       PUID: 1000
       PGID: 1000
-      MONGO_USER: unifi
-      MONGO_PASS: veeT0satei2bohghep0reePeupheiSh1
+      MONGO_USER: "{{ unifi.mongo_db_user }}"
+      MONGO_PASS: "{{ unifi.mongo_db_password }}"
       MONGO_HOST: unifi-network-application-db
       MONGO_PORT: 27017
       MONGO_DBNAME: ace
@@ -44,12 +44,12 @@ services:
       - "traefik.http.routers.unifi.tls=true"
 
   unifi-network-application-db:
-    image: docker.io/mongo:7.0.16
+    image: {{ containers.mongo.repo }}:{{ containers.mongo.tag }}
     container_name: unifi-network-application-db
     hostname: unifi-network-application-db
     environment:
-      MONGO_USER: unifi
-      MONGO_PASS: veeT0satei2bohghep0reePeupheiSh1
+      MONGO_USER: "{{ unifi.mongo_db_user }}"
+      MONGO_PASS: "{{ unifi.mongo_db_password }}"
       MONGO_DBNAME: ace
       MONGO_AUTHSOURCE: admin
       TZ: Europe/Copenhagen

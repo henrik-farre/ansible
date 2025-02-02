@@ -4,6 +4,10 @@
   tags:
     - unifi-network-application
   block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: unifi.yml.vault
+
     - name: Ensure needed directories exist
       ansible.builtin.file:
         path: "/srv/unifi-network-application/{{ item.path }}"
