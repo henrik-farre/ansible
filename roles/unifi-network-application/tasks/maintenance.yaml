@@ -1,72 +1,3 @@
-# From https://help.ui.com/hc/en-us/articles/204911424-UniFi-How-to-remove-prune-older-data-and-adjust-mongo-database-size
-# looks like it has moved to https://help.ui.com/hc/en-us/articles/360006634094-UniFi-Repairing-Database-Issues-on-the-UniFi-Network-Application#3
-# and script is now called https://help.ui.com/hc/en-us/article_attachments/360008640574/CK_repair.js
-- name: MongoDB maintenance prune script
-  ansible.builtin.copy:
-    dest: /srv/unifi-network-application/data/config/mongo_prune_js.js
-    src: root/mongo_prune_js.js
-    owner: root
-    mode: 0644
-
-# Script is run inside Docker
-- name: MongoDB maintenance script
-  ansible.builtin.copy:
-    dest: /srv/unifi-network-application/data/config/mongodb_maintenance.sh
-    content: |
-      #!/bin/bash
-      /usr/bin/mongo --port 27117 < /config/mongo_prune_js.js
-    owner: root
-    mode: 0750
-
-- name: MongoDB maintenance service
-  ansible.builtin.copy:
-    dest: /usr/local/lib/systemd/system/mongodb_maintenance.service
-    content: |
-      [Unit]
-      Description=MongoDB maintenance
-      OnFailure=status-email@%n.service
-
-      [Service]
-      Type=oneshot
-      ExecStart=/usr/bin/docker exec unifi-network-application /config/mongodb_maintenance.sh
-    owner: root
-    mode: 0644
-
-- name: MongoDB maintenance timer
-  ansible.builtin.copy:
-    dest: /usr/local/lib/systemd/system/mongodb_maintenance.timer
-    content: |
-      [Unit]
-      Description=MongoDB maintenance
-
-      [Timer]
-      OnCalendar=monthly
-      Persistent=True
-
-      [Install]
-      WantedBy=timers.target
-    owner: root
-    mode: 0644
-
-- name: Ensure mongodump is installed inside container
-  ansible.builtin.copy:
-    dest: /srv/unifi-network-application/deploy/custom-cont-init.d/mongodump-install.sh
-    content: |
-      #!/bin/bash
-      apt update
-      apt install -y mongo-tools
-    mode: 0750
-
-# Script is run inside Docker
-- name: MongoDB dump script
-  ansible.builtin.copy:
-    dest: /srv/unifi-network-application/data/config/mongodb_dump.sh
-    content: |
-      #!/bin/bash
-      /usr/bin/mongodump --port 27117 --out=/backup/mongodump/
-    owner: root
-    mode: 0750
-
 - name: Install unifi-network-application backup script
   ansible.builtin.copy:
     dest: /srv/unifi-network-application/scripts/backup-unifi-network-application.sh
@@ -80,13 +11,15 @@
 
       mkdir -p "$BACKUP_LOCATION"
 
-      rm -rvf --preserve-root=all "/srv/unifi-network-application/data/backup/mongodump"
-      mkdir -p "/srv/unifi-network-application/data/backup/mongodump"
-      /usr/bin/docker exec unifi-network-application /config/mongodb_dump.sh
+      rm -rvf --preserve-root=all "/srv/unifi-network-application/data/mongodb/backup/mongodump"
+      mkdir -p "/srv/unifi-network-application/data/mongodb/backup/mongodump"
 
-      /usr/bin/tar Jcvf ${BACKUP_LOCATION}/mongodump.tar.xz /srv/unifi-network-application/data/backup/mongodump
-      # DB files might change while backup is running and cause tar to return an error
-      /usr/bin/tar Jcvf ${BACKUP_LOCATION}/config.tar.xz /srv/unifi-network-application/data/config || true
+      # mongodb container
+      /usr/bin/docker exec unifi-network-application-db mongodump -o /backup/mongodump
+
+      /usr/bin/tar zcvf ${BACKUP_LOCATION}/mongodump.tar.gz /srv/unifi-network-application/data/mongodb/backup/mongodump
+      # Logs and other files might change while tar is running
+      /usr/bin/tar zcvf ${BACKUP_LOCATION}/unifi-config.tar.gz /srv/unifi-network-application/data/unifi-network-application/config || true
     mode: 0750
 
 - name: Install systemd services for backup
@@ -98,7 +31,7 @@
       OnFailure=status-email@%n.service
 
       [Service]
-      WorkingDirectory=/srv/unifi-network-application/deploy
+      WorkingDirectory=/srv/unifi-network-application/
 
       Type=oneshot
       ExecStart=/srv/unifi-network-application/scripts/backup-unifi-network-application.sh
@@ -133,5 +66,4 @@
     enabled: yes
     state: started
   loop:
-    - mongodb_maintenance.timer
     - backup-unifi-network-application.timer

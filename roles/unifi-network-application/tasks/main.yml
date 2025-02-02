@@ -6,16 +6,36 @@
   block:
     - name: Ensure needed directories exist
       ansible.builtin.file:
-        path: "/srv/unifi-network-application/{{ item }}"
+        path: "/srv/unifi-network-application/{{ item.path }}"
         state: directory
         mode: 0775
-        owner: root
-        group: docker
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
       loop:
-        - data
-        - deploy/custom-cont-init.d
-        - scripts
-        - data/backup
+        - path: deploy
+          owner: root
+          group: docker
+        - path: scripts
+          owner: root
+          group: docker
+        - path: data
+          owner: root
+          group: docker
+        - path: data/unifi-network-application/config
+          owner: 1000
+          group: 1000
+        - path: data/unifi-network-application/backup
+          owner: root
+          group: docker
+        - path: data/mongodb/data
+          owner: 999
+          group: 999
+        - path: data/mongodb/backup
+          owner: root
+          group: docker
+        - path: data/mongodb/entrypoint
+          owner: root
+          group: docker
 
     - name: Ensure docker-compose.yml exists for unifi
       ansible.builtin.template:
@@ -26,23 +46,22 @@
         group: docker
 
     - name: Deploy Docker Compose stack
-      community.docker.docker_compose:
+      community.docker.docker_compose_v2:
         project_name: unifi-network-application
         project_src: /srv/unifi-network-application/deploy
 
     # Requires manual restore of backup
     - name: Wait until the file default site is present before continuing
       ansible.builtin.wait_for:
-        path: /srv/unifi-network-application/data/config/data/sites/default
+        path: /srv/unifi-network-application/data/unifi-network-application/config/data/sites/default
 
-    # TODO: owner/group
     # https://help.ubnt.com/hc/en-us/articles/215458888-UniFi-How-to-further-customize-USG-configuration-with-config-gateway-json
     - name: Ensure custom config.gateway.json is deployed
       ansible.builtin.template:
         src: "config.gateway.json.j2"
-        dest: /srv/unifi-network-application/data/config/data/sites/default/config.gateway.json
-        owner: 911
-        group: 911
+        dest: /srv/unifi-network-application/data/unifi-network-application/config/data/sites/default/config.gateway.json
+        owner: 1000
+        group: 1000
         mode: 0600
 
     # https://help.ui.com/hc/en-us/articles/205146040-UniFi-Explaining-the-config-properties-File
@@ -52,9 +71,11 @@
       ansible.builtin.copy:
         content: |
           config.system_cfg.1=system.analytics.anonymous=disabled
-        dest: /srv/unifi-network-application/data/config/data/sites/default/config.properties
-        owner: 911
-        group: 911
+        dest: /srv/unifi-network-application/data/unifi-network-application/config/data/sites/default/config.properties
+        owner: 1000
+        group: 1000
         mode: 0600
 
-# Import tasks
+    - name: Import maintenance tasks
+      ansible.builtin.include_tasks:
+        file: maintenance.yaml

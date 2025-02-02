@@ -1,4 +1,4 @@
 ---
 unifi:
-  hostname: "unifi.{{ inventory_hostname }}.{{ network.local_domain }}"
+  hostname: "unifi.{{ network.local_domain }}"
   dns_ip: "{{ network.dns }}"

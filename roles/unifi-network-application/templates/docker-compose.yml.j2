@@ -1,31 +1,40 @@
 ---
-version: "3"
-
 services:
-  unifi-controller:
-    container_name: unifi-controller
+  unifi-network-application:
+    container_name: unifi-network-application
     hostname: {{ unifi.hostname }}
-    image: {{ containers.unifi.repo }}:{{ containers.unifi.tag }}
+    image: lscr.io/linuxserver/unifi-network-application:9.0.108
     restart: unless-stopped
+    depends_on:
+      - unifi-network-application-db
     volumes:
       - /etc/localtime:/etc/localtime:ro
-      - /etc/timezone:/etc/timezone:ro
-      - /srv/unifi-controller/data/config:/config
-      - /srv/unifi-controller/data/backup:/backup
-      - /srv/unifi-controller/deploy/custom-cont-init.d:/custom-cont-init.d:ro
+      - /srv/unifi-network-application/data/unifi-network-application/config:/config
+      - /srv/unifi-network-application/data/unifi-network-application/backup:/backup
     ports:
+      - 8443:8443
       - 3478:3478/udp
       - 10001:10001/udp
       - 8080:8080
-      - 1900:1900/udp #optional
+      # - 1900:1900/udp #optional
       - 8843:8843 #optional
       - 8880:8880 #optional
       - 6789:6789 #optional
       - 5514:5514/udp #optional
     environment:
+      PUID: 1000
+      PGID: 1000
+      MONGO_USER: unifi
+      MONGO_PASS: veeT0satei2bohghep0reePeupheiSh1
+      MONGO_HOST: unifi-network-application-db
+      MONGO_PORT: 27017
+      MONGO_DBNAME: ace
+      MONGO_AUTHSOURCE: admin
+      MONGO_TLS: false
       TZ: Europe/Copenhagen
     networks:
-      - "traefik"
+      traefik: {}
+      unifi-internal: {}
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.unifi.rule=Host(`{{ unifi.hostname }}`)"
@@ -33,6 +42,24 @@ services:
       - "traefik.http.services.unifi.loadbalancer.server.scheme=https"
       - "traefik.http.routers.unifi.entrypoints=https"
       - "traefik.http.routers.unifi.tls=true"
+
+  unifi-network-application-db:
+    image: docker.io/mongo:7.0.16
+    container_name: unifi-network-application-db
+    hostname: unifi-network-application-db
+    environment:
+      MONGO_USER: unifi
+      MONGO_PASS: veeT0satei2bohghep0reePeupheiSh1
+      MONGO_DBNAME: ace
+      MONGO_AUTHSOURCE: admin
+      TZ: Europe/Copenhagen
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/unifi-network-application/data/mongodb/data:/data/db
+      - /srv/unifi-network-application/data/mongodb/backup:/backup
+    restart: unless-stopped
+    networks:
+      unifi-internal: {}
 
 # /var/lib/unifi - Configuration data
 # /var/log/unifi - Log files
@@ -44,10 +71,14 @@ services:
 # 8843 – Unifi guest portal HTTPS redirect port
 # 8880 – Unifi guest portal HTTP redirect port
 # 8080 – Required for device communication
-# 1900/udp – Required to Make controller discoverable on L2 network option
+# 1900/udp – Required to Make network-application discoverable on L2 network option
 # 6789 – For mobile throughput test
 # 5514/udp – Remote Syslog port
 
 networks:
   traefik:
     external: true
+  unifi-internal:
+    ipam:
+      config:
+        - subnet: "172.117.238.0/24"
