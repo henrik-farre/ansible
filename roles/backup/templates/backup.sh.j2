@@ -47,7 +47,7 @@ function forget {
     forget
     -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
     --prune                   # cleanup unreferenced data
-{% for host in ansible_play_hosts %}
+{% for host in groups['all'] %}
 {% if hostvars[host].backup_config.schedules is defined %}
     --host={{ host }}
 {% endif %}
@@ -86,10 +86,10 @@ function verify {
 }
 
 function status {
+  # Returns for all hosts
   args=(
     snapshots
     -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
-    --host {{ inventory_hostname }}
   )
 
   echo "Running command with args:"
