@@ -78,6 +78,7 @@ package_groups:
     - yamllint
     - jq
     - go-yq
+    - yq
     # for hashing passwords in ansible
     - python-passlib
     - python-pbkdf2
@@ -87,6 +88,7 @@ package_groups:
   development_utils_extra:
     - aws-cli-v2
     - awxkit
+    - crane
     - helm
     - k9s
     - kubectl
