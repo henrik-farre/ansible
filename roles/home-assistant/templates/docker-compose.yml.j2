@@ -26,6 +26,13 @@ services:
       interval: 90s
       timeout: 60s
       retries: 2
+    cap_drop:
+      - ALL
+    cap_add:
+      - NET_RAW
+      - NET_ADMIN
+    security_opt:
+      - no-new-privileges:true
 
   mariadb:
     image: {{ containers.ha_mariadb.repo }}:{{ containers.ha_mariadb.tag }}
@@ -53,10 +60,6 @@ services:
       - /srv/home-assistant/data/mosquitto/config:/mosquitto/config
       - /srv/home-assistant/data/mosquitto/data:/mosquitto/data
       - /srv/home-assistant/data/mosquitto/log:/mosquitto/log
-    # ports:
-    #   - "1883:1883"
-    #   # This port is for Webhooks
-    #   - "9001:9001"
     networks:
       home-assistant-internal:
         ipv4_address: 172.16.238.10
