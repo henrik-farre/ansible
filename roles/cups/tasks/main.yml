@@ -34,6 +34,27 @@
       ansible.builtin.include_tasks: build.yml
       when: not hl1210w_bin.stat.exists
 
+    - name: Ensure printer is configured
+      ansible.builtin.blockinfile:
+        path: /etc/cups/printers.conf
+        block: "{{ lookup('ansible.builtin.template', 'etc/cups/printers.conf.j2') }}"
+        create: true
+        marker: "{mark}"
+        marker_begin: "<Printer Brother_HL-1210W>"
+        marker_end: "</Printer>"
+        mode: 0640
+        owner: root
+        group: cups
+
+    - name: Ensure ppd is in correct directory
+      ansible.builtin.copy:
+        src: /usr/share/cups/model/brother-HL1210W-cups-en.ppd
+        dest: /etc/cups/ppd/Brother_HL-1210W.ppd
+        remote_src: true
+        mode: 0640
+        owner: root
+        group: cups
+
     - name: Ensure Cups can be started ondemand
       become: true
       ansible.builtin.service:
