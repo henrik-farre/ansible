@@ -1,0 +1,13 @@
+---
+http:
+  routers:
+    jellyfin-http:
+      entryPoints:
+        - http
+      rule: 'Host(`{{ jellyfin.hostname }}`)'
+      service: jellyfin
+  services:
+    jellyfin:
+      loadBalancer:
+        servers:
+          - url: "http://{{ jellyfin.ip }}:8096/"
