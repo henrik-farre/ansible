@@ -8,24 +8,39 @@
       ansible.builtin.file:
         path: "/srv/jellyfin/{{ item.path }}"
         state: directory
-        mode: 0775
+        mode: 0770
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
       loop:
         - path: data/config
           owner: "{{ jellyfin.uid }}"
           group: "{{ jellyfin.gid }}"
-        - path: data/config
+        - path: data/cache
           owner: "{{ jellyfin.uid }}"
           group: "{{ jellyfin.gid }}"
         - path: deploy
           owner: root
           group: docker
 
+    - name: Ensure custom ports are configured
+      community.general.ufw:
+        rule: "allow"
+        port: "8096"
+        proto: "tcp"
+        comment: "Jellyfin"
+
     - name: Ensure docker-compose.yml exists for jellyfin
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: /srv/jellyfin/deploy/docker-compose.yml
+        mode: 0664
+        owner: root
+        group: docker
+
+    - name: Custom traefik config
+      ansible.builtin.template:
+        src: traefik/jellyfin.yaml.j2
+        dest: /srv/traefik/data/dynamic/jellyfin.yaml
         mode: 0664
         owner: root
         group: docker

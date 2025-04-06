@@ -4,9 +4,12 @@ services:
     image: {{ containers.jellyfin.repo }}:{{ containers.jellyfin.tag }}
     hostname: {{ jellyfin.hostname }}
     container_name: jellyfin
+    network_mode: "host"
     user: {{ jellyfin.uid }}:{{ jellyfin.gid }}
+    group_add:
+      - "989"
     devices:
-      - /dev/dri/renderD128:/dev/dri/renderD128
+      - /dev/dri/:/dev/dri/
     volumes:
       - /srv/jellyfin/data/config:/config
       - /srv/jellyfin/data/cache:/cache
@@ -16,24 +19,5 @@ services:
       - /shared/series:/media/series:ro
     environment:
       TZ: Europe/Copenhagen
+      JELLYFIN_PublishedServerUrl: "http://{{ jellyfin.hostname }}"
     restart: unless-stopped
-    networks:
-      traefik: {}
-      macvlan:
-        ipv4_address: 192.168.0.66
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.jellyfin.rule=Host(`{{ jellyfin.hostname }}`)"
-      - "traefik.http.services.jellyfin.loadbalancer.server.port=8096"
-      - "traefik.http.routers.jellyfin.entrypoints=http"
-
-networks:
-  traefik:
-    external: true
-  macvlan:
-    driver: macvlan
-    driver_opts:
-      parent: enp86s0
-    ipam:
-      config:
-        - subnet: 192.168.0.0/24

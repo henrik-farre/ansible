@@ -1,5 +1,6 @@
 ---
 jellyfin:
   hostname: "jellyfin.{{ network.local_domain }}"
+  ip: "{{ ansible_facts.default_ipv4.address }}"
   uid: 1001
   gid: 984
