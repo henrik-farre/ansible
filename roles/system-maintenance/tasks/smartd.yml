@@ -1,13 +1,11 @@
 ---
 - name: Ensure smartmontools are installed
-  become: true
   community.general.pacman:
     state: latest
     name: smartmontools
 
 # Based on https://wiki.archlinux.org/index.php/S.M.A.R.T.#Notifying_potential_problems
 - name: Ensure desktop notification script is installed
-  become: true
   ansible.builtin.copy:
     dest: /usr/share/smartmontools/smartd_warning.d/smartdnotify
     group: root
@@ -22,25 +20,18 @@
           DISP_ID=`echo $LINE | awk '{print $8}'`
           sudo -u $USER DISPLAY=$DISP_ID DBUS_SESSION_BUS_ADDRESS=unix:path=/run/user/$USER_ID/bus notify-send "S.M.A.R.T Error ($SMARTD_FAILTYPE)" "$SMARTD_MESSAGE" --icon=dialog-warning
       done
-    mode: 0700
+    mode: "0700"
     owner: root
-  tags:
-    - system-maintenance
 
 - name: Ensure smartd is configured
-  become: true
   ansible.builtin.lineinfile:
     name: /etc/smartd.conf
     regexp: '^DEVICESCAN'
     line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }},@smartdnotify -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W {{ smartd.temperatures }}'
     state: present
   notify: Reload smartd
-  tags:
-    - system-maintenance
-    - molecule-notest
 
 - name: Ensure smartd service is started
-  become: true
   ansible.builtin.systemd:
     name: smartd
     state: started
