@@ -60,8 +60,8 @@
   become: true
   ansible.builtin.lineinfile:
     name: /etc/bluetooth/main.conf
-    regexp: 'AutoEnable='
-    line: 'AutoEnable=true'
+    regexp: "AutoEnable="
+    line: "AutoEnable=true"
     state: present
   tags:
     - bluetooth
@@ -71,7 +71,7 @@
   ansible.builtin.systemd:
     name: bluetooth
     state: started
-    enabled: yes
+    enabled: true
   tags:
     - bluetooth
 

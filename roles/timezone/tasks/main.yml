@@ -14,9 +14,9 @@
     - name: Set TZ env
       ansible.builtin.copy:
         content: |
-                  # Managed by Ansible
-                  export TZ="Europe/Copenhagen"
+          # Managed by Ansible
+          export TZ="Europe/Copenhagen"
         dest: /etc/profile.d/tz.sh
         owner: root
         group: root
-        mode: 0755
+        mode: "0755"

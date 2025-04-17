@@ -30,14 +30,14 @@
       ansible.builtin.systemd:
         name: pcscd.socket
         state: started
-        enabled: yes
-        daemon_reload: yes
+        enabled: true
+        daemon_reload: true
 
     - name: Ensure usbhid is loaded
       become: true
       ansible.builtin.copy:
         dest: /etc/modules-load.d/yubikey.conf
-        mode: 0644
+        mode: "0644"
         content: |
           # Managed by Ansible
           # Needed by Yubikey
@@ -47,7 +47,7 @@
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.config/Yubico"
         state: directory
-        mode: 0700
+        mode: "0700"
 
     - name: Ensure yubioath-desktop is disabled
       ansible.builtin.file:
@@ -64,4 +64,4 @@
         content: |
           # Managed by Ansible
           auth            sufficient      pam_u2f.so origin=pam://{{ inventory_hostname }} appid=pam://{{ inventory_hostname }} cue
-        mode: 0640
+        mode: "0640"

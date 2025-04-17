@@ -2,7 +2,7 @@
 # --base-config ../molecule-resources/base-config-docker.yml
 platforms:
   - name: instance
-    pre_build_image: True
+    pre_build_image: true
     image: "rockhopperdk/docker-archlinux-systemd:latest"
 provisioner:
   name: ansible

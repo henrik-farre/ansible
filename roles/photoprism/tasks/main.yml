@@ -12,7 +12,7 @@
       ansible.builtin.file:
         path: "/srv/photoprism/{{ item.path }}"
         state: directory
-        mode: 0775
+        mode: "0775"
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
       loop:
@@ -33,7 +33,7 @@
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: /srv/photoprism/deploy/docker-compose.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -54,7 +54,7 @@
           /usr/bin/docker-compose -p photoprism exec -T photoprism photoprism backup --index - | gzip > /shared/backup/photoprism/$(date +"%Y-%m-%d").sql.gz
           /usr/bin/docker-compose -p photoprism exec -T photoprism photoprism backup --albums --albums-path /photoprism/storage/albums-backup/
           /usr/bin/tar zcvf /shared/backup/photoprism/$(date +"%Y-%m-%d")-albums-backup.tar.gz /srv/photoprism/data/photoprism/storage/albums-backup
-        mode: 0750
+        mode: "0750"
 
     - name: Install systemd services for backup
       ansible.builtin.copy:
@@ -70,7 +70,7 @@
           Type=oneshot
           ExecStart=/srv/photoprism/scripts/backup-photoprism.sh
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Install systemd timers
       ansible.builtin.copy:
@@ -88,19 +88,19 @@
           [Install]
           WantedBy=timers.target
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Reload systemd
       ansible.builtin.systemd:
-        daemon_reload: yes
+        daemon_reload: true
 
     - name: Enable systemd services
       ansible.builtin.systemd:
         name: "backup-photoprism.service"
-        enabled: yes
+        enabled: true
 
     - name: Enable systemd timers
       ansible.builtin.systemd:
         name: "backup-photoprism.timer"
-        enabled: yes
+        enabled: true
         state: started

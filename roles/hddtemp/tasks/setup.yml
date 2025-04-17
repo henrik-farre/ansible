@@ -27,7 +27,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0750
+    mode: "0750"
   tags:
     - hddtemp
 
@@ -40,7 +40,7 @@
       ExecStart=/usr/bin/hddtemp -dF {{ non_removable_devices|join(' ') }}
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"
   tags:
     - hddtemp
 
@@ -48,7 +48,7 @@
   ansible.builtin.systemd:
     name: hddtemp
     state: started
-    enabled: yes
-    daemon_reload: yes
+    enabled: true
+    daemon_reload: true
   tags:
     - hddtemp

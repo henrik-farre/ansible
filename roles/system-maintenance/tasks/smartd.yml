@@ -26,8 +26,8 @@
 - name: Ensure smartd is configured
   ansible.builtin.lineinfile:
     name: /etc/smartd.conf
-    regexp: '^DEVICESCAN'
-    line: 'DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }},@smartdnotify -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W {{ smartd.temperatures }}'
+    regexp: "^DEVICESCAN"
+    line: "DEVICESCAN -a -o on -S on -n standby,q -m {{ email_addresses.internal }},@smartdnotify -s ({{ smartd.schedule_short }}|{{ smartd.schedule_long }}) -W {{ smartd.temperatures }}"
     state: present
   notify: Reload smartd
 
@@ -35,6 +35,6 @@
   ansible.builtin.systemd:
     name: smartd
     state: started
-    enabled: yes
+    enabled: true
   when:
     - ansible_virtualization_role == 'host'

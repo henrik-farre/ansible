@@ -4,7 +4,7 @@
 - name: Install composer PHP packages
   composer:
     command: require
-    global_command: yes
+    global_command: true
     arguments: "{{ item }}"
   with_items:
     - "phpmd/phpmd"
@@ -26,7 +26,7 @@
     dest: "/etc/php/conf.d/xdebug.ini"
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   tags:
     - php
 
@@ -34,8 +34,8 @@
   become: true
   ansible.builtin.lineinfile:
     name: /etc/php/php.ini
-    regexp: 'date.timezone ='
-    line: 'date.timezone = Europe/Copenhagen'
+    regexp: "date.timezone ="
+    line: "date.timezone = Europe/Copenhagen"
     state: present
   tags:
     - php
@@ -44,8 +44,8 @@
   become: true
   ansible.builtin.lineinfile:
     name: /etc/php/php.ini
-    regexp: 'extension={{ item }}'
-    line: 'extension={{ item }}'
+    regexp: "extension={{ item }}"
+    line: "extension={{ item }}"
     state: present
   with_items:
     - "ldap.so"

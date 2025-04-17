@@ -18,20 +18,20 @@
       ansible.builtin.file:
         state: directory
         path: /root/.config/rclone/
-        mode: 0700
+        mode: "0700"
 
     - name: Copy config file
       ansible.builtin.copy:
         dest: /root/.config/rclone/rclone.conf
         src: dot.config/rclone/rclone.conf.vault
-        mode: 0500
+        mode: "0500"
       no_log: true
 
     - name: Ensure local systemd directory exists
       ansible.builtin.file:
         state: directory
         path: /usr/local/lib/systemd/system
-        mode: 0755
+        mode: "0755"
 
     - name: Install systemd service template
       ansible.builtin.copy:
@@ -46,7 +46,7 @@
           Type=oneshot
           ExecStart=/usr/bin/rclone copy --immutable --exclude ".DS_Store" --max-age 1y --no-traverse --verbose --transfers 4 --checkers 3 --log-systemd /shared/%i/ remote_%i_crypt:
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Install systemd timer template
       ansible.builtin.copy:
@@ -65,21 +65,21 @@
           [Install]
           WantedBy=timers.target
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Reload systemd
       ansible.builtin.systemd:
-        daemon_reload: yes
+        daemon_reload: true
 
     - name: Enable systemd services
       ansible.builtin.systemd:
         name: "backup-rclone@{{ item.name }}.service"
-        enabled: yes
+        enabled: true
       loop: "{{ backup_rclone_backups }}"
 
     - name: Enable systemd timers
       ansible.builtin.systemd:
         name: "backup-rclone@{{ item.name }}.timer"
-        enabled: yes
+        enabled: true
         state: started
       loop: "{{ backup_rclone_backups }}"

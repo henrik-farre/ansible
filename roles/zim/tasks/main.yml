@@ -23,7 +23,7 @@
   ansible.builtin.git:
     repo: git@bitbucket.org:enrique/notes.git
     dest: "{{ ansible_user_dir }}/Documents/Zim"
-    accept_hostkey: yes
+    accept_hostkey: true
     version: master
   tags:
     - zim
@@ -34,7 +34,7 @@
     path: "{{ ansible_user_dir }}/.config/zim"
     owner: "{{ ansible_user_id }}"
     state: directory
-    mode: 0700
+    mode: "0700"
   tags:
     - zim
 
@@ -43,25 +43,25 @@
     path: "{{ ansible_user_dir }}/.local/share/applications"
     owner: "{{ ansible_user_id }}"
     state: directory
-    mode: 0700
+    mode: "0700"
   tags:
     - zim
 
 - name: Ensure notebook config exists
   ansible.builtin.copy:
     content: |
-        [NotebookList]
-        Default=
-        1=~/Documents/Zim/notes
+      [NotebookList]
+      Default=
+      1=~/Documents/Zim/notes
 
-        [Notebook 1]
-        uri=~/Documents/Zim/notes
-        name=Notes
-        interwiki=None
-        icon=None
+      [Notebook 1]
+      uri=~/Documents/Zim/notes
+      name=Notes
+      interwiki=None
+      icon=None
     dest: "{{ ansible_user_dir }}/.config/zim/notebooks.list"
     owner: "{{ ansible_user_id }}"
-    mode: 0700
+    mode: "0700"
   tags:
     - zim
 
@@ -70,7 +70,7 @@
     src: dot.git/hooks/post-commit
     dest: "{{ ansible_user_dir }}/Documents/Zim/.git/hooks/post-commit"
     owner: "{{ ansible_user_id }}"
-    mode: 0700
+    mode: "0700"
   tags:
     - zim
     - zim-notebook
@@ -83,4 +83,4 @@
       [Tag link]
       foreground=#3371ff
     owner: "{{ ansible_user_id }}"
-    mode: 0644
+    mode: "0644"

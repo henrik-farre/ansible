@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - { role: packages, packages: ['getmail'] }
+  - { role: packages, packages: ["getmail"] }
   - systemd-failed-service-mail

@@ -7,22 +7,22 @@
     - name: Ensure users can only login using keys
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        line: 'PasswordAuthentication no'
-        regexp: 'PasswordAuthentication '
+        line: "PasswordAuthentication no"
+        regexp: "PasswordAuthentication "
         state: present
 
     - name: Ensure root can not login with password
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        line: '#PermitRootLogin prohibit-password'
-        regexp: '^PermitRootLogin *'
+        line: "#PermitRootLogin prohibit-password"
+        regexp: "^PermitRootLogin *"
         state: present
 
     - name: Ensure UsePAM is enabled
       ansible.builtin.lineinfile:
         dest: /etc/ssh/sshd_config
-        line: 'UsePAM yes'
-        regexp: '^UsePAM *'
+        line: "UsePAM yes"
+        regexp: "^UsePAM *"
         state: present
 
     # Directory only exist on Debian, and file only when creating VMs

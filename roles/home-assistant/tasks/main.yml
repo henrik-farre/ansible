@@ -29,7 +29,7 @@
       ansible.builtin.file:
         path: "/srv/home-assistant/{{ item.path }}"
         state: directory
-        mode: 0775
+        mode: "0775"
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
       loop:
@@ -95,7 +95,7 @@
           ## Authentication ##
           allow_anonymous false
           password_file /mosquitto/config/password_file
-        mode: 0664
+        mode: "0664"
         owner: 1883
         group: 1883
 
@@ -103,14 +103,14 @@
       ansible.builtin.template:
         dest: /srv/home-assistant/data/mosquitto/config/password_file
         src: mosquitto_password_file.j2
-        mode: 0400
+        mode: "0400"
         owner: 1883
         group: 1883
 
     - name: Check if zigbee2mqtt config exists
       ansible.builtin.stat:
         path: /srv/home-assistant/data/zigbee2mqtt/configuration.yaml
-        get_checksum: no
+        get_checksum: false
       register: zigbee2mqtt_config
 
     # Zigbee2mqtt writes to its own config file and removes the ansible block markers
@@ -137,7 +137,7 @@
           homeassistant: true
           advanced:
             log_level: warn
-        mode: 0664
+        mode: "0664"
         owner: 1883
         group: docker
       when:
@@ -147,7 +147,7 @@
       ansible.builtin.template:
         src: victoriametrics/prometheus/prometheus.yml.j2
         dest: /srv/home-assistant/data/victoriametrics/prometheus/prometheus.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -155,7 +155,7 @@
       ansible.builtin.template:
         src: victoriametrics/prometheus/homeassistant.yml.j2
         dest: /srv/home-assistant/data/victoriametrics/prometheus/conf.d/homeassistant.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -163,7 +163,7 @@
       ansible.builtin.template:
         src: victoriametrics/prometheus/speedtest.yml.j2
         dest: /srv/home-assistant/data/victoriametrics/prometheus/conf.d/speedtest.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -171,7 +171,7 @@
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: /srv/home-assistant/deploy/docker-compose.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -184,7 +184,7 @@
       ansible.builtin.template:
         src: traefik/home-assistant.yml.j2
         dest: /srv/traefik/data/dynamic/home-assistant.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -198,7 +198,7 @@
         marker: "# {mark} ANSIBLE MANAGED BLOCK recorder"
         owner: root
         group: docker
-        mode: 0660
+        mode: "0660"
         block: |
           recorder:
             # https://www.home-assistant.io/integrations/recorder/
@@ -267,7 +267,7 @@
       ansible.builtin.unarchive:
         src: "{{ item.browser_download_url }}"
         dest: /srv/home-assistant/data/home-assistant/config/custom_components/hacs
-        remote_src: yes
+        remote_src: true
       notify: Restart home-assistant container
       loop: "{{ json_response.json.assets }}"
       when:
@@ -305,7 +305,7 @@
           for service in home-assistant mosquitto zigbee2mqtt; do
             /usr/bin/tar zcvf ${BACKUP_LOCATION}/${service}.tar.gz /srv/home-assistant/data/${service}
           done
-        mode: 0750
+        mode: "0750"
 
     - name: Install systemd services for backup
       ansible.builtin.copy:
@@ -321,7 +321,7 @@
           Type=oneshot
           ExecStart=/srv/home-assistant/scripts/backup-home-assistant.sh
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Install systemd timers
       ansible.builtin.copy:
@@ -339,19 +339,19 @@
           [Install]
           WantedBy=timers.target
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Reload systemd
       ansible.builtin.systemd:
-        daemon_reload: yes
+        daemon_reload: true
 
     - name: Enable systemd services
       ansible.builtin.systemd:
         name: "backup-home-assistant.service"
-        enabled: yes
+        enabled: true
 
     - name: Enable systemd timers
       ansible.builtin.systemd:
         name: "backup-home-assistant.timer"
-        enabled: yes
+        enabled: true
         state: started

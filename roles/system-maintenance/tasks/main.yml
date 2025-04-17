@@ -18,7 +18,7 @@
       with_dict: "{{ ansible_devices }}"
       when:
         - item.key[:4] == "nvme"
-      no_log: True
+      no_log: true
 
     - name: Install nvme utils if system has an nvme
       community.general.pacman:
@@ -31,7 +31,7 @@
       ansible.builtin.systemd:
         name: fstrim.timer
         state: started
-        enabled: yes
+        enabled: true
 
     # Lifted from https://wiki.archlinux.org/index.php/Improving_performance#Changing_I/O_scheduler
     - name: Ensure correct scheduler are used for devices

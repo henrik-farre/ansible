@@ -21,7 +21,7 @@
         dest: /etc/conf.d/libvirt-guests
         owner: root
         group: root
-        mode: 0664
+        mode: "0664"
         content: |
           # Managed by Ansible
           # Only start those VMs that are configured to autostart
@@ -33,7 +33,7 @@
       ansible.builtin.systemd:
         name: "{{ item }}"
         state: started
-        enabled: True
+        enabled: true
       loop:
         - libvirtd
         - libvirt-guests
@@ -43,7 +43,7 @@
         dest: /etc/modules-load.d/br_netfilter.conf
         owner: root
         group: root
-        mode: 0664
+        mode: "0664"
         content: |
           # Managed by Ansible
           # Needs to be loaded else sysctl can't change settings
@@ -54,7 +54,7 @@
         dest: /etc/sysctl.d/99-netfilter-bridge.conf
         owner: root
         group: root
-        mode: 0664
+        mode: "0664"
         content: |
           # Managed by Ansible
           # Used by libvirt - disable firewall on bridge
@@ -67,7 +67,7 @@
     - name: Ensure delayed start systemd units exits
       ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/virsh-vm@.service
-        mode: 0644
+        mode: "0644"
         content: |
           [Unit]
           Description=Start and Stop Virtual Machine %i using virsh
@@ -86,7 +86,7 @@
     - name: Ensure delayed start systemd timer exits
       ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/virsh-vm@.timer
-        mode: 0644
+        mode: "0644"
         content: |
           [Unit]
           Description=Timer to start Virtual Machine %i using virsh after 1 minute

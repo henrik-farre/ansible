@@ -4,7 +4,7 @@
     name: "duplicity-docker@{{ item }}.service"
     enabled: false
     state: stopped
-    daemon_reload: yes
+    daemon_reload: true
   ignore_errors: true
   with_items:
     - backup
@@ -17,7 +17,7 @@
     name: "duplicity-docker-{{ item.schedule }}@{{ item.name }}.timer"
     enabled: false
     state: stopped
-    daemon_reload: yes
+    daemon_reload: true
   ignore_errors: true
   loop:
     - name: backup
@@ -47,7 +47,7 @@
     name: "backup-{{ item.schedule }}@{{ item.name }}.timer"
     enabled: false
     state: stopped
-    daemon_reload: yes
+    daemon_reload: true
   ignore_errors: true
   loop:
     - name: backup

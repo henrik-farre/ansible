@@ -1,4 +1,4 @@
 ---
 dependencies:
-  - { role: packages, packages: ['cronie'] }
-  - { role: services, services: ['cronie'] }
+  - { role: packages, packages: ["cronie"] }
+  - { role: services, services: ["cronie"] }

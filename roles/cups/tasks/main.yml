@@ -7,7 +7,7 @@
     - name: Set default papersize
       ansible.builtin.copy:
         dest: /etc/papersize
-        mode: 0644
+        mode: "0644"
         content: |
           a4
 
@@ -42,7 +42,7 @@
         marker: "{mark}"
         marker_begin: "<Printer Brother_HL-1210W>"
         marker_end: "</Printer>"
-        mode: 0640
+        mode: "0640"
         owner: root
         group: cups
 
@@ -51,7 +51,7 @@
         src: /usr/share/cups/model/brother-HL1210W-cups-en.ppd
         dest: /etc/cups/ppd/Brother_HL-1210W.ppd
         remote_src: true
-        mode: 0640
+        mode: "0640"
         owner: root
         group: cups
 
@@ -60,13 +60,13 @@
       ansible.builtin.service:
         name: cups.socket
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Ensure users are members of sys group
       ansible.builtin.user:
         name: "{{ item }}"
         groups: sys
-        append: yes
+        append: true
       with_items:
         - "{{ groups_to_users.sys }}"
       when:
@@ -76,7 +76,7 @@
       ansible.builtin.user:
         name: "{{ item }}"
         groups: lp
-        append: yes
+        append: true
       with_items:
         - "{{ groups_to_users.lp }}"
       when:

@@ -4,7 +4,7 @@
     path: /root/.ssh
     group: root
     state: directory
-    mode: 0700
+    mode: "0700"
     owner: root
   tags:
     - backup
@@ -15,7 +15,7 @@
     dest: "/root/.ssh/{{ item }}"
     owner: root
     group: root
-    mode: 0400
+    mode: "0400"
   with_items:
     - id_rsa.backup
     - id_rsa.backup.pub
@@ -25,10 +25,10 @@
 - name: Ensure ssh config exists for backup host
   ansible.builtin.blockinfile:
     dest: "/root/.ssh/config"
-    create: yes
+    create: true
     block: "{{ ssh_config }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK backup_host"
-    mode: 0400
+    mode: "0400"
   vars:
     ssh_config: "{{ duplicity_config.ssh_config }}"
   tags:

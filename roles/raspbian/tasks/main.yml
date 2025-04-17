@@ -17,15 +17,15 @@
     - name: Ensure /boot/firmware/cmdline.txt contains correct options
       ansible.builtin.copy:
         dest: /etc/default/raspi-extra-cmdline
-        mode: 0644
+        mode: "0644"
         content: |
-           rootfstype=ext4
+          rootfstype=ext4
       notify:
         - Rebuild initramfs
 
     - name: Ensure /boot/firmware/config.txt containts correct options
       ansible.builtin.lineinfile:
-        line: '{{ item.key }}={{ item.value }}'
+        line: "{{ item.key }}={{ item.value }}"
         dest: /etc/default/raspi-firmware-custom
         regexp: "^{{ item.key }}="
       loop: "{{ config_items | dict2items }}"
@@ -52,7 +52,7 @@
     - name: Ensure trim support is enabled on USB SSD
       ansible.builtin.copy:
         dest: /etc/udev/rules.d/10-trim.rules
-        mode: 0644
+        mode: "0644"
         content: |
           ACTION=="add|change", ATTRS{idVendor}=="14b0", ATTRS{idProduct}=="0206", SUBSYSTEM=="scsi_disk", ATTR{provisioning_mode}="unmap"
 
@@ -61,24 +61,24 @@
       ansible.builtin.systemd:
         name: fstrim.timer
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Disable unneeded services
       ansible.builtin.systemd:
         name: "{{ item }}"
         state: stopped
-        enabled: no
+        enabled: false
       loop:
         - rsyslog.service
-      failed_when: False
+      failed_when: false
 
     - name: Remove unneeded packages
       ansible.builtin.apt:
         name: "{{ packages }}"
         state: absent
-        purge: yes
-        autoclean: yes
-        autoremove: yes
+        purge: true
+        autoclean: true
+        autoremove: true
       vars:
         packages:
           - rsyslog
@@ -89,7 +89,7 @@
         path: /etc/systemd/logind.conf.d
         owner: root
         group: root
-        mode: 0755
+        mode: "0755"
 
     - name: Reduce number of VTs (step 2/2)
       ansible.builtin.copy:
@@ -99,4 +99,4 @@
           NAutoVTs=1
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"

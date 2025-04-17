@@ -9,7 +9,7 @@
     state: directory
     owner: root
     group: root
-    mode: 0775
+    mode: "0775"
   loop:
     - "templates/{{ vm.os_variant }}"
     - "virtual_machines/{{ virtual_machine_name }}"
@@ -20,7 +20,7 @@
     dest: /var/lib/libvirt/images/templates/{{ vm.os_variant }}/{{ vm.template.image }}
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   tags:
     - skip_no_dns
 
@@ -65,7 +65,7 @@
             - {{ vm.networks.enp2s0.ip }}/24
     owner: root
     group: root
-    mode: 0775
+    mode: "0775"
   when: ( vm.cloud_init is not defined ) or ( vm.cloud_init )
 
 - name: Cloud init
@@ -94,17 +94,17 @@
         - systemctl restart sshd
     owner: root
     group: root
-    mode: 0775
+    mode: "0775"
   when: ( vm.cloud_init is not defined ) or ( vm.cloud_init )
 
 - name: Prepare vm
   ansible.builtin.copy:
     src: /var/lib/libvirt/images/templates/{{ vm.os_variant }}/{{ vm_template_image_name }}
     dest: "/var/lib/libvirt/images/virtual_machines/{{ virtual_machine_name }}/{{ vm_template_image_name }}"
-    remote_src: True
+    remote_src: true
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
 
 # https://man.archlinux.org/man/community/cloud-image-utils/cloud-localds.1.en
 # - name: Create cloud img

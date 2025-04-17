@@ -6,7 +6,6 @@
     - mounts
   when: nfs_mounts is defined
   block:
-
     - name: Ensure NFS support is installed on ArchLinux
       community.general.pacman:
         name: nfs-utils

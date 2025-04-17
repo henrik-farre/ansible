@@ -14,7 +14,7 @@
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "/etc/modules-load.d/"
-        mode: 0640
+        mode: "0640"
       with_fileglob:
         - "etc/modules-load.d/{{ ansible_facts.facter_dmi.board.product | replace(' ', '_') }}.conf"
 
@@ -22,7 +22,7 @@
       ansible.builtin.copy:
         src: "{{ item }}"
         dest: "/etc/sensors.d/"
-        mode: 0640
+        mode: "0640"
       with_fileglob:
         - "etc/sensors.d/{{ ansible_facts.facter_dmi.board.product | replace(' ', '_') }}.conf"
 

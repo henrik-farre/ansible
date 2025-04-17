@@ -1,3 +1,4 @@
+---
 - name: Ensure correct kernel is installed
   become: true
   community.general.pacman:

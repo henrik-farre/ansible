@@ -18,7 +18,7 @@
         state: directory
         owner: root
         group: docker
-        mode: 0750
+        mode: "0750"
 
     - name: Ensure correct storage driver is configured
       ansible.builtin.copy:
@@ -26,7 +26,7 @@
         content: "{{ docker_daemon_options | to_nice_json }}"
         owner: root
         group: docker
-        mode: 0640
+        mode: "0640"
       notify: Restart docker daemon
 
     - name: Check if devicemapper directory exist
@@ -55,7 +55,7 @@
       ansible.builtin.systemd:
         name: docker
         state: started
-        enabled: yes
+        enabled: true
       when:
         - docker_devicemapper.stat.exists is defined and docker_devicemapper.stat.exists
 
@@ -71,7 +71,7 @@
           Type=oneshot
           ExecStart=/usr/bin/docker system prune -f
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Prune unused docker images, containers and more | systemd timer
       ansible.builtin.copy:
@@ -87,34 +87,34 @@
           [Install]
           WantedBy=timers.target
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Reload systemd
       ansible.builtin.systemd:
-        daemon_reload: yes
+        daemon_reload: true
 
     - name: Enable docker socket
       ansible.builtin.systemd:
         name: "docker.socket"
-        enabled: yes
+        enabled: true
         state: started
 
     - name: Enable systemd services
       ansible.builtin.systemd:
         name: "docker-prune.service"
-        enabled: yes
+        enabled: true
 
     - name: Enable systemd timers
       ansible.builtin.systemd:
         name: "docker-prune.timer"
-        enabled: yes
+        enabled: true
         state: started
 
     - name: Ensure users are members of docker group
       ansible.builtin.user:
         name: "{{ item }}"
         groups: docker
-        append: yes
+        append: true
       with_items:
         - "{{ groups_to_users.docker }}"
       when:

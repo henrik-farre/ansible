@@ -15,8 +15,8 @@
         content: |
           %wheel ALL=(ALL) ALL
         dest: /etc/sudoers.d/10-grant-wheel-group
-        validate: 'visudo -cf %s'
-        mode: 0600
+        validate: "visudo -cf %s"
+        mode: "0600"
       when:
         - ansible_facts.distribution == 'Archlinux'
 
@@ -25,8 +25,8 @@
         content: |
           %sudo ALL=(ALL) ALL
         dest: /etc/sudoers.d/10-grant-sudo-group
-        validate: 'visudo -cf %s'
-        mode: 0600
+        validate: "visudo -cf %s"
+        mode: "0600"
       when:
         - ansible_facts.distribution == 'Debian'
 
@@ -35,8 +35,8 @@
         content: |
           Defaults editor="/bin/nvim"
         dest: /etc/sudoers.d/20-neovim-as-editor
-        validate: 'visudo -cf %s'
-        mode: 0600
+        validate: "visudo -cf %s"
+        mode: "0600"
       when:
         - ansible_facts.distribution != 'Debian'
 
@@ -46,8 +46,8 @@
         content: |
           Defaults !tty_tickets
         dest: /etc/sudoers.d/30-tty-tickets
-        validate: 'visudo -cf %s'
-        mode: 0600
+        validate: "visudo -cf %s"
+        mode: "0600"
 
     - name: Cmnd Aliases with no password for wheel
       ansible.builtin.copy:
@@ -56,7 +56,7 @@
           Cmnd_Alias  PACMAN      =   /usr/bin/pacman
           %wheel      ALL         =   (root)  NOPASSWD: POWER, PACMAN
         dest: /etc/sudoers.d/40-cmnd-aliases-for-wheel
-        validate: 'visudo -cf %s'
-        mode: 0600
+        validate: "visudo -cf %s"
+        mode: "0600"
       when:
         - ansible_facts.distribution != 'Debian'

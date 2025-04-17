@@ -1,4 +1,4 @@
 ---
 dependencies:
   # s-nail to get mail command
-  - { role: packages, packages: ['ssmtp', 's-nail'] }
+  - { role: packages, packages: ["ssmtp", "s-nail"] }

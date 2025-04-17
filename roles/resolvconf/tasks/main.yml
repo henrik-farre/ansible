@@ -9,7 +9,7 @@
       ansible.builtin.systemd:
         name: resolvconf
         state: stopped
-        enabled: no
+        enabled: false
 
     - name: Remove package
       ansible.builtin.apt:

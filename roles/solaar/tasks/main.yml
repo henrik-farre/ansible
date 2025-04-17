@@ -10,7 +10,7 @@
 - name: Ensure autostart folder exists
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/autostart"
-    mode: 0750
+    mode: "0750"
     state: directory
   tags:
     - solaar

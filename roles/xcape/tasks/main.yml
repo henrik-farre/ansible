@@ -4,7 +4,7 @@
     path: "{{ ansible_user_dir }}/.config/systemd/user/"
     state: directory
     owner: "{{ ansible_user_id }}"
-    mode: 0700
+    mode: "0700"
   tags:
     - systemd-user-units
     - xcape
@@ -34,8 +34,8 @@
 - name: Ensure services are enabled
   ansible.builtin.systemd:
     name: xcape.service
-    enabled: yes
-    daemon_reload: yes
+    enabled: true
+    daemon_reload: true
     scope: user
   tags:
     - systemd-user-units

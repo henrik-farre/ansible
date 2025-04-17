@@ -6,7 +6,7 @@
     dest: "/root/.gnupg/gpg.conf"
     owner: root
     group: root
-    mode: 0400
+    mode: "0400"
   tags:
     - backup
 
@@ -16,7 +16,7 @@
     dest: "/root/.gnupg/private.asc"
     owner: root
     group: root
-    mode: 0400
+    mode: "0400"
   tags:
     - backup
 
@@ -26,7 +26,7 @@
     dest: "/root/.gnupg/ownertrust"
     owner: root
     group: root
-    mode: 0400
+    mode: "0400"
   tags:
     - backup
 

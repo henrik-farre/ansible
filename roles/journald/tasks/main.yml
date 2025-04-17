@@ -5,7 +5,7 @@
     path: /etc/systemd/journald.conf.d
     state: directory
     owner: root
-    mode: 0755
+    mode: "0755"
   tags:
     - journald
 
@@ -18,6 +18,6 @@
       [Journal]
       SystemMaxUse=50M
     owner: root
-    mode: 0644
+    mode: "0644"
   tags:
     - journald

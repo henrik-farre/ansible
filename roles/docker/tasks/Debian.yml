@@ -3,7 +3,7 @@
   ansible.builtin.apt:
     name: "{{ packages }}"
     state: latest
-    update_cache: yes
+    update_cache: true
   vars:
     packages:
       - docker.io

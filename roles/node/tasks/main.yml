@@ -2,7 +2,7 @@
 - name: Install node packages
   npm:
     name: "{{ item }}"
-    global: yes
+    global: true
     state: latest
   with_items:
     - "tern"

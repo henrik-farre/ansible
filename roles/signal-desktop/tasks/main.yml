@@ -10,7 +10,7 @@
 - name: Ensure signal-desktop desktop entry is configured
   ansible.builtin.copy:
     dest: "{{ ansible_user_dir }}/.local/share/applications/signal-desktop.desktop"
-    mode: 0640
+    mode: "0640"
     content: |
       [Desktop Entry]
       Type=Application
@@ -31,7 +31,7 @@
 - name: Ensure signal-desktop desktop entry is configured to use wayland
   ansible.builtin.copy:
     dest: "{{ ansible_user_dir }}/.local/share/applications/signal-desktop-wayland.desktop"
-    mode: 0640
+    mode: "0640"
     content: |
       [Desktop Entry]
       Type=Application

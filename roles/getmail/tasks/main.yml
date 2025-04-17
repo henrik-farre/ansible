@@ -5,7 +5,7 @@
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.getmail/"
         state: directory
-        mode: 0700
+        mode: "0700"
         owner: "{{ ansible_user_id }}"
       when:
         - getmail is defined
@@ -15,11 +15,11 @@
       ansible.builtin.file:
         path: "{{ item.0.dest_path }}/{{ item.0.username }}/{{ item.1 }}"
         state: directory
-        mode: 0700
+        mode: "0700"
         owner: "{{ ansible_user_id }}"
       with_nested:
         - "{{ getmail }}"
-        - ['new', 'cur', 'tmp']
+        - ["new", "cur", "tmp"]
       when:
         - getmail is defined
 
@@ -27,7 +27,7 @@
       ansible.builtin.template:
         src: getmailrc.j2
         dest: "{{ ansible_user_dir }}/.getmail/{{ item.username }}.getmailrc"
-        mode: 0400
+        mode: "0400"
         owner: "{{ ansible_user_id }}"
       with_items: "{{ getmail }}"
       when:
@@ -47,7 +47,7 @@
         src: "etc/systemd/system/getmail.timer.j2"
         dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.timer"
         owner: root
-        mode: 0644
+        mode: "0644"
       with_items: "{{ getmail }}"
       when:
         - getmail is defined
@@ -58,7 +58,7 @@
         src: "etc/systemd/system/getmail.service.j2"
         dest: "/etc/systemd/system/getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.service"
         owner: root
-        mode: 0644
+        mode: "0644"
       with_items: "{{ getmail }}"
       when:
         - getmail is defined
@@ -67,8 +67,8 @@
       become: true
       ansible.builtin.systemd:
         name: "getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.service"
-        enabled: yes
-        daemon_reload: yes
+        enabled: true
+        daemon_reload: true
       with_items: "{{ getmail }}"
       when:
         - getmail is defined
@@ -77,9 +77,9 @@
       become: true
       ansible.builtin.systemd:
         name: "getmail-{{ item.username|replace('@', '_')|replace('.', '_') }}.timer"
-        enabled: yes
+        enabled: true
         state: started
-        daemon_reload: yes
+        daemon_reload: true
       with_items: "{{ getmail }}"
       when:
         - getmail is defined

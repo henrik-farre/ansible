@@ -5,7 +5,6 @@
     - nfs-server
   when: nfs_exports is defined
   block:
-
     - name: Ensure required packages are installed
       community.general.pacman:
         name: "{{ packages }}"
@@ -20,7 +19,7 @@
         state: directory
         owner: root
         group: root
-        mode: 0777
+        mode: "0777"
       loop: "{{ nfs_exports }}"
 
     - name: Ensure bind mount exists for exports
@@ -36,7 +35,7 @@
       ansible.builtin.template:
         dest: /etc/exports
         src: etc/exports.j2
-        mode: 0755
+        mode: "0755"
         owner: root
         group: root
       notify:

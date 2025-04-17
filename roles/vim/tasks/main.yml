@@ -53,7 +53,7 @@
       ansible.builtin.get_url:
         url: https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
         dest: /usr/bin/nvim
-        mode: 0755
+        mode: "0755"
       when: ansible_facts.distribution == 'Debian'
 
     - name: Ensure dependencies for linter plugins are installed
@@ -117,7 +117,7 @@
         path: "{{ ansible_user_dir }}/.config/nvim/{{ item }}"
         owner: "{{ ansible_user_id }}"
         state: directory
-        mode: 0700
+        mode: "0700"
       with_items:
         - backups
         - swaps
@@ -127,25 +127,25 @@
         path: "{{ ansible_user_dir }}/.local/share/applications"
         owner: "{{ ansible_user_id }}"
         state: directory
-        mode: 0755
+        mode: "0755"
 
     - name: Install .desktop file
       ansible.builtin.copy:
         src: neovim.desktop
         dest: "{{ ansible_user_dir }}/.local/share/applications/neovim.desktop"
         owner: "{{ ansible_user_id }}"
-        mode: 0644
+        mode: "0644"
 
     - name: Ensure environment config dir exists
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.config/environment.d/"
-        mode: 0750
+        mode: "0750"
         state: directory
 
     - name: Ensure neovim socket location is configured
       ansible.builtin.copy:
         dest: "{{ ansible_user_dir }}/.config/environment.d/neovim-socket.conf"
-        mode: 0640
+        mode: "0640"
         content: "NVIM_LISTEN_ADDRESS=${XDG_RUNTIME_DIR}/neovim_socket"
 
     # https://github.com/mhinz/neovim-remote
@@ -175,22 +175,22 @@
       when:
         - ansible_os_family == "Darwin"
 
-    # - name: Ensure python2 modules are removed on Archlinux
-      # pip:
+        # - name: Ensure python2 modules are removed on Archlinux
+        # pip:
         # name: neovim
         # extra_args: --user
         # executable: pip
         # state: absent
-      # when:
+        # when:
         # - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
 
-    # - name: Ensure python3 modules are removed on Archlinux
-      # pip:
+        # - name: Ensure python3 modules are removed on Archlinux
+        # pip:
         # name: neovim
         # extra_args: --user
         # executable: pip3
         # state: absent
-      # when:
+        # when:
         # - ( ansible_distribution == "Archlinux" or ansible_distribution == "Arch Linux")
 
     - name: Check if vim is installed

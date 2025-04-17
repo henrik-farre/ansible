@@ -1,6 +1,6 @@
 ---
 - name: Install support for virtualbox guest
-  become: yes
+  become: true
   when:
     - ansible_virtualization_role == 'guest'
     - ansible_virtualization_type == 'virtualbox'
@@ -13,7 +13,7 @@
         dest: /etc/modules-load.d/virtualbox.conf
         owner: root
         group: root
-        mode: 0640
+        mode: "0640"
 
     - name: Install utils
       ansible.builtin.package:
@@ -27,7 +27,7 @@
         state: started
 
 - name: Install support for libvirt/kvm/qemu guest
-  become: yes
+  become: true
   when:
     - ansible_virtualization_role == 'guest'
     - ansible_virtualization_type == 'kvm'

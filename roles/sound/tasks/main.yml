@@ -1,3 +1,4 @@
+---
 - name: Configure alsa+pipewire system wide
   become: true
   tags:
@@ -25,7 +26,7 @@
       ansible.builtin.systemd:
         name: alsa-restore
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Ensure pipewire is installed
       community.general.pacman:
@@ -43,7 +44,7 @@
 
     - name: Ensure old pulseaudio services are disabled
       ansible.builtin.systemd:
-        enabled: no
+        enabled: false
         state: stopped
         name: "{{ item }}"
       when: item in services
@@ -68,12 +69,11 @@
         state: latest
       when: "'thinkpad' in group_names"
 
-
 - name: Ensure wireplumber config directory exists
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.config/wireplumber/main.lua.d/"
     state: directory
-    mode: 0750
+    mode: "0750"
   tags:
     - sound
 
@@ -93,6 +93,6 @@
       }
 
       table.insert(alsa_monitor.rules,rule)
-    mode: 0640
+    mode: "0640"
   tags:
     - sound

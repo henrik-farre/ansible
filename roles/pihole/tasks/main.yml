@@ -13,7 +13,7 @@
       ansible.builtin.file:
         path: "/srv/pihole/{{ item.path }}"
         state: directory
-        mode: 0775
+        mode: "0775"
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
       loop:
@@ -54,7 +54,7 @@
     - name: Ensure systemd unit to configure routing exists
       ansible.builtin.copy:
         dest: /usr/local/lib/systemd/system/macvlan-configure.service
-        mode: 0664
+        mode: "0664"
         content: |
           [Unit]
           Description=Configure Macvlan routing
@@ -79,7 +79,7 @@
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: /srv/pihole/deploy/docker-compose.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -95,7 +95,7 @@
         content: |
           search {{ network.local_domain }}
           nameserver {{ pihole.local_ipv4 }}
-        mode: 0644
+        mode: "0644"
         owner: root
         group: root
 
@@ -111,7 +111,7 @@
           Type=oneshot
           ExecStart=/usr/bin/docker exec pihole pihole updateGravity > /dev/null
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Pihole | Update gravity | systemd timer
       ansible.builtin.copy:
@@ -127,7 +127,7 @@
           [Install]
           WantedBy=timers.target
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Pihole | Flush log | systemd service
       ansible.builtin.copy:
@@ -141,7 +141,7 @@
           Type=oneshot
           ExecStart=/usr/bin/docker exec pihole pihole flush once > /dev/null
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Pihole | Flush log | systemd timer
       ansible.builtin.copy:
@@ -157,7 +157,7 @@
           [Install]
           WantedBy=timers.target
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Install pihole backup script
       ansible.builtin.copy:
@@ -175,7 +175,7 @@
           /usr/bin/docker exec pihole pihole -a -t /backup/teleporter.tar.gz
 
           mv /srv/pihole/data/backup/teleporter.tar.gz "${BACKUP_LOCATION}"
-        mode: 0750
+        mode: "0750"
 
     - name: Install systemd services for backup
       ansible.builtin.copy:
@@ -191,7 +191,7 @@
           Type=oneshot
           ExecStart=/srv/pihole/scripts/backup-pihole.sh
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Install systemd timers
       ansible.builtin.copy:
@@ -209,16 +209,16 @@
           [Install]
           WantedBy=timers.target
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Reload systemd
       ansible.builtin.systemd:
-        daemon_reload: yes
+        daemon_reload: true
 
     - name: Enable systemd services
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: yes
+        enabled: true
       loop:
         - pihole-updategravity.service
         - pihole-flushlog.service
@@ -227,7 +227,7 @@
     - name: Enable systemd timers
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: yes
+        enabled: true
         state: started
       loop:
         - pihole-updategravity.timer

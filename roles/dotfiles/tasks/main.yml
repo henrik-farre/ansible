@@ -8,7 +8,7 @@
         path: "{{ ansible_user_dir }}/{{ item }}"
         owner: "{{ ansible_user_id }}"
         state: directory
-        mode: 0700
+        mode: "0700"
       loop:
         - ".config"
         - ".config/fontconfig"

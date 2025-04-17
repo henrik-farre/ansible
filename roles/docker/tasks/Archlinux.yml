@@ -20,4 +20,4 @@
       options overlay metacopy=off redirect_dir=off
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"

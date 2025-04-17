@@ -17,9 +17,9 @@
   ansible.builtin.systemd:
     name: hddtemp
     state: stopped
-    enabled: no
-    daemon_reload: yes
-  ignore_errors: yes
+    enabled: false
+    daemon_reload: true
+  ignore_errors: true
   tags:
     - hddtemp
 

@@ -22,7 +22,7 @@
     - name: Ensure zsh dot files are read from XDG_CONFIG_HOME
       ansible.builtin.copy:
         dest: /etc/zsh/zshenv
-        mode: 0644
+        mode: "0644"
         content: |
           # Managed by Ansible
           # Ensure zsh dot files are read from XDG_CONFIG_HOME
@@ -34,4 +34,4 @@
       ansible.builtin.file:
         path: "{{ ansible_user_dir }}/.local/share/zsh/"
         state: directory
-        mode: 0700
+        mode: "0700"

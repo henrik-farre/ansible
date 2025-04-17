@@ -15,7 +15,7 @@
     path: /etc/ansible/facts.d/
     owner: root
     state: directory
-    mode: 0755
+    mode: "0755"
   tags:
     - facts
 
@@ -25,13 +25,13 @@
     dest: "/etc/ansible/facts.d/"
     owner: root
     group: root
-    mode: 0755
+    mode: "0755"
   with_fileglob:
     - etc/ansible/facts.d/*.fact
   tags:
     - facts
 
 - name: "Re-run setup to use custom facts"
-  setup: ~
+  ansible.builtin.setup: ~
   tags:
     - facts

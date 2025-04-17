@@ -34,4 +34,4 @@
   ansible.builtin.systemd:
     name: lightdm
     state: started
-    enabled: yes
+    enabled: true

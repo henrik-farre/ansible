@@ -26,13 +26,13 @@
       ansible.builtin.group:
         name: gamemode
         state: present
-        system: yes
+        system: true
 
     - name: Ensure users are members of gamemode group
       ansible.builtin.user:
         name: "{{ item }}"
         groups: gamemode
-        append: yes
+        append: true
       loop: "{{ groups_to_users.gamemode }}"
       when:
         - groups_to_users is defined
@@ -48,7 +48,7 @@
       ansible.builtin.copy:
         src: dot.config/gamemode.ini
         dest: "{{ ansible_user_dir }}/.config/gamemode.ini"
-        mode: 0640
+        mode: "0640"
 
     # Sticky group
     - name: Ensure directory for steam library exists with correct permissions
@@ -57,7 +57,7 @@
         state: directory
         owner: root
         group: games
-        mode: 02775
+        mode: "02775"
 
     # sudo setfacl -d -m g::rwx /opt/steam-library
     - name: Ensure the games group can rwx all files by setting default ACL
@@ -65,7 +65,7 @@
         path: /opt/steam-library
         etype: group
         permissions: rwx
-        default: yes
+        default: true
         state: present
 
     - name: Ensure tmpfile.d to block upload is removed
@@ -83,7 +83,7 @@
     - name: Remove RADV PERFTEST env var, it is default now
       ansible.builtin.lineinfile:
         dest: "/etc/environment"
-        regexp: '^RADV_PERFTEST='
+        regexp: "^RADV_PERFTEST="
         state: absent
 
     - name: Disable freesync for some Steam games

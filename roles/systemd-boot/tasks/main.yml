@@ -10,7 +10,7 @@
         path: "{{ item }}"
         state: directory
         owner: root
-        mode: 0755
+        mode: "0755"
       loop:
         - "/boot/loader"
         - "/boot/loader/entries"
@@ -32,7 +32,7 @@
           # No default for UKI
           timeout 3
           console-mode keep
-        mode: 0644
+        mode: "0644"
         owner: root
 
 - name: Install bootloader

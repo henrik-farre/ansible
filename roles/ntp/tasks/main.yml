@@ -14,7 +14,7 @@
   become: true
   ansible.builtin.service:
     name: systemd-timesyncd.service
-    enabled: yes
+    enabled: true
     state: started
   tags:
     - ntp

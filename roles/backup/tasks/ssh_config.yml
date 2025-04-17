@@ -4,7 +4,7 @@
     path: /root/.ssh
     group: root
     state: directory
-    mode: 0700
+    mode: "0700"
     owner: root
 
 - name: Install ssh keys
@@ -13,7 +13,7 @@
     dest: "/root/.ssh/{{ item }}"
     owner: root
     group: root
-    mode: 0400
+    mode: "0400"
   with_items:
     - id_rsa.backup
     - id_rsa.backup.pub
@@ -21,10 +21,10 @@
 - name: Ensure ssh config exists for backup host
   ansible.builtin.blockinfile:
     dest: "/root/.ssh/config"
-    create: yes
+    create: true
     block: "{{ backup_config.ssh_config }}"
     marker: "# {mark} ANSIBLE MANAGED BLOCK backup"
-    mode: 0400
+    mode: "0400"
 
 - name: Import ssh host key
   ansible.builtin.known_hosts:

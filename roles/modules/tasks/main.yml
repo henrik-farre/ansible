@@ -2,7 +2,7 @@
 - name: Clean modprobe.d, Capture files in path and register
   ansible.builtin.command: ls -1 /etc/modprobe.d
   register: modprobe_d_files
-  changed_when: False
+  changed_when: false
   tags:
     - modules
     - modprobe
@@ -29,7 +29,7 @@
     dest: "/etc/modprobe.d/{{ item }}"
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"
   with_items:
     - "{{ modules_modprobe_d }}"
   when:
@@ -47,7 +47,7 @@
     dest: "/etc/modules-load.d/{{ item }}"
     owner: root
     group: root
-    mode: 0640
+    mode: "0640"
   with_items:
     - "{{ modules_load_d }}"
   when:
@@ -67,7 +67,7 @@
       ansible.builtin.file:
         path: /boot/EFI/Linux
         state: directory
-        mode: 0755
+        mode: "0755"
         owner: root
         group: root
 
@@ -78,7 +78,7 @@
         src: etc/cmdline.d/cmdline.j2
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
       notify:
         - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
       loop: "{{ systemd_boot.cmdline }}"
@@ -92,7 +92,7 @@
         src: etc/mkinitcpio.d/linux.preset.j2
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
       notify:
         - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
       when:
@@ -105,7 +105,7 @@
     src: etc/mkinitcpio.conf.j2
     owner: root
     group: root
-    mode: 0644
+    mode: "0644"
   notify:
     - "Rebuild initial ram disk on {{ ansible_facts.distribution }}"
   tags:

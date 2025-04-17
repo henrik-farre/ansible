@@ -3,4 +3,4 @@ dependencies:
   - fonts
   - hddtemp
   # Default conky support nvidia now
-  - { role: packages, packages: ['conky'] }
+  - { role: packages, packages: ["conky"] }

@@ -1,3 +1,4 @@
+---
 - name: Install unifi-network-application backup script
   ansible.builtin.copy:
     dest: /srv/unifi-network-application/scripts/backup-unifi-network-application.sh
@@ -20,7 +21,7 @@
       /usr/bin/tar zcvf ${BACKUP_LOCATION}/mongodump.tar.gz /srv/unifi-network-application/data/mongodb/backup/mongodump
       # Logs and other files might change while tar is running
       /usr/bin/tar zcvf ${BACKUP_LOCATION}/unifi-config.tar.gz /srv/unifi-network-application/data/unifi-network-application/config || true
-    mode: 0750
+    mode: "0750"
 
 - name: Install systemd services for backup
   ansible.builtin.copy:
@@ -36,7 +37,7 @@
       Type=oneshot
       ExecStart=/srv/unifi-network-application/scripts/backup-unifi-network-application.sh
     owner: root
-    mode: 0644
+    mode: "0644"
 
 - name: Install systemd timers
   ansible.builtin.copy:
@@ -54,16 +55,16 @@
       [Install]
       WantedBy=timers.target
     owner: root
-    mode: 0644
+    mode: "0644"
 
 - name: Reload systemd
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
 
 - name: Enable systemd timers
   ansible.builtin.systemd:
     name: "{{ item }}"
-    enabled: yes
+    enabled: true
     state: started
   loop:
     - backup-unifi-network-application.timer

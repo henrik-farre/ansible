@@ -1,5 +1,5 @@
 ---
 smartd:
-  schedule_short: 'S/../.././20'
-  schedule_long: 'L/../../6/22'
+  schedule_short: "S/../.././20"
+  schedule_long: "L/../../6/22"
   temperatures: "5,45,50"

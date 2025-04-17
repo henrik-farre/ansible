@@ -18,9 +18,9 @@
       become: true
       ansible.builtin.lineinfile:
         dest: "/etc/default/earlyoom"
-        regexp: 'EARLYOOM_ARGS='
+        regexp: "EARLYOOM_ARGS="
         line: "EARLYOOM_ARGS=\"-m 5 -r 3600 -n --avoid '(^|/)(init|systemd|Xorg|sshd)$'\""
-        firstmatch: yes
+        firstmatch: true
         state: present
 
     - name: Ensure earlyoom is started and enabled
@@ -28,7 +28,7 @@
       ansible.builtin.systemd:
         name: earlyoom
         state: started
-        enabled: yes
+        enabled: true
 
     # https://github.com/cdown/psi-notify/
     - name: Install psi-notify from AUR
@@ -40,7 +40,7 @@
     - name: Install psi-notify config file
       ansible.builtin.copy:
         dest: "{{ ansible_user_dir }}/.config/psi-notify"
-        mode: 0640
+        mode: "0640"
         content: |
           update 5
           log_pressures false
@@ -53,5 +53,5 @@
       ansible.builtin.systemd:
         name: psi-notify
         state: started
-        enabled: yes
+        enabled: true
         scope: user

@@ -15,9 +15,9 @@
     - name: Configure default apps
       command: gsettings set "{{ item.path }}" "{{ item.key }}" "{{ item.value }}"
       with_items:
-        - { path: 'org.cinnamon.desktop.default-applications.terminal', key: 'exec', value: 'termite' }
-        - { path: 'org.cinnamon', key: 'panels-autohide', value: "['1:intel']" }
-        - { path: 'org.nemo.desktop', key: 'show-desktop-icons', value: 'false' }
+        - { path: "org.cinnamon.desktop.default-applications.terminal", key: "exec", value: "termite" }
+        - { path: "org.cinnamon", key: "panels-autohide", value: "['1:intel']" }
+        - { path: "org.nemo.desktop", key: "show-desktop-icons", value: "false" }
       changed_when: false
 
     - name: Copy keybindings
@@ -25,7 +25,6 @@
         src: keybindings.dconf
         dest: /tmp/keybindings.dconf
       changed_when: false
-
 
     # Created with: dconf dump /org/cinnamon/desktop/keybindings/ > keybindings.dconf
     - name: Import keybindings

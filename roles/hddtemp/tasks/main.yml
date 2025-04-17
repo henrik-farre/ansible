@@ -15,7 +15,7 @@
     - item.key[:4] != "nvme"
   tags:
     - hddtemp
-  no_log: True
+  no_log: true
 
 - name: Debugging
   ansible.builtin.debug:

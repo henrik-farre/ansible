@@ -12,7 +12,7 @@
       ansible.builtin.file:
         path: "/srv/traefik/{{ item }}"
         state: directory
-        mode: 0775
+        mode: "0775"
         owner: root
         group: docker
       loop:
@@ -40,7 +40,7 @@
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: /srv/traefik/deploy/docker-compose.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
 
@@ -48,7 +48,7 @@
       ansible.builtin.template:
         src: traefik.yml.j2
         dest: /srv/traefik/data/static/traefik.yml
-        mode: 0664
+        mode: "0664"
         owner: root
         group: docker
       notify: Restart traefik container
@@ -57,5 +57,5 @@
       ansible.builtin.include_role:
         name: docker_compose_shim
       vars:
-        project_name: traefik  # noqa: var-naming
+        project_name: traefik # noqa: var-naming
         project_src: /srv/traefik/deploy

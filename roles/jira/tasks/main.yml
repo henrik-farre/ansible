@@ -1,3 +1,4 @@
+---
 - name: Find latest release of go-jira
   ansible.builtin.uri:
     url: https://api.github.com/repos/go-jira/jira/releases/latest
@@ -10,7 +11,7 @@
   ansible.builtin.file:
     path: "{{ ansible_user_dir }}/.local/bin"
     state: directory
-    mode: 0700
+    mode: "0700"
   tags:
     - jira
 
@@ -18,7 +19,7 @@
   ansible.builtin.get_url:
     url: "{{ item.browser_download_url }}"
     dest: "{{ ansible_user_dir }}/.local/bin/jira"
-    mode: 0750
+    mode: "0750"
   loop: "{{ json_response.json.assets }}"
   when: item.name == 'jira-linux-amd64'
   tags:

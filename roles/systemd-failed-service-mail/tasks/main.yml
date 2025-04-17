@@ -27,7 +27,7 @@
           $(systemctl status --full "$2")
           ERRMAIL
         dest: /usr/local/bin/systemd-email
-        mode: 0750
+        mode: "0750"
         owner: root
         group: mail
 
@@ -43,5 +43,5 @@
           ExecStart=/usr/local/bin/systemd-email {{ email_addresses.internal }} %i
           User=root
         dest: /usr/local/lib/systemd/system/status-email@.service
-        mode: 0644
+        mode: "0644"
         owner: root

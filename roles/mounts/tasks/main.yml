@@ -5,6 +5,6 @@
   ansible.builtin.lineinfile:
     path: /etc/fstab
     state: absent
-    regexp: '^efivars'
+    regexp: "^efivars"
   tags:
     - mounts

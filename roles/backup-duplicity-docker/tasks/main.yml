@@ -15,7 +15,7 @@
     - name: Ensure directory exist
       ansible.builtin.file:
         path: /usr/local/etc/duplicity-docker
-        mode: 0750
+        mode: "0750"
         owner: root
         group: docker
         state: directory
@@ -24,17 +24,17 @@
       ansible.builtin.template:
         src: "usr/local/etc/duplicity-docker/settings.env.j2"
         dest: "/usr/local/etc/duplicity-docker/settings.env"
-        mode: 0640
+        mode: "0640"
         owner: root
         group: docker
 
-      # Note "cmd" is for running other actions like "list", e.g.:
-      # docker-compose -f duplicity-cmd.yml run --rm duplicity list home
+    # Note "cmd" is for running other actions like "list", e.g.:
+    # docker-compose -f duplicity-cmd.yml run --rm duplicity list home
     - name: Ensure docker compose files exists for current host
       ansible.builtin.template:
         src: "usr/local/etc/duplicity-docker/duplicity.yml.j2"
         dest: "/usr/local/etc/duplicity-docker/duplicity-{{ item }}.yml"
-        mode: 0640
+        mode: "0640"
         owner: root
         group: docker
       with_items:
@@ -49,7 +49,7 @@
         src: "excludes/{{ item.src }}"
         dest: "{{ item.dest }}/.duplicity_exclude"
         owner: root
-        mode: 0400
+        mode: "0400"
       with_items:
         - "{{ duplicity.excludes }}"
       when:
@@ -84,7 +84,7 @@
           ExecStart=/usr/bin/docker-compose -f duplicity-%i.yml up duplicity-%i
         dest: "/usr/local/lib/systemd/system/duplicity-docker@.service"
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Install weekly systemd timers
       ansible.builtin.copy:
@@ -104,7 +104,7 @@
           WantedBy=timers.target
         dest: "/usr/local/lib/systemd/system/duplicity-docker-weekly@.timer"
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Install daily systemd timers
       ansible.builtin.copy:
@@ -124,13 +124,13 @@
           WantedBy=timers.target
         dest: "/usr/local/lib/systemd/system/duplicity-docker-daily@.timer"
         owner: root
-        mode: 0644
+        mode: "0644"
 
     - name: Enable systemd services
       ansible.builtin.systemd:
         name: "duplicity-docker@{{ item }}.service"
-        enabled: yes
-        daemon_reload: yes
+        enabled: true
+        daemon_reload: true
       with_items:
         - backup
         - clean
@@ -140,9 +140,9 @@
     - name: Enable systemd timers
       ansible.builtin.systemd:
         name: "duplicity-docker-{{ item.schedule }}@{{ item.name }}.timer"
-        enabled: yes
+        enabled: true
         state: started
-        daemon_reload: yes
+        daemon_reload: true
       loop:
         - name: backup
           schedule: daily

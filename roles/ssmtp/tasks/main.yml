@@ -22,7 +22,7 @@
     dest: /etc/ssmtp/ssmtp.conf
     owner: root
     group: mail
-    mode: 0640
+    mode: "0640"
   tags:
     - ssmtp
 
@@ -33,7 +33,7 @@
     dest: /etc/ssmtp/revaliases
     owner: root
     group: mail
-    mode: 0640
+    mode: "0640"
   tags:
     - ssmtp
 
@@ -42,7 +42,7 @@
   ansible.builtin.user:
     name: "{{ item }}"
     groups: mail
-    append: yes
+    append: true
   with_items:
     - "{{ groups_to_users.ssmtp }}"
   tags:

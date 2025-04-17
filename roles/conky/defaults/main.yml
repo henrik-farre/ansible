@@ -30,10 +30,10 @@ conky_cpu_temp_scale:
     temp: 40
     color: "#0a377c"
 conky_cpu_hwmon:
-  - {sensor: 0, temp: 2, module: "coretemp"}
-  - {sensor: 0, temp: 3, module: "coretemp"}
-  - {sensor: 0, temp: 4, module: "coretemp"}
-  - {sensor: 0, temp: 5, module: "coretemp"}
+  - { sensor: 0, temp: 2, module: "coretemp" }
+  - { sensor: 0, temp: 3, module: "coretemp" }
+  - { sensor: 0, temp: 4, module: "coretemp" }
+  - { sensor: 0, temp: 5, module: "coretemp" }
 conky_mb_hwmon:
   - temp: 1
     module: nct6793

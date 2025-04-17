@@ -14,7 +14,7 @@
         path: "{{ ansible_user_dir }}/.config/autostart"
         state: directory
         owner: "{{ ansible_user_id }}"
-        mode: 0700
+        mode: "0700"
 
     - name: Ensure 1password is autostarted on login
       ansible.builtin.copy:
@@ -31,7 +31,7 @@
           MimeType=x-scheme-handler/onepassword;
           Categories=Office;
         owner: "{{ ansible_user_id }}"
-        mode: 0600
+        mode: "0600"
 
     - name: Add 1password cli group
       become: true
@@ -57,7 +57,7 @@
         mode: "2750"
         owner: "{{ ansible_user_id }}"
         group: onepassword-cli
-        remote_src: yes
+        remote_src: true
         exclude:
           - op.sig
 
@@ -68,4 +68,4 @@
           #!/bin/bash
 
           op item get "{{ ansible_vault_one_password_name }}" --fields label=password --reveal
-        mode: 0750
+        mode: "0750"

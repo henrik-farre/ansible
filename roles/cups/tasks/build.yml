@@ -1,5 +1,6 @@
+---
 - name: Ensure Brother HL 1210w driver is build and installed
-  become: False
+  become: false
   tags:
     - cups
   block:
@@ -7,13 +8,13 @@
       ansible.builtin.file:
         path: /tmp/brother-hl1210w
         state: directory
-        mode: 0755
+        mode: "0755"
       when: not hl1210w_bin.stat.exists
 
     # Fix buggy PKGBUILD at: https://aur.archlinux.org/cgit/aur.git/tree/PKGBUILD?h=brother-hl1210w
     - name: Brother HL-1210w Driver | Ensure correct PKGBUILD exists
       ansible.builtin.copy:
-        mode: 0644
+        mode: "0644"
         dest: /tmp/brother-hl1210w/PKGBUILD
         content: |
           pkgname="brother-hl1210w"

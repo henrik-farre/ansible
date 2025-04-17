@@ -35,7 +35,7 @@
       community.general.ufw:
         state: enabled
         policy: reject
-        logging: on
+        logging: true
       changed_when: false
 
     - name: Allow OpenSSH

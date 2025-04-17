@@ -33,7 +33,7 @@
         group: "{{ item.group | default(item.name) }}"
         groups: "{{ item.groups }}"
         comment: "{{ item.comment | default(omit) }}"
-        append: yes
+        append: true
         password: "{{ item.password | password_hash('sha512', 65534 | random(seed=inventory_hostname) | string, rounds=10000) }}"
         password_lock: "{{ item.password_lock | default(false) }}"
       loop: "{{ users }}"
@@ -45,7 +45,7 @@
       ansible.builtin.user:
         name: "{{ item }}"
         groups: "{%if ansible_facts.distribution == 'Archlinux' %}wheel{% else %}sudo{% endif %}"
-        append: yes
+        append: true
       loop: "{{ groups_to_users.sudo }}"
       when:
         - groups_to_users.sudo is defined
@@ -54,7 +54,7 @@
       ansible.builtin.user:
         name: "{{ item }}"
         state: absent
-        remove: yes
+        remove: true
       loop:
         - "cinnamon"
         - "cinnemon"

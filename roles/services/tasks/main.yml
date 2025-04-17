@@ -2,7 +2,7 @@
 - name: Reload systemd
   become: true
   ansible.builtin.systemd:
-    daemon_reload: yes
+    daemon_reload: true
   tags:
     - services
 
@@ -10,7 +10,7 @@
   become: true
   ansible.builtin.systemd:
     name: "{{ item }}"
-    enabled: yes
+    enabled: true
   with_items:
     - "{{ services }}"
   tags:

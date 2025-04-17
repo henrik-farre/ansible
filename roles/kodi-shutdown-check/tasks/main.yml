@@ -1,35 +1,35 @@
 ---
 - block:
-  - name: Download scritps
-    ansible.builtin.git:
-      repo: https://github.com/henrik-farre/kodi-shutdown-check.git
-      dest: /tmp/kodi-shutdown-check
-      version: master
-    tags:
-      - kodi-shutdown-check
+    - name: Download scritps
+      ansible.builtin.git:
+        repo: https://github.com/henrik-farre/kodi-shutdown-check.git
+        dest: /tmp/kodi-shutdown-check
+        version: master
+      tags:
+        - kodi-shutdown-check
 
-  - name: Install scripts
-    become: true
-    ansible.builtin.copy:
-      src: "/tmp/kodi-shutdown-check/{{ item }}"
-      dest: "/usr/local/bin/{{ item }}"
-      remote_src: yes
-      owner: root
-      mode: 0750
-    with_items:
-      - "kodi-shutdown-check.sh"
-      - "kodi-shutdown-inhibit.sh"
-    tags:
-      - kodi-shutdown-check
+    - name: Install scripts
+      become: true
+      ansible.builtin.copy:
+        src: "/tmp/kodi-shutdown-check/{{ item }}"
+        dest: "/usr/local/bin/{{ item }}"
+        remote_src: true
+        owner: root
+        mode: "0750"
+      with_items:
+        - "kodi-shutdown-check.sh"
+        - "kodi-shutdown-inhibit.sh"
+      tags:
+        - kodi-shutdown-check
 
-  - name: Ensure cronjob exist
-    become: true
-    ansible.builtin.cron:
-      name: Kodi shutdown inhibit
-      minute: "*/4"
-      user: root
-      job: "/usr/local/bin/kodi-shutdown-inhibit.sh"
-      cron_file: kodi-shutdown
+    - name: Ensure cronjob exist
+      become: true
+      ansible.builtin.cron:
+        name: Kodi shutdown inhibit
+        minute: "*/4"
+        user: root
+        job: "/usr/local/bin/kodi-shutdown-inhibit.sh"
+        cron_file: kodi-shutdown
 
   always:
     - name: Cleanup

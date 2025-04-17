@@ -31,7 +31,7 @@
         dest: "/etc/locale.conf"
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
 
     - name: Ensure terminus font is installed
       community.general.pacman:
@@ -43,4 +43,4 @@
         src: etc/vconsole.conf.j2
         dest: /etc/vconsole.conf
         owner: root
-        mode: 0644
+        mode: "0644"

@@ -16,14 +16,14 @@
     - name: Ensure arpwatch is enabled for eth0
       ansible.builtin.systemd:
         name: arpwatch@eth0.service
-        enabled: yes
+        enabled: true
         state: started
 
     - name: Ensure arpwatch user is member of the mail group
       ansible.builtin.user:
         name: arpwatch
         groups: mail
-        append: yes
+        append: true
 
   become: true
   tags:

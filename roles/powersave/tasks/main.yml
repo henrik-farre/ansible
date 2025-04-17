@@ -10,7 +10,7 @@
       ansible.builtin.copy:
         dest: "/etc/udev/rules.d/{{ item }}"
         src: "etc/udev/rules.d/{{ item }}"
-        mode: 0640
+        mode: "0640"
       loop:
         # - 50-usb_power_save.rules
         # - 51-pci_powermanagement.rules
@@ -30,7 +30,7 @@
       ansible.builtin.systemd:
         name: power-profiles-daemon
         state: started
-        enabled: yes
+        enabled: true
 
     - name: Ensure powersaving related packages are installed
       community.general.pacman:
@@ -38,6 +38,6 @@
         name: "{{ packages }}"
       vars:
         packages:
-          - 'powertop'
-          - 'ethtool'
-          - 'x86_energy_perf_policy'
+          - "powertop"
+          - "ethtool"
+          - "x86_energy_perf_policy"

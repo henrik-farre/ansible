@@ -3,7 +3,7 @@
   ansible.builtin.template:
     src: etc/default/grub.j2
     dest: /etc/default/grub
-    mode: 0644
+    mode: "0644"
     owner: root
 
 - name: Ensure EFI partition is mounted

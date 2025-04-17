@@ -19,7 +19,7 @@
         dest: /etc/samba/smb.conf
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
 
     - name: Ensure samba users are configured
       ansible.builtin.shell: |
@@ -38,13 +38,13 @@
         dest: etc/apparmor.d/local/usr.sbin.smbd
         owner: root
         group: root
-        mode: 0644
+        mode: "0644"
 
     - name: Ensure needed services are enabled and startet
       ansible.builtin.systemd:
         name: "{{ item }}"
         state: started
-        enabled: yes
+        enabled: true
       loop:
         - avahi-daemon
         - smb

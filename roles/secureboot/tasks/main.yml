@@ -13,8 +13,8 @@
       ansible.builtin.copy:
         src: "/usr/share/preloader-signed/{{ item }}.efi"
         dest: "/boot/EFI/systemd/{{ item }}.efi"
-        remote_src: yes
-        mode: 0600
+        remote_src: true
+        mode: "0600"
         owner: root
         group: root
       loop:
@@ -25,11 +25,10 @@
       ansible.builtin.copy:
         src: "/boot/EFI/systemd/systemd-bootx64.efi"
         dest: "/boot/EFI/systemd/loader.efi"
-        remote_src: yes
-        mode: 0600
+        remote_src: true
+        mode: "0600"
         owner: root
         group: root
-
 
 # efibootmgr --verbose --disk /dev/nvme0n1 --part 1 --create --label "PreLoader" --loader /EFI/systemd/PreLoader.efi
 
