@@ -6,3 +6,5 @@ photoprism:
   db_name: "{{ vaulted_photoprism.db_name }}"
   db_password: "{{ vaulted_photoprism.db_password }}"
   db_root_password: "{{ vaulted_photoprism.db_root_password }}"
+  uid: 1001
+  gid: 984

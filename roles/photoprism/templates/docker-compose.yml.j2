@@ -50,7 +50,7 @@ services:
       PHOTOPRISM_DEFAULT_TLS: "false"                 # defaults to a self-signed HTTPS/TLS certificate if no other certificate is available
       PHOTOPRISM_ORIGINALS_LIMIT: 5000               # file size limit for originals in MB (increase for high-res video)
       PHOTOPRISM_HTTP_COMPRESSION: "gzip"            # improves transfer speed and bandwidth utilization (none or gzip)
-      PHOTOPRISM_LOG_LEVEL: "info"                   # log level: trace, debug, info, warning, error, fatal, or panic
+      PHOTOPRISM_LOG_LEVEL: "info"                   # log level: trace, debug, info, warning, or error
       PHOTOPRISM_READONLY: "false"                   # do not modify originals directory (reduced functionality)
       PHOTOPRISM_EXPERIMENTAL: "false"               # enables experimental features
       PHOTOPRISM_DISABLE_CHOWN: "false"              # disables updating storage permissions via chmod and chown on startup
@@ -62,12 +62,18 @@ services:
       PHOTOPRISM_DISABLE_VECTORS: "false"            # disables vector graphics support
       PHOTOPRISM_DISABLE_RAW: "false"                # disables indexing and conversion of RAW images
       PHOTOPRISM_RAW_PRESETS: "false"                # enables applying user presets when converting RAW images (reduces performance)
-      PHOTOPRISM_JPEG_QUALITY: 85                    # a higher value increases the quality and file size of JPEG images and thumbnails (25-100)
+      PHOTOPRISM_SIDECAR_YAML: "false"               # creates YAML sidecar files to back up picture metadata
+      PHOTOPRISM_BACKUP_ALBUMS: "false"              # creates YAML files to back up album metadata
+      PHOTOPRISM_BACKUP_DATABASE: "false"            # creates regular backups based on the configured schedule
+      PHOTOPRISM_BACKUP_SCHEDULE: "daily"            # backup SCHEDULE in cron format (e.g. "0 12 * * *" for daily at noon) or at a random time (daily, weekly)
+      PHOTOPRISM_INDEX_SCHEDULE: ""                  # indexing SCHEDULE in cron format (e.g. "@every 3h" for every 3 hours; "" to disable)
+      PHOTOPRISM_AUTO_INDEX: 300                     # delay before automatically indexing files in SECONDS when uploading via WebDAV (-1 to disable)
+      PHOTOPRISM_AUTO_IMPORT: -1                     # delay before automatically importing files in SECONDS when uploading via WebDAV (-1 to disable)
       PHOTOPRISM_DETECT_NSFW: "false"                # automatically flags photos as private that MAY be offensive (requires TensorFlow)
       PHOTOPRISM_UPLOAD_NSFW: "true"                 # allows uploads that MAY be offensive (no effect without TensorFlow)
       # PHOTOPRISM_DATABASE_DRIVER: "sqlite"         # SQLite is an embedded database that doesn't require a server
-      PHOTOPRISM_DATABASE_DRIVER: "mysql"            # use MariaDB 10.5+ or MySQL 8+ instead of SQLite for improved performance
-      PHOTOPRISM_DATABASE_SERVER: "mariadb:3306"     # MariaDB or MySQL database server (hostname:port)
+      PHOTOPRISM_DATABASE_DRIVER: "mysql"            # MariaDB 10.5.12+ (MySQL successor) offers significantly better performance compared to SQLite
+      PHOTOPRISM_DATABASE_SERVER: "mariadb:3306"     # MariaDB database server (hostname:port)
       PHOTOPRISM_DATABASE_NAME: "{{ photoprism.db_name }}"         # MariaDB or MySQL database schema name
       PHOTOPRISM_DATABASE_USER: "{{ photoprism.db_user }}"         # MariaDB or MySQL database user name
       PHOTOPRISM_DATABASE_PASSWORD: "{{ photoprism.db_password }}"       # MariaDB or MySQL database user password
@@ -75,10 +81,10 @@ services:
       PHOTOPRISM_SITE_DESCRIPTION: ""                # meta site description
       PHOTOPRISM_SITE_AUTHOR: ""                     # meta site author
       ## Video Transcoding (https://docs.photoprism.app/getting-started/advanced/transcoding/):
-      # PHOTOPRISM_FFMPEG_ENCODER: "software"        # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
+      PHOTOPRISM_FFMPEG_ENCODER: "intel"        # H.264/AVC encoder (software, intel, nvidia, apple, raspberry, or vaapi)
       # PHOTOPRISM_FFMPEG_SIZE: "1920"               # video size limit in pixels (720-7680) (default: 3840)
       # PHOTOPRISM_FFMPEG_BITRATE: "32"              # video bitrate limit in Mbit/s (default: 50)
-      ## Run/install on first startup (options: update https gpu tensorflow davfs clitools clean):
+      ## Optional commands to run during the first start, see https://github.com/photoprism/photoprism/blob/develop/scripts/dist/Makefile:
       PHOTOPRISM_INIT: "gpu tensorflow"
       ## Run as a non-root user after initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
       # PHOTOPRISM_UID: 1000
@@ -86,11 +92,14 @@ services:
       # PHOTOPRISM_UMASK: 0000
       TZ: Europe/Copenhagen
     ## Start as non-root user before initialization (supported: 0, 33, 50-99, 500-600, and 900-1200):
-    user: "1004:100"
+    user: "{{ photoprism.uid }}:{{ photoprism.gid }}"
+    # For dri access
+    group_add:
+      - "989"
     ## Share hardware devices with FFmpeg and TensorFlow (optional):
     devices:
-      - "/dev/dri/renderD128:/dev/dri/renderD128" # Intel GPU
-    #  - "/dev/dri:/dev/dri"                         # Intel QSV
+    # - "/dev/dri/renderD128:/dev/dri/renderD128" # Intel GPU
+     - "/dev/dri:/dev/dri"                         # Intel QSV
     #  - "/dev/nvidia0:/dev/nvidia0"                 # Nvidia CUDA
     #  - "/dev/nvidiactl:/dev/nvidiactl"
     #  - "/dev/nvidia-modeset:/dev/nvidia-modeset"
@@ -113,7 +122,7 @@ services:
       - "traefik.http.services.photoprism.loadbalancer.server.port=2342"
       - "traefik.http.routers.photoprism.entrypoints=http"
 
-  ## Database Server (recommended)
+  ## MariaDB Database Server (recommended)
   ## see https://docs.photoprism.app/getting-started/faq/#should-i-use-sqlite-mariadb-or-mysql
   mariadb:
     image: {{ containers.photoprism_mariadb.repo }}:{{ containers.photoprism_mariadb.tag }}

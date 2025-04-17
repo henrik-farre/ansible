@@ -17,8 +17,8 @@
         group: "{{ item.group }}"
       loop:
         - path: data/photoprism/storage
-          owner: root
-          group: docker
+          owner: "{{ photoprism.uid }}"
+          group: "{{ photoprism.gid }}"
         - path: data/mariadb/mysql
           owner: 999
           group: root
