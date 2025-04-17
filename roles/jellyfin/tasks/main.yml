@@ -47,5 +47,5 @@
 
     - name: Deploy Docker Compose stack
       community.docker.docker_compose_v2:
-        project_name: jellyfin # noqa: var-naming
+        project_name: jellyfin
         project_src: /srv/jellyfin/deploy

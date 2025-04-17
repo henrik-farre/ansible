@@ -38,10 +38,8 @@
         group: docker
 
     - name: Deploy Docker Compose stack
-      ansible.builtin.include_role:
-        name: docker_compose_shim
-      vars:
-        project_name: photoprism # noqa: var-naming
+      community.docker.docker_compose_v2:
+        project_name: photoprism
         project_src: /srv/photoprism/deploy
 
     - name: Install photoprism backup script
