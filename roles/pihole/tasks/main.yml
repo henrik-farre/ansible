@@ -8,30 +8,25 @@
       ansible.builtin.include_vars:
         file: pihole.yml.vault
 
+    - name: Ensure docker image can be pulled
+      community.docker.docker_image_pull:
+        name: "{{ containers.pihole.repo }}:{{ containers.pihole.tag }}"
+
     # Needed for piholes "installLogrotate" as it uses group to create logrotate config
     - name: Ensure needed directories exist
       ansible.builtin.file:
         path: "/srv/pihole/{{ item.path }}"
         state: directory
-        mode: "0775"
+        mode: "0755"
         owner: "{{ item.owner }}"
         group: "{{ item.group }}"
       loop:
         - path: data/etc/pihole
-          owner: 999
-          group: 999
-        - path: data/etc/dnsmasq.d
-          owner: root
-          group: root
-        - path: data/var/log
-          owner: root
-          group: root
-        - path: data/var/log/lighttpd
-          owner: 33
-          group: 33
+          owner: 1000
+          group: 1000
         - path: data/backup
-          owner: 33
-          group: 33
+          owner: 1000
+          group: 1000
         - path: deploy
           owner: root
           group: docker
@@ -39,46 +34,35 @@
           owner: root
           group: docker
 
-    - name: Ensure macvlan docker network exists
-      community.docker.docker_network:
-        name: macvlan
-        driver: macvlan
-        driver_options:
-          parent: "{{ ansible_facts.default_ipv4.interface }}"
-        ipam_driver: "default"
-        ipam_config:
-          - subnet: "{{ ansible_facts.default_ipv4.network }}/{{ ansible_facts.default_ipv4.prefix }}"
-            gateway: "{{ ansible_facts.default_ipv4.gateway }}"
-        state: "present"
-
-    - name: Ensure systemd unit to configure routing exists
-      ansible.builtin.copy:
-        dest: /usr/local/lib/systemd/system/macvlan-configure.service
-        mode: "0664"
-        content: |
-          [Unit]
-          Description=Configure Macvlan routing
-          OnFailure=status-email@%n.service
-
-          [Service]
-          Type=oneshot
-          ExecStart=ip link add macvlan link {{ ansible_facts.default_ipv4.interface }} type macvlan mode bridge
-          ExecStart=ip address add 192.168.0.100/32 dev macvlan
-          ExecStart=ip link set macvlan up
-          ExecStart=ip route add {{ pihole.local_ipv4 }}/32 dev macvlan
-
-          [Install]
-          WantedBy=multi-user.target
-
-    - name: Ensure macvlan-configure is enabled
-      ansible.builtin.systemd_service:
-        name: macvlan-configure
-        enabled: true
+    - name: Ensure custom ports are configured
+      community.general.ufw:
+        rule: "allow"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+        comment: "{{ item.comment }}"
+      loop:
+        - port: 8082
+          proto: "tcp"
+          comment: "Pi-hole Web interface"
+        - port: 53
+          proto: "tcp"
+          comment: "Pi-hole DNS TCP"
+        - port: 53
+          proto: "udp"
+          comment: "Pi-hole DNS UDP"
 
     - name: Ensure docker-compose.yml exists for pihole
       ansible.builtin.template:
         src: docker-compose.yml.j2
         dest: /srv/pihole/deploy/docker-compose.yml
+        mode: "0664"
+        owner: root
+        group: docker
+
+    - name: Custom traefik config
+      ansible.builtin.template:
+        src: traefik/pihole.yaml.j2
+        dest: /srv/traefik/data/dynamic/pihole.yaml
         mode: "0664"
         owner: root
         group: docker
@@ -94,70 +78,33 @@
         dest: /etc/resolv.conf
         content: |
           search {{ network.local_domain }}
-          nameserver {{ pihole.local_ipv4 }}
+          nameserver {{ pihole.ip }}
         mode: "0644"
         owner: root
         group: root
 
-    - name: Pihole | Update gravity | systemd service
-      ansible.builtin.copy:
-        dest: /usr/local/lib/systemd/system/pihole-updategravity.service
-        content: |
-          [Unit]
-          Description=Pi-hole: Update the ad sources
-          OnFailure=status-email@%n.service
+    # Cron runs in docker image in v6
+    - name: Disable systemd services and timers
+      ansible.builtin.systemd_service:
+        name: "{{ item }}"
+        enabled: false
+        state: stopped
+      loop:
+        - pihole-updategravity.service
+        - pihole-flushlog.service
+        - pihole-updategravity.timer
+        - pihole-flushlog.timer
+      ignore_errors: true
 
-          [Service]
-          Type=oneshot
-          ExecStart=/usr/bin/docker exec pihole pihole updateGravity > /dev/null
-        owner: root
-        mode: "0644"
-
-    - name: Pihole | Update gravity | systemd timer
-      ansible.builtin.copy:
-        dest: /usr/local/lib/systemd/system/pihole-updategravity.timer
-        content: |
-          [Unit]
-          Description=Pi-hole: Update the ad sources | Weekly job
-
-          [Timer]
-          OnCalendar=Sun 23:59:00
-          Persistent=true
-
-          [Install]
-          WantedBy=timers.target
-        owner: root
-        mode: "0644"
-
-    - name: Pihole | Flush log | systemd service
-      ansible.builtin.copy:
-        dest: /usr/local/lib/systemd/system/pihole-flushlog.service
-        content: |
-          [Unit]
-          Description=Pi-hole: Flush the log
-          OnFailure=status-email@%n.service
-
-          [Service]
-          Type=oneshot
-          ExecStart=/usr/bin/docker exec pihole pihole flush once > /dev/null
-        owner: root
-        mode: "0644"
-
-    - name: Pihole | Flush log | systemd timer
-      ansible.builtin.copy:
-        dest: /usr/local/lib/systemd/system/pihole-flushlog.timer
-        content: |
-          [Unit]
-          Description=Pi-hole: Flush the log | Daily job
-
-          [Timer]
-          OnCalendar=23:00:00
-          Persistent=true
-
-          [Install]
-          WantedBy=timers.target
-        owner: root
-        mode: "0644"
+    - name: Remove old service and timer files
+      ansible.builtin.file:
+        dest: "/usr/local/lib/systemd/system/{{ item }}"
+        state: absent
+      loop:
+        - pihole-updategravity.service
+        - pihole-updategravity.timer
+        - pihole-flushlog.service
+        - pihole-flushlog.timer
 
     - name: Install pihole backup script
       ansible.builtin.copy:
@@ -172,9 +119,9 @@
 
           mkdir -p "$BACKUP_LOCATION"
 
-          /usr/bin/docker exec pihole pihole -a -t /backup/teleporter.tar.gz
+          /usr/bin/docker exec --workdir /backup pihole pihole-FTL --teleporter
 
-          mv /srv/pihole/data/backup/teleporter.tar.gz "${BACKUP_LOCATION}"
+          mv /srv/pihole/data/backup/*.zip "${BACKUP_LOCATION}"
         mode: "0750"
 
     - name: Install systemd services for backup
@@ -216,20 +163,16 @@
         daemon_reload: true
 
     - name: Enable systemd services
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: "{{ item }}"
         enabled: true
       loop:
-        - pihole-updategravity.service
-        - pihole-flushlog.service
         - backup-pihole.service
 
     - name: Enable systemd timers
-      ansible.builtin.systemd:
+      ansible.builtin.systemd_service:
         name: "{{ item }}"
         enabled: true
         state: started
       loop:
-        - pihole-updategravity.timer
-        - pihole-flushlog.timer
         - backup-pihole.timer

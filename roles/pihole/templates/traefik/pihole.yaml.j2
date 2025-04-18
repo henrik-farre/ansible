@@ -1,0 +1,13 @@
+---
+http:
+  routers:
+    pihole-http:
+      entryPoints:
+        - http
+      rule: 'Host(`{{ pihole.hostname }}`)'
+      service: pihole
+  services:
+    pihole:
+      loadBalancer:
+        servers:
+          - url: "http://{{ pihole.ip }}:8082/"
