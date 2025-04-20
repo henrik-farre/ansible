@@ -1,4 +1,3 @@
-## TODO: ufw
 ---
 - name: Ensure home assistant is installed and configured
   become: true
