@@ -55,3 +55,35 @@
         state: started
         enabled: true
         scope: user
+
+- name: Ensure access to devices for video hw acceleration
+  tags:
+    - desktop
+  block:
+    - name: Ensure users are members of video group
+      become: true
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: mail
+        append: true
+      with_items:
+        - "{{ groups_to_users.video }}"
+      tags:
+        - ssmtp
+      when:
+        - groups_to_users is defined
+        - groups_to_users.video is defined
+
+    - name: Ensure users are members of render group
+      become: true
+      ansible.builtin.user:
+        name: "{{ item }}"
+        groups: mail
+        append: true
+      with_items:
+        - "{{ groups_to_users.render }}"
+      tags:
+        - ssmtp
+      when:
+        - groups_to_users is defined
+        - groups_to_users.render is defined
