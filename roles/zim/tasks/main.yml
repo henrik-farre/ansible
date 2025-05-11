@@ -1,15 +1,17 @@
 ---
-- name: Ensure Zim and dependencies are installed
+- name: Ensure Zim is installed and configured
   become: true
-  community.general.pacman:
-    name: "{{ packages }}"
-    state: latest
-  vars:
-    packages:
-      - zim
-      - gtksourceview3
   tags:
     - zim
+  block:
+    - name: Ensure Zim and dependencies are installed
+      community.general.pacman:
+        name: "{{ packages }}"
+        state: latest
+      vars:
+        packages:
+          - zim
+          - gtksourceview3
 
 - name: Ensure pandoc is installed for copy/paste transformation
   become: true
@@ -19,68 +21,60 @@
   tags:
     - zim
 
-- name: Setup Zim Notebook
-  ansible.builtin.git:
-    repo: git@bitbucket.org:enrique/notes.git
-    dest: "{{ ansible_user_dir }}/Documents/Zim"
-    accept_hostkey: true
-    version: master
+- name: Ensure Zim Notbooks are configured for user
   tags:
     - zim
-    - zim-notebook
+  block:
+    - name: Setup Zim Notebook
+      ansible.builtin.git:
+        repo: git@bitbucket.org:enrique/notes.git
+        dest: "{{ ansible_user_dir }}/Documents/Zim"
+        accept_hostkey: true
+        version: master
 
-- name: Ensure that the ~/.config/zim directory exists
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.config/zim"
-    owner: "{{ ansible_user_id }}"
-    state: directory
-    mode: "0700"
-  tags:
-    - zim
+    - name: Ensure that the ~/.config/zim directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/.config/zim"
+        owner: "{{ ansible_user_id }}"
+        state: directory
+        mode: "0700"
 
-- name: Ensure ~/.local/share/applications directory exists
-  ansible.builtin.file:
-    path: "{{ ansible_user_dir }}/.local/share/applications"
-    owner: "{{ ansible_user_id }}"
-    state: directory
-    mode: "0700"
-  tags:
-    - zim
+    - name: Ensure ~/.local/share/applications directory exists
+      ansible.builtin.file:
+        path: "{{ ansible_user_dir }}/.local/share/applications"
+        owner: "{{ ansible_user_id }}"
+        state: directory
+        mode: "0700"
 
-- name: Ensure notebook config exists
-  ansible.builtin.copy:
-    content: |
-      [NotebookList]
-      Default=
-      1=~/Documents/Zim/notes
+    - name: Ensure notebook config exists
+      ansible.builtin.copy:
+        content: |
+          [NotebookList]
+          Default=
+          1=~/Documents/Zim/notes
 
-      [Notebook 1]
-      uri=~/Documents/Zim/notes
-      name=Notes
-      interwiki=None
-      icon=None
-    dest: "{{ ansible_user_dir }}/.config/zim/notebooks.list"
-    owner: "{{ ansible_user_id }}"
-    mode: "0700"
-  tags:
-    - zim
+          [Notebook 1]
+          uri=~/Documents/Zim/notes
+          name=Notes
+          interwiki=None
+          icon=None
+        dest: "{{ ansible_user_dir }}/.config/zim/notebooks.list"
+        owner: "{{ ansible_user_id }}"
+        mode: "0700"
 
-- name: Add post commit hook
-  ansible.builtin.copy:
-    src: dot.git/hooks/post-commit
-    dest: "{{ ansible_user_dir }}/Documents/Zim/.git/hooks/post-commit"
-    owner: "{{ ansible_user_id }}"
-    mode: "0700"
-  tags:
-    - zim
-    - zim-notebook
+    - name: Add post commit hook
+      ansible.builtin.copy:
+        src: dot.git/hooks/post-commit
+        dest: "{{ ansible_user_dir }}/Documents/Zim/.git/hooks/post-commit"
+        owner: "{{ ansible_user_id }}"
+        mode: "0700"
 
-- name: Ensure link tags use the correct color for dark mode
-  ansible.builtin.blockinfile:
-    path: "{{ ansible_user_dir }}/.config/zim/style.conf"
-    create: true
-    block: |
-      [Tag link]
-      foreground=#3371ff
-    owner: "{{ ansible_user_id }}"
-    mode: "0644"
+    - name: Ensure link tags use the correct color for dark mode
+      ansible.builtin.blockinfile:
+        path: "{{ ansible_user_dir }}/.config/zim/style.conf"
+        create: true
+        block: |
+          [Tag link]
+          foreground=#3371ff
+        owner: "{{ ansible_user_id }}"
+        mode: "0644"
