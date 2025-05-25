@@ -101,6 +101,19 @@ function status {
   echo "<pre>$OUTPUT</pre>" | mailx -M "text/html" -s "[BACKUP] Status for {{ inventory_hostname }}" {{ email_addresses.internal }}
 }
 
+function unlock {
+  args=(
+    unlock
+    -r {{ backup_config.remote.protocol }}:{{ backup_config.remote.host_alias }}:{{ backup_config.remote.path }}
+  )
+
+  echo "Running command with args:"
+  echo "${args[@]}"
+
+  restic "${args[@]}"
+}
+
+
 case "$ACTION" in
   backup)
     backup
@@ -113,6 +126,9 @@ case "$ACTION" in
     ;;
   status)
     status
+    ;;
+  unlock)
+    unlock
     ;;
   help|*)
     echo "Unknown or missing argument"
