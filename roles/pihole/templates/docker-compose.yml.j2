@@ -26,6 +26,8 @@ services:
       FTLCONF_dns_domain: "home.lan"
       FTLCONF_dns_hosts: "{% for host in pihole.records.a %}{{ host }}{% if not loop.last %};{% endif %}{%endfor%}"
       FTLCONF_dns_cnameRecords: "{% for host in pihole.records.cname %}{{ host }}{% if not loop.last %};{% endif %}{%endfor%}"
+      FTLCONF_dns_rateLimit_count: 10000
+      FTLCONF_dns_rateLimit_interval: 10
       FTLCONF_dhcp_active: "false"
       FTLCONF_ntp_ipv4_active: "false"
       FTLCONF_ntp_ipv6_active: "false"
