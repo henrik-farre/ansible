@@ -67,6 +67,8 @@ package_groups:
     - dkms
     - fakeroot
     - gcc
+    - git
+    - git-delta
     - github-cli
     - pkg-config
     # adb and friends
