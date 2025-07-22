@@ -11,6 +11,7 @@ services:
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /srv/home-assistant/data/home-assistant/config:/config
+      - /srv/home-assistant/data/home-assistant/media:/media
       - mariadb-socket:/var/run/mysqld
       - /run/dbus:/run/dbus:ro
     restart: unless-stopped

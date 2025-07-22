@@ -35,6 +35,9 @@
         - path: data/home-assistant/config
           owner: root
           group: docker
+        - path: data/home-assistant/media
+          owner: root
+          group: docker
         - path: data/home-assistant/config/custom_components/hacs
           owner: root
           group: root
