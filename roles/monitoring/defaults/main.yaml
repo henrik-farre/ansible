@@ -1,0 +1,6 @@
+---
+monitoring:
+  victoriametrics:
+    hostname: "victoriametrics.{{ network.local_domain }}"
+  grafana:
+    hostname: "grafana.{{ network.local_domain }}"

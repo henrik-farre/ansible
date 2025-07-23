@@ -65,18 +65,6 @@
         - path: data/piper
           owner: root
           group: docker
-        - path: data/victoriametrics/storage
-          owner: root
-          group: docker
-        - path: data/victoriametrics/prometheus
-          owner: root
-          group: docker
-        - path: data/victoriametrics/prometheus/conf.d
-          owner: root
-          group: docker
-        - path: data/grafana/storage
-          owner: 472
-          group: docker
         - path: deploy
           owner: root
           group: docker
@@ -145,18 +133,10 @@
       when:
         - zigbee2mqtt_config.stat.exists is defined and not zigbee2mqtt_config.stat.exists
 
-    - name: Ensure prometheus.yml exists for victoriametrics
-      ansible.builtin.template:
-        src: victoriametrics/prometheus/prometheus.yml.j2
-        dest: /srv/home-assistant/data/victoriametrics/prometheus/prometheus.yml
-        mode: "0664"
-        owner: root
-        group: docker
-
     - name: Ensure scrape config for Home Assistant exists
       ansible.builtin.template:
         src: victoriametrics/prometheus/homeassistant.yml.j2
-        dest: /srv/home-assistant/data/victoriametrics/prometheus/conf.d/homeassistant.yml
+        dest: /srv/monitoring/data/victoriametrics/prometheus/conf.d/homeassistant.yml
         mode: "0664"
         owner: root
         group: docker

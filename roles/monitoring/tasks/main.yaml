@@ -1,0 +1,50 @@
+---
+- name: Ensure monitoring is installed and configured
+  become: true
+  tags:
+    - monitoring
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/monitoring/{{ item.path }}"
+        state: directory
+        mode: "0775"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data/victoriametrics/storage
+          owner: root
+          group: docker
+        - path: data/victoriametrics/prometheus
+          owner: root
+          group: docker
+        - path: data/victoriametrics/prometheus/conf.d
+          owner: root
+          group: docker
+        - path: data/grafana/storage
+          owner: 472
+          group: docker
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure prometheus.yml exists for victoriametrics
+      ansible.builtin.template:
+        src: victoriametrics/prometheus/prometheus.yml.j2
+        dest: /srv/monitoring/data/victoriametrics/prometheus/prometheus.yml
+        mode: "0664"
+        owner: root
+        group: docker
+
+    - name: Ensure docker-compose.yml exists for monitoring
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/monitoring/deploy/docker-compose.yml
+        mode: "0664"
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose_v2:
+        project_name: monitoring
+        project_src: /srv/monitoring/deploy

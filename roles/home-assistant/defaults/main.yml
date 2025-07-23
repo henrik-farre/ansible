@@ -11,10 +11,7 @@ homeassistant:
     hostname: "zigbee2mqtt.{{ network.local_domain }}"
     devices:
       - /dev/ttyACM0
+  prometheus:
+    token: "{{ vaulted_ha.prometheus.token }}"
   mosquitto: "{{ vaulted_ha.mosquitto }}"
   cloudflared: "{{ vaulted_ha.cloudflared }}"
-  victoriametrics:
-    hostname: "victoriametrics.{{ network.local_domain }}"
-    token: "{{ vaulted_ha.victoriametrics.token }}"
-  grafana:
-    hostname: "grafana.{{ network.local_domain }}"

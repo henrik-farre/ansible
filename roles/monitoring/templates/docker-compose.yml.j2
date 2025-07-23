@@ -1,0 +1,48 @@
+---
+services:
+  victoriametrics:
+    container_name: monitoring-victoriametrics
+    image: {{ containers.victoriametrics.repo }}:{{ containers.victoriametrics.tag }}
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Copenhagen
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/monitoring/data/victoriametrics/storage:/storage
+      - /srv/monitoring/data/victoriametrics/prometheus:/etc/prometheus:ro
+    command:
+      - "-storageDataPath=/storage"
+      - "-httpListenAddr=:8428"
+      - "-retentionPeriod=5y"
+      - "-promscrape.config=/etc/prometheus/prometheus.yml"
+      - "-selfScrapeInterval=30s"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.victoriametrics.rule=Host(`{{ monitoring.victoriametrics.hostname }}`)"
+      - "traefik.http.services.victoriametrics.loadbalancer.server.port=8428"
+      - "traefik.http.routers.victoriametrics.entrypoints=http"
+    networks:
+      traefik: {}
+
+  grafana:
+    container_name: monitoring-grafana
+    image: {{ containers.grafana.repo }}:{{ containers.grafana.tag }}
+    restart: unless-stopped
+    environment:
+      TZ: Europe/Copenhagen
+    depends_on:
+      - "victoriametrics"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/monitoring/data/grafana/storage:/var/lib/grafana
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.grafana.rule=Host(`{{ monitoring.grafana.hostname }}`)"
+      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
+      - "traefik.http.routers.grafana.entrypoints=http"
+    networks:
+      traefik: {}
+
+networks:
+  traefik:
+    external: true

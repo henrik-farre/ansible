@@ -141,50 +141,6 @@ services:
       home-assistant-internal:
         ipv4_address: 172.16.238.30
 
-  victoriametrics:
-    container_name: home-assistant-victoriametrics
-    image: {{ containers.victoriametrics.repo }}:{{ containers.victoriametrics.tag }}
-    restart: unless-stopped
-    environment:
-      TZ: Europe/Copenhagen
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /srv/home-assistant/data/victoriametrics/storage:/storage
-      - /srv/home-assistant/data/victoriametrics/prometheus:/etc/prometheus:ro
-    command:
-      - "-storageDataPath=/storage"
-      - "-httpListenAddr=:8428"
-      - "-retentionPeriod=5y"
-      - "-promscrape.config=/etc/prometheus/prometheus.yml"
-      - "-selfScrapeInterval=30s"
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.victoriametrics.rule=Host(`{{ homeassistant.victoriametrics.hostname }}`)"
-      - "traefik.http.services.victoriametrics.loadbalancer.server.port=8428"
-      - "traefik.http.routers.victoriametrics.entrypoints=http"
-    networks:
-      traefik: {}
-      metrics-internal:
-
-  grafana:
-    container_name: home-assistant-grafana
-    image: {{ containers.grafana.repo }}:{{ containers.grafana.tag }}
-    restart: unless-stopped
-    environment:
-      TZ: Europe/Copenhagen
-    depends_on:
-      - "victoriametrics"
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /srv/home-assistant/data/grafana/storage:/var/lib/grafana
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.grafana.rule=Host(`{{ homeassistant.grafana.hostname }}`)"
-      - "traefik.http.services.grafana.loadbalancer.server.port=3000"
-      - "traefik.http.routers.grafana.entrypoints=http"
-    networks:
-      traefik: {}
-
 volumes:
   mariadb-socket:
 
@@ -196,4 +152,3 @@ networks:
       driver: default
       config:
         - subnet: "172.16.238.0/24"
-  metrics-internal: {}
