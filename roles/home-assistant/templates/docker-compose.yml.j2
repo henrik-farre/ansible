@@ -185,17 +185,6 @@ services:
     networks:
       traefik: {}
 
-  speedtest:
-    container_name: home-assistant-speedtest
-    restart: unless-stopped
-    environment:
-      TZ: Europe/Copenhagen
-    image: {{ containers.speedtest.repo }}:{{ containers.speedtest.tag }}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-    networks:
-      metrics-internal:
-
 volumes:
   mariadb-socket:
 

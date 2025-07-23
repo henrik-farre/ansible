@@ -161,14 +161,6 @@
         owner: root
         group: docker
 
-    - name: Ensure scrape config for speedtest exists
-      ansible.builtin.template:
-        src: victoriametrics/prometheus/speedtest.yml.j2
-        dest: /srv/home-assistant/data/victoriametrics/prometheus/conf.d/speedtest.yml
-        mode: "0664"
-        owner: root
-        group: docker
-
     - name: Ensure docker-compose.yml exists for home assistant
       ansible.builtin.template:
         src: docker-compose.yml.j2

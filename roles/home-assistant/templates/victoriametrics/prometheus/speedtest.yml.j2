@@ -1,9 +1,0 @@
-- job_name: "speedtest"
-  metrics_path: /probe
-  params:
-    script: [speedtest]
-  static_configs:
-    - targets:
-      - home-assistant-speedtest:9469
-  scrape_interval: 60m
-  scrape_timeout: 10m

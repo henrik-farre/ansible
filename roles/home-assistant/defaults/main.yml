@@ -11,12 +11,8 @@ homeassistant:
     hostname: "zigbee2mqtt.{{ network.local_domain }}"
     devices:
       - /dev/ttyACM0
-  mosquitto:
-    user: "{{ vaulted_ha.mosquitto.user }}"
-    password: "{{ vaulted_ha.mosquitto.password }}"
-    salt: "{{ vaulted_ha.mosquitto.salt }}"
-  cloudflared:
-    token: "{{ vaulted_ha.cloudflared.token }}"
+  mosquitto: "{{ vaulted_ha.mosquitto }}"
+  cloudflared: "{{ vaulted_ha.cloudflared }}"
   victoriametrics:
     hostname: "victoriametrics.{{ network.local_domain }}"
     token: "{{ vaulted_ha.victoriametrics.token }}"
