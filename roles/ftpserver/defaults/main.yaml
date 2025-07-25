@@ -1,0 +1,7 @@
+---
+ftpserver:
+  uid: "{{ vaulted_ftpserver.uid }}"
+  gid: "{{ vaulted_ftpserver.uid }}"
+  users: "{{ vaulted_ftpserver.users }}"
+  passive_port_range: "{{ vaulted_ftpserver.passive_port_range }}"
+  hostname: "ftpserver.{{ network.local_domain }}"

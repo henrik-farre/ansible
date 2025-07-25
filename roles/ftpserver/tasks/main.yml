@@ -1,0 +1,69 @@
+---
+- name: Ensure ftpserver is installed and configured
+  become: true
+  tags:
+    - ftpserver
+  block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: ftpserver.yml.vault
+
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/ftpserver/{{ item.path }}"
+        state: directory
+        mode: "0770"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data
+          owner: root
+          group: docker
+        - path: data/upload
+          owner: 1000
+          group: 1000
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure custom ports are configured
+      community.general.ufw:
+        rule: "allow"
+        port: "{{ item.port }}"
+        proto: "{{ item.proto }}"
+        comment: "{{ item.comment }}"
+      loop:
+        - port: 20
+          proto: "tcp"
+          comment: "FTP command port"
+        - port: 21
+          proto: "tcp"
+          comment: "FTP data port"
+        - port: "{{ ftpserver.passive_port_range | replace('-', ':') }}"
+          proto: "tcp"
+          comment: "FTP passive ports"
+
+    - name: Ensure Dockerfile and server code exists
+      ansible.posix.synchronize:
+        src: ftpserver
+        dest: /srv/ftpserver/deploy/
+        delete: yes
+        recursive: yes
+        rsync_opts:
+          - "--exclude=.venv"
+
+    - name: Ensure docker-compose.yml exists for ftpserver
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/ftpserver/deploy/docker-compose.yml
+        mode: "0664"
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose_v2:
+        project_name: ftpserver
+        project_src: /srv/ftpserver/deploy
+        ignore_build_events: false
+        build: always
+        recreate: always

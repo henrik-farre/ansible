@@ -113,6 +113,7 @@
   gather_facts: no
   roles:
     - apparmor
+    - monitoring
     - nfs-server
     - samba-server
     - traefik
@@ -127,6 +128,7 @@
     - pihole
     - minecraft
     - unifi-network-application
+    - ftpserver
 
 - name: Laptop setup
   hosts: laptop
