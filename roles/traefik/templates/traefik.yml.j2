@@ -16,7 +16,11 @@ api:
 log:
   level: ERROR
 
+metrics:
+  prometheus: {}
+
 accessLog:
+  format: "json"
   fields:
     defaultMode: keep
     headers:

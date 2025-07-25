@@ -53,6 +53,14 @@
         group: docker
       notify: Restart traefik container
 
+    - name: Ensure scrape config for traefik exists
+      ansible.builtin.template:
+        src: prometheus/traefik.yml.j2
+        dest: /srv/monitoring/data/victoriametrics/prometheus/conf.d/traefik.yml
+        mode: "0664"
+        owner: root
+        group: docker
+
     - name: Deploy Docker Compose stack
       community.docker.docker_compose_v2:
         project_name: traefik
