@@ -1,0 +1,5 @@
+---
+- job_name: 'traefik'
+  scrape_interval: 15s
+  static_configs:
+    - targets: ['traefik:8080']
