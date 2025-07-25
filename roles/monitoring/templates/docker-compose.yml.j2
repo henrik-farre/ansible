@@ -23,6 +23,7 @@ services:
       - "traefik.http.routers.victoriametrics.entrypoints=http"
     networks:
       traefik: {}
+      internal: {}
 
   grafana:
     container_name: monitoring-grafana
@@ -43,6 +44,21 @@ services:
     networks:
       traefik: {}
 
+  node-exporter:
+    hostname: {{ inventory_hostname }}
+    container_name: monitoring-node-exporter
+    image: {{ containers.nodeexporter.repo }}:{{ containers.nodeexporter.tag }}
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - '/:/host:ro,rslave'
+    pid: host
+    command:
+      - '--path.rootfs=/host'
+    networks:
+      internal: {}
+
 networks:
   traefik:
     external: true
+  internal: {}

@@ -36,6 +36,14 @@
         owner: root
         group: docker
 
+    - name: Ensure scrape config for node-exporter exists
+      ansible.builtin.template:
+        src: prometheus/node-exporter.yml.j2
+        dest: /srv/monitoring/data/victoriametrics/prometheus/conf.d/node-exporter.yml
+        mode: "0664"
+        owner: root
+        group: docker
+
     - name: Ensure docker-compose.yml exists for monitoring
       ansible.builtin.template:
         src: docker-compose.yml.j2
