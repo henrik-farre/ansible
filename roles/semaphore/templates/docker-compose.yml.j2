@@ -1,0 +1,88 @@
+---
+services:
+  semaphore-db:
+    image: {{ containers.semaphore_db.repo }}:{{ containers.semaphore_db.tag }}
+    container_name: semaphore-db
+    environment:
+      TZ: Europe/Copenhagen
+      MARIADB_AUTO_UPGRADE: "1"
+      MARIADB_INITDB_SKIP_TZINFO: "1"
+      MARIADB_DATABASE: "{{ semaphore.db_name }}"
+      MARIADB_USER: "{{ semaphore.db_user }}"
+      MARIADB_PASSWORD: "{{ semaphore.db_password }}"
+      MARIADB_ROOT_PASSWORD: "{{ semaphore.db_root_password }}"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/semaphore/data/mariadb/mysql:/var/lib/mysql
+    networks:
+      - internal
+    restart: unless-stopped
+    stop_grace_period: 5s
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:noexec
+      - /run:noexec
+      - /run/mysqld  # No "noexec", else entrypoint will complain "find: ‘/run/mysqld’: No such file or directory"
+      - /var/run:noexec
+
+  semaphore:
+    image: {{ containers.semaphore.repo }}:{{ containers.semaphore.tag }}
+    container_name: semaphore
+    environment:
+      TZ: Europe/Copenhagen
+      SEMAPHORE_DB_DIALECT: mysql
+      SEMAPHORE_DB_HOST: semaphore-db
+      SEMAPHORE_DB_NAME: "{{ semaphore.db_name }}"
+      SEMAPHORE_DB_USER: "{{ semaphore.db_user }}"
+      SEMAPHORE_DB_PASS: "{{ semaphore.db_password }}"
+      SEMAPHORE_ADMIN: "{{ semaphore.admin_user }}"
+      SEMAPHORE_ADMIN_PASSWORD: "{{ semaphore.admin_password }}"
+      SEMAPHORE_ADMIN_NAME: "{{ semaphore.admin_name }}"
+      SEMAPHORE_ADMIN_EMAIL: "{{ semaphore.admin_email }}"
+      SEMAPHORE_COOKIE_HASH: {{ lookup('ansible.builtin.password', '/dev/null', length=64, chars=['ascii_letters', 'digits'], seed=inventory_hostname) }}
+      SEMAPHORE_COOKIE_ENCRYPTION: {{ lookup('ansible.builtin.password', '/dev/null', length=32, chars=['ascii_letters', 'digits'], seed=inventory_hostname) }}
+      SEMAPHORE_ACCESS_KEY_ENCRYPTION: {{ lookup('ansible.builtin.password', '/dev/null', length=32, chars=['ascii_letters', 'digits'], seed=inventory_hostname) }}
+      SEMAPHORE_TOTP_ENABLED: "True"
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/semaphore/data/semaphore/var-lib:/var/lib/semaphore
+      - /srv/semaphore/data/semaphore/config:/etc/semaphore
+    depends_on:
+      - semaphore-db
+    restart: unless-stopped
+    networks:
+      - traefik
+      - internal
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.semaphore.rule=Host(`{{ semaphore.hostname }}`)"
+      - "traefik.http.services.semaphore.loadbalancer.server.port=3000"
+      - "traefik.http.routers.semaphore.entrypoints=http"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    tmpfs:
+      - /tmp
+      - /run
+      - /var/run
+
+networks:
+  internal:
+  traefik:
+    external: true

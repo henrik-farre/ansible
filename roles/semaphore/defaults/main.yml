@@ -1,0 +1,11 @@
+---
+semaphore:
+  hostname: "semaphore.{{ network.local_domain }}"
+  db_name: "{{ vaulted_semaphore.db_name }}"
+  db_user: "{{ vaulted_semaphore.db_user }}"
+  db_password: "{{ vaulted_semaphore.db_password }}"
+  db_root_password: "{{ vaulted_semaphore.db_root_password }}"
+  admin_user: "{{ vaulted_semaphore.admin_user }}"
+  admin_password: "{{ vaulted_semaphore.admin_password }}"
+  admin_name: "{{ vaulted_semaphore.admin_name }}"
+  admin_email: "{{ email_addresses.internal }}"

@@ -1,0 +1,43 @@
+---
+- name: Ensure semaphore is installed and configured
+  become: true
+  tags:
+    - semaphore
+  block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: semaphore.yml.vault
+
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/semaphore/{{ item.path }}"
+        state: directory
+        mode: "0775"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data/mariadb/mysql
+          owner: 999
+          group: 999
+        - path: data/semaphore/var-lib
+          owner: 1001
+          group: docker
+        - path: data/semaphore/config
+          owner: 1001
+          group: docker
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yml exists for semaphore
+      ansible.builtin.template:
+        src: docker-compose.yml.j2
+        dest: /srv/semaphore/deploy/docker-compose.yml
+        mode: "0664"
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose_v2:
+        project_name: semaphore
+        project_src: /srv/semaphore/deploy
