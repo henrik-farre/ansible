@@ -44,12 +44,32 @@ services:
       MARIADB_DATABASE: "{{ homeassistant.db.database }}"
       MARIADB_USER: "{{ homeassistant.db.user }}"
       MARIADB_PASSWORD: "{{ homeassistant.db.password }}"
+      MARIADB_AUTO_UPGRADE: "1"
     volumes:
       - /etc/localtime:/etc/localtime:ro
       - /srv/home-assistant/data/mariadb/mysql:/var/lib/mysql
       - /srv/home-assistant/data/mariadb/entrypoint:/docker-entrypoint-initdb.d
       - mariadb-socket:/var/run/mysqld
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      start_period: 10s
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    cap_drop:
+      - ALL
+    cap_add:
+      - CHOWN
+      - SETGID
+      - SETUID
+      - DAC_OVERRIDE
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    tmpfs:
+      - /tmp:noexec
+      - /run:noexec
 
   mosquitto:
     image: {{ containers.mosquitto.repo }}:{{ containers.mosquitto.tag }}
