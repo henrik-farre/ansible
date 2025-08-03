@@ -1,9 +1,12 @@
 ---
-- name: Find files
+- name: "Find files in {{ task.path }}"
   ansible.builtin.find:
     paths: "{{ task.path }}"
-    recurse: no
+    recurse: "{{ task.recurse|default(false) }}"
+    depth: "{{ task.depth|default(omit) }}"
     file_type: "{{ task.file_type }}"
+    pattern: "{{ task.pattern|default(omit) }}"
+    age: "{{ task.age|default(omit) }}"
   register: files_found
 
 - name: Delete files
@@ -11,3 +14,11 @@
     path: "{{ item.path }}"
     state: absent
   loop: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] }}"
+
+- name: Calculate total size of old files
+  set_fact:
+    total_saved_bytes: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] | map(attribute='size') | sum }}"
+
+- name: Show total disk space saved
+  debug:
+    msg: "Cleaned {{ (total_saved_bytes / 1024 / 1024) | round(2) }} MB of disk space."
