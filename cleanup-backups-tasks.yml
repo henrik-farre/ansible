@@ -30,3 +30,4 @@
 - name: Show total disk space saved
   debug:
     msg: "Cleaned {{ (total_saved_bytes / 1024 / 1024) | round(2) }} MB of disk space."
+  when: total_saved_bytes > 0
