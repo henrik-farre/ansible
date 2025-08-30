@@ -11,7 +11,11 @@
 
 - name: Debug
   ansible.builtin.debug:
-    msg: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] }}"
+    var: task
+
+- name: Debug 2
+  ansible.builtin.debug:
+    var: files_found
 
 - name: Delete files
   ansible.builtin.file:
