@@ -17,9 +17,9 @@
 
 - name: Calculate total size of old files
   set_fact:
-    total_saved_bytes: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] | map(attribute='size') | sum | float }}"
+    total_saved_bytes: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] | map(attribute='size') | sum }}"
 
 - name: Show total disk space saved
   debug:
-    msg: "Cleaned {{ (total_saved_bytes / 1024 / 1024) | round(2) }} MB of disk space."
-  when: total_saved_bytes > 0
+    msg: "Cleaned {{ (total_saved_bytes | float / 1024 / 1024) | round(2) }} MB of disk space."
+  when: total_saved_bytes | float > 0
