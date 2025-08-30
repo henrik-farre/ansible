@@ -9,14 +9,6 @@
     age: "{{ task.age|default(omit) }}"
   register: files_found
 
-- name: Debug
-  ansible.builtin.debug:
-    var: task
-
-- name: Debug 2
-  ansible.builtin.debug:
-    var: files_found
-
 - name: Delete files
   ansible.builtin.file:
     path: "{{ item.path }}"
@@ -25,7 +17,7 @@
 
 - name: Calculate total size of old files
   set_fact:
-    total_saved_bytes: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] | map(attribute='size') | sum }}"
+    total_saved_bytes: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] | map(attribute='size') | sum | float }}"
 
 - name: Show total disk space saved
   debug:
