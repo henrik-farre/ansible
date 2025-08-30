@@ -9,6 +9,10 @@
     age: "{{ task.age|default(omit) }}"
   register: files_found
 
+- name: Debug
+  ansible.builtin.debug:
+    msg: "{{ (files_found.files | sort(attribute='ctime', reverse=True))[task.keep:] }}"
+
 - name: Delete files
   ansible.builtin.file:
     path: "{{ item.path }}"
