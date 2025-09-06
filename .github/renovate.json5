@@ -1,0 +1,19 @@
+{
+  "extends": [
+    "config:base",
+  ],
+
+  "docker": {
+    "enabled": true,
+  },
+
+  "regexManagers": [
+    {
+      "fileMatch": ["^inventory/group_vars/docker\\.yml$"],
+      "matchStrings": [
+        "repo: \"(?<depName>[^\"]+)\"\\s+tag: \"(?<currentValue>[^\"]+)\"",
+      ],
+      "datasourceTemplate": "docker",
+    },
+  ],
+}
