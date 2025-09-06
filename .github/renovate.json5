@@ -9,7 +9,7 @@
         '/^inventory/group_vars/docker\\.yaml$/',
       ],
       matchStrings: [
-        'repo: "(?<depName>[^"]+)"\\s+tag: "(?<currentValue>[^"]+)"',
+        'repo: (?<depName>.+)\\s+tag: (?<currentValue>.+)',
       ],
       datasourceTemplate: 'docker',
     },
