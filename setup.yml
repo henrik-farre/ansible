@@ -121,7 +121,6 @@
     - syncthing
     # - getmail
     - backup-rclone
-    - chores
     - jellyfin
     - home-assistant
     - pihole
