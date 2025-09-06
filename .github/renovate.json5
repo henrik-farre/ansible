@@ -18,6 +18,7 @@
     {
       matchCategories: [
         'docker',
+        'custom',
       ],
       enabled: true,
     },
