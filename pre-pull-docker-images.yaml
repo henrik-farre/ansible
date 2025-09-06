@@ -1,0 +1,10 @@
+---
+- name: Pull all docker images
+  hosts: spookcentral
+  gather_facts: false
+
+  tasks:
+    - name: Pull image
+      community.docker.docker_image_pull:
+        name: "{{ item.value.repo }}:{{ item.value.tag }}"
+      loop: "{{ containers | dict2items }}"
