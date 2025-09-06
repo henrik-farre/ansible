@@ -6,7 +6,7 @@
     {
       customType: 'regex',
       managerFilePatterns: [
-        '/^inventory/group_vars/docker\\.yml$/',
+        '/^inventory/group_vars/docker\\.yaml$/',
       ],
       matchStrings: [
         'repo: "(?<depName>[^"]+)"\\s+tag: "(?<currentValue>[^"]+)"',
