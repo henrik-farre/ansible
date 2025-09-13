@@ -1,10 +1,11 @@
 {
   extends: [
     'config:recommended',
-    'schedule:weekly',
     'group:allNonMajor',
     ':disableRateLimiting',
   ],
+  "timezone": "Europe/Copenhagen",
+  "schedule": "every weekend",
   customManagers: [
     {
       customType: 'regex',
