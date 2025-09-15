@@ -47,7 +47,7 @@ containers:
     tag: 1.6.3
   victoriametrics:
     repo: victoriametrics/victoria-metrics
-    tag: v1.125.1
+    tag: v1.126.0
   grafana:
     repo: grafana/grafana
     tag: 12.1.1
