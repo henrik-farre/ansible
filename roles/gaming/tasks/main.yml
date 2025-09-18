@@ -1,5 +1,8 @@
 ---
 - name: Become and tag block
+  become: true
+  tags:
+    - gaming
   block:
     - name: Ensure packages are installed
       community.general.pacman:
@@ -116,7 +119,11 @@
               </application>
             </device>
           </driconf>
-  # block
-  become: true
-  tags:
-    - gaming
+
+    - name: Ensure NTsync module is loaded
+      ansible.builtin.copy:
+        dest: /etc/modules-load.d/ntsync.conf
+        mode: 0644
+        content: |
+          # Managed by Ansible
+          ntsync
