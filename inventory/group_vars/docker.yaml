@@ -38,7 +38,7 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.29
+    tag: v3.5.3
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 2.5.0
