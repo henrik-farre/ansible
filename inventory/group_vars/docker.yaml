@@ -5,7 +5,7 @@ containers:
     tag: 9.3.45-ls100
   mongo:
     repo: docker.io/mongo
-    tag: 7.0.24
+    tag: 7.0.25
   photoprism:
     repo: photoprism/photoprism
     tag: "250426"
@@ -14,13 +14,13 @@ containers:
     tag: 11.8.3
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2025.9.4
+    tag: 2025.10.0
   ha_mariadb:
     repo: mariadb
     tag: 10.11.14
   zigbee2mqtt:
     repo: koenkk/zigbee2mqtt
-    tag: 2.6.1
+    tag: 2.6.2
   mosquitto:
     repo: eclipse-mosquitto
     tag: 2.0.22
