@@ -47,19 +47,19 @@ containers:
     tag: 1.6.3
   victoriametrics:
     repo: victoriametrics/victoria-metrics
-    tag: v1.127.0
+    tag: v1.128.0
   grafana:
     repo: grafana/grafana
-    tag: 12.2.0
+    tag: 12.2.1
   nodeexporter:
     repo: prom/node-exporter
-    tag: v1.9.1
+    tag: v1.10.0
   minecraft:
     repo: itzg/minecraft-server
     tag: 2025.10.2
   jellyfin:
     repo: jellyfin/jellyfin
-    tag: 10.10.7
+    tag: 10.11.0
   semaphore:
     repo: semaphoreui/semaphore
     tag: v2.16.34
