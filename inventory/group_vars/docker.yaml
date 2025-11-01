@@ -26,10 +26,10 @@ containers:
     tag: 2.0.22
   cloudflared:
     repo: cloudflare/cloudflared
-    tag: 2025.10.0
+    tag: 2025.10.1
   pihole:
     repo: pihole/pihole
-    tag: 2025.10.0
+    tag: 2025.10.3
   smokeping:
     repo: quay.io/linuxserver.io/smokeping
     tag: 2.9.0
@@ -38,7 +38,7 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.29
+    tag: v2.11.30
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 2.5.0
@@ -56,13 +56,13 @@ containers:
     tag: v1.10.2
   minecraft:
     repo: itzg/minecraft-server
-    tag: 2025.10.2
+    tag: 2025.10.5
   jellyfin:
     repo: jellyfin/jellyfin
-    tag: 10.11.0
+    tag: 10.11.1
   semaphore:
     repo: semaphoreui/semaphore
-    tag: v2.16.34
+    tag: v2.16.37
   semaphore_db:
     repo: mariadb
     tag: 11.8.3
