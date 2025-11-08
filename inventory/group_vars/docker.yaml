@@ -41,7 +41,7 @@ containers:
     tag: v2.11.30
   whisper:
     repo: rhasspy/wyoming-whisper
-    tag: 2.5.0
+    tag: 3.0.2
   piper:
     repo: rhasspy/wyoming-piper
     tag: 1.6.3
