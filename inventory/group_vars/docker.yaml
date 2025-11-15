@@ -11,13 +11,13 @@ containers:
     tag: "250426"
   photoprism_mariadb:
     repo: mariadb
-    tag: 11.8.3
+    tag: 11.8.4
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2025.11.1
+    tag: 2025.11.2
   ha_mariadb:
     repo: mariadb
-    tag: 10.11.14
+    tag: 10.11.15
   zigbee2mqtt:
     repo: koenkk/zigbee2mqtt
     tag: 2.6.3
@@ -38,7 +38,7 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.30
+    tag: v2.11.31
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 3.0.2
@@ -65,4 +65,4 @@ containers:
     tag: v2.16.45
   semaphore_db:
     repo: mariadb
-    tag: 11.8.3
+    tag: 11.8.4
