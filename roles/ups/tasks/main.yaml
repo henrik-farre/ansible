@@ -1,0 +1,52 @@
+---
+- name: Ensure UPS is configured
+  become: true
+  tags:
+    - ups
+  block:
+    - name: Ensure vaulted vars are loaded
+      ansible.builtin.include_vars:
+        file: ups.yml.vault
+
+    - name: Ensure dependencies for UPS is installed
+      community.general.pacman:
+        name: nut
+        state: latest
+
+    - name: Ensure UPS is configured
+      ansible.builtin.blockinfile:
+        path: /etc/nut/ups.conf
+        block: |
+          [cyberpower-vp700elcd]
+            driver = "usbhid-ups"
+            port = "auto"
+            vendorid = "0764"
+            productid = "0501"
+            product = "VP700ELCD"
+            vendor = "CPS"
+            pollonly = "enabled"
+
+    - name: Ensure standalone mode is enabled
+      ansible.builtin.lineinfile:
+        name: /etc/nut/nut.conf
+        regexp: '^MODE='
+        line: 'MODE=netserver'
+        state: present
+
+    - name: Ensure LISTEN address is set securely
+      ansible.builtin.lineinfile:
+        path: /etc/nut/upsd.conf
+        regexp: '^#?\s*LISTEN\s+127'
+        line: 'LISTEN 127.0.0.1 3493'
+        state: present
+
+    - name: Ensure UPS is configured
+      no_log: True
+      ansible.builtin.blockinfile:
+        path: /etc/nut/upsd.users
+        block: |
+          {% for user in ups.users %}
+          [{{ user.name }}]
+            password = {{ user.password }}
+            upsmon {{ user.mode }}
+          {% endfor %}
