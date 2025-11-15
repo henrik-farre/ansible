@@ -44,7 +44,7 @@ containers:
     tag: 3.0.2
   piper:
     repo: rhasspy/wyoming-piper
-    tag: 1.6.3
+    tag: 2.1.2
   victoriametrics:
     repo: victoriametrics/victoria-metrics
     tag: v1.129.1
