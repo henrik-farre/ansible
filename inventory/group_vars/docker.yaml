@@ -14,7 +14,7 @@ containers:
     tag: 11.8.5
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2025.12.0
+    tag: 2025.12.1
   ha_mariadb:
     repo: mariadb
     tag: 10.11.15
@@ -38,7 +38,7 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.31
+    tag: v2.11.32
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 3.0.2
