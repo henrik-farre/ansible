@@ -32,5 +32,10 @@
         "/^(gh|ls)cr\\.io\\/linuxserver\\//"
       ]
     },
+    {
+      "matchPackageNames": ["photoprism/photoprism"],
+      "matchCurrentVersion": "/^\\d{6}$/",
+      "allowedVersions": "/^\\d{6}$/"
+    },
   ],
 }
