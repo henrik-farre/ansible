@@ -26,5 +26,11 @@
       ],
       enabled: true,
     },
+    {
+      "versioning": "regex:^v?(?<major>\\d+)\\.(?<minor>\\d+)\\.(?<patch>\\d+)((\\.|-r)(?<build>\\d+))?-ls(?<revision>\\d+)$",
+      "matchPackageNames": [
+        "/^(gh|ls)cr\\.io\\/linuxserver\\//"
+      ]
+    },
   ],
 }
