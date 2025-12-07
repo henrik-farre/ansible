@@ -34,8 +34,7 @@
     },
     {
       "matchPackageNames": ["photoprism/photoprism"],
-      "matchCurrentVersion": "/^\\d{6}$/",
-      "allowedVersions": "/^\\d{6}$/"
+      versioning: 'regex:^(?<major>[0-9]{2})(?<minor>[0-9]{2})(?<patch>[0-9]{2})$',
     },
   ],
 }
