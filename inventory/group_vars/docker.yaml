@@ -2,7 +2,7 @@
 containers:
   unifi:
     repo: lscr.io/linuxserver/unifi-network-application
-    tag: 9.3.45-ls100
+    tag: 9.5.21-ls109
   mongo:
     repo: docker.io/mongo
     tag: 7.0.26
@@ -20,7 +20,7 @@ containers:
     tag: 10.11.15
   zigbee2mqtt:
     repo: koenkk/zigbee2mqtt
-    tag: 2.7.0
+    tag: 2.7.1
   mosquitto:
     repo: eclipse-mosquitto
     tag: 2.0.22
