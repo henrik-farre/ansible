@@ -8,7 +8,7 @@ containers:
     tag: 7.0.26
   photoprism:
     repo: photoprism/photoprism
-    tag: "250426"
+    tag: 250426
   photoprism_mariadb:
     repo: mariadb
     tag: 11.8.5
@@ -66,3 +66,9 @@ containers:
   semaphore_db:
     repo: mariadb
     tag: 11.8.5
+  changedetection:
+    repo: ghcr.io/dgtlmoon/changedetection.io
+    tag: 0.51.4
+  browserless_chromium:
+    repo: ghcr.io/browserless/chromium
+    tag: v2.38.2
