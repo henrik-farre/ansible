@@ -8,13 +8,13 @@ containers:
     tag: 7.0.26
   photoprism:
     repo: photoprism/photoprism
-    tag: 250426
+    tag: 251130
   photoprism_mariadb:
     repo: mariadb
     tag: 11.8.5
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2025.12.1
+    tag: 2025.12.3
   ha_mariadb:
     repo: mariadb
     tag: 10.11.15
