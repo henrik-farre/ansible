@@ -5,7 +5,7 @@ containers:
     tag: 10.0.162-ls110
   mongo:
     repo: docker.io/mongo
-    tag: 7.0.26
+    tag: 7.0.28
   photoprism:
     repo: photoprism/photoprism
     tag: 251130
@@ -14,7 +14,7 @@ containers:
     tag: 11.8.5
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2025.12.3
+    tag: 2025.12.4
   ha_mariadb:
     repo: mariadb
     tag: 10.11.15
@@ -38,7 +38,7 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.32
+    tag: v2.11.33
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 3.0.2
@@ -47,22 +47,22 @@ containers:
     tag: 2.1.2
   victoriametrics:
     repo: victoriametrics/victoria-metrics
-    tag: v1.131.0
+    tag: v1.132.0
   grafana:
     repo: grafana/grafana
-    tag: 12.3.0
+    tag: 12.3.1
   nodeexporter:
     repo: prom/node-exporter
     tag: v1.10.2
   minecraft:
     repo: itzg/minecraft-server
-    tag: 2025.10.5
+    tag: 2025.12.0
   jellyfin:
     repo: jellyfin/jellyfin
-    tag: 10.11.4
+    tag: 10.11.5
   semaphore:
     repo: semaphoreui/semaphore
-    tag: v2.16.45
+    tag: v2.16.47
   semaphore_db:
     repo: mariadb
     tag: 11.8.5
