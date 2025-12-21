@@ -1,8 +1,5 @@
 ---
 containers:
-  unifi:
-    repo: lscr.io/linuxserver/unifi-network-application
-    tag: 10.0.162-ls110
   mongo:
     repo: docker.io/mongo
     tag: 7.0.28
