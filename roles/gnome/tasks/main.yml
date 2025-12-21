@@ -26,6 +26,8 @@
           - nautilus
           # for ssh-agent
           - gcr-4
+          # for legacy apps, select adwaita-dark
+          - gnome-themes-extra
 
     - name: Install extension-manager from AUR
       become: true
