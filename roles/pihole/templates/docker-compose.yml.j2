@@ -16,14 +16,15 @@ services:
       FTLCONF_webserver_port: "8082"
       FTLCONF_webserver_api_password: "{{ pihole.webpassword }}"
       FTLCONF_webserver_domain: "{{ pihole.hostname }}"
-      FTLCONF_dns_listeningMode: "LOCAL"
+      # To allow other subnets
+      FTLCONF_dns_listeningMode: "ALL"
       FTLCONF_dns_interface: "{{ ansible_facts.default_ipv4.interface }}"
       FTLCONF_dns_expandHosts: "true"
       FTLCONF_dns_revServers: "true,192.168.0.0/24,192.168.0.1#53,{{ network.local_domain }}"
       FTLCONF_dns_upstreams: "{% for dns in network.dns_upstream %}{{ dns }}{% if not loop.last %};{% endif %}{%endfor%}"
       FTLCONF_dns_bogusPriv: "true"
       FTLCONF_dns_domainNeeded: "true"
-      FTLCONF_dns_domain: "home.lan"
+      FTLCONF_dns_domain_name: "{{ network.local_domain }}"
       FTLCONF_dns_hosts: "{% for host in pihole.records.a %}{{ host }}{% if not loop.last %};{% endif %}{%endfor%}"
       FTLCONF_dns_cnameRecords: "{% for host in pihole.records.cname %}{{ host }}{% if not loop.last %};{% endif %}{%endfor%}"
       FTLCONF_dns_rateLimit_count: 10000
