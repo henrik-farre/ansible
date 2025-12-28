@@ -26,7 +26,8 @@
             vendor = "CPS"
             pollonly = "enabled"
 
-    - name: Ensure standalone mode is enabled
+    # Needed for home assistant integration
+    - name: Ensure netserver mode is enabled
       ansible.builtin.lineinfile:
         name: /etc/nut/nut.conf
         regexp: '^MODE='
@@ -40,7 +41,7 @@
         line: 'LISTEN 127.0.0.1 3493'
         state: present
 
-    - name: Ensure UPS is configured
+    - name: Ensure UPS users are configured
       no_log: True
       ansible.builtin.blockinfile:
         path: /etc/nut/upsd.users
@@ -50,3 +51,31 @@
             password = {{ user.password }}
             upsmon {{ user.mode }}
           {% endfor %}
+
+    - name: Ensure monitoring is configured
+      ansible.builtin.blockinfile:
+        path: /etc/nut/upsmon.conf
+        block: |
+          {% for user in ups.users %}
+          {% if user.mode == "primary" %}
+          MONITOR cyberpower-vp700elcd@localhost 1 {{ user.name }} {{ user.password }} {{ user.mode }}
+          {% endif %}
+          {% endfor %}
+
+    - name: Ensure monitoring is running as non root
+      ansible.builtin.lineinfile:
+        path: /etc/nut/upsmon.conf
+        regexp: '^#?\s*RUN_AS_USER.*'
+        line: 'RUN_AS_USER nut'
+        state: present
+
+    - name: Enable services and targets
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+      loop:
+        - nut.target
+        - nut-driver.target
+        - nut-server.service
+        - nut-driver-enumerator.service
