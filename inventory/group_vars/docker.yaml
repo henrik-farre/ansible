@@ -32,7 +32,7 @@ containers:
     tag: 2.9.0
   syncthing:
     repo: syncthing/syncthing
-    tag: 1.30.0
+    tag: 2.0.13
   traefik:
     repo: traefik
     tag: v2.11.33
