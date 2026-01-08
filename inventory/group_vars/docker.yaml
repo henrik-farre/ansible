@@ -11,7 +11,7 @@ containers:
     tag: 11.8.5
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2025.12.4
+    tag: 2026.1.0
   ha_mariadb:
     repo: mariadb
     tag: 10.11.15
