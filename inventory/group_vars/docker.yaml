@@ -17,7 +17,7 @@ containers:
     tag: 10.11.15
   zigbee2mqtt:
     repo: koenkk/zigbee2mqtt
-    tag: 2.7.1
+    tag: 2.7.2
   mosquitto:
     repo: eclipse-mosquitto
     tag: 2.0.22
@@ -35,7 +35,7 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.33
+    tag: v2.11.34
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 3.0.2
@@ -44,7 +44,7 @@ containers:
     tag: 2.1.2
   victoriametrics:
     repo: victoriametrics/victoria-metrics
-    tag: v1.132.0
+    tag: v1.133.0
   grafana:
     repo: grafana/grafana
     tag: 12.3.1
@@ -53,13 +53,13 @@ containers:
     tag: v1.10.2
   minecraft:
     repo: itzg/minecraft-server
-    tag: 2025.12.0
+    tag: 2025.12.1
   jellyfin:
     repo: jellyfin/jellyfin
     tag: 10.11.5
   semaphore:
     repo: semaphoreui/semaphore
-    tag: v2.16.47
+    tag: v2.16.49
   semaphore_db:
     repo: mariadb
     tag: 11.8.5
