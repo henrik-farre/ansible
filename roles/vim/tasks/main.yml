@@ -14,6 +14,7 @@
           - python-neovim
           - python-psutil
           - python-pip
+          - tree-sitter-cli
       when: ansible_facts.distribution == 'Archlinux'
 
     - name: Ensure Neovim and dependencies are installed for X11
