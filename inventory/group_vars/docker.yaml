@@ -59,7 +59,7 @@ containers:
     tag: 10.11.5
   semaphore:
     repo: semaphoreui/semaphore
-    tag: v2.16.49
+    tag: v2.16.50
   semaphore_db:
     repo: mariadb
     tag: 11.8.5
