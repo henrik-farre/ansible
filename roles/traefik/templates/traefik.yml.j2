@@ -29,6 +29,9 @@ accessLog:
 entryPoints:
   http:
     address: :80
+    http:
+      encodedCharacters:
+        allowEncodedSlash: true # fix for pihole api
     forwardedHeaders:
       trustedIPs:
         - 127.0.0.1/32
