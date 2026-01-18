@@ -11,7 +11,7 @@ containers:
     tag: 11.8.5
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2026.1.0
+    tag: 2026.1.2
   ha_mariadb:
     repo: mariadb
     tag: 10.11.15
@@ -35,7 +35,7 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.34
+    tag: v2.11.35
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 3.0.2
@@ -59,13 +59,13 @@ containers:
     tag: 10.11.5
   semaphore:
     repo: semaphoreui/semaphore
-    tag: v2.16.49
+    tag: v2.16.51
   semaphore_db:
     repo: mariadb
     tag: 11.8.5
   changedetection:
     repo: ghcr.io/dgtlmoon/changedetection.io
-    tag: 0.51.4
+    tag: 0.52.6
   browserless_chromium:
     repo: ghcr.io/browserless/chromium
-    tag: v2.38.2
+    tag: v2.38.3
