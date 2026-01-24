@@ -23,7 +23,7 @@ containers:
     tag: 2.0.22
   cloudflared:
     repo: cloudflare/cloudflared
-    tag: 2025.11.1
+    tag: 2026.1.1
   pihole:
     repo: pihole/pihole
     tag: 2025.11.1
