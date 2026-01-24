@@ -11,7 +11,7 @@ containers:
     tag: 11.8.5
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2026.1.2
+    tag: 2026.1.3
   ha_mariadb:
     repo: mariadb
     tag: 10.11.15
@@ -44,7 +44,7 @@ containers:
     tag: 2.1.2
   victoriametrics:
     repo: victoriametrics/victoria-metrics
-    tag: v1.133.0
+    tag: v1.134.0
   grafana:
     repo: grafana/grafana
     tag: 12.3.1
@@ -56,7 +56,7 @@ containers:
     tag: 2025.12.1
   jellyfin:
     repo: jellyfin/jellyfin
-    tag: 10.11.5
+    tag: 10.11.6
   semaphore:
     repo: semaphoreui/semaphore
     tag: v2.16.51
@@ -65,7 +65,7 @@ containers:
     tag: 11.8.5
   changedetection:
     repo: ghcr.io/dgtlmoon/changedetection.io
-    tag: 0.52.6
+    tag: 0.52.9
   browserless_chromium:
     repo: ghcr.io/browserless/chromium
     tag: v2.38.3
