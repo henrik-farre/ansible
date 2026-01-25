@@ -39,6 +39,9 @@ services:
       - /srv/pihole/data/var/log:/var/log
       - /srv/pihole/data/backup:/backup
     restart: unless-stopped
+    cap_add:
+      - CAP_CHOWN #we need to be able to change ownership of log files and databases in case FTL is started as a different user than pihole
+      - CAP_NET_BIND_SERVICE #Allows FTLDNS binding to TCP/UDP sockets below 1024 (specifically DNS service on port 53)
     cap_drop:
       - AUDIT_CONTROL
       - BLOCK_SUSPEND
