@@ -109,7 +109,7 @@
   block:
     - name: Clone neovim/vim files
       ansible.builtin.git:
-        repo: git@github.com:henrik-farre/vimrc.git
+        repo: git@codeberg.org:henrik-farre/neovim.git
         dest: "{{ ansible_user_dir }}/.config/nvim"
         version: master
 
