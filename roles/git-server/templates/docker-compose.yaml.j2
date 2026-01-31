@@ -1,0 +1,39 @@
+---
+services:
+  forgejo:
+    image: {{ containers.forgejo.repo }}:{{ containers.forgejo.tag }}
+    container_name: forgejo
+    user: 1000:1000
+    environment:
+      TZ: Europe/Copenhagen
+      USER_UID: 1000
+      USER_GID: 1000
+    restart: unless-stopped
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/git-server/data/forgejo:/var/lib/gitea
+      - /srv/git-server/data/conf:/etc/gitea
+    networks:
+      - traefik
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    read_only: true
+    tmpfs:
+      - /tmp:noexec
+      - /run:noexec
+      - /var/run:noexec
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.git-server.rule=Host(`{{ git_server.hostname }}`)"
+      - "traefik.http.services.git-server.loadbalancer.server.port=3000"
+      - "traefik.http.routers.git-server.entrypoints=http"
+      - "traefik.tcp.routers.git-server-ssh.rule=HostSNI(`*`)"
+      - "traefik.tcp.routers.git-server-ssh.entrypoints=ssh"
+      - "traefik.tcp.routers.git-server-ssh.service=git-server-ssh-svc"
+      - "traefik.tcp.services.git-server-ssh-svc.loadbalancer.server.port=2222"
+
+networks:
+  traefik:
+    external: true

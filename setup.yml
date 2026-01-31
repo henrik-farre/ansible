@@ -129,6 +129,7 @@
     - ftpserver
     - semaphore
     - ups
+    - git-server
 
 - name: Laptop setup
   hosts: laptop

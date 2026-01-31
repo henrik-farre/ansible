@@ -1,0 +1,3 @@
+---
+git_server:
+  hostname: git.{{ network.local_domain }}

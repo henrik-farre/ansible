@@ -1,0 +1,117 @@
+---
+- name: Ensure git-server is installed and configured
+  become: true
+  tags:
+    - git-server
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/git-server/{{ item.path }}"
+        state: directory
+        mode: "0775"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data/forgejo
+          owner: 1000
+          group: 1000
+        - path: data/conf
+          owner: 1000
+          group: 1000
+        - path: deploy
+          owner: root
+          group: docker
+        - path: scripts
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yaml exists for git-server
+      ansible.builtin.template:
+        src: docker-compose.yaml.j2
+        dest: /srv/git-server/deploy/docker-compose.yaml
+        mode: "0664"
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose_v2:
+        project_name: git-server
+        project_src: /srv/git-server/deploy
+
+    - name: Install git-server backup script
+      ansible.builtin.copy:
+        dest: /srv/git-server/scripts/backup-git-server.sh
+        mode: "0750"
+        content: |
+          #!/bin/bash
+          set -o nounset
+          set -o errexit
+          set -o pipefail
+
+          BACKUP_LOCATION=/shared/backup/git-server/$(date +"%Y-%m-%d")
+          CONTAINER_NAME="forgejo"
+
+          # Inside container
+          TMP_DUMP_PATH_INSIDE=/var/lib/gitea/tmp
+          # On host
+          TMP_DUMP_PATH_OUTSIDE=/srv/git-server/data/forgejo/tmp
+
+          TMP_BUMP_FILE_NAME=forgejo.zip
+
+          mkdir -p "$BACKUP_LOCATION"
+
+          # Cleanup files that was not moved correctly
+          rm -f --preserve-root=all "${TMP_DUMP_PATH_OUTSIDE}/*.zip"
+
+          docker exec "$CONTAINER_NAME" forgejo dump --file "${TMP_DUMP_PATH_INSIDE}/${TMP_BUMP_FILE_NAME}" --config /var/lib/gitea/custom/conf/app.ini
+
+          mv "${TMP_DUMP_PATH_OUTSIDE}"/*.zip "${BACKUP_LOCATION}/"
+
+    - name: Install systemd services for backup
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-git-server.service
+        content: |
+          [Unit]
+          Description=Backup git-server
+          OnFailure=status-email@%n.service
+
+          [Service]
+          WorkingDirectory=/srv/git-server/
+
+          Type=oneshot
+          ExecStart=/srv/git-server/scripts/backup-git-server.sh
+        owner: root
+        mode: "0644"
+
+    - name: Install systemd timers
+      ansible.builtin.copy:
+        dest: /usr/local/lib/systemd/system/backup-git-server.timer
+        content: |
+          [Unit]
+          Description=Backup git-server
+          After=network-online.target
+          Wants=network-online.target
+
+          [Timer]
+          OnCalendar=monthly
+          Persistent=True
+
+          [Install]
+          WantedBy=timers.target
+        owner: root
+        mode: "0644"
+
+    - name: Reload systemd
+      ansible.builtin.systemd:
+        daemon_reload: true
+
+    - name: Enable systemd services
+      ansible.builtin.systemd:
+        name: "backup-git-server.service"
+        enabled: true
+
+    - name: Enable systemd timers
+      ansible.builtin.systemd:
+        name: "backup-git-server.timer"
+        enabled: true
+        state: started

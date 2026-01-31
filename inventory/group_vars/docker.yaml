@@ -69,3 +69,6 @@ containers:
   browserless_chromium:
     repo: ghcr.io/browserless/chromium
     tag: v2.38.4
+  forgejo:
+    repo: codeberg.org/forgejo/forgejo
+    tag: 14.0.1-rootless
