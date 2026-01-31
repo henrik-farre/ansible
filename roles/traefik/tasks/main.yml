@@ -21,11 +21,18 @@
         - data/acme
         - deploy
 
-    - name: Ensure custom services are configured
+    - name: Ensure http/https entrypoints are configured
       community.general.ufw:
         rule: "allow"
         name: "WWW Full"
-        comment: "Traefik"
+        comment: "Traefik - http(s) entrypoints"
+
+    - name: Ensure custom ssh entrypoint is configured
+      community.general.ufw:
+        rule: "allow"
+        port: "2222"
+        proto: "tcp"
+        comment: "Traefik - ssh entrypoint"
 
     - name: Create traefik network
       community.docker.docker_network:
