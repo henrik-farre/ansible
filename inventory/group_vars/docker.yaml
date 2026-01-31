@@ -2,7 +2,7 @@
 containers:
   mongo:
     repo: docker.io/mongo
-    tag: 7.0.29
+    tag: 8.2.4
   photoprism:
     repo: photoprism/photoprism
     tag: 251130
