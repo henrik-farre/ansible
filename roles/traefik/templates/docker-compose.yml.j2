@@ -8,6 +8,7 @@ services:
     ports:
       - 80:80
       - 443:443
+      - 2222:2222
     environment:
       TZ: "Europe/Copenhagen"
       CLOUDFLARE_EMAIL: {{ email_addresses.external }}
