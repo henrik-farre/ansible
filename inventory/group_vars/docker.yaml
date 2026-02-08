@@ -11,19 +11,19 @@ containers:
     tag: 11.8.5
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
-    tag: 2026.1.3
+    tag: 2026.2.1
   ha_mariadb:
     repo: mariadb
     tag: 10.11.15
   zigbee2mqtt:
     repo: koenkk/zigbee2mqtt
-    tag: 2.7.2
+    tag: 2.8.0
   mosquitto:
     repo: eclipse-mosquitto
     tag: 2.0.22
   cloudflared:
     repo: cloudflare/cloudflared
-    tag: 2026.1.2
+    tag: 2026.2.0
   pihole:
     repo: pihole/pihole
     tag: 2025.11.1
@@ -35,16 +35,16 @@ containers:
     tag: 1.30.0
   traefik:
     repo: traefik
-    tag: v2.11.35
+    tag: v2.11.36
   whisper:
     repo: rhasspy/wyoming-whisper
     tag: 3.1.0
   piper:
     repo: rhasspy/wyoming-piper
-    tag: 2.2.1
+    tag: 2.2.2
   victoriametrics:
     repo: victoriametrics/victoria-metrics
-    tag: v1.134.0
+    tag: v1.135.0
   grafana:
     repo: grafana/grafana
     tag: 12.3.2
@@ -68,7 +68,7 @@ containers:
     tag: 0.52.9
   browserless_chromium:
     repo: ghcr.io/browserless/chromium
-    tag: v2.38.4
+    tag: v2.39.0
   forgejo:
     repo: codeberg.org/forgejo/forgejo
-    tag: 14.0.1-rootless
+    tag: 14.0.2-rootless
