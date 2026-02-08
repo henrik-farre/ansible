@@ -130,6 +130,7 @@
     - semaphore
     - ups
     - git-server
+    - changedetection
 
 - name: Laptop setup
   hosts: laptop

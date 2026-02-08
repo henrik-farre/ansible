@@ -1,0 +1,3 @@
+---
+changedetection:
+  hostname: changedetection.{{ network.local_domain }}

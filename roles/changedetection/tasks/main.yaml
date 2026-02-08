@@ -1,0 +1,33 @@
+---
+- name: Ensure changedetection is installed and configured
+  become: true
+  tags:
+    - changedetection
+  block:
+    - name: Ensure needed directories exist
+      ansible.builtin.file:
+        path: "/srv/changedetection/{{ item.path }}"
+        state: directory
+        mode: "0775"
+        owner: "{{ item.owner }}"
+        group: "{{ item.group }}"
+      loop:
+        - path: data
+          owner: 1000
+          group: docker
+        - path: deploy
+          owner: root
+          group: docker
+
+    - name: Ensure docker-compose.yml exists for changedetection
+      ansible.builtin.template:
+        src: docker-compose.yaml.j2
+        dest: /srv/changedetection/deploy/docker-compose.yaml
+        mode: "0664"
+        owner: root
+        group: docker
+
+    - name: Deploy Docker Compose stack
+      community.docker.docker_compose_v2:
+        project_name: changedetection
+        project_src: /srv/changedetection/deploy

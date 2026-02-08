@@ -1,0 +1,76 @@
+---
+services:
+  changedetection:
+    image: "{{ containers.changedetection.repo }}:{{ containers.changedetection.tag }}"
+    container_name: changedetection
+    hostname: changedetection
+    user: 1000:1000
+    environment:
+      TZ: Europe/Copenhagen
+      PLAYWRIGHT_DRIVER_URL: "ws://browserless-chromium:3000/?token=6R0W53R135510&blockAds=true"
+      BASE_URL: "http://{{ changedetection.hostname }}"
+      USE_X_SETTINGS: 1
+      HIDE_REFERER: true
+      ALLOW_FILE_URI: False
+      DISABLE_VERSION_CHECK: true
+      SOCKETIO_CORS_ORIGINS: "http://{{ changedetection.hostname }}" # Needed to fix "is not an accepted origin. (further occurrences of this error will be logged with level INFO)" error
+    networks:
+      - traefik
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+      - /srv/changedetection/data:/datastore
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    depends_on:
+      browserless-chromium:
+        condition: service_started
+    restart: unless-stopped
+    tmpfs:
+      - /tmp:noexec
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.changedetection.rule=Host(`{{ changedetection.hostname }}`)"
+      - "traefik.http.services.changedetection.loadbalancer.server.port=5000"
+      - "traefik.http.routers.changedetection.entrypoints=http"
+      - "traefik.http.middlewares.cd-headers.headers.customrequestheaders.Origin=http://{{ changedetection.hostname }}"
+      - "traefik.http.routers.changedetection.middlewares=cd-headers"
+
+  browserless-chromium:
+    hostname: browserless-chromium
+    container_name: changedetection-chromium
+    image: "{{ containers.browserless_chromium.repo }}:{{ containers.browserless_chromium.tag }}"
+    user: 1000:1000
+    restart: unless-stopped
+    networks:
+      - traefik
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    read_only: true
+    volumes:
+      - /etc/localtime:/etc/localtime:ro
+    environment:
+      TZ: Europe/Copenhagen
+      SCREEN_WIDTH: 1920
+      SCREEN_HEIGHT: 1024
+      SCREEN_DEPTH: 16
+      CONCURRENT: 10
+      TOKEN: 6R0W53R135510
+      XDG_CONFIG_HOME: "/tmp/.chromium"
+      XDG_CACHE_HOME: "/tmp/.chromium"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/pressure?token=6R0W53R135510"]
+      start_period: 10s
+      interval: 60s
+      timeout: 10s
+      retries: 3
+    tmpfs:
+      - /tmp:noexec
+
+networks:
+  traefik:
+    external: true
