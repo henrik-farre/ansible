@@ -29,13 +29,13 @@ files = [
 
 [[package]]
 name = "pyftpdlib"
-version = "2.1.0"
+version = "2.2.0"
 description = "Very fast asynchronous FTP server library"
 optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,!=3.5.*,>2.7"
+python-versions = ">=3.6"
 groups = ["main"]
 files = [
-    {file = "pyftpdlib-2.1.0.tar.gz", hash = "sha256:5e92e7ba37c3e458ec458e5c201e2deb992cb6011c963e6a8512a634d8d80116"},
+    {file = "pyftpdlib-2.2.0.tar.gz", hash = "sha256:4ba0642078792df63dd3b2e9c8f838f2a3ecf428c7518d5921c0530d53512acf"},
 ]
 
 [package.dependencies]
@@ -43,9 +43,9 @@ pyasynchat = {version = "*", markers = "python_version >= \"3.12\""}
 pyasyncore = {version = "*", markers = "python_version >= \"3.12\""}
 
 [package.extras]
-dev = ["black", "check-manifest", "coverage", "pylint", "pytest-cov", "pytest-xdist", "rstcheck", "ruff", "toml-sort", "twine"]
+dev = ["black", "build", "check-manifest", "coverage", "pdbpp ; os_name == \"nt\"", "pylint", "pyreadline3 ; os_name == \"nt\"", "pytest-cov", "pytest-xdist", "rstcheck", "ruff", "toml-sort", "twine"]
 ssl = ["PyOpenSSL"]
-test = ["psutil", "pyasynchat", "pyasyncore", "pyopenssl", "pytest", "pytest-instafail", "pytest-xdist", "setuptools"]
+test = ["psutil", "pyasynchat ; python_version >= \"3.12\"", "pyasyncore ; python_version >= \"3.12\"", "pyopenssl", "pytest", "pytest-instafail", "pytest-xdist", "pywin32 ; os_name == \"nt\"", "setuptools"]
 
 [metadata]
 lock-version = "2.1"
