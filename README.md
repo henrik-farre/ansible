@@ -1,3 +1,5 @@
+Moved to https://codeberg.org/henrik-farre/ansible
+
 # Ansible
 
 Playbooks and roles for setting up ArchLinux on bare metal and Debian VMs
