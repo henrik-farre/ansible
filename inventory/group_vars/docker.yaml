@@ -8,13 +8,13 @@ containers:
     tag: 251130
   photoprism_mariadb:
     repo: mariadb
-    tag: 11.8.6
+    tag: 12.2.2
   homeassistant:
     repo: ghcr.io/home-assistant/home-assistant
     tag: 2026.2.2
   ha_mariadb:
     repo: mariadb
-    tag: 10.11.16
+    tag: 12.2.2
   zigbee2mqtt:
     repo: koenkk/zigbee2mqtt
     tag: 2.8.0
@@ -62,7 +62,7 @@ containers:
     tag: v2.17.0
   semaphore_db:
     repo: mariadb
-    tag: 11.8.6
+    tag: 12.2.2
   changedetection:
     repo: ghcr.io/dgtlmoon/changedetection.io
     tag: 0.52.9
